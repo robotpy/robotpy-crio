@@ -1831,7 +1831,7 @@ static PyTypeObject TreeBuilder_Type = {
 
 #if defined(USE_EXPAT)
 
-#include "expat.h"
+#include "expat/expat.h"
 
 #if defined(USE_PYEXPAT_CAPI)
 #include "pyexpat.h"

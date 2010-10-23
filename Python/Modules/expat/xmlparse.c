@@ -4,6 +4,8 @@
 
 #define XML_BUILDING_EXPAT 1
 
+#include "pyconfig.h"
+
 #ifdef COMPILED_FROM_DSP
 #include "winconfig.h"
 #elif defined(MACOS_CLASSIC)
