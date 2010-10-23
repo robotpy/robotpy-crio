@@ -11,6 +11,7 @@
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+#include <ioLib.h>
 
 #define OFF(x) offsetof(PyTracebackObject, x)
 
@@ -180,7 +181,7 @@ _Py_FindSourceFile(const char* filename, char* namebuf, size_t namelen, int open
 			namebuf[len++] = SEP;
 		strcpy(namebuf+len, tail);
 		Py_BEGIN_ALLOW_THREADS
-		fd = open(namebuf, open_flags);
+		fd = open(namebuf, open_flags, 0);
 		Py_END_ALLOW_THREADS
 		if (0 <= fd) {
 			return fd;
@@ -212,7 +213,7 @@ _Py_DisplaySourceLine(PyObject *f, const char *filename, int lineno, int indent)
 	if (filename == NULL)
 		return 0;
 	Py_BEGIN_ALLOW_THREADS
-	fd = open(filename, open_flags);
+	fd = open(filename, open_flags, 0);
 	Py_END_ALLOW_THREADS
 	if (fd < 0) {
 		fd = _Py_FindSourceFile(filename, buf, sizeof(buf), open_flags);
