@@ -304,7 +304,7 @@ typedef Py_intptr_t	Py_ssize_t;
 /* NB caller must include <sys/types.h> */
 
 #ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
+#include <selectLib.h>
 #endif /* !HAVE_SYS_SELECT_H */
 
 /*******************************
