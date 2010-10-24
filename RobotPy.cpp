@@ -72,19 +72,24 @@ protected:
 	virtual void StartCompetition()
     {
     	/* Initialize the Python interpreter.  Required. */
+		Py_SetProgramName(L"./RobotPy");
 		Py_SetPythonHome(L"/");
 		Py_Initialize();
-		if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
+		for (;;)
 		{
-			PyRun_SimpleFile(f, ROBOTPY_BOOT);
-			fclose(f);
+			puts("starting " ROBOTPY_BOOT);
+			if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
+			{
+				PyRun_SimpleFile(f, ROBOTPY_BOOT);
+				fclose(f);
+			}
+			else
+				puts("Could not open " ROBOTPY_BOOT);
+	
+	    	puts(ROBOTPY_BOOT " ended; waiting 5 seconds before restart");
+			Wait(5.0);
 		}
-		else
-			puts("Could not open " ROBOTPY_BOOT);
-
-    	puts(ROBOTPY_BOOT " ended; exiting");
 		Py_Finalize();
-    	exit(0);
     }
 };
 

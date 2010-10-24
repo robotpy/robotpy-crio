@@ -13,3 +13,8 @@ in the py/ directory.
 - Make a new directory at the root called "py".
 - Copy py/boot.py from the source tree to the robot /py directory.
 
+Robot install.  boot.py imports robot.py to do its work.  A sample template
+is provided in samples/template.
+- FTP to your robot.
+- Copy robot.py to the robot /py directory.
+
