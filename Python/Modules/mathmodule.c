@@ -55,10 +55,7 @@ raised for division by zero and mod by zero.
 #include "Python.h"
 #include "longintrepr.h" /* just for SHIFT */
 
-#ifdef _OSF_SOURCE
-/* OSF1 5.1 doesn't make this available with XOPEN_SOURCE_EXTENDED defined */
 extern double copysign(double, double);
-#endif
 
 /* Call is_error when errno != 0, and where x is the result libm
  * returned.  is_error will usually set up an exception and return
