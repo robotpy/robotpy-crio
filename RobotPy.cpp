@@ -72,7 +72,8 @@ protected:
 	virtual void StartCompetition()
     {
     	/* Initialize the Python interpreter.  Required. */
-    	Py_Initialize();
+		Py_SetPythonHome(L"/");
+		Py_Initialize();
     	PyRun_SimpleString("import sys\n");
     	PyRun_SimpleString("print(sys.builtin_module_names)\n");
     	PyRun_SimpleString("print(sys.modules.keys())\n");
