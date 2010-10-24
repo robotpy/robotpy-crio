@@ -54,7 +54,6 @@ extern PyObject* PyInit__heapq(void);
 extern PyObject* PyInit_unicodedata(void);
 extern PyObject* PyInit_fcntl(void);
 extern PyObject* PyInit_select(void);
-extern PyObject* PyInit_mmap(void);
 extern PyObject* PyInit__csv(void);
 extern PyObject* PyInit__socket(void);
 extern PyObject* PyInit__md5(void);
@@ -110,7 +109,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"unicodedata", PyInit_unicodedata},
 	{"fcntl", PyInit_fcntl},
 	{"select", PyInit_select},
-	{"mmap", PyInit_mmap},
 	{"_csv", PyInit__csv},
 	{"_socket", PyInit__socket},
 	{"_md5", PyInit__md5},
