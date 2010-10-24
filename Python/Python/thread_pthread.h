@@ -230,10 +230,7 @@ do_PyThread_exit_thread(int no_cleanup)
 {
 	dprintf(("PyThread_exit_thread called\n"));
 	if (!initialized) {
-		if (no_cleanup)
-			_exit(0);
-		else
-			exit(0);
+		exit(0);
 	}
 }
 
