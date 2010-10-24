@@ -330,7 +330,7 @@
 #undef HAVE_HSTRERROR
 
 /* Define to 1 if you have the `hypot' function. */
-#define HAVE_HYPOT 1
+#undef HAVE_HYPOT
 
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
@@ -468,7 +468,7 @@
 #undef HAVE_PLOCK
 
 /* Define to 1 if you have the `poll' function. */
-#define HAVE_POLL 1
+#undef HAVE_POLL
 
 /* Define to 1 if you have the <poll.h> header file. */
 #define HAVE_POLL_H 1
@@ -528,7 +528,7 @@
 #undef HAVE_RL_PRE_INPUT_HOOK
 
 /* Define to 1 if you have the `round' function. */
-#define HAVE_ROUND 1
+#undef HAVE_ROUND
 
 /* Define to 1 if you have the `select' function. */
 #define HAVE_SELECT 1
