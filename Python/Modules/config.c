@@ -65,6 +65,7 @@ extern PyObject* PyInit_fpectl(void);
 extern PyObject* PyInit_fpetest(void);
 extern PyObject* PyInit_zlib(void);
 extern PyObject* PyInit_pyexpat(void);
+extern PyObject* PyInit__wpilib(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -119,6 +120,7 @@ struct _inittab _PyImport_Inittab[] = {
 	{"fpetest", PyInit_fpetest},
 	{"zlib", PyInit_zlib},
 	{"pyexpat", PyInit_pyexpat},
+        {"_wpilib", PyInit__wpilib},
 /* -- ADDMODULE MARKER 2 -- */
 
 	/* This module lives in marshal.c */

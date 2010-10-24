@@ -1,0 +1,5 @@
+To regenerate SWIG WPILib wrappers:
+- Install swigwin
+- From command line in RobotPy directory, run "swig -python -c++ wpilib.i"
+- Move newly created wpilib.py to Python\Lib
+- Move newly created wpilib_wrap.cxx to Python\Modules
