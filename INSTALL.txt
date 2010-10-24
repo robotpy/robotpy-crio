@@ -7,3 +7,9 @@ Libraries install:
 - Copy all files and directories from Python/Lib to the newly created
   /lib/python3.1.
 
+Boot install.  The C code runs py/boot.py; a standard version is provided
+in the py/ directory.
+- FTP to your robot.
+- Make a new directory at the root called "py".
+- Copy py/boot.py from the source tree to the robot /py directory.
+

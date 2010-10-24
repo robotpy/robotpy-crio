@@ -27,7 +27,7 @@
 #include "WPILib.h"
 #include "Python.h"
 
-#define FIRST_PY_BOOT_FILE "py/boot.py"
+#define ROBOTPY_BOOT "py/boot.py"
 
 class PyRobot : public RobotBase
 {
@@ -74,13 +74,17 @@ protected:
     	/* Initialize the Python interpreter.  Required. */
 		Py_SetPythonHome(L"/");
 		Py_Initialize();
-    	PyRun_SimpleString("import sys\n");
-    	PyRun_SimpleString("print(sys.builtin_module_names)\n");
-    	PyRun_SimpleString("print(sys.modules.keys())\n");
-    	Py_Exit(0);
-        
-        while (1)
-            Wait(0.1);
+		if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
+		{
+			PyRun_SimpleFile(f, ROBOTPY_BOOT);
+			fclose(f);
+		}
+		else
+			puts("Could not open " ROBOTPY_BOOT);
+
+    	puts(ROBOTPY_BOOT " ended; exiting");
+		Py_Finalize();
+    	exit(0);
     }
 };
 
