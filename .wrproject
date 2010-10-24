@@ -244,14 +244,14 @@
         </mapAttribute>
     </attributes>
     <buildtargets>
-        <buildtarget buildtool="Linker" name="FIRSTPy" passed="false" targetname="FIRSTPy">
+        <buildtarget buildtool="Linker" name="RobotPy" passed="false" targetname="RobotPy">
             <contents>
-                <buildtargetreference name="/FIRSTPy/FIRSTPy_partialImage"/>
+                <buildtargetreference name="/RobotPy/RobotPy_partialImage"/>
             </contents>
         </buildtarget>
-        <buildtarget buildtool="Partial Image Linker" name="FIRSTPy_partialImage" passed="true" targetname="FIRSTPy_partialImage">
+        <buildtarget buildtool="Partial Image Linker" name="RobotPy_partialImage" passed="true" targetname="RobotPy_partialImage">
             <contents>
-                <folder name="/FIRSTPy" recursive="true"/>
+                <folder name="/RobotPy" recursive="true"/>
             </contents>
         </buildtarget>
     </buildtargets>
