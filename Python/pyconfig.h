@@ -105,7 +105,7 @@
 #define HAVE_CLOCK 1
 
 /* Define to 1 if you have the `confstr' function. */
-#define HAVE_CONFSTR 1
+#undef HAVE_CONFSTR
 
 /* Define to 1 if you have the <conio.h> header file. */
 #undef HAVE_CONIO_H
@@ -680,7 +680,7 @@
 #undef HAVE_SYMLINK
 
 /* Define to 1 if you have the `sysconf' function. */
-#define HAVE_SYSCONF 1
+#undef HAVE_SYSCONF
 
 /* Define to 1 if you have the <sysexits.h> header file. */
 #undef HAVE_SYSEXITS_H
@@ -757,7 +757,7 @@
 #define HAVE_SYS_UN_H 1
 
 /* Define to 1 if you have the <sys/utsname.h> header file. */
-#define HAVE_SYS_UTSNAME_H 1
+#undef HAVE_SYS_UTSNAME_H
 
 /* Define to 1 if you have the <sys/wait.h> header file. */
 #define HAVE_SYS_WAIT_H 1
@@ -823,13 +823,13 @@
 #define PY_INT64_T int64_t
 
 /* Define to 1 if you have the `uname' function. */
-#define HAVE_UNAME 1
+#undef HAVE_UNAME
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the `unsetenv' function. */
-#define HAVE_UNSETENV 1
+#undef HAVE_UNSETENV
 
 /* Define if you have a useable wchar_t type defined in wchar.h; useable means
    wchar_t must be an unsigned type with at least 16 bits. (see
@@ -837,7 +837,7 @@
 #define HAVE_USABLE_WCHAR_T 1
 
 /* Define to 1 if you have the `utimes' function. */
-#define HAVE_UTIMES 1
+#undef HAVE_UTIMES
 
 /* Define to 1 if you have the <utime.h> header file. */
 #define HAVE_UTIME_H 1

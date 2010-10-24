@@ -98,63 +98,10 @@ corresponding Unix manual entries for more information on calls.");
 
 /* Various compilers have only certain posix functions */
 /* XXX Gosh I wish these were all moved into pyconfig.h */
-#if defined(PYCC_VACPP) && defined(PYOS_OS2)
-#include <process.h>
-#else
-#if defined(__WATCOMC__) && !defined(__QNX__)		/* Watcom compiler */
 #define HAVE_GETCWD     1
-#define HAVE_OPENDIR    1
-#define HAVE_SYSTEM	1
-#if defined(__OS2__)
-#define HAVE_EXECV      1
-#define HAVE_WAIT       1
-#endif
-#include <process.h>
-#else
-#ifdef __BORLANDC__		/* Borland compiler */
-#define HAVE_EXECV      1
-#define HAVE_GETCWD     1
-#define HAVE_OPENDIR    1
-#define HAVE_PIPE       1
-#define HAVE_SYSTEM	1
-#define HAVE_WAIT       1
-#else
-#ifdef _MSC_VER		/* Microsoft compiler */
-#define HAVE_GETCWD     1
-#define HAVE_SPAWNV	1
-#define HAVE_EXECV      1
-#define HAVE_PIPE       1
-#define HAVE_SYSTEM	1
-#define HAVE_CWAIT	1
-#define HAVE_FSYNC	1
-#define fsync _commit
-#else
-#if defined(PYOS_OS2) && defined(PYCC_GCC) || defined(__VMS)
-/* Everything needed is defined in PC/os2emx/pyconfig.h or vms/pyconfig.h */
-#else			/* all other compilers */
-/* Unix functions that the configure script doesn't check for */
-#define HAVE_EXECV      1
-#define HAVE_FORK       1
-#if defined(__USLC__) && defined(__SCO_VERSION__)	/* SCO UDK Compiler */
-#define HAVE_FORK1      1
-#endif
-#define HAVE_GETCWD     1
-#define HAVE_GETEGID    1
-#define HAVE_GETEUID    1
-#define HAVE_GETGID     1
-#define HAVE_GETPPID    1
-#define HAVE_GETUID     1
 #define HAVE_KILL       1
 #define HAVE_OPENDIR    1
-#define HAVE_PIPE       1
 #define HAVE_SYSTEM	1
-#define HAVE_WAIT       1
-#define HAVE_TTYNAME	1
-#endif  /* PYOS_OS2 && PYCC_GCC && __VMS */
-#endif  /* _MSC_VER */
-#endif  /* __BORLANDC__ */
-#endif  /* ! __WATCOMC__ || __QNX__ */
-#endif /* ! __IBMC__ */
 
 #ifndef _MSC_VER
 
@@ -443,15 +390,7 @@ _PyVerify_fd_dup2(int fd1, int fd2)
 #endif
 
 /* Return a dictionary corresponding to the POSIX environment table */
-#ifdef WITH_NEXT_FRAMEWORK
-/* On Darwin/MacOSX a shared library or framework has no access to
-** environ directly, we must obtain it with _NSGetEnviron().
-*/
-#include <crt_externs.h>
-static char **environ;
-#elif !defined(_MSC_VER) && ( !defined(__WATCOMC__) || defined(__QNX__) )
-extern char **environ;
-#endif /* !_MSC_VER */
+static char **environ = NULL;
 
 static PyObject *
 convertenviron(void)
@@ -2666,11 +2605,7 @@ posix_mkdir(PyObject *self, PyObject *args)
 		return NULL;
 	path = bytes2str(opath, 1);
 	Py_BEGIN_ALLOW_THREADS
-#if ( defined(__WATCOMC__) || defined(PYCC_VACPP) ) && !defined(__QNX__)
 	res = mkdir(path);
-#else
-	res = mkdir(path, mode);
-#endif
 	Py_END_ALLOW_THREADS
 	if (res < 0)
 		return posix_error_with_allocated_filename(opath);
@@ -2838,13 +2773,8 @@ Set the current numeric umask and return the previous umask.");
 static PyObject *
 posix_umask(PyObject *self, PyObject *args)
 {
-	int i;
-	if (!PyArg_ParseTuple(args, "i:umask", &i))
-		return NULL;
-	i = (int)umask(i);
-	if (i < 0)
-		return posix_error();
-	return PyLong_FromLong((long)i);
+	PyErr_SetString(PyExc_NotImplementedError, "not available");
+	return NULL;
 }
 
 
@@ -3102,7 +3032,7 @@ posix__exit(PyObject *self, PyObject *args)
 	int sts;
 	if (!PyArg_ParseTuple(args, "i:_exit", &sts))
 		return NULL;
-	_exit(sts);
+	exit(sts);
 	return NULL; /* Make gcc -Wall happy */
 }
 

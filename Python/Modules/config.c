@@ -24,9 +24,8 @@ extern "C" {
 
 extern PyObject* PyInit__thread(void);
 extern PyObject* PyInit_signal(void);
-/*posix posixmodule.c*/
+extern PyObject* PyInit_posix(void);
 extern PyObject* PyInit_errno(void);
-/*pwd pwdmodule.c*/
 extern PyObject* PyInit__sre(void);
 extern PyObject* PyInit__codecs(void);
 extern PyObject* PyInit__weakref(void);
@@ -79,9 +78,8 @@ struct _inittab _PyImport_Inittab[] = {
 
 	{"_thread", PyInit__thread},
 	{"signal", PyInit_signal},
-/*posix posixmodule.c*/
+	{"posix", PyInit_posix},
 	{"errno", PyInit_errno},
-/*pwd pwdmodule.c*/
 	{"_sre", PyInit__sre},
 	{"_codecs", PyInit__codecs},
 	{"_weakref", PyInit__weakref},
