@@ -77,8 +77,6 @@ protected:
     	PyRun_SimpleString("import sys\n");
     	PyRun_SimpleString("print(sys.builtin_module_names)\n");
     	PyRun_SimpleString("print(sys.modules.keys())\n");
-    	PyRun_SimpleString("print(sys.executable)\n");
-    	PyRun_SimpleString("print(sys.argv)\n");
     	Py_Exit(0);
         
         while (1)
