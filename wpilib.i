@@ -26,6 +26,7 @@
 %module wpilib
 %{
 #include <WPILib/WPILib.h>
+#include <CANJaguar/CANJaguar.h>
 %}
 
 typedef signed char INT8;
@@ -713,6 +714,34 @@ public:
 	void Set(float value);
     
 	void PIDWrite(float output);
+};
+
+class CANJaguar : public SpeedController, public PIDOutput
+{
+public:
+	typedef enum {kPercentVoltage, kSpeed, kPosition, kCurrent} ControlMode;
+	typedef enum {kCurrentFault = 1, kTemperatureFault = 2, kBusVoltageFault = 4} Faults;
+	typedef enum {kForwardLimit = 1, kReverseLimit = 2} Limits;
+
+	explicit CANJaguar(UINT8 deviceNumber, ControlMode controlMode = kPercentVoltage);
+	virtual ~CANJaguar();
+
+	float Get();
+	void Set(float value);
+
+	void PIDWrite(float output);
+
+	float GetBusVoltage();
+	float GetOutputVoltage();
+	float GetOutputCurrent();
+	float GetTemperature();
+	double GetPosition();
+	double GetSpeed();
+	bool GetForwardLimitOK();
+	bool GetReverseLimitOK();
+	UINT16 GetFaults();
+	bool GetPowerCycled();
+	UINT32 GetFirmwareVersion();
 };
 
 class Joystick : public GenericHID
