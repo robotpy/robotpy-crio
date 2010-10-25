@@ -17,17 +17,19 @@ compressor = wpilib.Compressor(8,1)
 drive = wpilib.RobotDrive(leftFrontMotor, leftRearMotor,
                           rightFrontMotor, rightRearMotor)
 
+def checkRestart():
+    if lstick.GetRawButton(10):
+        raise RuntimeError("Restart")
+
 def disabled():
     while wpilib.IsDisabled():
-        if lstick.GetRawButton(10):
-            raise RuntimeError("Restart")
+        checkRestart()
         wpilib.Wait(0.01)
 
 def autonomous():
     wpilib.GetWatchdog().SetEnabled(False)
     while wpilib.IsAutonomous() and wpilib.IsEnabled():
-        if lstick.GetRawButton(10):
-            raise RuntimeError("Restart")
+        checkRestart()
         wpilib.Wait(0.01)
 
 def teleop():
@@ -40,9 +42,7 @@ def teleop():
 
     while wpilib.IsOperatorControl() and wpilib.IsEnabled():
         dog.Feed()
-        #drive.ArcadeDrive(-stick1.GetY(), -stick2.GetX())
-        if lstick.GetRawButton(10):
-            raise RuntimeError("Restart")
+        checkRestart()
 
         if shiftTime.Get() > 0.3:
             shifter1.Set(False)
