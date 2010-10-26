@@ -2691,70 +2691,74 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIGTYPE_p_AnalogTriggerOutput swig_types[5]
 #define SWIGTYPE_p_AxisType swig_types[6]
 #define SWIGTYPE_p_ButtonType swig_types[7]
-#define SWIGTYPE_p_Code swig_types[8]
-#define SWIGTYPE_p_Compressor swig_types[9]
-#define SWIGTYPE_p_Counter swig_types[10]
-#define SWIGTYPE_p_CounterBase swig_types[11]
-#define SWIGTYPE_p_Dashboard swig_types[12]
-#define SWIGTYPE_p_DigitalInput swig_types[13]
-#define SWIGTYPE_p_DigitalModule swig_types[14]
-#define SWIGTYPE_p_DigitalOutput swig_types[15]
-#define SWIGTYPE_p_DigitalSource swig_types[16]
-#define SWIGTYPE_p_Direction swig_types[17]
-#define SWIGTYPE_p_DistanceUnit swig_types[18]
-#define SWIGTYPE_p_DriverStation swig_types[19]
-#define SWIGTYPE_p_DriverStationEnhancedIO swig_types[20]
-#define SWIGTYPE_p_DriverStationLCD swig_types[21]
-#define SWIGTYPE_p_Encoder swig_types[22]
-#define SWIGTYPE_p_EncodingType swig_types[23]
-#define SWIGTYPE_p_Error swig_types[24]
-#define SWIGTYPE_p_ErrorBase swig_types[25]
-#define SWIGTYPE_p_FlowControl swig_types[26]
-#define SWIGTYPE_p_GearTooth swig_types[27]
-#define SWIGTYPE_p_GenericHID swig_types[28]
-#define SWIGTYPE_p_Gyro swig_types[29]
-#define SWIGTYPE_p_HiTechnicCompass swig_types[30]
-#define SWIGTYPE_p_I2C swig_types[31]
-#define SWIGTYPE_p_InterruptableSensorBase swig_types[32]
-#define SWIGTYPE_p_Jaguar swig_types[33]
-#define SWIGTYPE_p_Joystick swig_types[34]
-#define SWIGTYPE_p_JoystickHand swig_types[35]
-#define SWIGTYPE_p_Mode swig_types[36]
-#define SWIGTYPE_p_Module swig_types[37]
-#define SWIGTYPE_p_MotorType swig_types[38]
-#define SWIGTYPE_p_PIDController swig_types[39]
-#define SWIGTYPE_p_PIDOutput swig_types[40]
-#define SWIGTYPE_p_PIDSource swig_types[41]
-#define SWIGTYPE_p_PWM swig_types[42]
-#define SWIGTYPE_p_Parity swig_types[43]
-#define SWIGTYPE_p_PeriodMultiplier swig_types[44]
-#define SWIGTYPE_p_Relay swig_types[45]
-#define SWIGTYPE_p_RobotDrive swig_types[46]
-#define SWIGTYPE_p_SensorBase swig_types[47]
-#define SWIGTYPE_p_SerialPort swig_types[48]
-#define SWIGTYPE_p_Servo swig_types[49]
-#define SWIGTYPE_p_Solenoid swig_types[50]
-#define SWIGTYPE_p_SpeedController swig_types[51]
-#define SWIGTYPE_p_StopBits swig_types[52]
-#define SWIGTYPE_p_Timer swig_types[53]
-#define SWIGTYPE_p_Type swig_types[54]
-#define SWIGTYPE_p_Ultrasonic swig_types[55]
-#define SWIGTYPE_p_Value swig_types[56]
-#define SWIGTYPE_p_Victor swig_types[57]
-#define SWIGTYPE_p_Watchdog swig_types[58]
-#define SWIGTYPE_p_WriteBufferMode swig_types[59]
-#define SWIGTYPE_p_char swig_types[60]
-#define SWIGTYPE_p_int swig_types[61]
-#define SWIGTYPE_p_long_long swig_types[62]
-#define SWIGTYPE_p_short swig_types[63]
-#define SWIGTYPE_p_signed_char swig_types[64]
-#define SWIGTYPE_p_tRioStatusCode swig_types[65]
-#define SWIGTYPE_p_unsigned_char swig_types[66]
-#define SWIGTYPE_p_unsigned_int swig_types[67]
-#define SWIGTYPE_p_unsigned_long_long swig_types[68]
-#define SWIGTYPE_p_unsigned_short swig_types[69]
-static swig_type_info *swig_types[71];
-static swig_module_info swig_module = {swig_types, 70, 0, 0, 0, 0};
+#define SWIGTYPE_p_CANJaguar swig_types[8]
+#define SWIGTYPE_p_Code swig_types[9]
+#define SWIGTYPE_p_Compressor swig_types[10]
+#define SWIGTYPE_p_ControlMode swig_types[11]
+#define SWIGTYPE_p_Counter swig_types[12]
+#define SWIGTYPE_p_CounterBase swig_types[13]
+#define SWIGTYPE_p_Dashboard swig_types[14]
+#define SWIGTYPE_p_DigitalInput swig_types[15]
+#define SWIGTYPE_p_DigitalModule swig_types[16]
+#define SWIGTYPE_p_DigitalOutput swig_types[17]
+#define SWIGTYPE_p_DigitalSource swig_types[18]
+#define SWIGTYPE_p_Direction swig_types[19]
+#define SWIGTYPE_p_DistanceUnit swig_types[20]
+#define SWIGTYPE_p_DriverStation swig_types[21]
+#define SWIGTYPE_p_DriverStationEnhancedIO swig_types[22]
+#define SWIGTYPE_p_DriverStationLCD swig_types[23]
+#define SWIGTYPE_p_Encoder swig_types[24]
+#define SWIGTYPE_p_EncodingType swig_types[25]
+#define SWIGTYPE_p_Error swig_types[26]
+#define SWIGTYPE_p_ErrorBase swig_types[27]
+#define SWIGTYPE_p_Faults swig_types[28]
+#define SWIGTYPE_p_FlowControl swig_types[29]
+#define SWIGTYPE_p_GearTooth swig_types[30]
+#define SWIGTYPE_p_GenericHID swig_types[31]
+#define SWIGTYPE_p_Gyro swig_types[32]
+#define SWIGTYPE_p_HiTechnicCompass swig_types[33]
+#define SWIGTYPE_p_I2C swig_types[34]
+#define SWIGTYPE_p_InterruptableSensorBase swig_types[35]
+#define SWIGTYPE_p_Jaguar swig_types[36]
+#define SWIGTYPE_p_Joystick swig_types[37]
+#define SWIGTYPE_p_JoystickHand swig_types[38]
+#define SWIGTYPE_p_Limits swig_types[39]
+#define SWIGTYPE_p_Mode swig_types[40]
+#define SWIGTYPE_p_Module swig_types[41]
+#define SWIGTYPE_p_MotorType swig_types[42]
+#define SWIGTYPE_p_PIDController swig_types[43]
+#define SWIGTYPE_p_PIDOutput swig_types[44]
+#define SWIGTYPE_p_PIDSource swig_types[45]
+#define SWIGTYPE_p_PWM swig_types[46]
+#define SWIGTYPE_p_Parity swig_types[47]
+#define SWIGTYPE_p_PeriodMultiplier swig_types[48]
+#define SWIGTYPE_p_Relay swig_types[49]
+#define SWIGTYPE_p_RobotDrive swig_types[50]
+#define SWIGTYPE_p_SensorBase swig_types[51]
+#define SWIGTYPE_p_SerialPort swig_types[52]
+#define SWIGTYPE_p_Servo swig_types[53]
+#define SWIGTYPE_p_Solenoid swig_types[54]
+#define SWIGTYPE_p_SpeedController swig_types[55]
+#define SWIGTYPE_p_StopBits swig_types[56]
+#define SWIGTYPE_p_Timer swig_types[57]
+#define SWIGTYPE_p_Type swig_types[58]
+#define SWIGTYPE_p_Ultrasonic swig_types[59]
+#define SWIGTYPE_p_Value swig_types[60]
+#define SWIGTYPE_p_Victor swig_types[61]
+#define SWIGTYPE_p_Watchdog swig_types[62]
+#define SWIGTYPE_p_WriteBufferMode swig_types[63]
+#define SWIGTYPE_p_char swig_types[64]
+#define SWIGTYPE_p_int swig_types[65]
+#define SWIGTYPE_p_long_long swig_types[66]
+#define SWIGTYPE_p_short swig_types[67]
+#define SWIGTYPE_p_signed_char swig_types[68]
+#define SWIGTYPE_p_tRioStatusCode swig_types[69]
+#define SWIGTYPE_p_unsigned_char swig_types[70]
+#define SWIGTYPE_p_unsigned_int swig_types[71]
+#define SWIGTYPE_p_unsigned_long_long swig_types[72]
+#define SWIGTYPE_p_unsigned_short swig_types[73]
+static swig_type_info *swig_types[75];
+static swig_module_info swig_module = {swig_types, 74, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2852,6 +2856,7 @@ namespace swig {
 
 
 #include <WPILib/WPILib.h>
+#include <CANJaguar/CANJaguar.h>
 
 
 SWIGINTERN swig_type_info*
@@ -15339,6 +15344,457 @@ SWIGINTERN PyObject *Jaguar_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObjec
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_CANJaguar__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  UINT8 arg1 ;
+  CANJaguar::ControlMode arg2 ;
+  unsigned char val1 ;
+  int ecode1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  CANJaguar *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_CANJaguar",&obj0,&obj1)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_char(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_CANJaguar" "', argument " "1"" of type '" "UINT8""'");
+  } 
+  arg1 = static_cast< UINT8 >(val1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_CANJaguar" "', argument " "2"" of type '" "CANJaguar::ControlMode""'");
+  } 
+  arg2 = static_cast< CANJaguar::ControlMode >(val2);
+  result = (CANJaguar *)new CANJaguar(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CANJaguar, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_CANJaguar__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  UINT8 arg1 ;
+  unsigned char val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  CANJaguar *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_CANJaguar",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_unsigned_SS_char(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_CANJaguar" "', argument " "1"" of type '" "UINT8""'");
+  } 
+  arg1 = static_cast< UINT8 >(val1);
+  result = (CANJaguar *)new CANJaguar(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_CANJaguar, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_CANJaguar(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[3];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 2); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 1) {
+    int _v;
+    {
+      int res = SWIG_AsVal_unsigned_SS_char(argv[0], NULL);
+      _v = SWIG_CheckState(res);
+    }
+    if (_v) {
+      return _wrap_new_CANJaguar__SWIG_1(self, args);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    {
+      int res = SWIG_AsVal_unsigned_SS_char(argv[0], NULL);
+      _v = SWIG_CheckState(res);
+    }
+    if (_v) {
+      {
+        int res = SWIG_AsVal_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_CANJaguar__SWIG_0(self, args);
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_CANJaguar'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    CANJaguar(UINT8,CANJaguar::ControlMode)\n"
+    "    CANJaguar(UINT8)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_CANJaguar(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_CANJaguar",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_CANJaguar" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_Get(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_Get",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_Get" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (float)(arg1)->Get();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_Set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CANJaguar_Set",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_Set" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CANJaguar_Set" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  (arg1)->Set(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_PIDWrite(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  float arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:CANJaguar_PIDWrite",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_PIDWrite" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  ecode2 = SWIG_AsVal_float(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "CANJaguar_PIDWrite" "', argument " "2"" of type '" "float""'");
+  } 
+  arg2 = static_cast< float >(val2);
+  (arg1)->PIDWrite(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetBusVoltage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetBusVoltage",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetBusVoltage" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (float)(arg1)->GetBusVoltage();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetOutputVoltage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetOutputVoltage",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetOutputVoltage" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (float)(arg1)->GetOutputVoltage();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetOutputCurrent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetOutputCurrent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetOutputCurrent" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (float)(arg1)->GetOutputCurrent();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetTemperature(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  float result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetTemperature",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetTemperature" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (float)(arg1)->GetTemperature();
+  resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetPosition(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetPosition",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetPosition" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (double)(arg1)->GetPosition();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetSpeed(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  double result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetSpeed",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetSpeed" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (double)(arg1)->GetSpeed();
+  resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetForwardLimitOK(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetForwardLimitOK",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetForwardLimitOK" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (bool)(arg1)->GetForwardLimitOK();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetReverseLimitOK(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetReverseLimitOK",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetReverseLimitOK" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (bool)(arg1)->GetReverseLimitOK();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetFaults(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  UINT16 result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetFaults",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetFaults" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (UINT16)(arg1)->GetFaults();
+  resultobj = SWIG_From_unsigned_SS_short(static_cast< unsigned short >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetPowerCycled(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetPowerCycled",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetPowerCycled" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (bool)(arg1)->GetPowerCycled();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_CANJaguar_GetFirmwareVersion(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  CANJaguar *arg1 = (CANJaguar *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  UINT32 result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:CANJaguar_GetFirmwareVersion",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_CANJaguar, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CANJaguar_GetFirmwareVersion" "', argument " "1"" of type '" "CANJaguar *""'"); 
+  }
+  arg1 = reinterpret_cast< CANJaguar * >(argp1);
+  result = (UINT32)(arg1)->GetFirmwareVersion();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *CANJaguar_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_CANJaguar, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_Joystick__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   UINT32 arg1 ;
@@ -21780,6 +22236,23 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Jaguar_Set", _wrap_Jaguar_Set, METH_VARARGS, NULL},
 	 { (char *)"Jaguar_PIDWrite", _wrap_Jaguar_PIDWrite, METH_VARARGS, NULL},
 	 { (char *)"Jaguar_swigregister", Jaguar_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_CANJaguar", _wrap_new_CANJaguar, METH_VARARGS, NULL},
+	 { (char *)"delete_CANJaguar", _wrap_delete_CANJaguar, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_Get", _wrap_CANJaguar_Get, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_Set", _wrap_CANJaguar_Set, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_PIDWrite", _wrap_CANJaguar_PIDWrite, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetBusVoltage", _wrap_CANJaguar_GetBusVoltage, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetOutputVoltage", _wrap_CANJaguar_GetOutputVoltage, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetOutputCurrent", _wrap_CANJaguar_GetOutputCurrent, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetTemperature", _wrap_CANJaguar_GetTemperature, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetPosition", _wrap_CANJaguar_GetPosition, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetSpeed", _wrap_CANJaguar_GetSpeed, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetForwardLimitOK", _wrap_CANJaguar_GetForwardLimitOK, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetReverseLimitOK", _wrap_CANJaguar_GetReverseLimitOK, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetFaults", _wrap_CANJaguar_GetFaults, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetPowerCycled", _wrap_CANJaguar_GetPowerCycled, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_GetFirmwareVersion", _wrap_CANJaguar_GetFirmwareVersion, METH_VARARGS, NULL},
+	 { (char *)"CANJaguar_swigregister", CANJaguar_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_Joystick", _wrap_new_Joystick, METH_VARARGS, NULL},
 	 { (char *)"delete_Joystick", _wrap_delete_Joystick, METH_VARARGS, NULL},
 	 { (char *)"Joystick_GetAxisChannel", _wrap_Joystick_GetAxisChannel, METH_VARARGS, NULL},
@@ -22131,6 +22604,9 @@ static void *_p_EncoderTo_p_SensorBase(void *x, int *SWIGUNUSEDPARM(newmemory)) 
 static void *_p_JaguarTo_p_PIDOutput(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((PIDOutput *)  ((Jaguar *) x));
 }
+static void *_p_CANJaguarTo_p_PIDOutput(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((PIDOutput *)  ((CANJaguar *) x));
+}
 static void *_p_VictorTo_p_PIDOutput(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((PIDOutput *)  ((Victor *) x));
 }
@@ -22164,6 +22640,9 @@ static void *_p_GearToothTo_p_CounterBase(void *x, int *SWIGUNUSEDPARM(newmemory
 static void *_p_JaguarTo_p_SpeedController(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SpeedController *)  ((Jaguar *) x));
 }
+static void *_p_CANJaguarTo_p_SpeedController(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SpeedController *)  ((CANJaguar *) x));
+}
 static void *_p_VictorTo_p_SpeedController(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SpeedController *)  ((Victor *) x));
 }
@@ -22181,8 +22660,10 @@ static swig_type_info _swigt__p_AnalogTrigger = {"_p_AnalogTrigger", "AnalogTrig
 static swig_type_info _swigt__p_AnalogTriggerOutput = {"_p_AnalogTriggerOutput", "AnalogTriggerOutput *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_AxisType = {"_p_AxisType", "AxisType *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ButtonType = {"_p_ButtonType", "ButtonType *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_CANJaguar = {"_p_CANJaguar", "CANJaguar *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Code = {"_p_Code", "Code *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Compressor = {"_p_Compressor", "Compressor *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_ControlMode = {"_p_ControlMode", "ControlMode *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Counter = {"_p_Counter", "Counter *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CounterBase = {"_p_CounterBase", "CounterBase *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Dashboard = {"_p_Dashboard", "Dashboard *", 0, 0, (void*)0, 0};
@@ -22199,6 +22680,7 @@ static swig_type_info _swigt__p_Encoder = {"_p_Encoder", "Encoder *", 0, 0, (voi
 static swig_type_info _swigt__p_EncodingType = {"_p_EncodingType", "EncodingType *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Error = {"_p_Error", "Error *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ErrorBase = {"_p_ErrorBase", "ErrorBase *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Faults = {"_p_Faults", "Faults *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FlowControl = {"_p_FlowControl", "FlowControl *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GearTooth = {"_p_GearTooth", "GearTooth *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_GenericHID = {"_p_GenericHID", "GenericHID *", 0, 0, (void*)0, 0};
@@ -22209,6 +22691,7 @@ static swig_type_info _swigt__p_InterruptableSensorBase = {"_p_InterruptableSens
 static swig_type_info _swigt__p_Jaguar = {"_p_Jaguar", "Jaguar *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Joystick = {"_p_Joystick", "Joystick *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_JoystickHand = {"_p_JoystickHand", "JoystickHand *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Limits = {"_p_Limits", "Limits *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Mode = {"_p_Mode", "Mode *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Module = {"_p_Module", "Module *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MotorType = {"_p_MotorType", "MotorType *", 0, 0, (void*)0, 0};
@@ -22253,8 +22736,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_AnalogTriggerOutput,
   &_swigt__p_AxisType,
   &_swigt__p_ButtonType,
+  &_swigt__p_CANJaguar,
   &_swigt__p_Code,
   &_swigt__p_Compressor,
+  &_swigt__p_ControlMode,
   &_swigt__p_Counter,
   &_swigt__p_CounterBase,
   &_swigt__p_Dashboard,
@@ -22271,6 +22756,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_EncodingType,
   &_swigt__p_Error,
   &_swigt__p_ErrorBase,
+  &_swigt__p_Faults,
   &_swigt__p_FlowControl,
   &_swigt__p_GearTooth,
   &_swigt__p_GenericHID,
@@ -22281,6 +22767,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_Jaguar,
   &_swigt__p_Joystick,
   &_swigt__p_JoystickHand,
+  &_swigt__p_Limits,
   &_swigt__p_Mode,
   &_swigt__p_Module,
   &_swigt__p_MotorType,
@@ -22325,8 +22812,10 @@ static swig_cast_info _swigc__p_AnalogTrigger[] = {  {&_swigt__p_AnalogTrigger, 
 static swig_cast_info _swigc__p_AnalogTriggerOutput[] = {  {&_swigt__p_AnalogTriggerOutput, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AxisType[] = {  {&_swigt__p_AxisType, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ButtonType[] = {  {&_swigt__p_ButtonType, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_CANJaguar[] = {  {&_swigt__p_CANJaguar, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Code[] = {  {&_swigt__p_Code, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Compressor[] = {  {&_swigt__p_Compressor, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ControlMode[] = {  {&_swigt__p_ControlMode, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Counter[] = {  {&_swigt__p_Counter, 0, 0, 0},  {&_swigt__p_GearTooth, _p_GearToothTo_p_Counter, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_CounterBase[] = {  {&_swigt__p_CounterBase, 0, 0, 0},  {&_swigt__p_Counter, _p_CounterTo_p_CounterBase, 0, 0},  {&_swigt__p_Encoder, _p_EncoderTo_p_CounterBase, 0, 0},  {&_swigt__p_GearTooth, _p_GearToothTo_p_CounterBase, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Dashboard[] = {  {&_swigt__p_Dashboard, 0, 0, 0},{0, 0, 0, 0}};
@@ -22343,6 +22832,7 @@ static swig_cast_info _swigc__p_Encoder[] = {  {&_swigt__p_Encoder, 0, 0, 0},{0,
 static swig_cast_info _swigc__p_EncodingType[] = {  {&_swigt__p_EncodingType, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Error[] = {  {&_swigt__p_Error, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ErrorBase[] = {  {&_swigt__p_ErrorBase, 0, 0, 0},  {&_swigt__p_Watchdog, _p_WatchdogTo_p_ErrorBase, 0, 0},  {&_swigt__p_DriverStation, _p_DriverStationTo_p_ErrorBase, 0, 0},  {&_swigt__p_InterruptableSensorBase, _p_InterruptableSensorBaseTo_p_ErrorBase, 0, 0},  {&_swigt__p_SensorBase, _p_SensorBaseTo_p_ErrorBase, 0, 0},  {&_swigt__p_Ultrasonic, _p_UltrasonicTo_p_ErrorBase, 0, 0},  {&_swigt__p_Counter, _p_CounterTo_p_ErrorBase, 0, 0},  {&_swigt__p_Dashboard, _p_DashboardTo_p_ErrorBase, 0, 0},  {&_swigt__p_AnalogTrigger, _p_AnalogTriggerTo_p_ErrorBase, 0, 0},  {&_swigt__p_Solenoid, _p_SolenoidTo_p_ErrorBase, 0, 0},  {&_swigt__p_Relay, _p_RelayTo_p_ErrorBase, 0, 0},  {&_swigt__p_Gyro, _p_GyroTo_p_ErrorBase, 0, 0},  {&_swigt__p_AnalogModule, _p_AnalogModuleTo_p_ErrorBase, 0, 0},  {&_swigt__p_PWM, _p_PWMTo_p_ErrorBase, 0, 0},  {&_swigt__p_Module, _p_ModuleTo_p_ErrorBase, 0, 0},  {&_swigt__p_GearTooth, _p_GearToothTo_p_ErrorBase, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_ErrorBase, 0, 0},  {&_swigt__p_Compressor, _p_CompressorTo_p_ErrorBase, 0, 0},  {&_swigt__p_DriverStationLCD, _p_DriverStationLCDTo_p_ErrorBase, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_ErrorBase, 0, 0},  {&_swigt__p_I2C, 0, 0, 0},  {&_swigt__p_AnalogTriggerOutput, _p_AnalogTriggerOutputTo_p_ErrorBase, 0, 0},  {&_swigt__p_Servo, _p_ServoTo_p_ErrorBase, 0, 0},  {&_swigt__p_DigitalModule, _p_DigitalModuleTo_p_ErrorBase, 0, 0},  {&_swigt__p_Accelerometer, _p_AccelerometerTo_p_ErrorBase, 0, 0},  {&_swigt__p_DigitalOutput, _p_DigitalOutputTo_p_ErrorBase, 0, 0},  {&_swigt__p_HiTechnicCompass, _p_HiTechnicCompassTo_p_ErrorBase, 0, 0},  {&_swigt__p_DigitalInput, _p_DigitalInputTo_p_ErrorBase, 0, 0},  {&_swigt__p_DigitalSource, _p_DigitalSourceTo_p_ErrorBase, 0, 0},  {&_swigt__p_ADXL345_I2C, _p_ADXL345_I2CTo_p_ErrorBase, 0, 0},  {&_swigt__p_AnalogChannel, _p_AnalogChannelTo_p_ErrorBase, 0, 0},  {&_swigt__p_DriverStationEnhancedIO, _p_DriverStationEnhancedIOTo_p_ErrorBase, 0, 0},  {&_swigt__p_Encoder, _p_EncoderTo_p_ErrorBase, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Faults[] = {  {&_swigt__p_Faults, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FlowControl[] = {  {&_swigt__p_FlowControl, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GearTooth[] = {  {&_swigt__p_GearTooth, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_GenericHID[] = {  {&_swigt__p_GenericHID, 0, 0, 0},  {&_swigt__p_Joystick, _p_JoystickTo_p_GenericHID, 0, 0},{0, 0, 0, 0}};
@@ -22353,11 +22843,12 @@ static swig_cast_info _swigc__p_InterruptableSensorBase[] = {  {&_swigt__p_Digit
 static swig_cast_info _swigc__p_Jaguar[] = {  {&_swigt__p_Jaguar, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Joystick[] = {  {&_swigt__p_Joystick, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JoystickHand[] = {  {&_swigt__p_JoystickHand, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Limits[] = {  {&_swigt__p_Limits, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Mode[] = {  {&_swigt__p_Mode, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Module[] = {  {&_swigt__p_DigitalModule, _p_DigitalModuleTo_p_Module, 0, 0},  {&_swigt__p_Module, 0, 0, 0},  {&_swigt__p_AnalogModule, _p_AnalogModuleTo_p_Module, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MotorType[] = {  {&_swigt__p_MotorType, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PIDController[] = {  {&_swigt__p_PIDController, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_PIDOutput[] = {  {&_swigt__p_PIDOutput, 0, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_PIDOutput, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_PIDOutput, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_PIDOutput[] = {  {&_swigt__p_PIDOutput, 0, 0, 0},  {&_swigt__p_CANJaguar, _p_CANJaguarTo_p_PIDOutput, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_PIDOutput, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_PIDOutput, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PIDSource[] = {  {&_swigt__p_AnalogChannel, _p_AnalogChannelTo_p_PIDSource, 0, 0},  {&_swigt__p_PIDSource, 0, 0, 0},  {&_swigt__p_Accelerometer, _p_AccelerometerTo_p_PIDSource, 0, 0},  {&_swigt__p_Ultrasonic, _p_UltrasonicTo_p_PIDSource, 0, 0},  {&_swigt__p_Gyro, _p_GyroTo_p_PIDSource, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PWM[] = {  {&_swigt__p_PWM, 0, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_PWM, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_PWM, 0, 0},  {&_swigt__p_Servo, _p_ServoTo_p_PWM, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Parity[] = {  {&_swigt__p_Parity, 0, 0, 0},{0, 0, 0, 0}};
@@ -22368,7 +22859,7 @@ static swig_cast_info _swigc__p_SensorBase[] = {  {&_swigt__p_Watchdog, _p_Watch
 static swig_cast_info _swigc__p_SerialPort[] = {  {&_swigt__p_SerialPort, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Servo[] = {  {&_swigt__p_Servo, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Solenoid[] = {  {&_swigt__p_Solenoid, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_SpeedController[] = {  {&_swigt__p_SpeedController, 0, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_SpeedController, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_SpeedController, 0, 0},  {&_swigt__p_Servo, _p_ServoTo_p_SpeedController, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SpeedController[] = {  {&_swigt__p_SpeedController, 0, 0, 0},  {&_swigt__p_CANJaguar, _p_CANJaguarTo_p_SpeedController, 0, 0},  {&_swigt__p_Jaguar, _p_JaguarTo_p_SpeedController, 0, 0},  {&_swigt__p_Victor, _p_VictorTo_p_SpeedController, 0, 0},  {&_swigt__p_Servo, _p_ServoTo_p_SpeedController, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_StopBits[] = {  {&_swigt__p_StopBits, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Timer[] = {  {&_swigt__p_Timer, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Type[] = {  {&_swigt__p_Type, 0, 0, 0},{0, 0, 0, 0}};
@@ -22397,8 +22888,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_AnalogTriggerOutput,
   _swigc__p_AxisType,
   _swigc__p_ButtonType,
+  _swigc__p_CANJaguar,
   _swigc__p_Code,
   _swigc__p_Compressor,
+  _swigc__p_ControlMode,
   _swigc__p_Counter,
   _swigc__p_CounterBase,
   _swigc__p_Dashboard,
@@ -22415,6 +22908,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_EncodingType,
   _swigc__p_Error,
   _swigc__p_ErrorBase,
+  _swigc__p_Faults,
   _swigc__p_FlowControl,
   _swigc__p_GearTooth,
   _swigc__p_GenericHID,
@@ -22425,6 +22919,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_Jaguar,
   _swigc__p_Joystick,
   _swigc__p_JoystickHand,
+  _swigc__p_Limits,
   _swigc__p_Mode,
   _swigc__p_Module,
   _swigc__p_MotorType,
@@ -23142,6 +23637,15 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "Gyro_kSamplesPerSecond",SWIG_From_float(static_cast< float >(Gyro::kSamplesPerSecond)));
   SWIG_Python_SetConstant(d, "Gyro_kCalibrationSampleTime",SWIG_From_float(static_cast< float >(Gyro::kCalibrationSampleTime)));
   SWIG_Python_SetConstant(d, "Gyro_kDefaultVoltsPerDegreePerSecond",SWIG_From_float(static_cast< float >(Gyro::kDefaultVoltsPerDegreePerSecond)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kPercentVoltage",SWIG_From_int(static_cast< int >(CANJaguar::kPercentVoltage)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kSpeed",SWIG_From_int(static_cast< int >(CANJaguar::kSpeed)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kPosition",SWIG_From_int(static_cast< int >(CANJaguar::kPosition)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kCurrent",SWIG_From_int(static_cast< int >(CANJaguar::kCurrent)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kCurrentFault",SWIG_From_int(static_cast< int >(CANJaguar::kCurrentFault)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kTemperatureFault",SWIG_From_int(static_cast< int >(CANJaguar::kTemperatureFault)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kBusVoltageFault",SWIG_From_int(static_cast< int >(CANJaguar::kBusVoltageFault)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kForwardLimit",SWIG_From_int(static_cast< int >(CANJaguar::kForwardLimit)));
+  SWIG_Python_SetConstant(d, "CANJaguar_kReverseLimit",SWIG_From_int(static_cast< int >(CANJaguar::kReverseLimit)));
   SWIG_Python_SetConstant(d, "Joystick_kDefaultXAxis",SWIG_From_unsigned_SS_int(static_cast< unsigned int >(Joystick::kDefaultXAxis)));
   SWIG_Python_SetConstant(d, "Joystick_kDefaultYAxis",SWIG_From_unsigned_SS_int(static_cast< unsigned int >(Joystick::kDefaultYAxis)));
   SWIG_Python_SetConstant(d, "Joystick_kDefaultZAxis",SWIG_From_unsigned_SS_int(static_cast< unsigned int >(Joystick::kDefaultZAxis)));

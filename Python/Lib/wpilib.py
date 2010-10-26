@@ -1043,6 +1043,46 @@ class Jaguar(PWM,SpeedController,PIDOutput):
 Jaguar_swigregister = _wpilib.Jaguar_swigregister
 Jaguar_swigregister(Jaguar)
 
+class CANJaguar(SpeedController,PIDOutput):
+    __swig_setmethods__ = {}
+    for _s in [SpeedController,PIDOutput]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, CANJaguar, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SpeedController,PIDOutput]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, CANJaguar, name)
+    __repr__ = _swig_repr
+    kPercentVoltage = _wpilib.CANJaguar_kPercentVoltage
+    kSpeed = _wpilib.CANJaguar_kSpeed
+    kPosition = _wpilib.CANJaguar_kPosition
+    kCurrent = _wpilib.CANJaguar_kCurrent
+    kCurrentFault = _wpilib.CANJaguar_kCurrentFault
+    kTemperatureFault = _wpilib.CANJaguar_kTemperatureFault
+    kBusVoltageFault = _wpilib.CANJaguar_kBusVoltageFault
+    kForwardLimit = _wpilib.CANJaguar_kForwardLimit
+    kReverseLimit = _wpilib.CANJaguar_kReverseLimit
+    def __init__(self, *args): 
+        this = _wpilib.new_CANJaguar(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _wpilib.delete_CANJaguar
+    __del__ = lambda self : None;
+    def Get(self): return _wpilib.CANJaguar_Get(self)
+    def Set(self, *args): return _wpilib.CANJaguar_Set(self, *args)
+    def PIDWrite(self, *args): return _wpilib.CANJaguar_PIDWrite(self, *args)
+    def GetBusVoltage(self): return _wpilib.CANJaguar_GetBusVoltage(self)
+    def GetOutputVoltage(self): return _wpilib.CANJaguar_GetOutputVoltage(self)
+    def GetOutputCurrent(self): return _wpilib.CANJaguar_GetOutputCurrent(self)
+    def GetTemperature(self): return _wpilib.CANJaguar_GetTemperature(self)
+    def GetPosition(self): return _wpilib.CANJaguar_GetPosition(self)
+    def GetSpeed(self): return _wpilib.CANJaguar_GetSpeed(self)
+    def GetForwardLimitOK(self): return _wpilib.CANJaguar_GetForwardLimitOK(self)
+    def GetReverseLimitOK(self): return _wpilib.CANJaguar_GetReverseLimitOK(self)
+    def GetFaults(self): return _wpilib.CANJaguar_GetFaults(self)
+    def GetPowerCycled(self): return _wpilib.CANJaguar_GetPowerCycled(self)
+    def GetFirmwareVersion(self): return _wpilib.CANJaguar_GetFirmwareVersion(self)
+CANJaguar_swigregister = _wpilib.CANJaguar_swigregister
+CANJaguar_swigregister(CANJaguar)
+
 class Joystick(GenericHID):
     __swig_setmethods__ = {}
     for _s in [GenericHID]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
