@@ -71,6 +71,7 @@ protected:
     
 	virtual void StartCompetition()
     {
+        puts("RobotPy 2010.beta1");
     	/* Initialize the Python interpreter.  Required. */
 		Py_SetProgramName(L"./RobotPy");
 		Py_SetPythonHome(L"/");
