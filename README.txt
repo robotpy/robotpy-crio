@@ -8,10 +8,11 @@
 About RobotPy
 ===============
 
-RobotPy is a distribution of `Python`_ intended to be used for the `FIRST
+`RobotPy`_ is a distribution of `Python`_ intended to be used for the `FIRST
 Robotics Competition`_.  Teams can use this to write their robot code in
 Python, a powerful dynamic programming language.
 
+.. _RobotPy: http://www.tortall.net/projects/robotpy/
 .. _Python: http://www.python.org/
 .. _FIRST Robotics Competition: http://www.usfirst.org/
 
