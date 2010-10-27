@@ -1,8 +1,7 @@
 /*
- *  LuaRobot.cpp - C++ code to start Lua
- *  FIRSTLua
+ *  PyRobot.cpp - C++ code to start Python
  *
- *  Copyright (c) 2010 Ross Light
+ *  Copyright (c) 2010 Ross Light, Peter Johnson
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a
  *  copy of this software and associated documentation files (the "Software"),
@@ -41,34 +40,6 @@ public:
     }
     
 protected:
-    void writeMessageFile(const char *fname, const char *fmt, va_list args)
-    {
-    	FILE *errfile;
-    	
-    	errfile = fopen(fname, "w");
-    	vfprintf(errfile, fmt, args);
-    	fputs("\n", errfile);
-    	fclose(errfile);
-    }
-    
-    void writeMessageFile(const char *fname, const char *fmt, ...)
-    {
-    	va_list args;
-    	
-    	va_start(args, fmt);
-    	writeMessageFile(fname, fmt, args);
-    	va_end(args);
-    }
-    
-    void writeError(const char *errfmt, ...)
-    {
-    	va_list args;
-    	
-    	va_start(args, errfmt);
-    	writeMessageFile("boot-error.txt", errfmt, args);
-    	va_end(args);
-    }
-    
 	virtual void StartCompetition()
     {
         puts("RobotPy 2010.beta1");
