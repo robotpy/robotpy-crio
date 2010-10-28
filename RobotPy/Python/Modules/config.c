@@ -50,7 +50,6 @@ extern PyObject* PyInit__pickle(void);
 extern PyObject* PyInit_datetime(void);
 extern PyObject* PyInit__bisect(void);
 extern PyObject* PyInit__heapq(void);
-extern PyObject* PyInit_unicodedata(void);
 extern PyObject* PyInit_fcntl(void);
 extern PyObject* PyInit_select(void);
 extern PyObject* PyInit__csv(void);
@@ -105,7 +104,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"datetime", PyInit_datetime},
 	{"_bisect", PyInit__bisect},
 	{"_heapq", PyInit__heapq},
-	{"unicodedata", PyInit_unicodedata},
 	{"fcntl", PyInit_fcntl},
 	{"select", PyInit_select},
 	{"_csv", PyInit__csv},
