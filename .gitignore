@@ -1,3 +1,9 @@
 
 /RobotPy/PPC603gnu
+/Modules/*/ctdt.*
+/Modules/*/*.d
+/Modules/*/*.o
+/Modules/*/*.out
+/Modules/pyexpat/expat/*.d
+/Modules/pyexpat/expat/*.o
 /dist

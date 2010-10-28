@@ -41,15 +41,23 @@ with the Python interpreter.
 If you cloned the git repository:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Open the project directory as a WindRiver project.  Build the project and
-download the code to your robot.  Now you have the Python interpreter on the
-robot.
+Two steps are required: building the RobotPy interpreter, and building the
+loadable modules.
+
+To build the interpreter: open the RobotPy directory as a Wind River project.
+Build the project and download the code to your robot.  Now you have the
+Python interpreter on the robot.
+
+To build the loadable modules: Run Start|Programs|Wind River|
+VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
+CD to the directory where you cloned the git repository.  CD to the Modules
+directory.  Run "make".
+
+Run ``make_dist.bat``.  Delete the ``dist\robot\ni-rt`` directory tree.
 
 Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
-where XXYY is your team number).  Copy the ``Python\Lib`` directory tree to
-``/lib/python3.1`` on the robot.  Copy the ``py\boot.py`` file to
-``/py/boot.py`` on the robot.  This is the bootloader which will run the rest
-of your code; you shouldn't need to edit it.
+where XXYY is your team number).  Copy the ``dist\robot`` directory tree to
+the root (top level) directory on the robot.
 
 Writing Code
 ==============

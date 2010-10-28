@@ -34,34 +34,6 @@ extern PyObject* PyInit__locale(void);
 extern PyObject* PyInit__io(void);
 extern PyObject* PyInit_zipimport(void);
 extern PyObject* PyInit__symtable(void);
-extern PyObject* PyInit_array(void);
-extern PyObject* PyInit_cmath(void);
-extern PyObject* PyInit_math(void);
-extern PyObject* PyInit__struct(void);
-extern PyObject* PyInit_time(void);
-extern PyObject* PyInit_operator(void);
-extern PyObject* PyInit__random(void);
-extern PyObject* PyInit__collections(void);
-extern PyObject* PyInit_itertools(void);
-extern PyObject* PyInit_atexit(void);
-extern PyObject* PyInit__elementtree(void);
-extern PyObject* PyInit__pickle(void);
-extern PyObject* PyInit_datetime(void);
-extern PyObject* PyInit__bisect(void);
-extern PyObject* PyInit__heapq(void);
-extern PyObject* PyInit_fcntl(void);
-extern PyObject* PyInit_select(void);
-extern PyObject* PyInit__csv(void);
-extern PyObject* PyInit__socket(void);
-extern PyObject* PyInit__md5(void);
-extern PyObject* PyInit__sha1(void);
-extern PyObject* PyInit__sha256(void);
-extern PyObject* PyInit__sha512(void);
-extern PyObject* PyInit_binascii(void);
-extern PyObject* PyInit_parser(void);
-extern PyObject* PyInit_fpectl(void);
-extern PyObject* PyInit_zlib(void);
-extern PyObject* PyInit_pyexpat(void);
 extern PyObject* PyInit__wpilib(void);
 
 /* -- ADDMODULE MARKER 1 -- */
@@ -86,34 +58,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_io", PyInit__io},
 	{"zipimport", PyInit_zipimport},
 	{"_symtable", PyInit__symtable},
-	{"array", PyInit_array},
-	{"cmath", PyInit_cmath},
-	{"math", PyInit_math},
-	{"_struct", PyInit__struct},
-	{"time", PyInit_time},
-	{"operator", PyInit_operator},
-	{"_random", PyInit__random},
-	{"_collections", PyInit__collections},
-	{"itertools", PyInit_itertools}, 
-	{"atexit", PyInit_atexit},
-	{"_elementtree", PyInit__elementtree},
-	{"_pickle", PyInit__pickle},
-	{"datetime", PyInit_datetime},
-	{"_bisect", PyInit__bisect},
-	{"_heapq", PyInit__heapq},
-	{"fcntl", PyInit_fcntl},
-	{"select", PyInit_select},
-	{"_csv", PyInit__csv},
-	{"_socket", PyInit__socket},
-	{"_md5", PyInit__md5},
-	{"_sha1", PyInit__sha1},
-	{"_sha256", PyInit__sha256},
-	{"_sha512", PyInit__sha512},
-	{"binascii", PyInit_binascii},
-	{"parser", PyInit_parser},
-	{"fpectl", PyInit_fpectl},
-	{"zlib", PyInit_zlib},
-	{"pyexpat", PyInit_pyexpat},
         {"_wpilib", PyInit__wpilib},
 /* -- ADDMODULE MARKER 2 -- */
 
