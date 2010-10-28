@@ -78,13 +78,13 @@ class Error(_object):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Error
     __del__ = lambda self : None;
-    def GetCode(self): return _wpilib.Error_GetCode(self)
-    def GetMessage(self): return _wpilib.Error_GetMessage(self)
-    def GetFilename(self): return _wpilib.Error_GetFilename(self)
-    def GetLineNumber(self): return _wpilib.Error_GetLineNumber(self)
-    def GetOriginatingObject(self): return _wpilib.Error_GetOriginatingObject(self)
-    def Clear(self): return _wpilib.Error_Clear(self)
-    def Set(self, *args): return _wpilib.Error_Set(self, *args)
+    def GetCode(self) -> "Error::Code" : return _wpilib.Error_GetCode(self)
+    def GetMessage(self) -> "char const *" : return _wpilib.Error_GetMessage(self)
+    def GetFilename(self) -> "char const *" : return _wpilib.Error_GetFilename(self)
+    def GetLineNumber(self) -> "UINT32" : return _wpilib.Error_GetLineNumber(self)
+    def GetOriginatingObject(self) -> "ErrorBase const *" : return _wpilib.Error_GetOriginatingObject(self)
+    def Clear(self) -> "void" : return _wpilib.Error_Clear(self)
+    def Set(self, *args) -> "void" : return _wpilib.Error_Set(self, *args)
 Error_swigregister = _wpilib.Error_swigregister
 Error_swigregister(Error)
 
@@ -97,16 +97,16 @@ class ErrorBase(_object):
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_ErrorBase
     __del__ = lambda self : None;
-    def GetError(self, *args): return _wpilib.ErrorBase_GetError(self, *args)
-    def SetError(self, *args): return _wpilib.ErrorBase_SetError(self, *args)
-    def ClearError(self): return _wpilib.ErrorBase_ClearError(self)
-    def StatusIsFatal(self): return _wpilib.ErrorBase_StatusIsFatal(self)
+    def GetError(self, *args) -> "Error const &" : return _wpilib.ErrorBase_GetError(self, *args)
+    def SetError(self, *args) -> "void" : return _wpilib.ErrorBase_SetError(self, *args)
+    def ClearError(self) -> "void" : return _wpilib.ErrorBase_ClearError(self)
+    def StatusIsFatal(self) -> "bool" : return _wpilib.ErrorBase_StatusIsFatal(self)
     __swig_getmethods__["GetGlobalError"] = lambda x: _wpilib.ErrorBase_GetGlobalError
     if _newclass:GetGlobalError = staticmethod(_wpilib.ErrorBase_GetGlobalError)
 ErrorBase_swigregister = _wpilib.ErrorBase_swigregister
 ErrorBase_swigregister(ErrorBase)
 
-def ErrorBase_GetGlobalError():
+def ErrorBase_GetGlobalError() -> "Error &" :
   return _wpilib.ErrorBase_GetGlobalError()
 ErrorBase_GetGlobalError = _wpilib.ErrorBase_GetGlobalError
 
@@ -171,71 +171,71 @@ class SensorBase(ErrorBase):
 SensorBase_swigregister = _wpilib.SensorBase_swigregister
 SensorBase_swigregister(SensorBase)
 
-def SensorBase_SetDefaultAnalogModule(*args):
+def SensorBase_SetDefaultAnalogModule(*args) -> "void" :
   return _wpilib.SensorBase_SetDefaultAnalogModule(*args)
 SensorBase_SetDefaultAnalogModule = _wpilib.SensorBase_SetDefaultAnalogModule
 
-def SensorBase_SetDefaultDigitalModule(*args):
+def SensorBase_SetDefaultDigitalModule(*args) -> "void" :
   return _wpilib.SensorBase_SetDefaultDigitalModule(*args)
 SensorBase_SetDefaultDigitalModule = _wpilib.SensorBase_SetDefaultDigitalModule
 
-def SensorBase_SetDefaultSolenoidModule(*args):
+def SensorBase_SetDefaultSolenoidModule(*args) -> "void" :
   return _wpilib.SensorBase_SetDefaultSolenoidModule(*args)
 SensorBase_SetDefaultSolenoidModule = _wpilib.SensorBase_SetDefaultSolenoidModule
 
-def SensorBase_DeleteSingletons():
+def SensorBase_DeleteSingletons() -> "void" :
   return _wpilib.SensorBase_DeleteSingletons()
 SensorBase_DeleteSingletons = _wpilib.SensorBase_DeleteSingletons
 
-def SensorBase_GetDefaultAnalogModule():
+def SensorBase_GetDefaultAnalogModule() -> "UINT32" :
   return _wpilib.SensorBase_GetDefaultAnalogModule()
 SensorBase_GetDefaultAnalogModule = _wpilib.SensorBase_GetDefaultAnalogModule
 
-def SensorBase_GetDefaultDigitalModule():
+def SensorBase_GetDefaultDigitalModule() -> "UINT32" :
   return _wpilib.SensorBase_GetDefaultDigitalModule()
 SensorBase_GetDefaultDigitalModule = _wpilib.SensorBase_GetDefaultDigitalModule
 
-def SensorBase_GetDefaultSolenoidModule():
+def SensorBase_GetDefaultSolenoidModule() -> "UINT32" :
   return _wpilib.SensorBase_GetDefaultSolenoidModule()
 SensorBase_GetDefaultSolenoidModule = _wpilib.SensorBase_GetDefaultSolenoidModule
 
-def SensorBase_CheckDigitalModule(*args):
+def SensorBase_CheckDigitalModule(*args) -> "bool" :
   return _wpilib.SensorBase_CheckDigitalModule(*args)
 SensorBase_CheckDigitalModule = _wpilib.SensorBase_CheckDigitalModule
 
-def SensorBase_CheckRelayModule(*args):
+def SensorBase_CheckRelayModule(*args) -> "bool" :
   return _wpilib.SensorBase_CheckRelayModule(*args)
 SensorBase_CheckRelayModule = _wpilib.SensorBase_CheckRelayModule
 
-def SensorBase_CheckPWMModule(*args):
+def SensorBase_CheckPWMModule(*args) -> "bool" :
   return _wpilib.SensorBase_CheckPWMModule(*args)
 SensorBase_CheckPWMModule = _wpilib.SensorBase_CheckPWMModule
 
-def SensorBase_CheckSolenoidModule(*args):
+def SensorBase_CheckSolenoidModule(*args) -> "bool" :
   return _wpilib.SensorBase_CheckSolenoidModule(*args)
 SensorBase_CheckSolenoidModule = _wpilib.SensorBase_CheckSolenoidModule
 
-def SensorBase_CheckAnalogModule(*args):
+def SensorBase_CheckAnalogModule(*args) -> "bool" :
   return _wpilib.SensorBase_CheckAnalogModule(*args)
 SensorBase_CheckAnalogModule = _wpilib.SensorBase_CheckAnalogModule
 
-def SensorBase_CheckDigitalChannel(*args):
+def SensorBase_CheckDigitalChannel(*args) -> "bool" :
   return _wpilib.SensorBase_CheckDigitalChannel(*args)
 SensorBase_CheckDigitalChannel = _wpilib.SensorBase_CheckDigitalChannel
 
-def SensorBase_CheckRelayChannel(*args):
+def SensorBase_CheckRelayChannel(*args) -> "bool" :
   return _wpilib.SensorBase_CheckRelayChannel(*args)
 SensorBase_CheckRelayChannel = _wpilib.SensorBase_CheckRelayChannel
 
-def SensorBase_CheckPWMChannel(*args):
+def SensorBase_CheckPWMChannel(*args) -> "bool" :
   return _wpilib.SensorBase_CheckPWMChannel(*args)
 SensorBase_CheckPWMChannel = _wpilib.SensorBase_CheckPWMChannel
 
-def SensorBase_CheckAnalogChannel(*args):
+def SensorBase_CheckAnalogChannel(*args) -> "bool" :
   return _wpilib.SensorBase_CheckAnalogChannel(*args)
 SensorBase_CheckAnalogChannel = _wpilib.SensorBase_CheckAnalogChannel
 
-def SensorBase_CheckSolenoidChannel(*args):
+def SensorBase_CheckSolenoidChannel(*args) -> "bool" :
   return _wpilib.SensorBase_CheckSolenoidChannel(*args)
 SensorBase_CheckSolenoidChannel = _wpilib.SensorBase_CheckSolenoidChannel
 
@@ -250,12 +250,12 @@ class InterruptableSensorBase(SensorBase):
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_InterruptableSensorBase
     __del__ = lambda self : None;
-    def RequestInterrupts(self): return _wpilib.InterruptableSensorBase_RequestInterrupts(self)
-    def CancelInterrupts(self): return _wpilib.InterruptableSensorBase_CancelInterrupts(self)
-    def WaitForInterrupt(self, *args): return _wpilib.InterruptableSensorBase_WaitForInterrupt(self, *args)
-    def EnableInterrupts(self): return _wpilib.InterruptableSensorBase_EnableInterrupts(self)
-    def DisableInterrupts(self): return _wpilib.InterruptableSensorBase_DisableInterrupts(self)
-    def ReadInterruptTimestamp(self): return _wpilib.InterruptableSensorBase_ReadInterruptTimestamp(self)
+    def RequestInterrupts(self) -> "void" : return _wpilib.InterruptableSensorBase_RequestInterrupts(self)
+    def CancelInterrupts(self) -> "void" : return _wpilib.InterruptableSensorBase_CancelInterrupts(self)
+    def WaitForInterrupt(self, *args) -> "void" : return _wpilib.InterruptableSensorBase_WaitForInterrupt(self, *args)
+    def EnableInterrupts(self) -> "void" : return _wpilib.InterruptableSensorBase_EnableInterrupts(self)
+    def DisableInterrupts(self) -> "void" : return _wpilib.InterruptableSensorBase_DisableInterrupts(self)
+    def ReadInterruptTimestamp(self) -> "double" : return _wpilib.InterruptableSensorBase_ReadInterruptTimestamp(self)
 InterruptableSensorBase_swigregister = _wpilib.InterruptableSensorBase_swigregister
 InterruptableSensorBase_swigregister(InterruptableSensorBase)
 
@@ -268,12 +268,12 @@ class I2C(_object):
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_I2C
     __del__ = lambda self : None;
-    def Transaction(self, *args): return _wpilib.I2C_Transaction(self, *args)
-    def AddressOnly(self): return _wpilib.I2C_AddressOnly(self)
-    def Write(self, *args): return _wpilib.I2C_Write(self, *args)
-    def Read(self, *args): return _wpilib.I2C_Read(self, *args)
-    def Broadcast(self, *args): return _wpilib.I2C_Broadcast(self, *args)
-    def VerifySensor(self, *args): return _wpilib.I2C_VerifySensor(self, *args)
+    def Transaction(self, *args) -> "bool" : return _wpilib.I2C_Transaction(self, *args)
+    def AddressOnly(self) -> "bool" : return _wpilib.I2C_AddressOnly(self)
+    def Write(self, *args) -> "bool" : return _wpilib.I2C_Write(self, *args)
+    def Read(self, *args) -> "bool" : return _wpilib.I2C_Read(self, *args)
+    def Broadcast(self, *args) -> "void" : return _wpilib.I2C_Broadcast(self, *args)
+    def VerifySensor(self, *args) -> "bool" : return _wpilib.I2C_VerifySensor(self, *args)
 I2C_swigregister = _wpilib.I2C_swigregister
 I2C_swigregister(I2C)
 
@@ -288,10 +288,10 @@ class DigitalSource(InterruptableSensorBase):
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_DigitalSource
     __del__ = lambda self : None;
-    def GetChannelForRouting(self): return _wpilib.DigitalSource_GetChannelForRouting(self)
-    def GetModuleForRouting(self): return _wpilib.DigitalSource_GetModuleForRouting(self)
-    def GetAnalogTriggerForRouting(self): return _wpilib.DigitalSource_GetAnalogTriggerForRouting(self)
-    def RequestInterrupts(self): return _wpilib.DigitalSource_RequestInterrupts(self)
+    def GetChannelForRouting(self) -> "UINT32" : return _wpilib.DigitalSource_GetChannelForRouting(self)
+    def GetModuleForRouting(self) -> "UINT32" : return _wpilib.DigitalSource_GetModuleForRouting(self)
+    def GetAnalogTriggerForRouting(self) -> "bool" : return _wpilib.DigitalSource_GetAnalogTriggerForRouting(self)
+    def RequestInterrupts(self) -> "void" : return _wpilib.DigitalSource_RequestInterrupts(self)
 DigitalSource_swigregister = _wpilib.DigitalSource_swigregister
 DigitalSource_swigregister(DigitalSource)
 
@@ -307,14 +307,14 @@ class CounterBase(_object):
     k4X = _wpilib.CounterBase_k4X
     __swig_destroy__ = _wpilib.delete_CounterBase
     __del__ = lambda self : None;
-    def Start(self): return _wpilib.CounterBase_Start(self)
-    def Get(self): return _wpilib.CounterBase_Get(self)
-    def Reset(self): return _wpilib.CounterBase_Reset(self)
-    def Stop(self): return _wpilib.CounterBase_Stop(self)
-    def GetPeriod(self): return _wpilib.CounterBase_GetPeriod(self)
-    def SetMaxPeriod(self, *args): return _wpilib.CounterBase_SetMaxPeriod(self, *args)
-    def GetStopped(self): return _wpilib.CounterBase_GetStopped(self)
-    def GetDirection(self): return _wpilib.CounterBase_GetDirection(self)
+    def Start(self) -> "void" : return _wpilib.CounterBase_Start(self)
+    def Get(self) -> "INT32" : return _wpilib.CounterBase_Get(self)
+    def Reset(self) -> "void" : return _wpilib.CounterBase_Reset(self)
+    def Stop(self) -> "void" : return _wpilib.CounterBase_Stop(self)
+    def GetPeriod(self) -> "double" : return _wpilib.CounterBase_GetPeriod(self)
+    def SetMaxPeriod(self, *args) -> "void" : return _wpilib.CounterBase_SetMaxPeriod(self, *args)
+    def GetStopped(self) -> "bool" : return _wpilib.CounterBase_GetStopped(self)
+    def GetDirection(self) -> "bool" : return _wpilib.CounterBase_GetDirection(self)
 CounterBase_swigregister = _wpilib.CounterBase_swigregister
 CounterBase_swigregister(CounterBase)
 
@@ -327,8 +327,8 @@ class SpeedController(_object):
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_SpeedController
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.SpeedController_Set(self, *args)
-    def Get(self): return _wpilib.SpeedController_Get(self)
+    def Set(self, *args) -> "void" : return _wpilib.SpeedController_Set(self, *args)
+    def Get(self) -> "float" : return _wpilib.SpeedController_Get(self)
 SpeedController_swigregister = _wpilib.SpeedController_swigregister
 SpeedController_swigregister(SpeedController)
 
@@ -349,11 +349,11 @@ class PWM(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_PWM
     __del__ = lambda self : None;
-    def SetRaw(self, *args): return _wpilib.PWM_SetRaw(self, *args)
-    def GetRaw(self): return _wpilib.PWM_GetRaw(self)
-    def SetPeriodMultiplier(self, *args): return _wpilib.PWM_SetPeriodMultiplier(self, *args)
-    def EnableDeadbandElimination(self, *args): return _wpilib.PWM_EnableDeadbandElimination(self, *args)
-    def SetBounds(self, *args): return _wpilib.PWM_SetBounds(self, *args)
+    def SetRaw(self, *args) -> "void" : return _wpilib.PWM_SetRaw(self, *args)
+    def GetRaw(self) -> "UINT8" : return _wpilib.PWM_GetRaw(self)
+    def SetPeriodMultiplier(self, *args) -> "void" : return _wpilib.PWM_SetPeriodMultiplier(self, *args)
+    def EnableDeadbandElimination(self, *args) -> "void" : return _wpilib.PWM_EnableDeadbandElimination(self, *args)
+    def SetBounds(self, *args) -> "void" : return _wpilib.PWM_SetBounds(self, *args)
 PWM_swigregister = _wpilib.PWM_swigregister
 PWM_swigregister(PWM)
 
@@ -368,16 +368,16 @@ class GenericHID(_object):
     kRightHand = _wpilib.GenericHID_kRightHand
     __swig_destroy__ = _wpilib.delete_GenericHID
     __del__ = lambda self : None;
-    def GetX(self, *args): return _wpilib.GenericHID_GetX(self, *args)
-    def GetY(self, *args): return _wpilib.GenericHID_GetY(self, *args)
-    def GetZ(self): return _wpilib.GenericHID_GetZ(self)
-    def GetTwist(self): return _wpilib.GenericHID_GetTwist(self)
-    def GetThrottle(self): return _wpilib.GenericHID_GetThrottle(self)
-    def GetRawAxis(self, *args): return _wpilib.GenericHID_GetRawAxis(self, *args)
-    def GetTrigger(self, *args): return _wpilib.GenericHID_GetTrigger(self, *args)
-    def GetTop(self, *args): return _wpilib.GenericHID_GetTop(self, *args)
-    def GetBumper(self, *args): return _wpilib.GenericHID_GetBumper(self, *args)
-    def GetRawButton(self, *args): return _wpilib.GenericHID_GetRawButton(self, *args)
+    def GetX(self, *args) -> "float" : return _wpilib.GenericHID_GetX(self, *args)
+    def GetY(self, *args) -> "float" : return _wpilib.GenericHID_GetY(self, *args)
+    def GetZ(self) -> "float" : return _wpilib.GenericHID_GetZ(self)
+    def GetTwist(self) -> "float" : return _wpilib.GenericHID_GetTwist(self)
+    def GetThrottle(self) -> "float" : return _wpilib.GenericHID_GetThrottle(self)
+    def GetRawAxis(self, *args) -> "float" : return _wpilib.GenericHID_GetRawAxis(self, *args)
+    def GetTrigger(self, *args) -> "bool" : return _wpilib.GenericHID_GetTrigger(self, *args)
+    def GetTop(self, *args) -> "bool" : return _wpilib.GenericHID_GetTop(self, *args)
+    def GetBumper(self, *args) -> "bool" : return _wpilib.GenericHID_GetBumper(self, *args)
+    def GetRawButton(self, *args) -> "bool" : return _wpilib.GenericHID_GetRawButton(self, *args)
 GenericHID_swigregister = _wpilib.GenericHID_swigregister
 GenericHID_swigregister(GenericHID)
 
@@ -388,7 +388,7 @@ class PIDOutput(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, PIDOutput, name)
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
-    def PIDWrite(self, *args): return _wpilib.PIDOutput_PIDWrite(self, *args)
+    def PIDWrite(self, *args) -> "void" : return _wpilib.PIDOutput_PIDWrite(self, *args)
     __swig_destroy__ = _wpilib.delete_PIDOutput
     __del__ = lambda self : None;
 PIDOutput_swigregister = _wpilib.PIDOutput_swigregister
@@ -401,7 +401,7 @@ class PIDSource(_object):
     __getattr__ = lambda self, name: _swig_getattr(self, PIDSource, name)
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
-    def PIDGet(self): return _wpilib.PIDSource_PIDGet(self)
+    def PIDGet(self) -> "double" : return _wpilib.PIDSource_PIDGet(self)
     __swig_destroy__ = _wpilib.delete_PIDSource
     __del__ = lambda self : None;
 PIDSource_swigregister = _wpilib.PIDSource_swigregister
@@ -416,7 +416,7 @@ class Module(SensorBase):
     __getattr__ = lambda self, name: _swig_getattr(self, Module, name)
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
     __repr__ = _swig_repr
-    def GetSlot(self): return _wpilib.Module_GetSlot(self)
+    def GetSlot(self) -> "UINT32" : return _wpilib.Module_GetSlot(self)
 Module_swigregister = _wpilib.Module_swigregister
 Module_swigregister(Module)
 
@@ -441,7 +441,7 @@ class ADXL345_I2C(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_ADXL345_I2C
     __del__ = lambda self : None;
-    def GetAcceleration(self, *args): return _wpilib.ADXL345_I2C_GetAcceleration(self, *args)
+    def GetAcceleration(self, *args) -> "double" : return _wpilib.ADXL345_I2C_GetAcceleration(self, *args)
 ADXL345_I2C_swigregister = _wpilib.ADXL345_I2C_swigregister
 ADXL345_I2C_swigregister(ADXL345_I2C)
 
@@ -459,10 +459,10 @@ class Accelerometer(SensorBase,PIDSource):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Accelerometer
     __del__ = lambda self : None;
-    def GetAcceleration(self): return _wpilib.Accelerometer_GetAcceleration(self)
-    def SetSensitivity(self, *args): return _wpilib.Accelerometer_SetSensitivity(self, *args)
-    def SetZero(self, *args): return _wpilib.Accelerometer_SetZero(self, *args)
-    def PIDGet(self): return _wpilib.Accelerometer_PIDGet(self)
+    def GetAcceleration(self) -> "float" : return _wpilib.Accelerometer_GetAcceleration(self)
+    def SetSensitivity(self, *args) -> "void" : return _wpilib.Accelerometer_SetSensitivity(self, *args)
+    def SetZero(self, *args) -> "void" : return _wpilib.Accelerometer_SetZero(self, *args)
+    def PIDGet(self) -> "double" : return _wpilib.Accelerometer_PIDGet(self)
 Accelerometer_swigregister = _wpilib.Accelerometer_swigregister
 Accelerometer_swigregister(Accelerometer)
 
@@ -482,29 +482,29 @@ class AnalogChannel(SensorBase,PIDSource):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_AnalogChannel
     __del__ = lambda self : None;
-    def GetModule(self): return _wpilib.AnalogChannel_GetModule(self)
-    def GetValue(self): return _wpilib.AnalogChannel_GetValue(self)
-    def GetAverageValue(self): return _wpilib.AnalogChannel_GetAverageValue(self)
-    def GetVoltage(self): return _wpilib.AnalogChannel_GetVoltage(self)
-    def GetAverageVoltage(self): return _wpilib.AnalogChannel_GetAverageVoltage(self)
-    def GetSlot(self): return _wpilib.AnalogChannel_GetSlot(self)
-    def GetChannel(self): return _wpilib.AnalogChannel_GetChannel(self)
-    def SetAverageBits(self, *args): return _wpilib.AnalogChannel_SetAverageBits(self, *args)
-    def GetAverageBits(self): return _wpilib.AnalogChannel_GetAverageBits(self)
-    def SetOversampleBits(self, *args): return _wpilib.AnalogChannel_SetOversampleBits(self, *args)
-    def GetOversampleBits(self): return _wpilib.AnalogChannel_GetOversampleBits(self)
-    def GetLSBWeight(self): return _wpilib.AnalogChannel_GetLSBWeight(self)
-    def GetOffset(self): return _wpilib.AnalogChannel_GetOffset(self)
-    def IsAccumulatorChannel(self): return _wpilib.AnalogChannel_IsAccumulatorChannel(self)
-    def InitAccumulator(self): return _wpilib.AnalogChannel_InitAccumulator(self)
-    def SetAccumulatorInitialValue(self, *args): return _wpilib.AnalogChannel_SetAccumulatorInitialValue(self, *args)
-    def ResetAccumulator(self): return _wpilib.AnalogChannel_ResetAccumulator(self)
-    def SetAccumulatorCenter(self, *args): return _wpilib.AnalogChannel_SetAccumulatorCenter(self, *args)
-    def SetAccumulatorDeadband(self, *args): return _wpilib.AnalogChannel_SetAccumulatorDeadband(self, *args)
-    def GetAccumulatorValue(self): return _wpilib.AnalogChannel_GetAccumulatorValue(self)
-    def GetAccumulatorCount(self): return _wpilib.AnalogChannel_GetAccumulatorCount(self)
-    def GetAccumulatorOutput(self, *args): return _wpilib.AnalogChannel_GetAccumulatorOutput(self, *args)
-    def PIDGet(self): return _wpilib.AnalogChannel_PIDGet(self)
+    def GetModule(self) -> "AnalogModule *" : return _wpilib.AnalogChannel_GetModule(self)
+    def GetValue(self) -> "INT16" : return _wpilib.AnalogChannel_GetValue(self)
+    def GetAverageValue(self) -> "INT32" : return _wpilib.AnalogChannel_GetAverageValue(self)
+    def GetVoltage(self) -> "float" : return _wpilib.AnalogChannel_GetVoltage(self)
+    def GetAverageVoltage(self) -> "float" : return _wpilib.AnalogChannel_GetAverageVoltage(self)
+    def GetSlot(self) -> "UINT32" : return _wpilib.AnalogChannel_GetSlot(self)
+    def GetChannel(self) -> "UINT32" : return _wpilib.AnalogChannel_GetChannel(self)
+    def SetAverageBits(self, *args) -> "void" : return _wpilib.AnalogChannel_SetAverageBits(self, *args)
+    def GetAverageBits(self) -> "UINT32" : return _wpilib.AnalogChannel_GetAverageBits(self)
+    def SetOversampleBits(self, *args) -> "void" : return _wpilib.AnalogChannel_SetOversampleBits(self, *args)
+    def GetOversampleBits(self) -> "UINT32" : return _wpilib.AnalogChannel_GetOversampleBits(self)
+    def GetLSBWeight(self) -> "UINT32" : return _wpilib.AnalogChannel_GetLSBWeight(self)
+    def GetOffset(self) -> "INT32" : return _wpilib.AnalogChannel_GetOffset(self)
+    def IsAccumulatorChannel(self) -> "bool" : return _wpilib.AnalogChannel_IsAccumulatorChannel(self)
+    def InitAccumulator(self) -> "void" : return _wpilib.AnalogChannel_InitAccumulator(self)
+    def SetAccumulatorInitialValue(self, *args) -> "void" : return _wpilib.AnalogChannel_SetAccumulatorInitialValue(self, *args)
+    def ResetAccumulator(self) -> "void" : return _wpilib.AnalogChannel_ResetAccumulator(self)
+    def SetAccumulatorCenter(self, *args) -> "void" : return _wpilib.AnalogChannel_SetAccumulatorCenter(self, *args)
+    def SetAccumulatorDeadband(self, *args) -> "void" : return _wpilib.AnalogChannel_SetAccumulatorDeadband(self, *args)
+    def GetAccumulatorValue(self) -> "INT64" : return _wpilib.AnalogChannel_GetAccumulatorValue(self)
+    def GetAccumulatorCount(self) -> "UINT32" : return _wpilib.AnalogChannel_GetAccumulatorCount(self)
+    def GetAccumulatorOutput(self, *args) -> "void" : return _wpilib.AnalogChannel_GetAccumulatorOutput(self, *args)
+    def PIDGet(self) -> "double" : return _wpilib.AnalogChannel_PIDGet(self)
 AnalogChannel_swigregister = _wpilib.AnalogChannel_swigregister
 AnalogChannel_swigregister(AnalogChannel)
 cvar = _wpilib.cvar
@@ -523,19 +523,19 @@ class AnalogModule(Module):
     kDefaultOversampleBits = _wpilib.AnalogModule_kDefaultOversampleBits
     kDefaultAverageBits = _wpilib.AnalogModule_kDefaultAverageBits
     kDefaultSampleRate = _wpilib.AnalogModule_kDefaultSampleRate
-    def SetSampleRate(self, *args): return _wpilib.AnalogModule_SetSampleRate(self, *args)
-    def GetSampleRate(self): return _wpilib.AnalogModule_GetSampleRate(self)
-    def SetAverageBits(self, *args): return _wpilib.AnalogModule_SetAverageBits(self, *args)
-    def GetAverageBits(self, *args): return _wpilib.AnalogModule_GetAverageBits(self, *args)
-    def SetOversampleBits(self, *args): return _wpilib.AnalogModule_SetOversampleBits(self, *args)
-    def GetOversampleBits(self, *args): return _wpilib.AnalogModule_GetOversampleBits(self, *args)
-    def GetValue(self, *args): return _wpilib.AnalogModule_GetValue(self, *args)
-    def GetAverageValue(self, *args): return _wpilib.AnalogModule_GetAverageValue(self, *args)
-    def GetAverageVoltage(self, *args): return _wpilib.AnalogModule_GetAverageVoltage(self, *args)
-    def GetVoltage(self, *args): return _wpilib.AnalogModule_GetVoltage(self, *args)
-    def GetLSBWeight(self, *args): return _wpilib.AnalogModule_GetLSBWeight(self, *args)
-    def GetOffset(self, *args): return _wpilib.AnalogModule_GetOffset(self, *args)
-    def VoltsToValue(self, *args): return _wpilib.AnalogModule_VoltsToValue(self, *args)
+    def SetSampleRate(self, *args) -> "void" : return _wpilib.AnalogModule_SetSampleRate(self, *args)
+    def GetSampleRate(self) -> "float" : return _wpilib.AnalogModule_GetSampleRate(self)
+    def SetAverageBits(self, *args) -> "void" : return _wpilib.AnalogModule_SetAverageBits(self, *args)
+    def GetAverageBits(self, *args) -> "UINT32" : return _wpilib.AnalogModule_GetAverageBits(self, *args)
+    def SetOversampleBits(self, *args) -> "void" : return _wpilib.AnalogModule_SetOversampleBits(self, *args)
+    def GetOversampleBits(self, *args) -> "UINT32" : return _wpilib.AnalogModule_GetOversampleBits(self, *args)
+    def GetValue(self, *args) -> "INT16" : return _wpilib.AnalogModule_GetValue(self, *args)
+    def GetAverageValue(self, *args) -> "INT32" : return _wpilib.AnalogModule_GetAverageValue(self, *args)
+    def GetAverageVoltage(self, *args) -> "float" : return _wpilib.AnalogModule_GetAverageVoltage(self, *args)
+    def GetVoltage(self, *args) -> "float" : return _wpilib.AnalogModule_GetVoltage(self, *args)
+    def GetLSBWeight(self, *args) -> "UINT32" : return _wpilib.AnalogModule_GetLSBWeight(self, *args)
+    def GetOffset(self, *args) -> "INT32" : return _wpilib.AnalogModule_GetOffset(self, *args)
+    def VoltsToValue(self, *args) -> "INT32" : return _wpilib.AnalogModule_VoltsToValue(self, *args)
     __swig_getmethods__["SlotToIndex"] = lambda x: _wpilib.AnalogModule_SlotToIndex
     if _newclass:SlotToIndex = staticmethod(_wpilib.AnalogModule_SlotToIndex)
     __swig_getmethods__["GetInstance"] = lambda x: _wpilib.AnalogModule_GetInstance
@@ -543,11 +543,11 @@ class AnalogModule(Module):
 AnalogModule_swigregister = _wpilib.AnalogModule_swigregister
 AnalogModule_swigregister(AnalogModule)
 
-def AnalogModule_SlotToIndex(*args):
+def AnalogModule_SlotToIndex(*args) -> "UINT32" :
   return _wpilib.AnalogModule_SlotToIndex(*args)
 AnalogModule_SlotToIndex = _wpilib.AnalogModule_SlotToIndex
 
-def AnalogModule_GetInstance(*args):
+def AnalogModule_GetInstance(*args) -> "AnalogModule *" :
   return _wpilib.AnalogModule_GetInstance(*args)
 AnalogModule_GetInstance = _wpilib.AnalogModule_GetInstance
 
@@ -565,14 +565,14 @@ class AnalogTrigger(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_AnalogTrigger
     __del__ = lambda self : None;
-    def SetLimitsVoltage(self, *args): return _wpilib.AnalogTrigger_SetLimitsVoltage(self, *args)
-    def SetLimitsRaw(self, *args): return _wpilib.AnalogTrigger_SetLimitsRaw(self, *args)
-    def SetAveraged(self, *args): return _wpilib.AnalogTrigger_SetAveraged(self, *args)
-    def SetFiltered(self, *args): return _wpilib.AnalogTrigger_SetFiltered(self, *args)
-    def GetIndex(self): return _wpilib.AnalogTrigger_GetIndex(self)
-    def GetInWindow(self): return _wpilib.AnalogTrigger_GetInWindow(self)
-    def GetTriggerState(self): return _wpilib.AnalogTrigger_GetTriggerState(self)
-    def CreateOutput(self, *args): return _wpilib.AnalogTrigger_CreateOutput(self, *args)
+    def SetLimitsVoltage(self, *args) -> "void" : return _wpilib.AnalogTrigger_SetLimitsVoltage(self, *args)
+    def SetLimitsRaw(self, *args) -> "void" : return _wpilib.AnalogTrigger_SetLimitsRaw(self, *args)
+    def SetAveraged(self, *args) -> "void" : return _wpilib.AnalogTrigger_SetAveraged(self, *args)
+    def SetFiltered(self, *args) -> "void" : return _wpilib.AnalogTrigger_SetFiltered(self, *args)
+    def GetIndex(self) -> "UINT32" : return _wpilib.AnalogTrigger_GetIndex(self)
+    def GetInWindow(self) -> "bool" : return _wpilib.AnalogTrigger_GetInWindow(self)
+    def GetTriggerState(self) -> "bool" : return _wpilib.AnalogTrigger_GetTriggerState(self)
+    def CreateOutput(self, *args) -> "AnalogTriggerOutput *" : return _wpilib.AnalogTrigger_CreateOutput(self, *args)
 AnalogTrigger_swigregister = _wpilib.AnalogTrigger_swigregister
 AnalogTrigger_swigregister(AnalogTrigger)
 
@@ -591,11 +591,11 @@ class AnalogTriggerOutput(DigitalSource):
     kFallingPulse = _wpilib.AnalogTriggerOutput_kFallingPulse
     __swig_destroy__ = _wpilib.delete_AnalogTriggerOutput
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.AnalogTriggerOutput_Get(self)
-    def GetChannelForRouting(self): return _wpilib.AnalogTriggerOutput_GetChannelForRouting(self)
-    def GetModuleForRouting(self): return _wpilib.AnalogTriggerOutput_GetModuleForRouting(self)
-    def GetAnalogTriggerForRouting(self): return _wpilib.AnalogTriggerOutput_GetAnalogTriggerForRouting(self)
-    def RequestInterrupts(self): return _wpilib.AnalogTriggerOutput_RequestInterrupts(self)
+    def Get(self) -> "bool" : return _wpilib.AnalogTriggerOutput_Get(self)
+    def GetChannelForRouting(self) -> "UINT32" : return _wpilib.AnalogTriggerOutput_GetChannelForRouting(self)
+    def GetModuleForRouting(self) -> "UINT32" : return _wpilib.AnalogTriggerOutput_GetModuleForRouting(self)
+    def GetAnalogTriggerForRouting(self) -> "bool" : return _wpilib.AnalogTriggerOutput_GetAnalogTriggerForRouting(self)
+    def RequestInterrupts(self) -> "void" : return _wpilib.AnalogTriggerOutput_RequestInterrupts(self)
 AnalogTriggerOutput_swigregister = _wpilib.AnalogTriggerOutput_swigregister
 AnalogTriggerOutput_swigregister(AnalogTriggerOutput)
 
@@ -613,11 +613,11 @@ class Compressor(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Compressor
     __del__ = lambda self : None;
-    def Start(self): return _wpilib.Compressor_Start(self)
-    def Stop(self): return _wpilib.Compressor_Stop(self)
-    def Enabled(self): return _wpilib.Compressor_Enabled(self)
-    def GetPressureSwitchValue(self): return _wpilib.Compressor_GetPressureSwitchValue(self)
-    def SetRelayValue(self, *args): return _wpilib.Compressor_SetRelayValue(self, *args)
+    def Start(self) -> "void" : return _wpilib.Compressor_Start(self)
+    def Stop(self) -> "void" : return _wpilib.Compressor_Stop(self)
+    def Enabled(self) -> "bool" : return _wpilib.Compressor_Enabled(self)
+    def GetPressureSwitchValue(self) -> "UINT32" : return _wpilib.Compressor_GetPressureSwitchValue(self)
+    def SetRelayValue(self, *args) -> "void" : return _wpilib.Compressor_SetRelayValue(self, *args)
 Compressor_swigregister = _wpilib.Compressor_swigregister
 Compressor_swigregister(Compressor)
 
@@ -639,26 +639,26 @@ class Counter(SensorBase,CounterBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Counter
     __del__ = lambda self : None;
-    def SetUpSource(self, *args): return _wpilib.Counter_SetUpSource(self, *args)
-    def SetUpSourceEdge(self, *args): return _wpilib.Counter_SetUpSourceEdge(self, *args)
-    def ClearUpSource(self): return _wpilib.Counter_ClearUpSource(self)
-    def SetDownSource(self, *args): return _wpilib.Counter_SetDownSource(self, *args)
-    def SetDownSourceEdge(self, *args): return _wpilib.Counter_SetDownSourceEdge(self, *args)
-    def ClearDownSource(self): return _wpilib.Counter_ClearDownSource(self)
-    def SetUpDownCounterMode(self): return _wpilib.Counter_SetUpDownCounterMode(self)
-    def SetExternalDirectionMode(self): return _wpilib.Counter_SetExternalDirectionMode(self)
-    def SetSemiPeriodMode(self, *args): return _wpilib.Counter_SetSemiPeriodMode(self, *args)
-    def SetPulseLengthMode(self, *args): return _wpilib.Counter_SetPulseLengthMode(self, *args)
-    def SetReverseDirection(self, *args): return _wpilib.Counter_SetReverseDirection(self, *args)
-    def Start(self): return _wpilib.Counter_Start(self)
-    def Get(self): return _wpilib.Counter_Get(self)
-    def Reset(self): return _wpilib.Counter_Reset(self)
-    def Stop(self): return _wpilib.Counter_Stop(self)
-    def GetPeriod(self): return _wpilib.Counter_GetPeriod(self)
-    def SetMaxPeriod(self, *args): return _wpilib.Counter_SetMaxPeriod(self, *args)
-    def SetUpdateWhenEmpty(self, *args): return _wpilib.Counter_SetUpdateWhenEmpty(self, *args)
-    def GetStopped(self): return _wpilib.Counter_GetStopped(self)
-    def GetDirection(self): return _wpilib.Counter_GetDirection(self)
+    def SetUpSource(self, *args) -> "void" : return _wpilib.Counter_SetUpSource(self, *args)
+    def SetUpSourceEdge(self, *args) -> "void" : return _wpilib.Counter_SetUpSourceEdge(self, *args)
+    def ClearUpSource(self) -> "void" : return _wpilib.Counter_ClearUpSource(self)
+    def SetDownSource(self, *args) -> "void" : return _wpilib.Counter_SetDownSource(self, *args)
+    def SetDownSourceEdge(self, *args) -> "void" : return _wpilib.Counter_SetDownSourceEdge(self, *args)
+    def ClearDownSource(self) -> "void" : return _wpilib.Counter_ClearDownSource(self)
+    def SetUpDownCounterMode(self) -> "void" : return _wpilib.Counter_SetUpDownCounterMode(self)
+    def SetExternalDirectionMode(self) -> "void" : return _wpilib.Counter_SetExternalDirectionMode(self)
+    def SetSemiPeriodMode(self, *args) -> "void" : return _wpilib.Counter_SetSemiPeriodMode(self, *args)
+    def SetPulseLengthMode(self, *args) -> "void" : return _wpilib.Counter_SetPulseLengthMode(self, *args)
+    def SetReverseDirection(self, *args) -> "void" : return _wpilib.Counter_SetReverseDirection(self, *args)
+    def Start(self) -> "void" : return _wpilib.Counter_Start(self)
+    def Get(self) -> "INT32" : return _wpilib.Counter_Get(self)
+    def Reset(self) -> "void" : return _wpilib.Counter_Reset(self)
+    def Stop(self) -> "void" : return _wpilib.Counter_Stop(self)
+    def GetPeriod(self) -> "double" : return _wpilib.Counter_GetPeriod(self)
+    def SetMaxPeriod(self, *args) -> "void" : return _wpilib.Counter_SetMaxPeriod(self, *args)
+    def SetUpdateWhenEmpty(self, *args) -> "void" : return _wpilib.Counter_SetUpdateWhenEmpty(self, *args)
+    def GetStopped(self) -> "bool" : return _wpilib.Counter_GetStopped(self)
+    def GetDirection(self) -> "bool" : return _wpilib.Counter_GetDirection(self)
 Counter_swigregister = _wpilib.Counter_swigregister
 Counter_swigregister(Counter)
 
@@ -684,22 +684,22 @@ class Dashboard(ErrorBase):
     kOther = _wpilib.Dashboard_kOther
     kArray = _wpilib.Dashboard_kArray
     kCluster = _wpilib.Dashboard_kCluster
-    def AddI8(self, *args): return _wpilib.Dashboard_AddI8(self, *args)
-    def AddI16(self, *args): return _wpilib.Dashboard_AddI16(self, *args)
-    def AddI32(self, *args): return _wpilib.Dashboard_AddI32(self, *args)
-    def AddU8(self, *args): return _wpilib.Dashboard_AddU8(self, *args)
-    def AddU16(self, *args): return _wpilib.Dashboard_AddU16(self, *args)
-    def AddU32(self, *args): return _wpilib.Dashboard_AddU32(self, *args)
-    def AddFloat(self, *args): return _wpilib.Dashboard_AddFloat(self, *args)
-    def AddDouble(self, *args): return _wpilib.Dashboard_AddDouble(self, *args)
-    def AddBoolean(self, *args): return _wpilib.Dashboard_AddBoolean(self, *args)
-    def AddString(self, *args): return _wpilib.Dashboard_AddString(self, *args)
-    def AddArray(self): return _wpilib.Dashboard_AddArray(self)
-    def FinalizeArray(self): return _wpilib.Dashboard_FinalizeArray(self)
-    def AddCluster(self): return _wpilib.Dashboard_AddCluster(self)
-    def FinalizeCluster(self): return _wpilib.Dashboard_FinalizeCluster(self)
-    def Printf(self, *args): return _wpilib.Dashboard_Printf(self, *args)
-    def Finalize(self): return _wpilib.Dashboard_Finalize(self)
+    def AddI8(self, *args) -> "void" : return _wpilib.Dashboard_AddI8(self, *args)
+    def AddI16(self, *args) -> "void" : return _wpilib.Dashboard_AddI16(self, *args)
+    def AddI32(self, *args) -> "void" : return _wpilib.Dashboard_AddI32(self, *args)
+    def AddU8(self, *args) -> "void" : return _wpilib.Dashboard_AddU8(self, *args)
+    def AddU16(self, *args) -> "void" : return _wpilib.Dashboard_AddU16(self, *args)
+    def AddU32(self, *args) -> "void" : return _wpilib.Dashboard_AddU32(self, *args)
+    def AddFloat(self, *args) -> "void" : return _wpilib.Dashboard_AddFloat(self, *args)
+    def AddDouble(self, *args) -> "void" : return _wpilib.Dashboard_AddDouble(self, *args)
+    def AddBoolean(self, *args) -> "void" : return _wpilib.Dashboard_AddBoolean(self, *args)
+    def AddString(self, *args) -> "void" : return _wpilib.Dashboard_AddString(self, *args)
+    def AddArray(self) -> "void" : return _wpilib.Dashboard_AddArray(self)
+    def FinalizeArray(self) -> "void" : return _wpilib.Dashboard_FinalizeArray(self)
+    def AddCluster(self) -> "void" : return _wpilib.Dashboard_AddCluster(self)
+    def FinalizeCluster(self) -> "void" : return _wpilib.Dashboard_FinalizeCluster(self)
+    def Printf(self, *args) -> "void" : return _wpilib.Dashboard_Printf(self, *args)
+    def Finalize(self) -> "INT32" : return _wpilib.Dashboard_Finalize(self)
 Dashboard_swigregister = _wpilib.Dashboard_swigregister
 Dashboard_swigregister(Dashboard)
 
@@ -717,13 +717,13 @@ class DigitalInput(DigitalSource):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_DigitalInput
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.DigitalInput_Get(self)
-    def GetChannel(self): return _wpilib.DigitalInput_GetChannel(self)
-    def GetChannelForRouting(self): return _wpilib.DigitalInput_GetChannelForRouting(self)
-    def GetModuleForRouting(self): return _wpilib.DigitalInput_GetModuleForRouting(self)
-    def GetAnalogTriggerForRouting(self): return _wpilib.DigitalInput_GetAnalogTriggerForRouting(self)
-    def RequestInterrupts(self): return _wpilib.DigitalInput_RequestInterrupts(self)
-    def SetUpSourceEdge(self, *args): return _wpilib.DigitalInput_SetUpSourceEdge(self, *args)
+    def Get(self) -> "UINT32" : return _wpilib.DigitalInput_Get(self)
+    def GetChannel(self) -> "UINT32" : return _wpilib.DigitalInput_GetChannel(self)
+    def GetChannelForRouting(self) -> "UINT32" : return _wpilib.DigitalInput_GetChannelForRouting(self)
+    def GetModuleForRouting(self) -> "UINT32" : return _wpilib.DigitalInput_GetModuleForRouting(self)
+    def GetAnalogTriggerForRouting(self) -> "bool" : return _wpilib.DigitalInput_GetAnalogTriggerForRouting(self)
+    def RequestInterrupts(self) -> "void" : return _wpilib.DigitalInput_RequestInterrupts(self)
+    def SetUpSourceEdge(self, *args) -> "void" : return _wpilib.DigitalInput_SetUpSourceEdge(self, *args)
 DigitalInput_swigregister = _wpilib.DigitalInput_swigregister
 DigitalInput_swigregister(DigitalInput)
 
@@ -736,21 +736,21 @@ class DigitalModule(Module):
     __getattr__ = lambda self, name: _swig_getattr(self, DigitalModule, name)
     def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
     __repr__ = _swig_repr
-    def SetPWM(self, *args): return _wpilib.DigitalModule_SetPWM(self, *args)
-    def GetPWM(self, *args): return _wpilib.DigitalModule_GetPWM(self, *args)
-    def SetPWMPeriodScale(self, *args): return _wpilib.DigitalModule_SetPWMPeriodScale(self, *args)
-    def SetRelayForward(self, *args): return _wpilib.DigitalModule_SetRelayForward(self, *args)
-    def SetRelayReverse(self, *args): return _wpilib.DigitalModule_SetRelayReverse(self, *args)
-    def GetRelayForward(self, *args): return _wpilib.DigitalModule_GetRelayForward(self, *args)
-    def GetRelayReverse(self, *args): return _wpilib.DigitalModule_GetRelayReverse(self, *args)
-    def AllocateDIO(self, *args): return _wpilib.DigitalModule_AllocateDIO(self, *args)
-    def FreeDIO(self, *args): return _wpilib.DigitalModule_FreeDIO(self, *args)
-    def SetDIO(self, *args): return _wpilib.DigitalModule_SetDIO(self, *args)
-    def GetDIO(self, *args): return _wpilib.DigitalModule_GetDIO(self, *args)
-    def GetDIODirection(self, *args): return _wpilib.DigitalModule_GetDIODirection(self, *args)
-    def Pulse(self, *args): return _wpilib.DigitalModule_Pulse(self, *args)
-    def IsPulsing(self, *args): return _wpilib.DigitalModule_IsPulsing(self, *args)
-    def GetI2C(self, *args): return _wpilib.DigitalModule_GetI2C(self, *args)
+    def SetPWM(self, *args) -> "void" : return _wpilib.DigitalModule_SetPWM(self, *args)
+    def GetPWM(self, *args) -> "UINT8" : return _wpilib.DigitalModule_GetPWM(self, *args)
+    def SetPWMPeriodScale(self, *args) -> "void" : return _wpilib.DigitalModule_SetPWMPeriodScale(self, *args)
+    def SetRelayForward(self, *args) -> "void" : return _wpilib.DigitalModule_SetRelayForward(self, *args)
+    def SetRelayReverse(self, *args) -> "void" : return _wpilib.DigitalModule_SetRelayReverse(self, *args)
+    def GetRelayForward(self, *args) -> "UINT8" : return _wpilib.DigitalModule_GetRelayForward(self, *args)
+    def GetRelayReverse(self, *args) -> "UINT8" : return _wpilib.DigitalModule_GetRelayReverse(self, *args)
+    def AllocateDIO(self, *args) -> "bool" : return _wpilib.DigitalModule_AllocateDIO(self, *args)
+    def FreeDIO(self, *args) -> "void" : return _wpilib.DigitalModule_FreeDIO(self, *args)
+    def SetDIO(self, *args) -> "void" : return _wpilib.DigitalModule_SetDIO(self, *args)
+    def GetDIO(self, *args) -> "UINT16" : return _wpilib.DigitalModule_GetDIO(self, *args)
+    def GetDIODirection(self, *args) -> "UINT16" : return _wpilib.DigitalModule_GetDIODirection(self, *args)
+    def Pulse(self, *args) -> "void" : return _wpilib.DigitalModule_Pulse(self, *args)
+    def IsPulsing(self, *args) -> "bool" : return _wpilib.DigitalModule_IsPulsing(self, *args)
+    def GetI2C(self, *args) -> "I2C *" : return _wpilib.DigitalModule_GetI2C(self, *args)
     __swig_getmethods__["SlotToIndex"] = lambda x: _wpilib.DigitalModule_SlotToIndex
     if _newclass:SlotToIndex = staticmethod(_wpilib.DigitalModule_SlotToIndex)
     __swig_getmethods__["GetInstance"] = lambda x: _wpilib.DigitalModule_GetInstance
@@ -762,19 +762,19 @@ class DigitalModule(Module):
 DigitalModule_swigregister = _wpilib.DigitalModule_swigregister
 DigitalModule_swigregister(DigitalModule)
 
-def DigitalModule_SlotToIndex(*args):
+def DigitalModule_SlotToIndex(*args) -> "UINT32" :
   return _wpilib.DigitalModule_SlotToIndex(*args)
 DigitalModule_SlotToIndex = _wpilib.DigitalModule_SlotToIndex
 
-def DigitalModule_GetInstance(*args):
+def DigitalModule_GetInstance(*args) -> "DigitalModule *" :
   return _wpilib.DigitalModule_GetInstance(*args)
 DigitalModule_GetInstance = _wpilib.DigitalModule_GetInstance
 
-def DigitalModule_RemapDigitalChannel(*args):
+def DigitalModule_RemapDigitalChannel(*args) -> "UINT8" :
   return _wpilib.DigitalModule_RemapDigitalChannel(*args)
 DigitalModule_RemapDigitalChannel = _wpilib.DigitalModule_RemapDigitalChannel
 
-def DigitalModule_UnmapDigitalChannel(*args):
+def DigitalModule_UnmapDigitalChannel(*args) -> "UINT8" :
   return _wpilib.DigitalModule_UnmapDigitalChannel(*args)
 DigitalModule_UnmapDigitalChannel = _wpilib.DigitalModule_UnmapDigitalChannel
 
@@ -792,9 +792,9 @@ class DigitalOutput(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_DigitalOutput
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.DigitalOutput_Set(self, *args)
-    def Pulse(self, *args): return _wpilib.DigitalOutput_Pulse(self, *args)
-    def IsPulsing(self): return _wpilib.DigitalOutput_IsPulsing(self)
+    def Set(self, *args) -> "void" : return _wpilib.DigitalOutput_Set(self, *args)
+    def Pulse(self, *args) -> "void" : return _wpilib.DigitalOutput_Pulse(self, *args)
+    def IsPulsing(self) -> "bool" : return _wpilib.DigitalOutput_IsPulsing(self)
 DigitalOutput_swigregister = _wpilib.DigitalOutput_swigregister
 DigitalOutput_swigregister(DigitalOutput)
 
@@ -818,29 +818,29 @@ class DriverStation(SensorBase):
     kBatteryChannel = _wpilib.DriverStation_kBatteryChannel
     kJoystickPorts = _wpilib.DriverStation_kJoystickPorts
     kJoystickAxes = _wpilib.DriverStation_kJoystickAxes
-    def GetStickAxis(self, *args): return _wpilib.DriverStation_GetStickAxis(self, *args)
-    def GetStickButtons(self, *args): return _wpilib.DriverStation_GetStickButtons(self, *args)
-    def GetAnalogIn(self, *args): return _wpilib.DriverStation_GetAnalogIn(self, *args)
-    def GetDigitalIn(self, *args): return _wpilib.DriverStation_GetDigitalIn(self, *args)
-    def SetDigitalOut(self, *args): return _wpilib.DriverStation_SetDigitalOut(self, *args)
-    def GetDigitalOut(self, *args): return _wpilib.DriverStation_GetDigitalOut(self, *args)
-    def IsEnabled(self): return _wpilib.DriverStation_IsEnabled(self)
-    def IsDisabled(self): return _wpilib.DriverStation_IsDisabled(self)
-    def IsAutonomous(self): return _wpilib.DriverStation_IsAutonomous(self)
-    def IsOperatorControl(self): return _wpilib.DriverStation_IsOperatorControl(self)
-    def IsNewControlData(self): return _wpilib.DriverStation_IsNewControlData(self)
-    def IsFMSAttached(self): return _wpilib.DriverStation_IsFMSAttached(self)
-    def GetPacketNumber(self): return _wpilib.DriverStation_GetPacketNumber(self)
-    def GetAlliance(self): return _wpilib.DriverStation_GetAlliance(self)
-    def GetLocation(self): return _wpilib.DriverStation_GetLocation(self)
-    def GetBatteryVoltage(self): return _wpilib.DriverStation_GetBatteryVoltage(self)
-    def GetHighPriorityDashboardPacker(self): return _wpilib.DriverStation_GetHighPriorityDashboardPacker(self)
-    def GetLowPriorityDashboardPacker(self): return _wpilib.DriverStation_GetLowPriorityDashboardPacker(self)
-    def GetEnhancedIO(self): return _wpilib.DriverStation_GetEnhancedIO(self)
+    def GetStickAxis(self, *args) -> "float" : return _wpilib.DriverStation_GetStickAxis(self, *args)
+    def GetStickButtons(self, *args) -> "short" : return _wpilib.DriverStation_GetStickButtons(self, *args)
+    def GetAnalogIn(self, *args) -> "float" : return _wpilib.DriverStation_GetAnalogIn(self, *args)
+    def GetDigitalIn(self, *args) -> "bool" : return _wpilib.DriverStation_GetDigitalIn(self, *args)
+    def SetDigitalOut(self, *args) -> "void" : return _wpilib.DriverStation_SetDigitalOut(self, *args)
+    def GetDigitalOut(self, *args) -> "bool" : return _wpilib.DriverStation_GetDigitalOut(self, *args)
+    def IsEnabled(self) -> "bool" : return _wpilib.DriverStation_IsEnabled(self)
+    def IsDisabled(self) -> "bool" : return _wpilib.DriverStation_IsDisabled(self)
+    def IsAutonomous(self) -> "bool" : return _wpilib.DriverStation_IsAutonomous(self)
+    def IsOperatorControl(self) -> "bool" : return _wpilib.DriverStation_IsOperatorControl(self)
+    def IsNewControlData(self) -> "bool" : return _wpilib.DriverStation_IsNewControlData(self)
+    def IsFMSAttached(self) -> "bool" : return _wpilib.DriverStation_IsFMSAttached(self)
+    def GetPacketNumber(self) -> "UINT32" : return _wpilib.DriverStation_GetPacketNumber(self)
+    def GetAlliance(self) -> "DriverStation::Alliance" : return _wpilib.DriverStation_GetAlliance(self)
+    def GetLocation(self) -> "UINT32" : return _wpilib.DriverStation_GetLocation(self)
+    def GetBatteryVoltage(self) -> "float" : return _wpilib.DriverStation_GetBatteryVoltage(self)
+    def GetHighPriorityDashboardPacker(self) -> "Dashboard &" : return _wpilib.DriverStation_GetHighPriorityDashboardPacker(self)
+    def GetLowPriorityDashboardPacker(self) -> "Dashboard &" : return _wpilib.DriverStation_GetLowPriorityDashboardPacker(self)
+    def GetEnhancedIO(self) -> "DriverStationEnhancedIO &" : return _wpilib.DriverStation_GetEnhancedIO(self)
 DriverStation_swigregister = _wpilib.DriverStation_swigregister
 DriverStation_swigregister(DriverStation)
 
-def DriverStation_GetInstance():
+def DriverStation_GetInstance() -> "DriverStation *" :
   return _wpilib.DriverStation_GetInstance()
 DriverStation_GetInstance = _wpilib.DriverStation_GetInstance
 
@@ -865,32 +865,32 @@ class DriverStationEnhancedIO(ErrorBase):
     kAccelZ = _wpilib.DriverStationEnhancedIO_kAccelZ
     kPWMChannels1and2 = _wpilib.DriverStationEnhancedIO_kPWMChannels1and2
     kPWMChannels3and4 = _wpilib.DriverStationEnhancedIO_kPWMChannels3and4
-    def GetAcceleration(self, *args): return _wpilib.DriverStationEnhancedIO_GetAcceleration(self, *args)
-    def GetAnalogIn(self, *args): return _wpilib.DriverStationEnhancedIO_GetAnalogIn(self, *args)
-    def GetAnalogInRatio(self, *args): return _wpilib.DriverStationEnhancedIO_GetAnalogInRatio(self, *args)
-    def GetAnalogOut(self, *args): return _wpilib.DriverStationEnhancedIO_GetAnalogOut(self, *args)
-    def SetAnalogOut(self, *args): return _wpilib.DriverStationEnhancedIO_SetAnalogOut(self, *args)
-    def GetButton(self, *args): return _wpilib.DriverStationEnhancedIO_GetButton(self, *args)
-    def GetButtons(self): return _wpilib.DriverStationEnhancedIO_GetButtons(self)
-    def SetLED(self, *args): return _wpilib.DriverStationEnhancedIO_SetLED(self, *args)
-    def SetLEDs(self, *args): return _wpilib.DriverStationEnhancedIO_SetLEDs(self, *args)
-    def GetDigital(self, *args): return _wpilib.DriverStationEnhancedIO_GetDigital(self, *args)
-    def GetDigitals(self): return _wpilib.DriverStationEnhancedIO_GetDigitals(self)
-    def SetDigitalOutput(self, *args): return _wpilib.DriverStationEnhancedIO_SetDigitalOutput(self, *args)
-    def GetDigitalConfig(self, *args): return _wpilib.DriverStationEnhancedIO_GetDigitalConfig(self, *args)
-    def SetDigitalConfig(self, *args): return _wpilib.DriverStationEnhancedIO_SetDigitalConfig(self, *args)
-    def GetPWMPeriod(self, *args): return _wpilib.DriverStationEnhancedIO_GetPWMPeriod(self, *args)
-    def SetPWMPeriod(self, *args): return _wpilib.DriverStationEnhancedIO_SetPWMPeriod(self, *args)
-    def GetFixedDigitalOutput(self, *args): return _wpilib.DriverStationEnhancedIO_GetFixedDigitalOutput(self, *args)
-    def SetFixedDigitalOutput(self, *args): return _wpilib.DriverStationEnhancedIO_SetFixedDigitalOutput(self, *args)
-    def GetEncoder(self, *args): return _wpilib.DriverStationEnhancedIO_GetEncoder(self, *args)
-    def ResetEncoder(self, *args): return _wpilib.DriverStationEnhancedIO_ResetEncoder(self, *args)
-    def GetEncoderIndexEnable(self, *args): return _wpilib.DriverStationEnhancedIO_GetEncoderIndexEnable(self, *args)
-    def SetEncoderIndexEnable(self, *args): return _wpilib.DriverStationEnhancedIO_SetEncoderIndexEnable(self, *args)
-    def GetTouchSlider(self): return _wpilib.DriverStationEnhancedIO_GetTouchSlider(self)
-    def GetPWMOutput(self, *args): return _wpilib.DriverStationEnhancedIO_GetPWMOutput(self, *args)
-    def SetPWMOutput(self, *args): return _wpilib.DriverStationEnhancedIO_SetPWMOutput(self, *args)
-    def GetFirmwareVersion(self): return _wpilib.DriverStationEnhancedIO_GetFirmwareVersion(self)
+    def GetAcceleration(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetAcceleration(self, *args)
+    def GetAnalogIn(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetAnalogIn(self, *args)
+    def GetAnalogInRatio(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetAnalogInRatio(self, *args)
+    def GetAnalogOut(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetAnalogOut(self, *args)
+    def SetAnalogOut(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetAnalogOut(self, *args)
+    def GetButton(self, *args) -> "bool" : return _wpilib.DriverStationEnhancedIO_GetButton(self, *args)
+    def GetButtons(self) -> "UINT8" : return _wpilib.DriverStationEnhancedIO_GetButtons(self)
+    def SetLED(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetLED(self, *args)
+    def SetLEDs(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetLEDs(self, *args)
+    def GetDigital(self, *args) -> "bool" : return _wpilib.DriverStationEnhancedIO_GetDigital(self, *args)
+    def GetDigitals(self) -> "UINT16" : return _wpilib.DriverStationEnhancedIO_GetDigitals(self)
+    def SetDigitalOutput(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetDigitalOutput(self, *args)
+    def GetDigitalConfig(self, *args) -> "DriverStationEnhancedIO::tDigitalConfig" : return _wpilib.DriverStationEnhancedIO_GetDigitalConfig(self, *args)
+    def SetDigitalConfig(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetDigitalConfig(self, *args)
+    def GetPWMPeriod(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetPWMPeriod(self, *args)
+    def SetPWMPeriod(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetPWMPeriod(self, *args)
+    def GetFixedDigitalOutput(self, *args) -> "bool" : return _wpilib.DriverStationEnhancedIO_GetFixedDigitalOutput(self, *args)
+    def SetFixedDigitalOutput(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetFixedDigitalOutput(self, *args)
+    def GetEncoder(self, *args) -> "INT16" : return _wpilib.DriverStationEnhancedIO_GetEncoder(self, *args)
+    def ResetEncoder(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_ResetEncoder(self, *args)
+    def GetEncoderIndexEnable(self, *args) -> "bool" : return _wpilib.DriverStationEnhancedIO_GetEncoderIndexEnable(self, *args)
+    def SetEncoderIndexEnable(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetEncoderIndexEnable(self, *args)
+    def GetTouchSlider(self) -> "double" : return _wpilib.DriverStationEnhancedIO_GetTouchSlider(self)
+    def GetPWMOutput(self, *args) -> "double" : return _wpilib.DriverStationEnhancedIO_GetPWMOutput(self, *args)
+    def SetPWMOutput(self, *args) -> "void" : return _wpilib.DriverStationEnhancedIO_SetPWMOutput(self, *args)
+    def GetFirmwareVersion(self) -> "UINT8" : return _wpilib.DriverStationEnhancedIO_GetFirmwareVersion(self)
 DriverStationEnhancedIO_swigregister = _wpilib.DriverStationEnhancedIO_swigregister
 DriverStationEnhancedIO_swigregister(DriverStationEnhancedIO)
 
@@ -918,14 +918,14 @@ class DriverStationLCD(SensorBase):
     __del__ = lambda self : None;
     __swig_getmethods__["GetInstance"] = lambda x: _wpilib.DriverStationLCD_GetInstance
     if _newclass:GetInstance = staticmethod(_wpilib.DriverStationLCD_GetInstance)
-    def UpdateLCD(self): return _wpilib.DriverStationLCD_UpdateLCD(self)
-    def Clear(self): return _wpilib.DriverStationLCD_Clear(self)
-    def Print(self, *args): return _wpilib.DriverStationLCD_Print(self, *args)
-    def PrintLine(self, *args): return _wpilib.DriverStationLCD_PrintLine(self, *args)
+    def UpdateLCD(self) -> "void" : return _wpilib.DriverStationLCD_UpdateLCD(self)
+    def Clear(self) -> "void" : return _wpilib.DriverStationLCD_Clear(self)
+    def Print(self, *args) -> "void" : return _wpilib.DriverStationLCD_Print(self, *args)
+    def PrintLine(self, *args) -> "void" : return _wpilib.DriverStationLCD_PrintLine(self, *args)
 DriverStationLCD_swigregister = _wpilib.DriverStationLCD_swigregister
 DriverStationLCD_swigregister(DriverStationLCD)
 
-def DriverStationLCD_GetInstance():
+def DriverStationLCD_GetInstance() -> "DriverStationLCD *" :
   return _wpilib.DriverStationLCD_GetInstance()
 DriverStationLCD_GetInstance = _wpilib.DriverStationLCD_GetInstance
 
@@ -943,20 +943,20 @@ class Encoder(SensorBase,CounterBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Encoder
     __del__ = lambda self : None;
-    def Start(self): return _wpilib.Encoder_Start(self)
-    def Get(self): return _wpilib.Encoder_Get(self)
-    def GetRaw(self): return _wpilib.Encoder_GetRaw(self)
-    def Reset(self): return _wpilib.Encoder_Reset(self)
-    def Stop(self): return _wpilib.Encoder_Stop(self)
-    def GetPeriod(self): return _wpilib.Encoder_GetPeriod(self)
-    def SetMaxPeriod(self, *args): return _wpilib.Encoder_SetMaxPeriod(self, *args)
-    def GetStopped(self): return _wpilib.Encoder_GetStopped(self)
-    def GetDirection(self): return _wpilib.Encoder_GetDirection(self)
-    def GetDistance(self): return _wpilib.Encoder_GetDistance(self)
-    def GetRate(self): return _wpilib.Encoder_GetRate(self)
-    def SetMinRate(self, *args): return _wpilib.Encoder_SetMinRate(self, *args)
-    def SetDistancePerPulse(self, *args): return _wpilib.Encoder_SetDistancePerPulse(self, *args)
-    def SetReverseDirection(self, *args): return _wpilib.Encoder_SetReverseDirection(self, *args)
+    def Start(self) -> "void" : return _wpilib.Encoder_Start(self)
+    def Get(self) -> "INT32" : return _wpilib.Encoder_Get(self)
+    def GetRaw(self) -> "INT32" : return _wpilib.Encoder_GetRaw(self)
+    def Reset(self) -> "void" : return _wpilib.Encoder_Reset(self)
+    def Stop(self) -> "void" : return _wpilib.Encoder_Stop(self)
+    def GetPeriod(self) -> "double" : return _wpilib.Encoder_GetPeriod(self)
+    def SetMaxPeriod(self, *args) -> "void" : return _wpilib.Encoder_SetMaxPeriod(self, *args)
+    def GetStopped(self) -> "bool" : return _wpilib.Encoder_GetStopped(self)
+    def GetDirection(self) -> "bool" : return _wpilib.Encoder_GetDirection(self)
+    def GetDistance(self) -> "double" : return _wpilib.Encoder_GetDistance(self)
+    def GetRate(self) -> "double" : return _wpilib.Encoder_GetRate(self)
+    def SetMinRate(self, *args) -> "void" : return _wpilib.Encoder_SetMinRate(self, *args)
+    def SetDistancePerPulse(self, *args) -> "void" : return _wpilib.Encoder_SetDistancePerPulse(self, *args)
+    def SetReverseDirection(self, *args) -> "void" : return _wpilib.Encoder_SetReverseDirection(self, *args)
 Encoder_swigregister = _wpilib.Encoder_swigregister
 Encoder_swigregister(Encoder)
 
@@ -975,7 +975,7 @@ class GearTooth(Counter):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_GearTooth
     __del__ = lambda self : None;
-    def EnableDirectionSensing(self, *args): return _wpilib.GearTooth_EnableDirectionSensing(self, *args)
+    def EnableDirectionSensing(self, *args) -> "void" : return _wpilib.GearTooth_EnableDirectionSensing(self, *args)
 GearTooth_swigregister = _wpilib.GearTooth_swigregister
 GearTooth_swigregister(GearTooth)
 
@@ -998,10 +998,10 @@ class Gyro(SensorBase,PIDSource):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Gyro
     __del__ = lambda self : None;
-    def GetAngle(self): return _wpilib.Gyro_GetAngle(self)
-    def SetSensitivity(self, *args): return _wpilib.Gyro_SetSensitivity(self, *args)
-    def Reset(self): return _wpilib.Gyro_Reset(self)
-    def PIDGet(self): return _wpilib.Gyro_PIDGet(self)
+    def GetAngle(self) -> "float" : return _wpilib.Gyro_GetAngle(self)
+    def SetSensitivity(self, *args) -> "void" : return _wpilib.Gyro_SetSensitivity(self, *args)
+    def Reset(self) -> "void" : return _wpilib.Gyro_Reset(self)
+    def PIDGet(self) -> "double" : return _wpilib.Gyro_PIDGet(self)
 Gyro_swigregister = _wpilib.Gyro_swigregister
 Gyro_swigregister(Gyro)
 
@@ -1019,7 +1019,7 @@ class HiTechnicCompass(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_HiTechnicCompass
     __del__ = lambda self : None;
-    def GetAngle(self): return _wpilib.HiTechnicCompass_GetAngle(self)
+    def GetAngle(self) -> "float" : return _wpilib.HiTechnicCompass_GetAngle(self)
 HiTechnicCompass_swigregister = _wpilib.HiTechnicCompass_swigregister
 HiTechnicCompass_swigregister(HiTechnicCompass)
 
@@ -1037,9 +1037,9 @@ class Jaguar(PWM,SpeedController,PIDOutput):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Jaguar
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.Jaguar_Get(self)
-    def Set(self, *args): return _wpilib.Jaguar_Set(self, *args)
-    def PIDWrite(self, *args): return _wpilib.Jaguar_PIDWrite(self, *args)
+    def Get(self) -> "float" : return _wpilib.Jaguar_Get(self)
+    def Set(self, *args) -> "void" : return _wpilib.Jaguar_Set(self, *args)
+    def PIDWrite(self, *args) -> "void" : return _wpilib.Jaguar_PIDWrite(self, *args)
 Jaguar_swigregister = _wpilib.Jaguar_swigregister
 Jaguar_swigregister(Jaguar)
 
@@ -1066,20 +1066,20 @@ class CANJaguar(SpeedController,PIDOutput):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_CANJaguar
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.CANJaguar_Get(self)
-    def Set(self, *args): return _wpilib.CANJaguar_Set(self, *args)
-    def PIDWrite(self, *args): return _wpilib.CANJaguar_PIDWrite(self, *args)
-    def GetBusVoltage(self): return _wpilib.CANJaguar_GetBusVoltage(self)
-    def GetOutputVoltage(self): return _wpilib.CANJaguar_GetOutputVoltage(self)
-    def GetOutputCurrent(self): return _wpilib.CANJaguar_GetOutputCurrent(self)
-    def GetTemperature(self): return _wpilib.CANJaguar_GetTemperature(self)
-    def GetPosition(self): return _wpilib.CANJaguar_GetPosition(self)
-    def GetSpeed(self): return _wpilib.CANJaguar_GetSpeed(self)
-    def GetForwardLimitOK(self): return _wpilib.CANJaguar_GetForwardLimitOK(self)
-    def GetReverseLimitOK(self): return _wpilib.CANJaguar_GetReverseLimitOK(self)
-    def GetFaults(self): return _wpilib.CANJaguar_GetFaults(self)
-    def GetPowerCycled(self): return _wpilib.CANJaguar_GetPowerCycled(self)
-    def GetFirmwareVersion(self): return _wpilib.CANJaguar_GetFirmwareVersion(self)
+    def Get(self) -> "float" : return _wpilib.CANJaguar_Get(self)
+    def Set(self, *args) -> "void" : return _wpilib.CANJaguar_Set(self, *args)
+    def PIDWrite(self, *args) -> "void" : return _wpilib.CANJaguar_PIDWrite(self, *args)
+    def GetBusVoltage(self) -> "float" : return _wpilib.CANJaguar_GetBusVoltage(self)
+    def GetOutputVoltage(self) -> "float" : return _wpilib.CANJaguar_GetOutputVoltage(self)
+    def GetOutputCurrent(self) -> "float" : return _wpilib.CANJaguar_GetOutputCurrent(self)
+    def GetTemperature(self) -> "float" : return _wpilib.CANJaguar_GetTemperature(self)
+    def GetPosition(self) -> "double" : return _wpilib.CANJaguar_GetPosition(self)
+    def GetSpeed(self) -> "double" : return _wpilib.CANJaguar_GetSpeed(self)
+    def GetForwardLimitOK(self) -> "bool" : return _wpilib.CANJaguar_GetForwardLimitOK(self)
+    def GetReverseLimitOK(self) -> "bool" : return _wpilib.CANJaguar_GetReverseLimitOK(self)
+    def GetFaults(self) -> "UINT16" : return _wpilib.CANJaguar_GetFaults(self)
+    def GetPowerCycled(self) -> "bool" : return _wpilib.CANJaguar_GetPowerCycled(self)
+    def GetFirmwareVersion(self) -> "UINT32" : return _wpilib.CANJaguar_GetFirmwareVersion(self)
 CANJaguar_swigregister = _wpilib.CANJaguar_swigregister
 CANJaguar_swigregister(CANJaguar)
 
@@ -1113,29 +1113,29 @@ class Joystick(GenericHID):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Joystick
     __del__ = lambda self : None;
-    def GetAxisChannel(self, *args): return _wpilib.Joystick_GetAxisChannel(self, *args)
-    def SetAxisChannel(self, *args): return _wpilib.Joystick_SetAxisChannel(self, *args)
-    def GetX(self, *args): return _wpilib.Joystick_GetX(self, *args)
-    def GetY(self, *args): return _wpilib.Joystick_GetY(self, *args)
-    def GetZ(self): return _wpilib.Joystick_GetZ(self)
-    def GetTwist(self): return _wpilib.Joystick_GetTwist(self)
-    def GetThrottle(self): return _wpilib.Joystick_GetThrottle(self)
-    def GetAxis(self, *args): return _wpilib.Joystick_GetAxis(self, *args)
-    def GetRawAxis(self, *args): return _wpilib.Joystick_GetRawAxis(self, *args)
-    def GetTrigger(self, *args): return _wpilib.Joystick_GetTrigger(self, *args)
-    def GetTop(self, *args): return _wpilib.Joystick_GetTop(self, *args)
-    def GetBumper(self, *args): return _wpilib.Joystick_GetBumper(self, *args)
-    def GetButton(self, *args): return _wpilib.Joystick_GetButton(self, *args)
-    def GetRawButton(self, *args): return _wpilib.Joystick_GetRawButton(self, *args)
+    def GetAxisChannel(self, *args) -> "UINT32" : return _wpilib.Joystick_GetAxisChannel(self, *args)
+    def SetAxisChannel(self, *args) -> "void" : return _wpilib.Joystick_SetAxisChannel(self, *args)
+    def GetX(self, *args) -> "float" : return _wpilib.Joystick_GetX(self, *args)
+    def GetY(self, *args) -> "float" : return _wpilib.Joystick_GetY(self, *args)
+    def GetZ(self) -> "float" : return _wpilib.Joystick_GetZ(self)
+    def GetTwist(self) -> "float" : return _wpilib.Joystick_GetTwist(self)
+    def GetThrottle(self) -> "float" : return _wpilib.Joystick_GetThrottle(self)
+    def GetAxis(self, *args) -> "float" : return _wpilib.Joystick_GetAxis(self, *args)
+    def GetRawAxis(self, *args) -> "float" : return _wpilib.Joystick_GetRawAxis(self, *args)
+    def GetTrigger(self, *args) -> "bool" : return _wpilib.Joystick_GetTrigger(self, *args)
+    def GetTop(self, *args) -> "bool" : return _wpilib.Joystick_GetTop(self, *args)
+    def GetBumper(self, *args) -> "bool" : return _wpilib.Joystick_GetBumper(self, *args)
+    def GetButton(self, *args) -> "bool" : return _wpilib.Joystick_GetButton(self, *args)
+    def GetRawButton(self, *args) -> "bool" : return _wpilib.Joystick_GetRawButton(self, *args)
     __swig_getmethods__["GetStickForPort"] = lambda x: _wpilib.Joystick_GetStickForPort
     if _newclass:GetStickForPort = staticmethod(_wpilib.Joystick_GetStickForPort)
-    def GetMagnitude(self): return _wpilib.Joystick_GetMagnitude(self)
-    def GetDirectionRadians(self): return _wpilib.Joystick_GetDirectionRadians(self)
-    def GetDirectionDegrees(self): return _wpilib.Joystick_GetDirectionDegrees(self)
+    def GetMagnitude(self) -> "float" : return _wpilib.Joystick_GetMagnitude(self)
+    def GetDirectionRadians(self) -> "float" : return _wpilib.Joystick_GetDirectionRadians(self)
+    def GetDirectionDegrees(self) -> "float" : return _wpilib.Joystick_GetDirectionDegrees(self)
 Joystick_swigregister = _wpilib.Joystick_swigregister
 Joystick_swigregister(Joystick)
 
-def Joystick_GetStickForPort(*args):
+def Joystick_GetStickForPort(*args) -> "Joystick *" :
   return _wpilib.Joystick_GetStickForPort(*args)
 Joystick_GetStickForPort = _wpilib.Joystick_GetStickForPort
 
@@ -1151,22 +1151,22 @@ class PIDController(_object):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_PIDController
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.PIDController_Get(self)
-    def SetContinuous(self, continuous = True): return _wpilib.PIDController_SetContinuous(self, continuous)
-    def SetInputRange(self, *args): return _wpilib.PIDController_SetInputRange(self, *args)
-    def SetOutputRange(self, *args): return _wpilib.PIDController_SetOutputRange(self, *args)
-    def SetPID(self, *args): return _wpilib.PIDController_SetPID(self, *args)
-    def GetP(self): return _wpilib.PIDController_GetP(self)
-    def GetI(self): return _wpilib.PIDController_GetI(self)
-    def GetD(self): return _wpilib.PIDController_GetD(self)
-    def SetSetpoint(self, *args): return _wpilib.PIDController_SetSetpoint(self, *args)
-    def GetSetpoint(self): return _wpilib.PIDController_GetSetpoint(self)
-    def GetError(self): return _wpilib.PIDController_GetError(self)
-    def SetTolerance(self, *args): return _wpilib.PIDController_SetTolerance(self, *args)
-    def OnTarget(self): return _wpilib.PIDController_OnTarget(self)
-    def Enable(self): return _wpilib.PIDController_Enable(self)
-    def Disable(self): return _wpilib.PIDController_Disable(self)
-    def Reset(self): return _wpilib.PIDController_Reset(self)
+    def Get(self) -> "float" : return _wpilib.PIDController_Get(self)
+    def SetContinuous(self, continuous : 'bool' = True) -> "void" : return _wpilib.PIDController_SetContinuous(self, continuous)
+    def SetInputRange(self, *args) -> "void" : return _wpilib.PIDController_SetInputRange(self, *args)
+    def SetOutputRange(self, *args) -> "void" : return _wpilib.PIDController_SetOutputRange(self, *args)
+    def SetPID(self, *args) -> "void" : return _wpilib.PIDController_SetPID(self, *args)
+    def GetP(self) -> "float" : return _wpilib.PIDController_GetP(self)
+    def GetI(self) -> "float" : return _wpilib.PIDController_GetI(self)
+    def GetD(self) -> "float" : return _wpilib.PIDController_GetD(self)
+    def SetSetpoint(self, *args) -> "void" : return _wpilib.PIDController_SetSetpoint(self, *args)
+    def GetSetpoint(self) -> "float" : return _wpilib.PIDController_GetSetpoint(self)
+    def GetError(self) -> "float" : return _wpilib.PIDController_GetError(self)
+    def SetTolerance(self, *args) -> "void" : return _wpilib.PIDController_SetTolerance(self, *args)
+    def OnTarget(self) -> "bool" : return _wpilib.PIDController_OnTarget(self)
+    def Enable(self) -> "void" : return _wpilib.PIDController_Enable(self)
+    def Disable(self) -> "void" : return _wpilib.PIDController_Disable(self)
+    def Reset(self) -> "void" : return _wpilib.PIDController_Reset(self)
 PIDController_swigregister = _wpilib.PIDController_swigregister
 PIDController_swigregister(PIDController)
 
@@ -1191,8 +1191,8 @@ class Relay(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Relay
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.Relay_Set(self, *args)
-    def SetDirection(self, *args): return _wpilib.Relay_SetDirection(self, *args)
+    def Set(self, *args) -> "void" : return _wpilib.Relay_Set(self, *args)
+    def SetDirection(self, *args) -> "void" : return _wpilib.Relay_SetDirection(self, *args)
 Relay_swigregister = _wpilib.Relay_swigregister
 Relay_swigregister(Relay)
 
@@ -1212,14 +1212,14 @@ class RobotDrive(_object):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_RobotDrive
     __del__ = lambda self : None;
-    def Drive(self, *args): return _wpilib.RobotDrive_Drive(self, *args)
-    def TankDrive(self, *args): return _wpilib.RobotDrive_TankDrive(self, *args)
-    def ArcadeDrive(self, *args): return _wpilib.RobotDrive_ArcadeDrive(self, *args)
-    def MecanumDrive_Cartesian(self, *args): return _wpilib.RobotDrive_MecanumDrive_Cartesian(self, *args)
-    def MecanumDrive_Polar(self, *args): return _wpilib.RobotDrive_MecanumDrive_Polar(self, *args)
-    def HolonomicDrive(self, *args): return _wpilib.RobotDrive_HolonomicDrive(self, *args)
-    def SetLeftRightMotorSpeeds(self, *args): return _wpilib.RobotDrive_SetLeftRightMotorSpeeds(self, *args)
-    def SetInvertedMotor(self, *args): return _wpilib.RobotDrive_SetInvertedMotor(self, *args)
+    def Drive(self, *args) -> "void" : return _wpilib.RobotDrive_Drive(self, *args)
+    def TankDrive(self, *args) -> "void" : return _wpilib.RobotDrive_TankDrive(self, *args)
+    def ArcadeDrive(self, *args) -> "void" : return _wpilib.RobotDrive_ArcadeDrive(self, *args)
+    def MecanumDrive_Cartesian(self, *args) -> "void" : return _wpilib.RobotDrive_MecanumDrive_Cartesian(self, *args)
+    def MecanumDrive_Polar(self, *args) -> "void" : return _wpilib.RobotDrive_MecanumDrive_Polar(self, *args)
+    def HolonomicDrive(self, *args) -> "void" : return _wpilib.RobotDrive_HolonomicDrive(self, *args)
+    def SetLeftRightMotorSpeeds(self, *args) -> "void" : return _wpilib.RobotDrive_SetLeftRightMotorSpeeds(self, *args)
+    def SetInvertedMotor(self, *args) -> "void" : return _wpilib.RobotDrive_SetInvertedMotor(self, *args)
 RobotDrive_swigregister = _wpilib.RobotDrive_swigregister
 RobotDrive_swigregister(RobotDrive)
 
@@ -1249,18 +1249,18 @@ class SerialPort(_object):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_SerialPort
     __del__ = lambda self : None;
-    def SetFlowControl(self, *args): return _wpilib.SerialPort_SetFlowControl(self, *args)
-    def EnableTermination(self, terminator = '\n'): return _wpilib.SerialPort_EnableTermination(self, terminator)
-    def DisableTermination(self): return _wpilib.SerialPort_DisableTermination(self)
-    def GetBytesReceived(self): return _wpilib.SerialPort_GetBytesReceived(self)
-    def Read(self, *args): return _wpilib.SerialPort_Read(self, *args)
-    def Write(self, *args): return _wpilib.SerialPort_Write(self, *args)
-    def SetTimeout(self, *args): return _wpilib.SerialPort_SetTimeout(self, *args)
-    def SetReadBufferSize(self, *args): return _wpilib.SerialPort_SetReadBufferSize(self, *args)
-    def SetWriteBufferSize(self, *args): return _wpilib.SerialPort_SetWriteBufferSize(self, *args)
-    def SetWriteBufferMode(self, *args): return _wpilib.SerialPort_SetWriteBufferMode(self, *args)
-    def Flush(self): return _wpilib.SerialPort_Flush(self)
-    def Reset(self): return _wpilib.SerialPort_Reset(self)
+    def SetFlowControl(self, *args) -> "void" : return _wpilib.SerialPort_SetFlowControl(self, *args)
+    def EnableTermination(self, terminator : 'char' = '\n') -> "void" : return _wpilib.SerialPort_EnableTermination(self, terminator)
+    def DisableTermination(self) -> "void" : return _wpilib.SerialPort_DisableTermination(self)
+    def GetBytesReceived(self) -> "INT32" : return _wpilib.SerialPort_GetBytesReceived(self)
+    def Read(self, *args) -> "UINT32" : return _wpilib.SerialPort_Read(self, *args)
+    def Write(self, *args) -> "UINT32" : return _wpilib.SerialPort_Write(self, *args)
+    def SetTimeout(self, *args) -> "void" : return _wpilib.SerialPort_SetTimeout(self, *args)
+    def SetReadBufferSize(self, *args) -> "void" : return _wpilib.SerialPort_SetReadBufferSize(self, *args)
+    def SetWriteBufferSize(self, *args) -> "void" : return _wpilib.SerialPort_SetWriteBufferSize(self, *args)
+    def SetWriteBufferMode(self, *args) -> "void" : return _wpilib.SerialPort_SetWriteBufferMode(self, *args)
+    def Flush(self) -> "void" : return _wpilib.SerialPort_Flush(self)
+    def Reset(self) -> "void" : return _wpilib.SerialPort_Reset(self)
 SerialPort_swigregister = _wpilib.SerialPort_swigregister
 SerialPort_swigregister(SerialPort)
 
@@ -1278,10 +1278,10 @@ class Servo(PWM,SpeedController):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Servo
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.Servo_Set(self, *args)
-    def Get(self): return _wpilib.Servo_Get(self)
-    def SetAngle(self, *args): return _wpilib.Servo_SetAngle(self, *args)
-    def GetAngle(self): return _wpilib.Servo_GetAngle(self)
+    def Set(self, *args) -> "void" : return _wpilib.Servo_Set(self, *args)
+    def Get(self) -> "float" : return _wpilib.Servo_Get(self)
+    def SetAngle(self, *args) -> "void" : return _wpilib.Servo_SetAngle(self, *args)
+    def GetAngle(self) -> "float" : return _wpilib.Servo_GetAngle(self)
     __swig_getmethods__["GetMaxAngle"] = lambda x: _wpilib.Servo_GetMaxAngle
     if _newclass:GetMaxAngle = staticmethod(_wpilib.Servo_GetMaxAngle)
     __swig_getmethods__["GetMinAngle"] = lambda x: _wpilib.Servo_GetMinAngle
@@ -1289,11 +1289,11 @@ class Servo(PWM,SpeedController):
 Servo_swigregister = _wpilib.Servo_swigregister
 Servo_swigregister(Servo)
 
-def Servo_GetMaxAngle():
+def Servo_GetMaxAngle() -> "float" :
   return _wpilib.Servo_GetMaxAngle()
 Servo_GetMaxAngle = _wpilib.Servo_GetMaxAngle
 
-def Servo_GetMinAngle():
+def Servo_GetMinAngle() -> "float" :
   return _wpilib.Servo_GetMinAngle()
 Servo_GetMinAngle = _wpilib.Servo_GetMinAngle
 
@@ -1311,9 +1311,9 @@ class Solenoid(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Solenoid
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.Solenoid_Set(self, *args)
-    def Get(self): return _wpilib.Solenoid_Get(self)
-    def GetAll(self): return _wpilib.Solenoid_GetAll(self)
+    def Set(self, *args) -> "void" : return _wpilib.Solenoid_Set(self, *args)
+    def Get(self) -> "bool" : return _wpilib.Solenoid_Get(self)
+    def GetAll(self) -> "char" : return _wpilib.Solenoid_GetAll(self)
 Solenoid_swigregister = _wpilib.Solenoid_swigregister
 Solenoid_swigregister(Solenoid)
 
@@ -1329,11 +1329,11 @@ class Timer(_object):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Timer
     __del__ = lambda self : None;
-    def Get(self): return _wpilib.Timer_Get(self)
-    def Reset(self): return _wpilib.Timer_Reset(self)
-    def Start(self): return _wpilib.Timer_Start(self)
-    def Stop(self): return _wpilib.Timer_Stop(self)
-    def HasPeriodPassed(self, *args): return _wpilib.Timer_HasPeriodPassed(self, *args)
+    def Get(self) -> "double" : return _wpilib.Timer_Get(self)
+    def Reset(self) -> "void" : return _wpilib.Timer_Reset(self)
+    def Start(self) -> "void" : return _wpilib.Timer_Start(self)
+    def Stop(self) -> "void" : return _wpilib.Timer_Stop(self)
+    def HasPeriodPassed(self, *args) -> "bool" : return _wpilib.Timer_HasPeriodPassed(self, *args)
     __swig_getmethods__["GetFPGATimestamp"] = lambda x: _wpilib.Timer_GetFPGATimestamp
     if _newclass:GetFPGATimestamp = staticmethod(_wpilib.Timer_GetFPGATimestamp)
     __swig_getmethods__["GetPPCTimestamp"] = lambda x: _wpilib.Timer_GetPPCTimestamp
@@ -1341,16 +1341,16 @@ class Timer(_object):
 Timer_swigregister = _wpilib.Timer_swigregister
 Timer_swigregister(Timer)
 
-def Timer_GetFPGATimestamp():
+def Timer_GetFPGATimestamp() -> "double" :
   return _wpilib.Timer_GetFPGATimestamp()
 Timer_GetFPGATimestamp = _wpilib.Timer_GetFPGATimestamp
 
-def Timer_GetPPCTimestamp():
+def Timer_GetPPCTimestamp() -> "double" :
   return _wpilib.Timer_GetPPCTimestamp()
 Timer_GetPPCTimestamp = _wpilib.Timer_GetPPCTimestamp
 
 
-def Wait(*args):
+def Wait(*args) -> "void" :
   return _wpilib.Wait(*args)
 Wait = _wpilib.Wait
 class Ultrasonic(SensorBase,PIDSource):
@@ -1369,21 +1369,21 @@ class Ultrasonic(SensorBase,PIDSource):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Ultrasonic
     __del__ = lambda self : None;
-    def Ping(self): return _wpilib.Ultrasonic_Ping(self)
-    def IsRangeValid(self): return _wpilib.Ultrasonic_IsRangeValid(self)
+    def Ping(self) -> "void" : return _wpilib.Ultrasonic_Ping(self)
+    def IsRangeValid(self) -> "bool" : return _wpilib.Ultrasonic_IsRangeValid(self)
     __swig_getmethods__["SetAutomaticMode"] = lambda x: _wpilib.Ultrasonic_SetAutomaticMode
     if _newclass:SetAutomaticMode = staticmethod(_wpilib.Ultrasonic_SetAutomaticMode)
-    def GetRangeInches(self): return _wpilib.Ultrasonic_GetRangeInches(self)
-    def GetRangeMM(self): return _wpilib.Ultrasonic_GetRangeMM(self)
-    def IsEnabled(self): return _wpilib.Ultrasonic_IsEnabled(self)
-    def SetEnabled(self, *args): return _wpilib.Ultrasonic_SetEnabled(self, *args)
-    def PIDGet(self): return _wpilib.Ultrasonic_PIDGet(self)
-    def SetDistanceUnits(self, *args): return _wpilib.Ultrasonic_SetDistanceUnits(self, *args)
-    def GetDistanceUnits(self): return _wpilib.Ultrasonic_GetDistanceUnits(self)
+    def GetRangeInches(self) -> "double" : return _wpilib.Ultrasonic_GetRangeInches(self)
+    def GetRangeMM(self) -> "double" : return _wpilib.Ultrasonic_GetRangeMM(self)
+    def IsEnabled(self) -> "bool" : return _wpilib.Ultrasonic_IsEnabled(self)
+    def SetEnabled(self, *args) -> "void" : return _wpilib.Ultrasonic_SetEnabled(self, *args)
+    def PIDGet(self) -> "double" : return _wpilib.Ultrasonic_PIDGet(self)
+    def SetDistanceUnits(self, *args) -> "void" : return _wpilib.Ultrasonic_SetDistanceUnits(self, *args)
+    def GetDistanceUnits(self) -> "Ultrasonic::DistanceUnit" : return _wpilib.Ultrasonic_GetDistanceUnits(self)
 Ultrasonic_swigregister = _wpilib.Ultrasonic_swigregister
 Ultrasonic_swigregister(Ultrasonic)
 
-def Ultrasonic_SetAutomaticMode(*args):
+def Ultrasonic_SetAutomaticMode(*args) -> "void" :
   return _wpilib.Ultrasonic_SetAutomaticMode(*args)
 Ultrasonic_SetAutomaticMode = _wpilib.Ultrasonic_SetAutomaticMode
 
@@ -1401,9 +1401,9 @@ class Victor(PWM,SpeedController,PIDOutput):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Victor
     __del__ = lambda self : None;
-    def Set(self, *args): return _wpilib.Victor_Set(self, *args)
-    def Get(self): return _wpilib.Victor_Get(self)
-    def PIDWrite(self, *args): return _wpilib.Victor_PIDWrite(self, *args)
+    def Set(self, *args) -> "void" : return _wpilib.Victor_Set(self, *args)
+    def Get(self) -> "float" : return _wpilib.Victor_Get(self)
+    def PIDWrite(self, *args) -> "void" : return _wpilib.Victor_PIDWrite(self, *args)
 Victor_swigregister = _wpilib.Victor_swigregister
 Victor_swigregister(Victor)
 
@@ -1422,44 +1422,44 @@ class Watchdog(SensorBase):
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Watchdog
     __del__ = lambda self : None;
-    def Feed(self): return _wpilib.Watchdog_Feed(self)
-    def Kill(self): return _wpilib.Watchdog_Kill(self)
-    def GetTimer(self): return _wpilib.Watchdog_GetTimer(self)
-    def GetExpiration(self): return _wpilib.Watchdog_GetExpiration(self)
-    def SetExpiration(self, *args): return _wpilib.Watchdog_SetExpiration(self, *args)
-    def GetEnabled(self): return _wpilib.Watchdog_GetEnabled(self)
-    def SetEnabled(self, *args): return _wpilib.Watchdog_SetEnabled(self, *args)
-    def IsAlive(self): return _wpilib.Watchdog_IsAlive(self)
-    def IsSystemActive(self): return _wpilib.Watchdog_IsSystemActive(self)
+    def Feed(self) -> "bool" : return _wpilib.Watchdog_Feed(self)
+    def Kill(self) -> "void" : return _wpilib.Watchdog_Kill(self)
+    def GetTimer(self) -> "double" : return _wpilib.Watchdog_GetTimer(self)
+    def GetExpiration(self) -> "double" : return _wpilib.Watchdog_GetExpiration(self)
+    def SetExpiration(self, *args) -> "void" : return _wpilib.Watchdog_SetExpiration(self, *args)
+    def GetEnabled(self) -> "bool" : return _wpilib.Watchdog_GetEnabled(self)
+    def SetEnabled(self, *args) -> "void" : return _wpilib.Watchdog_SetEnabled(self, *args)
+    def IsAlive(self) -> "bool" : return _wpilib.Watchdog_IsAlive(self)
+    def IsSystemActive(self) -> "bool" : return _wpilib.Watchdog_IsSystemActive(self)
 Watchdog_swigregister = _wpilib.Watchdog_swigregister
 Watchdog_swigregister(Watchdog)
 
 
-def IsEnabled():
+def IsEnabled() -> "bool" :
   return _wpilib.IsEnabled()
 IsEnabled = _wpilib.IsEnabled
 
-def IsDisabled():
+def IsDisabled() -> "bool" :
   return _wpilib.IsDisabled()
 IsDisabled = _wpilib.IsDisabled
 
-def IsAutonomous():
+def IsAutonomous() -> "bool" :
   return _wpilib.IsAutonomous()
 IsAutonomous = _wpilib.IsAutonomous
 
-def IsOperatorControl():
+def IsOperatorControl() -> "bool" :
   return _wpilib.IsOperatorControl()
 IsOperatorControl = _wpilib.IsOperatorControl
 
-def IsSystemActive():
+def IsSystemActive() -> "bool" :
   return _wpilib.IsSystemActive()
 IsSystemActive = _wpilib.IsSystemActive
 
-def IsNewDataAvailable():
+def IsNewDataAvailable() -> "bool" :
   return _wpilib.IsNewDataAvailable()
 IsNewDataAvailable = _wpilib.IsNewDataAvailable
 
-def GetWatchdog():
+def GetWatchdog() -> "Watchdog *" :
   return _wpilib.GetWatchdog()
 GetWatchdog = _wpilib.GetWatchdog
 
