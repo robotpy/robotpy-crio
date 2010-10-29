@@ -14,4 +14,7 @@ copy RobotPy\PPC603gnu\RobotPy\NonDebug\RobotPy.out dist\robot\ni-rt\system\FRC_
 mkdir dist\robot\lib\python3.1\dyn-load
 for /r Modules %%X in (*.out) do (copy %%X dist\robot\lib\python3.1\dyn-load)
 
+for /r Packages %%X in (*.out) do (copy %%X dist\robot\lib\python3.1\site-packages)
+for /r Packages %%X in (*.py) do (copy %%X dist\robot\lib\python3.1\site-packages)
+
 pause

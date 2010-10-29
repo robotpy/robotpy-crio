@@ -6,4 +6,10 @@
 /Modules/*/*.out
 /Modules/pyexpat/expat/*.d
 /Modules/pyexpat/expat/*.o
+/Packages/*/ctdt.*
+/Packages/*/*.d
+/Packages/*/*.o
+/Packages/*/*.out
+/Packages/wpilib/CANJaguar/*.d
+/Packages/wpilib/CANJaguar/*.o
 /dist

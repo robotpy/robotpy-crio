@@ -51,7 +51,7 @@ Python interpreter on the robot.
 To build the loadable modules: Run Start|Programs|Wind River|
 VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
 CD to the directory where you cloned the git repository.  CD to the Modules
-directory.  Run "make".
+directory.  Run "make".  CD to the Packages directory.  Run "make".
 
 Run ``make_dist.bat``.  Delete the ``dist\robot\ni-rt`` directory tree.
 

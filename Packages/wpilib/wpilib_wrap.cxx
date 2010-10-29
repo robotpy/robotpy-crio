@@ -3440,39 +3440,66 @@ SWIG_From_char  (char c)
 
 
 
+class MyRobotBase : public RobotBase
+{
+public:
+        static RobotBase &getInstance();
+        void StartCompetition();
+};
+
+RobotBase &
+MyRobotBase::getInstance()
+{
+    RobotBase* inst = &RobotBase::getInstance();
+    if (!inst)
+    {
+        inst = new MyRobotBase;
+        RobotBase::setInstance(inst);
+    }
+    return *inst;
+}
+
+void
+MyRobotBase::StartCompetition()
+{
+}
+
+
+
+
 bool IsEnabled()
 {
-    return RobotBase::getInstance().IsEnabled();
+    return MyRobotBase::getInstance().IsEnabled();
 }
 
 bool IsDisabled()
 {
-    return RobotBase::getInstance().IsDisabled();
+    return MyRobotBase::getInstance().IsDisabled();
 }
 
 bool IsAutonomous()
 {
-    return RobotBase::getInstance().IsAutonomous();
+    return MyRobotBase::getInstance().IsAutonomous();
 }
 
 bool IsOperatorControl()
 {
-    return RobotBase::getInstance().IsOperatorControl();
+    return MyRobotBase::getInstance().IsOperatorControl();
 }
 
 bool IsSystemActive()
 {
-    return RobotBase::getInstance().IsSystemActive();
+    return MyRobotBase::getInstance().IsSystemActive();
 }
 
 bool IsNewDataAvailable()
 {
-    return RobotBase::getInstance().IsNewDataAvailable();
+    return MyRobotBase::getInstance().IsNewDataAvailable();
 }
 
 Watchdog *GetWatchdog()
 {
-    return &RobotBase::getInstance().GetWatchdog();
+    return &MyRobotBase::getInstance().GetWatchdog();
 }
 
 

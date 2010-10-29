@@ -245,11 +245,21 @@
     </attributes>
     <buildtargets>
         <buildtarget buildtool="Linker" name="RobotPy" passed="false" targetname="RobotPy">
+            <attributes>
+                <mapAttribute>
+                    <listAttribute key="BLD::Info|Libs|PPC603gnu"/>
+                </mapAttribute>
+            </attributes>
             <contents>
                 <buildtargetreference name="/RobotPy/RobotPy_partialImage"/>
             </contents>
         </buildtarget>
         <buildtarget buildtool="Partial Image Linker" name="RobotPy_partialImage" passed="true" targetname="RobotPy_partialImage">
+            <attributes>
+                <mapAttribute>
+                    <listAttribute key="BLD::Info|Libs|PPC603gnu"/>
+                </mapAttribute>
+            </attributes>
             <contents>
                 <folder name="/RobotPy" recursive="true"/>
             </contents>

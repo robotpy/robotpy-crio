@@ -1,8 +1,8 @@
 /*
  *  wpilib.i - SWIG bindings for wpilib
- *  FIRSTLua
+ *  RobotPy
  *
- *  Copyright (c) 2010 Ross Light
+ *  Copyright (c) 2010 Ross Light, Peter Johnson
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a
  *  copy of this software and associated documentation files (the "Software"),
@@ -990,41 +990,69 @@ public:
 
 /*** ROBOT RUNTIME INFORMATION ***/
 
+%{
+
+class MyRobotBase : public RobotBase
+{
+public:
+        static RobotBase &getInstance();
+        void StartCompetition();
+};
+
+RobotBase &
+MyRobotBase::getInstance()
+{
+    RobotBase* inst = &RobotBase::getInstance();
+    if (!inst)
+    {
+        inst = new MyRobotBase;
+        RobotBase::setInstance(inst);
+    }
+    return *inst;
+}
+
+void
+MyRobotBase::StartCompetition()
+{
+}
+
+%}
+
 %inline %{
 
 bool IsEnabled()
 {
-    return RobotBase::getInstance().IsEnabled();
+    return MyRobotBase::getInstance().IsEnabled();
 }
 
 bool IsDisabled()
 {
-    return RobotBase::getInstance().IsDisabled();
+    return MyRobotBase::getInstance().IsDisabled();
 }
 
 bool IsAutonomous()
 {
-    return RobotBase::getInstance().IsAutonomous();
+    return MyRobotBase::getInstance().IsAutonomous();
 }
 
 bool IsOperatorControl()
 {
-    return RobotBase::getInstance().IsOperatorControl();
+    return MyRobotBase::getInstance().IsOperatorControl();
 }
 
 bool IsSystemActive()
 {
-    return RobotBase::getInstance().IsSystemActive();
+    return MyRobotBase::getInstance().IsSystemActive();
 }
 
 bool IsNewDataAvailable()
 {
-    return RobotBase::getInstance().IsNewDataAvailable();
+    return MyRobotBase::getInstance().IsNewDataAvailable();
 }
 
 Watchdog *GetWatchdog()
 {
-    return &RobotBase::getInstance().GetWatchdog();
+    return &MyRobotBase::getInstance().GetWatchdog();
 }
 
 %}

@@ -34,7 +34,6 @@ extern PyObject* PyInit__locale(void);
 extern PyObject* PyInit__io(void);
 extern PyObject* PyInit_zipimport(void);
 extern PyObject* PyInit__symtable(void);
-extern PyObject* PyInit__wpilib(void);
 
 /* -- ADDMODULE MARKER 1 -- */
 
@@ -58,7 +57,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_io", PyInit__io},
 	{"zipimport", PyInit_zipimport},
 	{"_symtable", PyInit__symtable},
-        {"_wpilib", PyInit__wpilib},
 /* -- ADDMODULE MARKER 2 -- */
 
 	/* This module lives in marshal.c */
