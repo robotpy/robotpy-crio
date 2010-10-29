@@ -40,7 +40,6 @@ extern PyObject* PyInit_math(void);
 extern PyObject* PyInit__struct(void);
 extern PyObject* PyInit_time(void);
 extern PyObject* PyInit_operator(void);
-extern PyObject* PyInit__testcapi(void);
 extern PyObject* PyInit__random(void);
 extern PyObject* PyInit__collections(void);
 extern PyObject* PyInit_itertools(void);
@@ -61,7 +60,6 @@ extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit_binascii(void);
 extern PyObject* PyInit_parser(void);
 extern PyObject* PyInit_fpectl(void);
-extern PyObject* PyInit_fpetest(void);
 extern PyObject* PyInit_zlib(void);
 extern PyObject* PyInit_pyexpat(void);
 extern PyObject* PyInit__wpilib(void);
@@ -94,7 +92,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_struct", PyInit__struct},
 	{"time", PyInit_time},
 	{"operator", PyInit_operator},
-	{"_testcapi", PyInit__testcapi},
 	{"_random", PyInit__random},
 	{"_collections", PyInit__collections},
 	{"itertools", PyInit_itertools}, 
@@ -115,7 +112,6 @@ struct _inittab _PyImport_Inittab[] = {
 	{"binascii", PyInit_binascii},
 	{"parser", PyInit_parser},
 	{"fpectl", PyInit_fpectl},
-	{"fpetest", PyInit_fpetest},
 	{"zlib", PyInit_zlib},
 	{"pyexpat", PyInit_pyexpat},
         {"_wpilib", PyInit__wpilib},
