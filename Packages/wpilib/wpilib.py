@@ -66,6 +66,13 @@ except AttributeError:
     _newclass = 0
 
 
+try:
+    import weakref
+    weakref_proxy = weakref.proxy
+except:
+    weakref_proxy = lambda x: x
+
+
 class Error(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, Error, name, value)
@@ -323,12 +330,23 @@ class SpeedController(_object):
     __setattr__ = lambda self, name, value: _swig_setattr(self, SpeedController, name, value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SpeedController, name)
-    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _wpilib.delete_SpeedController
     __del__ = lambda self : None;
     def Set(self, *args) -> "void" : return _wpilib.SpeedController_Set(self, *args)
     def Get(self) -> "float" : return _wpilib.SpeedController_Get(self)
+    def __init__(self): 
+        if self.__class__ == SpeedController:
+            _self = None
+        else:
+            _self = self
+        this = _wpilib.new_SpeedController(_self, )
+        try: self.this.append(this)
+        except: self.this = this
+    def __disown__(self):
+        self.this.disown()
+        _wpilib.disown_SpeedController(self)
+        return weakref_proxy(self)
 SpeedController_swigregister = _wpilib.SpeedController_swigregister
 SpeedController_swigregister(SpeedController)
 
@@ -386,11 +404,22 @@ class PIDOutput(_object):
     __setattr__ = lambda self, name, value: _swig_setattr(self, PIDOutput, name, value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, PIDOutput, name)
-    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     def PIDWrite(self, *args) -> "void" : return _wpilib.PIDOutput_PIDWrite(self, *args)
+    def __init__(self): 
+        if self.__class__ == PIDOutput:
+            _self = None
+        else:
+            _self = self
+        this = _wpilib.new_PIDOutput(_self, )
+        try: self.this.append(this)
+        except: self.this = this
     __swig_destroy__ = _wpilib.delete_PIDOutput
     __del__ = lambda self : None;
+    def __disown__(self):
+        self.this.disown()
+        _wpilib.disown_PIDOutput(self)
+        return weakref_proxy(self)
 PIDOutput_swigregister = _wpilib.PIDOutput_swigregister
 PIDOutput_swigregister(PIDOutput)
 
@@ -399,11 +428,22 @@ class PIDSource(_object):
     __setattr__ = lambda self, name, value: _swig_setattr(self, PIDSource, name, value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, PIDSource, name)
-    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     def PIDGet(self) -> "double" : return _wpilib.PIDSource_PIDGet(self)
+    def __init__(self): 
+        if self.__class__ == PIDSource:
+            _self = None
+        else:
+            _self = self
+        this = _wpilib.new_PIDSource(_self, )
+        try: self.this.append(this)
+        except: self.this = this
     __swig_destroy__ = _wpilib.delete_PIDSource
     __del__ = lambda self : None;
+    def __disown__(self):
+        self.this.disown()
+        _wpilib.disown_PIDSource(self)
+        return weakref_proxy(self)
 PIDSource_swigregister = _wpilib.PIDSource_swigregister
 PIDSource_swigregister(PIDSource)
 
@@ -1108,7 +1148,11 @@ class Joystick(GenericHID):
     kTopButton = _wpilib.Joystick_kTopButton
     kNumButtonTypes = _wpilib.Joystick_kNumButtonTypes
     def __init__(self, *args): 
-        this = _wpilib.new_Joystick(*args)
+        if self.__class__ == Joystick:
+            _self = None
+        else:
+            _self = self
+        this = _wpilib.new_Joystick(_self, *args)
         try: self.this.append(this)
         except: self.this = this
     __swig_destroy__ = _wpilib.delete_Joystick
@@ -1132,6 +1176,10 @@ class Joystick(GenericHID):
     def GetMagnitude(self) -> "float" : return _wpilib.Joystick_GetMagnitude(self)
     def GetDirectionRadians(self) -> "float" : return _wpilib.Joystick_GetDirectionRadians(self)
     def GetDirectionDegrees(self) -> "float" : return _wpilib.Joystick_GetDirectionDegrees(self)
+    def __disown__(self):
+        self.this.disown()
+        _wpilib.disown_Joystick(self)
+        return weakref_proxy(self)
 Joystick_swigregister = _wpilib.Joystick_swigregister
 Joystick_swigregister(Joystick)
 

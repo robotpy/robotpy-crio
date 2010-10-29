@@ -9,6 +9,7 @@
  * ----------------------------------------------------------------------------- */
 
 #define SWIGPYTHON
+#define SWIG_DIRECTORS
 #define SWIG_PYTHON_DIRECTOR_NO_VTABLE
 
 
@@ -2680,6 +2681,478 @@ SWIG_Python_MustGetPtr(PyObject *obj, swig_type_info *ty, int argnum, int flags)
 #define SWIG_contract_assert(expr, msg) if (!(expr)) { SWIG_Error(SWIG_RuntimeError, msg); SWIG_fail; } else 
 
 
+/* -----------------------------------------------------------------------------
+ * director.swg
+ *
+ * This file contains support for director classes that proxy
+ * method calls from C++ to Python extensions.
+ * ----------------------------------------------------------------------------- */
+
+#ifndef SWIG_DIRECTOR_PYTHON_HEADER_
+#define SWIG_DIRECTOR_PYTHON_HEADER_
+
+#ifdef __cplusplus
+
+#include <string>
+#include <iostream>
+#include <exception>
+#include <vector>
+#include <map>
+
+
+/*
+  Use -DSWIG_PYTHON_DIRECTOR_NO_VTABLE if you don't want to generate a 'virtual
+  table', and avoid multiple GetAttr calls to retrieve the python
+  methods.
+*/
+
+#ifndef SWIG_PYTHON_DIRECTOR_NO_VTABLE
+#ifndef SWIG_PYTHON_DIRECTOR_VTABLE
+#define SWIG_PYTHON_DIRECTOR_VTABLE
+#endif
+#endif
+
+
+
+/*
+  Use -DSWIG_DIRECTOR_NO_UEH if you prefer to avoid the use of the
+  Undefined Exception Handler provided by swift
+*/
+#ifndef SWIG_DIRECTOR_NO_UEH
+#ifndef SWIG_DIRECTOR_UEH
+#define SWIG_DIRECTOR_UEH
+#endif
+#endif
+
+
+/*
+  Use -DSWIG_DIRECTOR_STATIC if you prefer to avoid the use of the
+  'Swig' namespace. This could be useful for multi-modules projects.
+*/
+#ifdef SWIG_DIRECTOR_STATIC
+/* Force anonymous (static) namespace */
+#define Swig
+#endif
+
+
+/*
+  Use -DSWIG_DIRECTOR_NORTTI if you prefer to avoid the use of the
+  native C++ RTTI and dynamic_cast<>. But be aware that directors
+  could stop working when using this option.
+*/
+#ifdef SWIG_DIRECTOR_NORTTI
+/* 
+   When we don't use the native C++ RTTI, we implement a minimal one
+   only for Directors.
+*/
+# ifndef SWIG_DIRECTOR_RTDIR
+# define SWIG_DIRECTOR_RTDIR
+#include <map>
+
+namespace Swig {
+  class Director;
+  SWIGINTERN std::map<void*,Director*>& get_rtdir_map() {
+    static std::map<void*,Director*> rtdir_map;
+    return rtdir_map;
+  }
+
+  SWIGINTERNINLINE void set_rtdir(void *vptr, Director *rtdir) {
+    get_rtdir_map()[vptr] = rtdir;
+  }
+
+  SWIGINTERNINLINE Director *get_rtdir(void *vptr) {
+    std::map<void*,Director*>::const_iterator pos = get_rtdir_map().find(vptr);
+    Director *rtdir = (pos != get_rtdir_map().end()) ? pos->second : 0;
+    return rtdir;
+  }
+}
+# endif /* SWIG_DIRECTOR_RTDIR */
+
+# define SWIG_DIRECTOR_CAST(ARG) Swig::get_rtdir(static_cast<void*>(ARG))
+# define SWIG_DIRECTOR_RGTR(ARG1, ARG2) Swig::set_rtdir(static_cast<void*>(ARG1), ARG2)
+
+#else
+
+# define SWIG_DIRECTOR_CAST(ARG) dynamic_cast<Swig::Director *>(ARG)
+# define SWIG_DIRECTOR_RGTR(ARG1, ARG2)
+
+#endif /* SWIG_DIRECTOR_NORTTI */
+
+extern "C" {
+  struct swig_type_info;
+}
+
+namespace Swig {  
+
+  /* memory handler */
+  struct GCItem 
+  {
+    virtual ~GCItem() {}
+
+    virtual int get_own() const
+    {
+      return 0;
+    }
+  };
+
+  struct GCItem_var
+  {
+    GCItem_var(GCItem *item = 0) : _item(item)
+    {
+    }
+
+    GCItem_var& operator=(GCItem *item)
+    {
+      GCItem *tmp = _item;
+      _item = item;
+      delete tmp;
+      return *this;
+    }
+
+    ~GCItem_var() 
+    {
+      delete _item;
+    }
+    
+    GCItem * operator->() const
+    {
+      return _item;
+    }
+    
+  private:
+    GCItem *_item;
+  };
+  
+  struct GCItem_Object : GCItem
+  {
+    GCItem_Object(int own) : _own(own)
+    {
+    }
+    
+    virtual ~GCItem_Object() 
+    {
+    }
+
+    int get_own() const
+    {
+      return _own;
+    }
+    
+  private:
+    int _own;
+  };
+
+  template <typename Type>
+  struct GCItem_T : GCItem
+  {
+    GCItem_T(Type *ptr) : _ptr(ptr)
+    {
+    }
+    
+    virtual ~GCItem_T() 
+    {
+      delete _ptr;
+    }
+    
+  private:
+    Type *_ptr;
+  };
+
+  template <typename Type>
+  struct GCArray_T : GCItem
+  {
+    GCArray_T(Type *ptr) : _ptr(ptr)
+    {
+    }
+    
+    virtual ~GCArray_T() 
+    {
+      delete[] _ptr;
+    }
+    
+  private:
+    Type *_ptr;
+  };
+
+  /* base class for director exceptions */
+  class DirectorException {
+  protected:
+    std::string swig_msg;
+  public:
+    DirectorException(PyObject *error, const char* hdr ="", const char* msg ="") 
+      : swig_msg(hdr)
+    {
+      SWIG_PYTHON_THREAD_BEGIN_BLOCK; 
+      if (strlen(msg)) {
+        swig_msg += " ";
+        swig_msg += msg;
+      }
+      if (!PyErr_Occurred()) {
+        PyErr_SetString(error, getMessage());
+      }
+      SWIG_PYTHON_THREAD_END_BLOCK; 
+    }
+
+    const char *getMessage() const
+    { 
+      return swig_msg.c_str(); 
+    }
+
+    static void raise(PyObject *error, const char *msg) 
+    {
+      throw DirectorException(error, msg);
+    }
+
+    static void raise(const char *msg) 
+    {
+      raise(PyExc_RuntimeError, msg);
+    }
+  };
+
+  /* unknown exception handler  */
+  class UnknownExceptionHandler 
+  {
+#ifdef SWIG_DIRECTOR_UEH
+    static void handler()  {
+      try {
+        throw;
+      } catch (DirectorException& e) {
+        std::cerr << "SWIG Director exception caught:" << std::endl
+                  << e.getMessage() << std::endl;
+      } catch (std::exception& e) {
+        std::cerr << "std::exception caught: "<< e.what() << std::endl;
+      } catch (...) {
+        std::cerr << "Unknown exception caught." << std::endl;
+      }
+      
+      std::cerr << std::endl
+                << "Python interpreter traceback:" << std::endl;
+      PyErr_Print();
+      std::cerr << std::endl;
+      
+      std::cerr << "This exception was caught by the SWIG unexpected exception handler." << std::endl
+                << "Try using %feature(\"director:except\") to avoid reaching this point." << std::endl
+                << std::endl
+                << "Exception is being re-thrown, program will like abort/terminate." << std::endl;
+      throw;
+    }
+
+  public:
+    
+    std::unexpected_handler old;
+    UnknownExceptionHandler(std::unexpected_handler nh = handler)
+    {
+      old = std::set_unexpected(nh);
+    }
+
+    ~UnknownExceptionHandler()
+    {
+      std::set_unexpected(old);
+    }
+#endif
+  };
+
+  /* type mismatch in the return value from a python method call */
+  class DirectorTypeMismatchException : public Swig::DirectorException {
+  public:
+    DirectorTypeMismatchException(PyObject *error, const char* msg="") 
+      : Swig::DirectorException(error, "SWIG director type mismatch", msg)
+    {
+    }
+
+    DirectorTypeMismatchException(const char* msg="") 
+      : Swig::DirectorException(PyExc_TypeError, "SWIG director type mismatch", msg)
+    {
+    }
+
+    static void raise(PyObject *error, const char *msg)
+    {
+      throw DirectorTypeMismatchException(error, msg);
+    }
+
+    static void raise(const char *msg)
+    {
+      throw DirectorTypeMismatchException(msg);
+    }
+  };
+
+  /* any python exception that occurs during a director method call */
+  class DirectorMethodException : public Swig::DirectorException {
+  public:
+    DirectorMethodException(const char* msg = "") 
+      : DirectorException(PyExc_RuntimeError, "SWIG director method error.", msg)
+    {
+    }    
+
+    static void raise(const char *msg)
+    {
+      throw DirectorMethodException(msg);
+    }
+  };
+
+  /* attempt to call a pure virtual method via a director method */
+  class DirectorPureVirtualException : public Swig::DirectorException
+  {
+  public:
+    DirectorPureVirtualException(const char* msg = "") 
+      : DirectorException(PyExc_RuntimeError, "SWIG director pure virtual method called", msg)
+    { 
+    }
+
+    static void raise(const char *msg) 
+    {
+      throw DirectorPureVirtualException(msg);
+    }
+  };
+
+
+#if defined(SWIG_PYTHON_THREADS)
+/*  __THREAD__ is the old macro to activate some thread support */
+# if !defined(__THREAD__)
+#   define __THREAD__ 1
+# endif
+#endif
+
+#ifdef __THREAD__
+# include "pythread.h"
+  class Guard
+  {
+    PyThread_type_lock & mutex_;
+    
+  public:
+    Guard(PyThread_type_lock & mutex) : mutex_(mutex)
+    {
+      PyThread_acquire_lock(mutex_, WAIT_LOCK);
+    }
+    
+    ~Guard()
+    {
+      PyThread_release_lock(mutex_);
+    }
+  };
+# define SWIG_GUARD(mutex) Guard _guard(mutex)
+#else
+# define SWIG_GUARD(mutex) 
+#endif
+
+  /* director base class */
+  class Director {
+  private:
+    /* pointer to the wrapped python object */
+    PyObject* swig_self;
+    /* flag indicating whether the object is owned by python or c++ */
+    mutable bool swig_disown_flag;
+
+    /* decrement the reference count of the wrapped python object */
+    void swig_decref() const { 
+      if (swig_disown_flag) {
+        SWIG_PYTHON_THREAD_BEGIN_BLOCK; 
+        Py_DECREF(swig_self); 
+        SWIG_PYTHON_THREAD_END_BLOCK; 
+      }
+    }
+
+  public:
+    /* wrap a python object, optionally taking ownership */
+    Director(PyObject* self) : swig_self(self), swig_disown_flag(false) {
+      swig_incref();
+    }
+
+
+    /* discard our reference at destruction */
+    virtual ~Director() {
+      swig_decref(); 
+    }
+
+
+    /* return a pointer to the wrapped python object */
+    PyObject *swig_get_self() const { 
+      return swig_self; 
+    }
+
+    /* acquire ownership of the wrapped python object (the sense of "disown"
+     * is from python) */
+    void swig_disown() const { 
+      if (!swig_disown_flag) { 
+        swig_disown_flag=true;
+        swig_incref(); 
+      } 
+    }
+
+    /* increase the reference count of the wrapped python object */
+    void swig_incref() const { 
+      if (swig_disown_flag) {
+        Py_INCREF(swig_self); 
+      }
+    }
+
+    /* methods to implement pseudo protected director members */
+    virtual bool swig_get_inner(const char* /* protected_method_name */) const {
+      return true;
+    }
+    
+    virtual void swig_set_inner(const char* /* protected_method_name */, bool /* val */) const {
+    }
+
+  /* ownership management */
+  private:
+    typedef std::map<void*, GCItem_var> swig_ownership_map;
+    mutable swig_ownership_map swig_owner;
+#ifdef __THREAD__
+    static PyThread_type_lock swig_mutex_own;
+#endif
+
+  public:
+    template <typename Type>
+    void swig_acquire_ownership_array(Type *vptr)  const
+    {
+      if (vptr) {
+        SWIG_GUARD(swig_mutex_own);
+        swig_owner[vptr] = new GCArray_T<Type>(vptr);
+      }
+    }
+    
+    template <typename Type>
+    void swig_acquire_ownership(Type *vptr)  const
+    {
+      if (vptr) {
+        SWIG_GUARD(swig_mutex_own);
+        swig_owner[vptr] = new GCItem_T<Type>(vptr);
+      }
+    }
+
+    void swig_acquire_ownership_obj(void *vptr, int own) const
+    {
+      if (vptr && own) {
+        SWIG_GUARD(swig_mutex_own);
+        swig_owner[vptr] = new GCItem_Object(own);
+      }
+    }
+    
+    int swig_release_ownership(void *vptr) const
+    {
+      int own = 0;
+      if (vptr) {
+        SWIG_GUARD(swig_mutex_own);
+        swig_ownership_map::iterator iter = swig_owner.find(vptr);
+        if (iter != swig_owner.end()) {
+          own = iter->second->get_own();
+          swig_owner.erase(iter);
+        }
+      }
+      return own;
+    }
+  };
+
+#ifdef __THREAD__
+  PyThread_type_lock Director::swig_mutex_own = PyThread_allocate_lock();
+#endif
+}
+
+#endif /* __cplusplus */
+
+
+#endif
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
@@ -3500,6 +3973,612 @@ bool IsNewDataAvailable()
 Watchdog *GetWatchdog()
 {
     return &MyRobotBase::getInstance().GetWatchdog();
+}
+
+
+
+
+/* ---------------------------------------------------
+ * C++ director class methods
+ * --------------------------------------------------- */
+
+#include "wpilib_wrap.h"
+
+SwigDirector_SpeedController::SwigDirector_SpeedController(PyObject *self): SpeedController(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((SpeedController *)this, this); 
+}
+
+
+
+
+SwigDirector_SpeedController::~SwigDirector_SpeedController() {
+}
+
+void SwigDirector_SpeedController::Set(float speed) {
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_float(static_cast< float >(speed));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SpeedController.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "Set";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"Set", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SpeedController.Set'");
+    }
+  }
+}
+
+
+float SwigDirector_SpeedController::Get() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SpeedController.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 1;
+  const char * const swig_method_name = "Get";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "Get", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SpeedController.Get'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+SwigDirector_PIDOutput::SwigDirector_PIDOutput(PyObject *self): PIDOutput(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((PIDOutput *)this, this); 
+}
+
+
+
+
+void SwigDirector_PIDOutput::PIDWrite(float output) {
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_float(static_cast< float >(output));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call PIDOutput.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "PIDWrite";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"PIDWrite", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'PIDOutput.PIDWrite'");
+    }
+  }
+}
+
+
+SwigDirector_PIDSource::SwigDirector_PIDSource(PyObject *self): PIDSource(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((PIDSource *)this, this); 
+}
+
+
+
+
+double SwigDirector_PIDSource::PIDGet() {
+  double c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call PIDSource.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "PIDGet";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "PIDGet", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'PIDSource.PIDGet'");
+    }
+  }
+  double swig_val;
+  int swig_res = SWIG_AsVal_double(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""double""'");
+  }
+  c_result = static_cast< double >(swig_val);
+  return (double) c_result;
+}
+
+
+SwigDirector_Joystick::SwigDirector_Joystick(PyObject *self, UINT32 port): Joystick(port), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((Joystick *)this, this); 
+}
+
+
+
+
+SwigDirector_Joystick::SwigDirector_Joystick(PyObject *self, UINT32 port, UINT32 numAxisTypes, UINT32 numButtonTypes): Joystick(port, numAxisTypes, numButtonTypes), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((Joystick *)this, this); 
+}
+
+
+
+
+SwigDirector_Joystick::~SwigDirector_Joystick() {
+}
+
+float SwigDirector_Joystick::GetX(GenericHID::JoystickHand hand) {
+  float c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(hand));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "GetX";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetX", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetX'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetY(GenericHID::JoystickHand hand) {
+  float c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(hand));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 2;
+  const char * const swig_method_name = "GetY";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetY", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetY'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetZ() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 4;
+  const char * const swig_method_name = "GetZ";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetZ", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetZ'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetTwist() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 5;
+  const char * const swig_method_name = "GetTwist";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetTwist", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetTwist'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetThrottle() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 6;
+  const char * const swig_method_name = "GetThrottle";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetThrottle", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetThrottle'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetRawAxis(UINT32 axis) {
+  float c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(axis));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 7;
+  const char * const swig_method_name = "GetRawAxis";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetRawAxis", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetRawAxis'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+bool SwigDirector_Joystick::GetTrigger(GenericHID::JoystickHand hand) {
+  bool c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(hand));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 8;
+  const char * const swig_method_name = "GetTrigger";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetTrigger", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetTrigger'");
+    }
+  }
+  bool swig_val;
+  int swig_res = SWIG_AsVal_bool(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""bool""'");
+  }
+  c_result = static_cast< bool >(swig_val);
+  return (bool) c_result;
+}
+
+
+bool SwigDirector_Joystick::GetTop(GenericHID::JoystickHand hand) {
+  bool c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(hand));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 10;
+  const char * const swig_method_name = "GetTop";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetTop", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetTop'");
+    }
+  }
+  bool swig_val;
+  int swig_res = SWIG_AsVal_bool(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""bool""'");
+  }
+  c_result = static_cast< bool >(swig_val);
+  return (bool) c_result;
+}
+
+
+bool SwigDirector_Joystick::GetBumper(GenericHID::JoystickHand hand) {
+  bool c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(hand));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 12;
+  const char * const swig_method_name = "GetBumper";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetBumper", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetBumper'");
+    }
+  }
+  bool swig_val;
+  int swig_res = SWIG_AsVal_bool(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""bool""'");
+  }
+  c_result = static_cast< bool >(swig_val);
+  return (bool) c_result;
+}
+
+
+bool SwigDirector_Joystick::GetRawButton(UINT32 button) {
+  bool c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(button));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 14;
+  const char * const swig_method_name = "GetRawButton";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetRawButton", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetRawButton'");
+    }
+  }
+  bool swig_val;
+  int swig_res = SWIG_AsVal_bool(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""bool""'");
+  }
+  c_result = static_cast< bool >(swig_val);
+  return (bool) c_result;
+}
+
+
+float SwigDirector_Joystick::GetAxis(Joystick::AxisType axis) {
+  float c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(axis));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 15;
+  const char * const swig_method_name = "GetAxis";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetAxis", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetAxis'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+bool SwigDirector_Joystick::GetButton(Joystick::ButtonType button) {
+  bool c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_From_int(static_cast< int >(button));
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 16;
+  const char * const swig_method_name = "GetButton";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"GetButton", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetButton'");
+    }
+  }
+  bool swig_val;
+  int swig_res = SWIG_AsVal_bool(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""bool""'");
+  }
+  c_result = static_cast< bool >(swig_val);
+  return (bool) c_result;
+}
+
+
+float SwigDirector_Joystick::GetMagnitude() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 17;
+  const char * const swig_method_name = "GetMagnitude";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetMagnitude", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetMagnitude'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetDirectionRadians() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 18;
+  const char * const swig_method_name = "GetDirectionRadians";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetDirectionRadians", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetDirectionRadians'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
+}
+
+
+float SwigDirector_Joystick::GetDirectionDegrees() {
+  float c_result;
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call Joystick.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 19;
+  const char * const swig_method_name = "GetDirectionDegrees";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, NULL, NULL);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *) "GetDirectionDegrees", NULL);
+#endif
+  if (!result) {
+    PyObject *error = PyErr_Occurred();
+    if (error) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'Joystick.GetDirectionDegrees'");
+    }
+  }
+  float swig_val;
+  int swig_res = SWIG_AsVal_float(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""float""'");
+  }
+  c_result = static_cast< float >(swig_val);
+  return (float) c_result;
 }
 
 
@@ -5150,6 +6229,8 @@ SWIGINTERN PyObject *_wrap_SpeedController_Set(PyObject *SWIGUNUSEDPARM(self), P
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:SpeedController_Set",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SpeedController, 0 |  0 );
@@ -5162,7 +6243,17 @@ SWIGINTERN PyObject *_wrap_SpeedController_Set(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SpeedController_Set" "', argument " "2"" of type '" "float""'");
   } 
   arg2 = static_cast< float >(val2);
-  (arg1)->Set(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      Swig::DirectorPureVirtualException::raise("SpeedController::Set");
+    } else {
+      (arg1)->Set(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -5176,6 +6267,8 @@ SWIGINTERN PyObject *_wrap_SpeedController_Get(PyObject *SWIGUNUSEDPARM(self), P
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:SpeedController_Get",&obj0)) SWIG_fail;
@@ -5184,8 +6277,66 @@ SWIGINTERN PyObject *_wrap_SpeedController_Get(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SpeedController_Get" "', argument " "1"" of type '" "SpeedController *""'"); 
   }
   arg1 = reinterpret_cast< SpeedController * >(argp1);
-  result = (float)(arg1)->Get();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      Swig::DirectorPureVirtualException::raise("SpeedController::Get");
+    } else {
+      result = (float)(arg1)->Get();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_SpeedController(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  SpeedController *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_SpeedController",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (SpeedController *)new SwigDirector_SpeedController(arg1); 
+  } else {
+    SWIG_SetErrorMsg(PyExc_RuntimeError,"accessing abstract class or protected constructor"); 
+    SWIG_fail;
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SpeedController, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_SpeedController(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SpeedController *arg1 = (SpeedController *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_SpeedController",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SpeedController, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_SpeedController" "', argument " "1"" of type '" "SpeedController *""'"); 
+  }
+  arg1 = reinterpret_cast< SpeedController * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -6155,6 +7306,8 @@ SWIGINTERN PyObject *_wrap_PIDOutput_PIDWrite(PyObject *SWIGUNUSEDPARM(self), Py
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:PIDOutput_PIDWrite",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PIDOutput, 0 |  0 );
@@ -6167,8 +7320,41 @@ SWIGINTERN PyObject *_wrap_PIDOutput_PIDWrite(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PIDOutput_PIDWrite" "', argument " "2"" of type '" "float""'");
   } 
   arg2 = static_cast< float >(val2);
-  (arg1)->PIDWrite(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      Swig::DirectorPureVirtualException::raise("PIDOutput::PIDWrite");
+    } else {
+      (arg1)->PIDWrite(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_PIDOutput(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  PIDOutput *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_PIDOutput",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (PIDOutput *)new SwigDirector_PIDOutput(arg1); 
+  } else {
+    SWIG_SetErrorMsg(PyExc_RuntimeError,"accessing abstract class or protected constructor"); 
+    SWIG_fail;
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PIDOutput, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -6196,6 +7382,31 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_disown_PIDOutput(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PIDOutput *arg1 = (PIDOutput *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_PIDOutput",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PIDOutput, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_PIDOutput" "', argument " "1"" of type '" "PIDOutput *""'"); 
+  }
+  arg1 = reinterpret_cast< PIDOutput * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *PIDOutput_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -6209,6 +7420,8 @@ SWIGINTERN PyObject *_wrap_PIDSource_PIDGet(PyObject *SWIGUNUSEDPARM(self), PyOb
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   double result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:PIDSource_PIDGet",&obj0)) SWIG_fail;
@@ -6217,8 +7430,41 @@ SWIGINTERN PyObject *_wrap_PIDSource_PIDGet(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PIDSource_PIDGet" "', argument " "1"" of type '" "PIDSource *""'"); 
   }
   arg1 = reinterpret_cast< PIDSource * >(argp1);
-  result = (double)(arg1)->PIDGet();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      Swig::DirectorPureVirtualException::raise("PIDSource::PIDGet");
+    } else {
+      result = (double)(arg1)->PIDGet();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_double(static_cast< double >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_new_PIDSource(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  PIDSource *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_PIDSource",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (PIDSource *)new SwigDirector_PIDSource(arg1); 
+  } else {
+    SWIG_SetErrorMsg(PyExc_RuntimeError,"accessing abstract class or protected constructor"); 
+    SWIG_fail;
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PIDSource, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -6239,6 +7485,31 @@ SWIGINTERN PyObject *_wrap_delete_PIDSource(PyObject *SWIGUNUSEDPARM(self), PyOb
   }
   arg1 = reinterpret_cast< PIDSource * >(argp1);
   delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_PIDSource(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PIDSource *arg1 = (PIDSource *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_PIDSource",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PIDSource, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_PIDSource" "', argument " "1"" of type '" "PIDSource *""'"); 
+  }
+  arg1 = reinterpret_cast< PIDSource * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
@@ -15824,19 +17095,28 @@ SWIGINTERN PyObject *CANJaguar_swigregister(PyObject *SWIGUNUSEDPARM(self), PyOb
 
 SWIGINTERN PyObject *_wrap_new_Joystick__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  UINT32 arg1 ;
-  unsigned int val1 ;
-  int ecode1 = 0 ;
+  PyObject *arg1 = (PyObject *) 0 ;
+  UINT32 arg2 ;
+  unsigned int val2 ;
+  int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
   Joystick *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:new_Joystick",&obj0)) SWIG_fail;
-  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_Joystick" "', argument " "1"" of type '" "UINT32""'");
+  if (!PyArg_ParseTuple(args,(char *)"OO:new_Joystick",&obj0,&obj1)) SWIG_fail;
+  arg1 = obj0;
+  ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_Joystick" "', argument " "2"" of type '" "UINT32""'");
   } 
-  arg1 = static_cast< UINT32 >(val1);
-  result = (Joystick *)new Joystick(arg1);
+  arg2 = static_cast< UINT32 >(val2);
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (Joystick *)new SwigDirector_Joystick(arg1,arg2); 
+  } else {
+    result = (Joystick *)new Joystick(arg2); 
+  }
+  
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Joystick, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -15846,26 +17126,24 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_Joystick__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  UINT32 arg1 ;
+  PyObject *arg1 = (PyObject *) 0 ;
   UINT32 arg2 ;
   UINT32 arg3 ;
-  unsigned int val1 ;
-  int ecode1 = 0 ;
+  UINT32 arg4 ;
   unsigned int val2 ;
   int ecode2 = 0 ;
   unsigned int val3 ;
   int ecode3 = 0 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   Joystick *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_Joystick",&obj0,&obj1,&obj2)) SWIG_fail;
-  ecode1 = SWIG_AsVal_unsigned_SS_int(obj0, &val1);
-  if (!SWIG_IsOK(ecode1)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "new_Joystick" "', argument " "1"" of type '" "UINT32""'");
-  } 
-  arg1 = static_cast< UINT32 >(val1);
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:new_Joystick",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  arg1 = obj0;
   ecode2 = SWIG_AsVal_unsigned_SS_int(obj1, &val2);
   if (!SWIG_IsOK(ecode2)) {
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "new_Joystick" "', argument " "2"" of type '" "UINT32""'");
@@ -15876,7 +17154,18 @@ SWIGINTERN PyObject *_wrap_new_Joystick__SWIG_1(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_Joystick" "', argument " "3"" of type '" "UINT32""'");
   } 
   arg3 = static_cast< UINT32 >(val3);
-  result = (Joystick *)new Joystick(arg1,arg2,arg3);
+  ecode4 = SWIG_AsVal_unsigned_SS_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_Joystick" "', argument " "4"" of type '" "UINT32""'");
+  } 
+  arg4 = static_cast< UINT32 >(val4);
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (Joystick *)new SwigDirector_Joystick(arg1,arg2,arg3,arg4); 
+  } else {
+    result = (Joystick *)new Joystick(arg2,arg3,arg4); 
+  }
+  
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Joystick, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
@@ -15886,30 +17175,30 @@ fail:
 
 SWIGINTERN PyObject *_wrap_new_Joystick(PyObject *self, PyObject *args) {
   int argc;
-  PyObject *argv[4];
+  PyObject *argv[5];
   int ii;
   
   if (!PyTuple_Check(args)) SWIG_fail;
   argc = (int)PyObject_Length(args);
-  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
+  for (ii = 0; (ii < argc) && (ii < 4); ii++) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
   }
-  if (argc == 1) {
+  if (argc == 2) {
     int _v;
-    {
-      int res = SWIG_AsVal_unsigned_SS_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
+    _v = (argv[0] != 0);
     if (_v) {
-      return _wrap_new_Joystick__SWIG_0(self, args);
+      {
+        int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_new_Joystick__SWIG_0(self, args);
+      }
     }
   }
-  if (argc == 3) {
+  if (argc == 4) {
     int _v;
-    {
-      int res = SWIG_AsVal_unsigned_SS_int(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
+    _v = (argv[0] != 0);
     if (_v) {
       {
         int res = SWIG_AsVal_unsigned_SS_int(argv[1], NULL);
@@ -15921,7 +17210,13 @@ SWIGINTERN PyObject *_wrap_new_Joystick(PyObject *self, PyObject *args) {
           _v = SWIG_CheckState(res);
         }
         if (_v) {
-          return _wrap_new_Joystick__SWIG_1(self, args);
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_new_Joystick__SWIG_1(self, args);
+          }
         }
       }
     }
@@ -15930,8 +17225,8 @@ SWIGINTERN PyObject *_wrap_new_Joystick(PyObject *self, PyObject *args) {
 fail:
   SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number or type of arguments for overloaded function 'new_Joystick'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    Joystick(UINT32)\n"
-    "    Joystick(UINT32,UINT32,UINT32)\n");
+    "    Joystick(PyObject *,UINT32)\n"
+    "    Joystick(PyObject *,UINT32,UINT32,UINT32)\n");
   return NULL;
 }
 
@@ -16037,6 +17332,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetX__SWIG_0(PyObject *SWIGUNUSEDPARM(self),
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetX",&obj0,&obj1)) SWIG_fail;
@@ -16050,7 +17347,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetX__SWIG_0(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetX" "', argument " "2"" of type '" "GenericHID::JoystickHand""'");
   } 
   arg2 = static_cast< GenericHID::JoystickHand >(val2);
-  result = (float)(arg1)->GetX(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetX(arg2);
+    } else {
+      result = (float)(arg1)->GetX(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16064,6 +17371,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetX__SWIG_1(PyObject *SWIGUNUSEDPARM(self),
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetX",&obj0)) SWIG_fail;
@@ -16072,7 +17381,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetX__SWIG_1(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetX" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetX();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetX();
+    } else {
+      result = (float)(arg1)->GetX();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16134,6 +17453,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetY__SWIG_0(PyObject *SWIGUNUSEDPARM(self),
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetY",&obj0,&obj1)) SWIG_fail;
@@ -16147,7 +17468,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetY__SWIG_0(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetY" "', argument " "2"" of type '" "GenericHID::JoystickHand""'");
   } 
   arg2 = static_cast< GenericHID::JoystickHand >(val2);
-  result = (float)(arg1)->GetY(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetY(arg2);
+    } else {
+      result = (float)(arg1)->GetY(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16161,6 +17492,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetY__SWIG_1(PyObject *SWIGUNUSEDPARM(self),
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetY",&obj0)) SWIG_fail;
@@ -16169,7 +17502,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetY__SWIG_1(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetY" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetY();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetY();
+    } else {
+      result = (float)(arg1)->GetY();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16227,6 +17570,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetZ(PyObject *SWIGUNUSEDPARM(self), PyObjec
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetZ",&obj0)) SWIG_fail;
@@ -16235,7 +17580,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetZ(PyObject *SWIGUNUSEDPARM(self), PyObjec
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetZ" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetZ();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetZ();
+    } else {
+      result = (float)(arg1)->GetZ();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16249,6 +17604,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTwist(PyObject *SWIGUNUSEDPARM(self), PyO
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetTwist",&obj0)) SWIG_fail;
@@ -16257,7 +17614,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTwist(PyObject *SWIGUNUSEDPARM(self), PyO
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetTwist" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetTwist();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetTwist();
+    } else {
+      result = (float)(arg1)->GetTwist();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16271,6 +17638,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetThrottle(PyObject *SWIGUNUSEDPARM(self), 
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetThrottle",&obj0)) SWIG_fail;
@@ -16279,7 +17648,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetThrottle(PyObject *SWIGUNUSEDPARM(self), 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetThrottle" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetThrottle();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetThrottle();
+    } else {
+      result = (float)(arg1)->GetThrottle();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16297,6 +17676,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetAxis(PyObject *SWIGUNUSEDPARM(self), PyOb
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetAxis",&obj0,&obj1)) SWIG_fail;
@@ -16310,7 +17691,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetAxis(PyObject *SWIGUNUSEDPARM(self), PyOb
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetAxis" "', argument " "2"" of type '" "Joystick::AxisType""'");
   } 
   arg2 = static_cast< Joystick::AxisType >(val2);
-  result = (float)(arg1)->GetAxis(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetAxis(arg2);
+    } else {
+      result = (float)(arg1)->GetAxis(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16328,6 +17719,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetRawAxis(PyObject *SWIGUNUSEDPARM(self), P
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetRawAxis",&obj0,&obj1)) SWIG_fail;
@@ -16341,7 +17734,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetRawAxis(PyObject *SWIGUNUSEDPARM(self), P
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetRawAxis" "', argument " "2"" of type '" "UINT32""'");
   } 
   arg2 = static_cast< UINT32 >(val2);
-  result = (float)(arg1)->GetRawAxis(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetRawAxis(arg2);
+    } else {
+      result = (float)(arg1)->GetRawAxis(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16359,6 +17762,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTrigger__SWIG_0(PyObject *SWIGUNUSEDPARM(
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetTrigger",&obj0,&obj1)) SWIG_fail;
@@ -16372,7 +17777,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTrigger__SWIG_0(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetTrigger" "', argument " "2"" of type '" "GenericHID::JoystickHand""'");
   } 
   arg2 = static_cast< GenericHID::JoystickHand >(val2);
-  result = (bool)(arg1)->GetTrigger(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetTrigger(arg2);
+    } else {
+      result = (bool)(arg1)->GetTrigger(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16386,6 +17801,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTrigger__SWIG_1(PyObject *SWIGUNUSEDPARM(
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetTrigger",&obj0)) SWIG_fail;
@@ -16394,7 +17811,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTrigger__SWIG_1(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetTrigger" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (bool)(arg1)->GetTrigger();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetTrigger();
+    } else {
+      result = (bool)(arg1)->GetTrigger();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16456,6 +17883,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTop__SWIG_0(PyObject *SWIGUNUSEDPARM(self
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetTop",&obj0,&obj1)) SWIG_fail;
@@ -16469,7 +17898,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTop__SWIG_0(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetTop" "', argument " "2"" of type '" "GenericHID::JoystickHand""'");
   } 
   arg2 = static_cast< GenericHID::JoystickHand >(val2);
-  result = (bool)(arg1)->GetTop(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetTop(arg2);
+    } else {
+      result = (bool)(arg1)->GetTop(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16483,6 +17922,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTop__SWIG_1(PyObject *SWIGUNUSEDPARM(self
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetTop",&obj0)) SWIG_fail;
@@ -16491,7 +17932,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetTop__SWIG_1(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetTop" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (bool)(arg1)->GetTop();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetTop();
+    } else {
+      result = (bool)(arg1)->GetTop();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16553,6 +18004,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetBumper__SWIG_0(PyObject *SWIGUNUSEDPARM(s
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetBumper",&obj0,&obj1)) SWIG_fail;
@@ -16566,7 +18019,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetBumper__SWIG_0(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetBumper" "', argument " "2"" of type '" "GenericHID::JoystickHand""'");
   } 
   arg2 = static_cast< GenericHID::JoystickHand >(val2);
-  result = (bool)(arg1)->GetBumper(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetBumper(arg2);
+    } else {
+      result = (bool)(arg1)->GetBumper(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16580,6 +18043,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetBumper__SWIG_1(PyObject *SWIGUNUSEDPARM(s
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetBumper",&obj0)) SWIG_fail;
@@ -16588,7 +18053,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetBumper__SWIG_1(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetBumper" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (bool)(arg1)->GetBumper();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetBumper();
+    } else {
+      result = (bool)(arg1)->GetBumper();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16650,6 +18125,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetButton(PyObject *SWIGUNUSEDPARM(self), Py
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetButton",&obj0,&obj1)) SWIG_fail;
@@ -16663,7 +18140,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetButton(PyObject *SWIGUNUSEDPARM(self), Py
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetButton" "', argument " "2"" of type '" "Joystick::ButtonType""'");
   } 
   arg2 = static_cast< Joystick::ButtonType >(val2);
-  result = (bool)(arg1)->GetButton(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetButton(arg2);
+    } else {
+      result = (bool)(arg1)->GetButton(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16681,6 +18168,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetRawButton(PyObject *SWIGUNUSEDPARM(self),
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   bool result;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:Joystick_GetRawButton",&obj0,&obj1)) SWIG_fail;
@@ -16694,7 +18183,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetRawButton(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "Joystick_GetRawButton" "', argument " "2"" of type '" "UINT32""'");
   } 
   arg2 = static_cast< UINT32 >(val2);
-  result = (bool)(arg1)->GetRawButton(arg2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (bool)(arg1)->Joystick::GetRawButton(arg2);
+    } else {
+      result = (bool)(arg1)->GetRawButton(arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -16708,6 +18207,7 @@ SWIGINTERN PyObject *_wrap_Joystick_GetStickForPort(PyObject *SWIGUNUSEDPARM(sel
   unsigned int val1 ;
   int ecode1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
   Joystick *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetStickForPort",&obj0)) SWIG_fail;
@@ -16717,7 +18217,13 @@ SWIGINTERN PyObject *_wrap_Joystick_GetStickForPort(PyObject *SWIGUNUSEDPARM(sel
   } 
   arg1 = static_cast< UINT32 >(val1);
   result = (Joystick *)Joystick::GetStickForPort(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Joystick, 0 |  0 );
+  director = SWIG_DIRECTOR_CAST(result);
+  if (director) {
+    resultobj = director->swig_get_self();
+    Py_INCREF(resultobj);
+  } else {
+    resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Joystick, 0 |  0 );
+  }
   return resultobj;
 fail:
   return NULL;
@@ -16730,6 +18236,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetMagnitude(PyObject *SWIGUNUSEDPARM(self),
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetMagnitude",&obj0)) SWIG_fail;
@@ -16738,7 +18246,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetMagnitude(PyObject *SWIGUNUSEDPARM(self),
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetMagnitude" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetMagnitude();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetMagnitude();
+    } else {
+      result = (float)(arg1)->GetMagnitude();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16752,6 +18270,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetDirectionRadians(PyObject *SWIGUNUSEDPARM
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetDirectionRadians",&obj0)) SWIG_fail;
@@ -16760,7 +18280,17 @@ SWIGINTERN PyObject *_wrap_Joystick_GetDirectionRadians(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetDirectionRadians" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetDirectionRadians();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetDirectionRadians();
+    } else {
+      result = (float)(arg1)->GetDirectionRadians();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
   return resultobj;
 fail:
@@ -16774,6 +18304,8 @@ SWIGINTERN PyObject *_wrap_Joystick_GetDirectionDegrees(PyObject *SWIGUNUSEDPARM
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
   float result;
   
   if (!PyArg_ParseTuple(args,(char *)"O:Joystick_GetDirectionDegrees",&obj0)) SWIG_fail;
@@ -16782,8 +18314,43 @@ SWIGINTERN PyObject *_wrap_Joystick_GetDirectionDegrees(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "Joystick_GetDirectionDegrees" "', argument " "1"" of type '" "Joystick *""'"); 
   }
   arg1 = reinterpret_cast< Joystick * >(argp1);
-  result = (float)(arg1)->GetDirectionDegrees();
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (float)(arg1)->Joystick::GetDirectionDegrees();
+    } else {
+      result = (float)(arg1)->GetDirectionDegrees();
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
   resultobj = SWIG_From_float(static_cast< float >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_Joystick(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  Joystick *arg1 = (Joystick *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_Joystick",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_Joystick, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_Joystick" "', argument " "1"" of type '" "Joystick *""'"); 
+  }
+  arg1 = reinterpret_cast< Joystick * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -21985,6 +23552,8 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_SpeedController", _wrap_delete_SpeedController, METH_VARARGS, NULL},
 	 { (char *)"SpeedController_Set", _wrap_SpeedController_Set, METH_VARARGS, NULL},
 	 { (char *)"SpeedController_Get", _wrap_SpeedController_Get, METH_VARARGS, NULL},
+	 { (char *)"new_SpeedController", _wrap_new_SpeedController, METH_VARARGS, NULL},
+	 { (char *)"disown_SpeedController", _wrap_disown_SpeedController, METH_VARARGS, NULL},
 	 { (char *)"SpeedController_swigregister", SpeedController_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_PWM", _wrap_new_PWM, METH_VARARGS, NULL},
 	 { (char *)"delete_PWM", _wrap_delete_PWM, METH_VARARGS, NULL},
@@ -22007,10 +23576,14 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"GenericHID_GetRawButton", _wrap_GenericHID_GetRawButton, METH_VARARGS, NULL},
 	 { (char *)"GenericHID_swigregister", GenericHID_swigregister, METH_VARARGS, NULL},
 	 { (char *)"PIDOutput_PIDWrite", _wrap_PIDOutput_PIDWrite, METH_VARARGS, NULL},
+	 { (char *)"new_PIDOutput", _wrap_new_PIDOutput, METH_VARARGS, NULL},
 	 { (char *)"delete_PIDOutput", _wrap_delete_PIDOutput, METH_VARARGS, NULL},
+	 { (char *)"disown_PIDOutput", _wrap_disown_PIDOutput, METH_VARARGS, NULL},
 	 { (char *)"PIDOutput_swigregister", PIDOutput_swigregister, METH_VARARGS, NULL},
 	 { (char *)"PIDSource_PIDGet", _wrap_PIDSource_PIDGet, METH_VARARGS, NULL},
+	 { (char *)"new_PIDSource", _wrap_new_PIDSource, METH_VARARGS, NULL},
 	 { (char *)"delete_PIDSource", _wrap_delete_PIDSource, METH_VARARGS, NULL},
+	 { (char *)"disown_PIDSource", _wrap_disown_PIDSource, METH_VARARGS, NULL},
 	 { (char *)"PIDSource_swigregister", PIDSource_swigregister, METH_VARARGS, NULL},
 	 { (char *)"Module_GetSlot", _wrap_Module_GetSlot, METH_VARARGS, NULL},
 	 { (char *)"Module_swigregister", Module_swigregister, METH_VARARGS, NULL},
@@ -22300,6 +23873,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"Joystick_GetMagnitude", _wrap_Joystick_GetMagnitude, METH_VARARGS, NULL},
 	 { (char *)"Joystick_GetDirectionRadians", _wrap_Joystick_GetDirectionRadians, METH_VARARGS, NULL},
 	 { (char *)"Joystick_GetDirectionDegrees", _wrap_Joystick_GetDirectionDegrees, METH_VARARGS, NULL},
+	 { (char *)"disown_Joystick", _wrap_disown_Joystick, METH_VARARGS, NULL},
 	 { (char *)"Joystick_swigregister", Joystick_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_PIDController", _wrap_new_PIDController, METH_VARARGS, NULL},
 	 { (char *)"delete_PIDController", _wrap_delete_PIDController, METH_VARARGS, NULL},

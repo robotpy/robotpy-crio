@@ -23,7 +23,7 @@
  *  DEALINGS IN THE SOFTWARE.
  */
 
-%module wpilib
+%module(directors="1") wpilib
 %{
 #include <WPILib/WPILib.h>
 #include <CANJaguar/CANJaguar.h>
@@ -163,6 +163,7 @@ public:
 	virtual bool GetDirection() = 0;
 };
 
+%feature("director") SpeedController;
 class SpeedController
 {
 public:
@@ -209,12 +210,14 @@ public:
 	virtual bool GetRawButton(UINT32 button) = 0;
 };
 
+%feature("director") PIDOutput;
 class PIDOutput
 {
 public:
 	virtual void PIDWrite(float output) = 0;
 };
 
+%feature("director") PIDSource;
 class PIDSource
 {
 public:
@@ -744,6 +747,7 @@ public:
 	UINT32 GetFirmwareVersion();
 };
 
+%feature("director") Joystick;
 class Joystick : public GenericHID
 {
 public:
