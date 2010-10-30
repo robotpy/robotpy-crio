@@ -10,6 +10,7 @@ needs to be copied to the ``/py`` directory on the robot controller.
 * template: A simple template to use as a basis for your own code, no
   real robot functionality.
 * simple: A simple teleop program with 4-motor PWM tank drive.
+* canjaguar-motor: Very simple CAN bus motor control from joystick.
 * canjaguar: A more advanced teleop program with 4-motor CANbus tank drive,
   shifter solenoids, and a compressor.
 
