@@ -219,7 +219,7 @@ def addusersitepackages(known_paths):
     USER_SITE/.. can be used for data.
     """
     global USER_BASE, USER_SITE, ENABLE_USER_SITE
-    env_base = os.environ.get("PYTHONUSERBASE", None)
+    env_base = "/py"
 
     def joinuser(*args):
         return os.path.expanduser(os.path.join(*args))
