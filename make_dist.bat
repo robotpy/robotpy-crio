@@ -8,7 +8,7 @@ mkdir dist\RobotPy-Core\robot\lib
 mkdir dist\RobotPy-Core\robot\ni-rt
 mkdir dist\RobotPy-Core\robot\ni-rt\system
 
-copy README.txt dist\RobotPy-Core\
+copy README-Core.txt dist\RobotPy-Core\
 xcopy /i /e py dist\RobotPy-Core\robot\py
 xcopy /i /e RobotPy\Python\Lib dist\RobotPy-Core\robot\lib\python3.1
 copy RobotPy\PPC603gnu\RobotPy\NonDebug\RobotPy.out dist\RobotPy-Core\robot\ni-rt\system\FRC_UserProgram.out
@@ -22,6 +22,8 @@ mkdir dist\RobotPy-WPILib\robot
 mkdir dist\RobotPy-WPILib\robot\lib
 mkdir dist\RobotPy-WPILib\robot\lib\python3.1
 mkdir dist\RobotPy-WPILib\robot\lib\python3.1\site-packages
+
+copy README-WPILib.txt dist\RobotPy-WPILib\
 
 xcopy /i /e samples dist\RobotPy-WPILib\samples
 

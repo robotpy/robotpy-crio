@@ -12,7 +12,7 @@ About RobotPy
 Robotics Competition`_.  Teams can use this to write their robot code in
 Python, a powerful dynamic programming language.
 
-.. _RobotPy: http://www.tortall.net/projects/robotpy/
+.. _RobotPy: http://firstforge.wpi.edu/sf/projects/robotpy
 .. _Python: http://www.python.org/
 .. _FIRST Robotics Competition: http://www.usfirst.org/
 
@@ -24,22 +24,8 @@ Features
 *  RobotPy provides access to the WPILib class library.
 *  You don't need to use WindRiver once the base code is installed.
 
-Installation
-==============
-
-If you downloaded a release .zip file:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Unzip the release .zip to a temporary directory.
-
-Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
-where XXYY is your team number).  Copy all files and directories in the
-distribution's ``robot`` directory to the root (top level) directory on the
-robot.  Note: this will overwrite any UserProgram.out currently on the robot
-with the Python interpreter.
-
-If you cloned the git repository:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Installation from Source
+==========================
 
 Two steps are required: building the RobotPy interpreter, and building the
 loadable modules.
@@ -50,71 +36,15 @@ Python interpreter on the robot.
 
 To build the loadable modules: Run Start|Programs|Wind River|
 VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
-CD to the directory where you cloned the git repository.  CD to the Modules
-directory.  Run "make".  CD to the Packages directory.  Run "make".
+CD to the directory where you cloned the git repository.  Run "make".
 
-Run ``make_dist.bat``.  Delete the ``dist\robot\ni-rt`` directory tree.
+Run ``make_dist.bat``.  Delete the ``dist\RobotPy-Core\robot\ni-rt``
+directory tree.
 
 Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
-where XXYY is your team number).  Copy the ``dist\robot`` directory tree to
-the root (top level) directory on the robot.
-
-Writing Code
-==============
-
-The default Python bootloader will load ``/py/robot.py`` and try to call a
-function called ``run`` in there.  A basic ``robot.py`` file may look like
-this::
-
-  -- samples/template/robot.py
-  import wpilib
-
-  stick1 = wpilib.Joystick(1)
-
-  def checkRestart():
-      if stick1.GetRawButton(10):
-          raise RuntimeError("Restart")
-
-  def disabled():
-      while wpilib.IsDisabled():
-          checkRestart()
-          wpilib.Wait(0.01)
-
-  def autonomous():
-      while wpilib.IsAutonomous() and wpilib.IsEnabled():
-          checkRestart()
-          wpilib.Wait(0.01)
-
-  def teleop():
-      while wpilib.IsOperatorControl() and wpilib.IsEnabled():
-          checkRestart()
-          wpilib.Wait(0.01)
-
-  def run():
-      """Main loop"""
-      while 1:
-          if wpilib.IsDisabled():
-              print("Running disabled()")
-              disabled()
-              while wpilib.IsDisabled():
-                  wpilib.Wait(0.01)
-          elif wpilib.IsAutonomous():
-              print("Running autonomous()")
-              autonomous()
-              while wpilib.IsAutonomous() and wpilib.IsEnabled():
-                  wpilib.Wait(0.01)
-          else:
-              print("Running teleop()")
-              teleop()
-              while wpilib.IsOperatorControl() and wpilib.IsEnabled():
-                  wpilib.Wait(0.01)
-
-The above code exits (via a RuntimeError exception) if Joystick 1's button
-#10 is pressed.  This is to facilitate code reloads; after copying a new
-``robot.py`` to your robot, pressing this joystick button will exit the old
-version, wait 5 seconds, and then load your new ``robot.py``.
-
-You can find this and other examples of code in the ``samples`` directory.
+where XXYY is your team number).  Copy the ``dist\RobotPy-Core\robot`` and
+``dist\RobotPy-WPILib\robot`` directory trees to the root (top level)
+directory on the robot.
 
 Technical Overview
 ====================
@@ -137,14 +67,11 @@ RobotPy uses the same SWIG wrappers for WPILib as the `FIRST Lua`_ project,
 created by Ross Light, FRC Team 973.
 
 .. _SWIG: http://www.swig.org/
-.. _FIRST Lua: http://redmine.zombiezen.com/projects/firstlua/
+.. _Greyhound Lua: http://redmine.zombiezen.com/projects/greyhoundlua/
 
 Major Differences from standard Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*  No dynamic loading of C code.  vxWorks does have the capability for it, but
-   we haven't seen a need to introduce the complexity.  This restriction may be
-   lifted eventually.
 *  Several Python modules with large and/or incompatible dependencies removed,
    namely: curses, dbm, gdbm, tkinter, nis, ossaudiodev, readline, resource,
    spwd, syslog, termios, audioop, bz2, crypt, grp, ssl, pwd, and mmap.
