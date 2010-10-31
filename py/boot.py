@@ -18,9 +18,6 @@ if __name__ == "__main__":
     if "." not in sys.path:
         sys.path.insert(0, ".")
 
-    # Bring in wpilib before starting rollback importer
-    import wpilib
-
     rollback = RollbackImporter()
     try:
         from robot import run
