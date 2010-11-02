@@ -38,23 +38,20 @@ static void
 RobotTask()
 {
 	/* Initialize the Python interpreter.  Required. */
+	//Py_VerboseFlag = 2;
 	Py_SetProgramName(L"./RobotPy");
 	Py_SetPythonHome(L"/");
 	Py_Initialize();
-	for (;;)
+	puts("starting " ROBOTPY_BOOT);
+	if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
 	{
-		puts("starting " ROBOTPY_BOOT);
-		if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
-		{
-			PyRun_SimpleFile(f, ROBOTPY_BOOT);
-			fclose(f);
-		}
-		else
-			puts("Could not open " ROBOTPY_BOOT);
-
-		puts(ROBOTPY_BOOT " ended; waiting 5 seconds before restart");
-		taskDelay((INT32)((double)sysClkRateGet() * 5.0));
+		PyRun_SimpleFile(f, ROBOTPY_BOOT);
+		fclose(f);
 	}
+	else
+		puts("Could not open " ROBOTPY_BOOT);
+
+	puts(ROBOTPY_BOOT " ended; terminating program");
 	Py_Finalize();
 }
 

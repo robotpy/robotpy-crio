@@ -1,3 +1,5 @@
+import sys
+
 class RollbackImporter:
     def __init__(self):
         "Creates an instance and installs as the global importer"
@@ -8,21 +10,33 @@ class RollbackImporter:
         for modname in newmodules.keys():
             if modname not in self.previousModules:
                 # Force reload when modname next imported
-                del(sys.modules[modname])
+                del sys.modules[modname]
 
 if __name__ == "__main__":
-    import sys
     #print(sys.path)
     if "/py" not in sys.path:
         sys.path.insert(0, "/py")
     if "." not in sys.path:
         sys.path.insert(0, ".")
 
-    rollback = RollbackImporter()
-    try:
-        from robot import run
-        print("Running user code.")
-        run()
-    finally:
-        rollback.uninstall()
+    import traceback
+    import gc
+    import time
+
+    while True:
+        rollback = RollbackImporter()
+        try:
+            from robot import run
+            print("Running user code.")
+            run()
+        except:
+            print("Exception in user code:")
+            print("-"*60)
+            traceback.print_exc(file=sys.stdout)
+            print("-"*60)
+        finally:
+            rollback.uninstall()
+            gc.collect()
+        print("User code ended; waiting 5 seconds before restart")
+        time.sleep(5)
 
