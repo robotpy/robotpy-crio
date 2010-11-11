@@ -13,7 +13,7 @@ xcopy /i /e py dist\RobotPy-Core\robot\py
 xcopy /i /e RobotPy\Python\Lib dist\RobotPy-Core\robot\lib\python3.1
 copy RobotPy\PPC603gnu\RobotPy\NonDebug\RobotPy.out dist\RobotPy-Core\robot\ni-rt\system\FRC_UserProgram.out
 
-mkdir dist\RobotPy-Core\robot\lib\python3.1\dyn-load
+mkdir dist\RobotPy-Core\robot\lib\python3.1\lib-dynload
 for /r Modules %%X in (*.out) do (copy %%X dist\RobotPy-Core\robot\lib\python3.1\lib-dynload)
 
 rem RobotPy-WPILib distribution
