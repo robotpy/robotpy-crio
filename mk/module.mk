@@ -13,6 +13,7 @@ TRACE_FLAG=$(TRACEON:1=)
 
 OBJ_DIR := .
 PRJ_ROOT_DIR := .
+ROBOTPY_BASE ?= ../..
 
 #Global Build Macros
 PROJECT_TYPE = DKM
@@ -30,7 +31,7 @@ CC_ARCH_SPEC = -mcpu=603 -mstrict-align -mno-implicit-fp -mlongcall
 LIBPATH = 
 LIBS = 
 
-IDE_INCLUDES = -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip -I$(PRJ_ROOT_DIR)/../../RobotPy/Python/Include -I$(PRJ_ROOT_DIR)/../../RobotPy/Python -I$(PRJ_ROOT_DIR)/../../RobotPy -I$(PRJ_ROOT_DIR) 
+IDE_INCLUDES = -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip -I$(ROBOTPY_BASE)/RobotPy/Python/Include -I$(ROBOTPY_BASE)/RobotPy/Python -I$(ROBOTPY_BASE)/RobotPy -I$(PRJ_ROOT_DIR) 
 
 IDE_LIBRARIES = 
 
