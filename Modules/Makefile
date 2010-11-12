@@ -26,6 +26,7 @@ all:
 	$(MAKE) -C operator
 	$(MAKE) -C parser
 	$(MAKE) -C pyexpat
+	$(MAKE) -C readline
 	$(MAKE) -C select
 	$(MAKE) -C time
 	$(MAKE) -C unicodedata

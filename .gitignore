@@ -6,6 +6,13 @@
 /Modules/*/*.out
 /Modules/pyexpat/expat/*.d
 /Modules/pyexpat/expat/*.o
+/Modules/readline/readline/config.log
+/Modules/readline/readline/config.status
+/Modules/readline/readline/*.d
+/Modules/readline/readline/*.o
+/Modules/readline/readline/*.a
+/Modules/readline/termcap/*.d
+/Modules/readline/termcap/*.o
 /Packages/*/ctdt.*
 /Packages/*/*.d
 /Packages/*/*.o
