@@ -1,0 +1,125 @@
+FRC 2010 Protocol
+Reverse Engineered by Peter Johnson, FRC Team 294
+
+DS -> Robot:
+
+UDP
+Robot Dst Port 1110
+1024 bytes total
+Sent every 20 ms
+
+0x0-0x49: FRCCommonControlData (80 bytes)
+ - version "10020800" for 2010 DS 1.1 (10.02.08.00)
+0x50-0x72: ?
+...
+0x73 - ?: dynamic blocks (e.g. DriverStationEnhancedIO status_block_t,
+          control_block_t)
+  Each dynamic block:
+    0x0: 8-bit size (number of bytes in block following this one)
+    0x1: 8-bit id
+
+0x3f8 - 0x3fb: 0
+0x3fc - 0x3ff: big endian CRC32 of 0-0x3ff (with 0 in CRC field)
+
+Robot -> DS:
+
+UDP
+DS Dst Port 1150
+1024 bytes (1152 if setUserDsLcdData() called)
+Sent immediately after DS packet received (in response)
+
+0x0: current control byte (echoed copy of FRCCommonControlData.control)
+0x1: Battery voltage (integer portion in BCD)
+     0x37 if no code
+0x2: Battery voltage (fractional portion in BCD)
+     0x37 if no code
+0x3: DS Digital outputs
+0x4-0x7: ?
+0x8-0x9: teamID (big endian integer)
+0xa-0xf: cRIO MAC address, in order, as bytes (e.g. 00,80,2f,11,4d,ac)
+0x10-0x17: FPGA version? "06300800"
+0x18-0x1d: ?
+0x1e-0x1f: current command packet index (echoed copy of FRCCommonControlData.packetIndex)
+0x20: User Data update number (from setStatusData())
+0x21-0x24: User string length (32-bit big endian)
+0x25 - X: User string - setStatusData() userDataHigh
+X+1 - X+4: Error string length (32-bit big endian)
+X+5 - Y: Error string - setErrorData()
+Y+1 - Y+4: User data length (32-bit big endian)
+Y+5 - 0x3d7: User data - setStatusData() userDataLow
+0x3d8 - 0x3f7: overrideIOConfig() data (DSEIO status_block_t), followed by 0s
+0x3f8 - 0x3fb: 0
+0x3fc - 0x3ff: big endian CRC32 of 0-0x3ff (with 0 in CRC field)
+
+If setUserDsLcdData() called:
+0x400: 0x9f
+0x401: 0xff
+0x402 - 0x47f: LCD contents, padded with spaces (0x20)
+               split into 6 lines of 21 chars, top-to-bottom, left-to-right
+
+Robot -> NetConsole
+Destination 10.255.255.255, port 6666
+All data is console output
+
+DS -> Dashboard
+Dashboard Dst Port 1165
+1018 bytes
+
+0x0-0x1: Packet number (big endian)
+0x2: DS Digital inputs
+0x3: DS Digital outputs
+0x4: Battery voltage (integer portion in BCD)
+0x5: Battery voltage (fractional portion in BCD)
+0x6: Current control byte (FRCCommonControlData.control)
+0x7: Error bit field
+0x8: Upper 2 digits of team number as integer (e.g. 2 for 294)
+0x9: Lower 2 digits of team number as integer (e.g. 94 for 294)
+0xa-0x11: DS version ("10020800" for 2010 DS 1.1 [10.02.08.00])
+0x12-0x17: ?
+0x18-0x19: Reply packets sent (little endian)
+0x1a: User Data update number (from setStatusData())
+0x1b-0x1e: User string length (32-bit big endian)
+0x1f - X: User string
+X+1 - X+4: Error string length (32-bit big endian)
+X+5 - Y: Error string
+Y+1 - Y+4: User data length (32-bit big endian)
+Y+5 - 0x3f1: User data
+0x3f2 - 0x3f5: 0
+0x3f6 - 0x3f9: big endian CRC32 of 0-0x3f9 (with 0 in CRC field)
+
+DS -> Robot (2)
+DS Src Port: 750
+Robot Dst Port: 17185
+64 bytes
+
+0x0-0x1: Packet number? counts up
+0x2: ? (0xb8)
+0x3: ? (0xbd)
+0x4-0xa: ? (0)
+0xb: ? (0x02)
+0xc-0xf: ? (0x55)
+0x10-0x13: ? (1, big endian)
+0x14-0x27: ? (0)
+0x28-0x2b: response number?  counts down (big endian)
+0x2c-0x2f: ? (0x3c, big endian)
+0x30: ? (0x12)
+0x31: ? (0xcc)
+0x32-0x33: counter?  counts up
+0x34-0x38: ? (0x02, big endian)
+0x39-0x3f: ? (0)
+
+Robot -> DS (2)
+Sent in response.
+Robot Src Port: 17185
+DS Dst Port: 750
+36 bytes
+
+0x0-0x1: Echoed packet number
+0x2-0x3: 0xb8bd (matches sent packet?)
+0x4-0x7: ? (1, big endian)
+0x8-0x17: ? (0)
+0x18-0x1b: ? (0xffffffde big endian, -34)
+0x1c-0x1e: ? (0)
+0x1f: ? (0x20)
+0x20-0x23: ? (0)
+
