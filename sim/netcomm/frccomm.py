@@ -27,8 +27,6 @@ frccomm.py - FRC network communication protocol
 
 import struct
 from zlib import crc32
-import socket
-import time
 from .bf import bf
 
 __all__ = [ "ROBOT_PORT", "DS_PORT", "DASHBOARD_PORT", "CONSOLE_PORT",
