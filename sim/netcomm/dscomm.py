@@ -37,19 +37,12 @@ class DSTransmitThread(threading.Thread):
         self.parent = parent
 
     def run(self):
-        team_hi, team_lo = divmod(self.parent.team_id, 100)
-        robot_addr = ("10.%d.%d.2" % (team_hi, team_lo), frccomm.ROBOT_PORT)
-        #print("robot addr:", robot_addr)
         robot_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-        while 1:
-            if self.parent.stop_event.is_set():
-                break
-
+        while not self.parent.stop_event.is_set():
             with self.parent.mutex:
                 self.parent.state.control.packet_index += 1
                 packet = self.parent.state.packetize_command()
-            robot_sock.sendto(packet, robot_addr)
+            robot_sock.sendto(packet, self.parent.robot_addr)
             time.sleep(0.02)
 
 class DSReceiveThread(threading.Thread):
@@ -59,19 +52,12 @@ class DSReceiveThread(threading.Thread):
         self.parent = parent
 
     def run(self):
-        team_hi, team_lo = divmod(self.parent.team_id, 100)
-        ds_addr = ("10.%d.%d.5" % (team_hi, team_lo), frccomm.DS_PORT)
-        #print("ds addr:", ds_addr)
-
         ds_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        ds_sock.bind(ds_addr)
+        ds_sock.bind(self.parent.ds_addr)
         ds_sock.settimeout(0.2)
         robot_packet = bytearray(frccomm.STATUS_MAX_PACKET_SIZE)
 
-        while 1:
-            if self.parent.stop_event.is_set():
-                break
-
+        while not self.parent.stop_event.is_set():
             try:
                 nbytes, address = ds_sock.recvfrom_into(robot_packet)
             except socket.timeout:
@@ -85,7 +71,18 @@ class DSReceiveThread(threading.Thread):
                 self.parent.new_data_cv.notify_all()
 
 class DriverStationComm:
-    def __init__(self, team_id):
+    def __init__(self, team_id,
+                 robot_addr=None, robot_port=frccomm.ROBOT_PORT,
+                 ds_addr=None, ds_port=frccomm.DS_PORT):
+        # Default robot and DS IP addresses if unspecified
+        team_hi, team_lo = divmod(team_id, 100)
+        if robot_addr is None:
+            robot_addr = "10.%d.%d.2" % (team_hi, team_lo)
+        self.robot_addr = (robot_addr, robot_port)
+        if ds_addr is None:
+            ds_addr = "10.%d.%d.5" % (team_hi, team_lo)
+        self.ds_addr = (ds_addr, ds_port)
+
         self.team_id = team_id
         self.state = frccomm.DriverStationState()
         self.mutex = threading.Lock()

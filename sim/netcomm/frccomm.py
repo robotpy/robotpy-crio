@@ -27,7 +27,10 @@ frccomm.py - FRC network communication protocol
 
 import struct
 from zlib import crc32
-from .bf import bf
+try:
+    from .bf import bf
+except ValueError:
+    from bf import bf
 
 __all__ = [ "ROBOT_PORT", "DS_PORT", "DASHBOARD_PORT", "CONSOLE_PORT",
             "CONTROL_PACKET_SIZE", "STATUS_BASE_PACKET_SIZE",

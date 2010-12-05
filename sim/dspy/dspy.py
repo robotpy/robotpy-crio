@@ -89,6 +89,9 @@ class Application(Frame):
         self.runstate = StringVar()
         self.runstate.set("teleop")
 
+        self.is_local = IntVar()
+        self.is_local.set(0)
+
     def enable_robot(self, *args):
         if (self.have_comm.status != tkled.STATUS_ON or
             self.have_code.status != tkled.STATUS_ON):
@@ -119,7 +122,11 @@ class Application(Frame):
         team_id = int(self.team_id.get())
         print("New team number: %d." % team_id)
         self.ds.stop()
-        self.ds = DriverStationComm(team_id)
+        if self.is_local.get() == 0:
+            self.ds = DriverStationComm(team_id)
+        else:
+            self.ds = DriverStationComm(team_id, robot_addr="127.0.0.1",
+                                        ds_addr="127.0.0.1")
 
     def create_widgets(self):
         oper_frame = Frame(self, padding=(3,3,12,12))
@@ -184,28 +191,32 @@ class Application(Frame):
         set_team_button = Button(enable_frame, text="Set", width=4,
                                  takefocus=False, command=self.set_team_id)
         set_team_button.grid(column=2, row=0, sticky=W)
+        local_sim = Checkbutton(enable_frame, text="Local (simulate)",
+                                variable=self.is_local, takefocus=False,
+                                command=self.set_team_id)
+        local_sim.grid(column=0, row=1, columnspan=2, sticky=W)
 
         teleop_radio = Radiobutton(enable_frame, text="Teleoperated",
                                    variable=self.runstate, value="teleop",
                                    command=self.update_runstate,
                                    takefocus=False)
-        teleop_radio.grid(column=0, row=1, columnspan=2, sticky=W)
+        teleop_radio.grid(column=0, row=2, columnspan=2, sticky=W)
         auto_radio = Radiobutton(enable_frame, text="Autonomous",
                                  variable=self.runstate, value="auto",
                                  command=self.update_runstate,
                                  takefocus=False)
-        auto_radio.grid(column=0, row=2, columnspan=2, sticky=W)
+        auto_radio.grid(column=0, row=3, columnspan=2, sticky=W)
         #practice_radio = Radiobutton(enable_frame, text="Practice",
         #                             variable=self.runstate,
         #                             value="practice")
-        #practice_radio.grid(column=0, row=3, columnspan=2, sticky=W)
+        #practice_radio.grid(column=0, row=4, columnspan=2, sticky=W)
         enable_button = Button(enable_frame, text="Enable",
                                command=self.enable_robot, takefocus=False)
-        enable_button.grid(column=0, row=4, columnspan=2, sticky=(E,W))
+        enable_button.grid(column=0, row=5, columnspan=2, sticky=(E,W))
         disable_button = Button(enable_frame, text="Disable",
                                 command=self.disable_robot,
                                 takefocus=False)
-        disable_button.grid(column=0, row=5, columnspan=2, sticky=(E,W))
+        disable_button.grid(column=0, row=6, columnspan=2, sticky=(E,W))
 
     def __init__(self, master=None):
         super().__init__(master)

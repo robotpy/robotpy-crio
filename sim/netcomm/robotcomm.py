@@ -23,7 +23,10 @@
 
 """Robot Communication Management."""
 
-from . import frccomm
+try:
+    from . import frccomm
+except ValueError:
+    import frccomm
 import socket
 import time
 import threading
@@ -31,31 +34,30 @@ import threading
 __all__ = ["RobotComm"]
 
 class RobotCommThread(threading.Thread):
-    def __init__(self, team_id):
+    def __init__(self, team_id, robot_addr, ds_addr):
         super().__init__()
         self.daemon = True
 
         self.team_id = team_id
+        self.robot_addr = robot_addr
+        self.ds_addr = ds_addr
         self.state = frccomm.RobotState()
 
         self.mutex = threading.Lock()
         self.new_data_cv = threading.Condition(self.mutex)
         self.resync_cv = threading.Condition(self.mutex)
         self.reset_event = threading.Event()
+        self.stop_event = threading.Event()
 
         self.code_running = False
 
     def run(self):
-        team_hi, team_lo = divmod(self.team_id, 100)
-        ds_addr = ("10.%d.%d.5" % (team_hi, team_lo), frccomm.DS_PORT)
-        robot_addr = ("10.%d.%d.2" % (team_hi, team_lo), frccomm.ROBOT_PORT)
-
         ds_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         robot_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        robot_sock.bind(robot_addr)
+        robot_sock.bind(self.robot_addr)
         ds_packet = bytearray(frccomm.CONTROL_PACKET_SIZE)
 
-        while 1:
+        while not self.stop_event.is_set():
             nbytes, address = robot_sock.recvfrom_into(ds_packet)
             if nbytes != frccomm.CONTROL_PACKET_SIZE:
                 continue
@@ -66,7 +68,8 @@ class RobotCommThread(threading.Thread):
                 self.new_data_cv.notify_all()
 
                 # Handle reset and resync
-                if not self.reset_event.is_set() and self.state.control.reset:
+                if (not self.reset_event.is_set() and
+                        self.state.control.control.reset):
                     self.reset_event.set()
                     print("Resetting...")
                     self.mutex.release()
@@ -74,7 +77,8 @@ class RobotCommThread(threading.Thread):
                     self.mutex.acquire()
                     print("Done with reset.")
 
-                if self.reset_event.is_set() and not self.state.control.reset:
+                if (self.reset_event.is_set() and
+                        not self.state.control.control.reset):
                     self.reset_event.clear()
                     print("Out of reset")
 
@@ -90,16 +94,31 @@ class RobotCommThread(threading.Thread):
                 packet = self.state.packetize_status()
             finally:
                 self.mutex.release()
-            ds_sock.sendto(packet, ds_addr)
+            ds_sock.sendto(packet, self.ds_addr)
 
 class RobotComm:
-    def __init__(self, team_id):
-        self._thread = RobotCommThread(team_id)
+    def __init__(self, team_id,
+                 robot_addr=None, robot_port=frccomm.ROBOT_PORT,
+                 ds_addr=None, ds_port=frccomm.DS_PORT):
+        # Default robot and DS IP addresses if unspecified
+        team_hi, team_lo = divmod(team_id, 100)
+        if robot_addr is None:
+            robot_addr = "10.%d.%d.2" % (team_hi, team_lo)
+        robot_addr = (robot_addr, robot_port)
+        if ds_addr is None:
+            ds_addr = "10.%d.%d.5" % (team_hi, team_lo)
+        ds_addr = (ds_addr, ds_port)
+
+        self._thread = RobotCommThread(team_id, robot_addr, ds_addr)
         self._thread.start()
 
     # void getFPGAHardwareVersion(UINT16 *fpgaVersion, UINT32 *fpgaRevision);
     # int get_common_control_data(FRCCommonControlData *data, int wait_ms);
     # int get_dynamic_control_data(UINT8 type, char *dynamicData, INT32 maxLength, int wait_ms);
+
+    def stop(self):
+        self._thread.stop_event.set()
+        self._thread.join()
 
     def set_status_data(self, battery, ds_digital_out, update_number,
                         user_data_high, user_data_low, wait_ms):
@@ -142,7 +161,7 @@ class RobotComm:
 
 
 if __name__ == "__main__":
-    rc = RobotComm(294)
+    rc = RobotComm(294, robot_addr="127.0.0.1", ds_addr="127.0.0.1")
 
     import msvcrt
     while 1:
