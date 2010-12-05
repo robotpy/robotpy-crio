@@ -1,5 +1,6 @@
 .PHONY: all
 
 all:
-	$(MAKE) -C wpilib
+	$(MAKE) -C sip
+	$(MAKE) -C wpilib_sip
 

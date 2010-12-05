@@ -17,6 +17,8 @@
 /Packages/*/*.d
 /Packages/*/*.o
 /Packages/*/*.out
+/Packages/wpilib/*.cpp
+/Packages/wpilib/*.h
 /Packages/wpilib/CANJaguar/*.d
 /Packages/wpilib/CANJaguar/*.o
 /dist

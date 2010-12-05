@@ -1,4 +1,0 @@
-To regenerate SWIG WPILib wrappers:
-- Install swigwin.
-- Edit swig_wpilib.bat to point to swigwin location.
-- Run swig_wpilib.bat.

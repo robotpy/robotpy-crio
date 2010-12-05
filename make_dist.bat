@@ -16,6 +16,8 @@ copy RobotPy\PPC603gnu\RobotPy\NonDebug\RobotPy.out dist\RobotPy-Core\robot\ni-r
 mkdir dist\RobotPy-Core\robot\lib\python3.1\lib-dynload
 for /r Modules %%X in (*.out) do (copy %%X dist\RobotPy-Core\robot\lib\python3.1\lib-dynload)
 
+for /r Packages\sip %%X in (*.out) do (copy %%X dist\RobotPy-Core\robot\lib\python3.1\site-packages)
+
 rem RobotPy-WPILib distribution
 mkdir dist\RobotPy-WPILib
 mkdir dist\RobotPy-WPILib\robot
@@ -27,7 +29,7 @@ copy README-WPILib.txt dist\RobotPy-WPILib\
 
 xcopy /i /e samples dist\RobotPy-WPILib\samples
 
-for /r Packages\wpilib %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
-for /r Packages\wpilib %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\wpilib_sip %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\wpilib_sip %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 
 pause
