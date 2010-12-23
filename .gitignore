@@ -21,4 +21,8 @@
 /Packages/wpilib/*.h
 /Packages/wpilib/CANJaguar/*.d
 /Packages/wpilib/CANJaguar/*.o
+/Packages/wpilib/WPILib/*.d
+/Packages/wpilib/WPILib/*.o
+/Packages/wpilib/WPILib/CInterfaces/*.d
+/Packages/wpilib/WPILib/CInterfaces/*.o
 /dist
