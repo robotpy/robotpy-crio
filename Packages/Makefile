@@ -2,5 +2,5 @@
 
 all:
 	$(MAKE) -C sip
-	$(MAKE) -C wpilib_sip
+	$(MAKE) -C wpilib
 

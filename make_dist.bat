@@ -29,7 +29,7 @@ copy README-WPILib.txt dist\RobotPy-WPILib\
 
 xcopy /i /e samples dist\RobotPy-WPILib\samples
 
-for /r Packages\wpilib_sip %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
-for /r Packages\wpilib_sip %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\wpilib %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\wpilib %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 
 pause
