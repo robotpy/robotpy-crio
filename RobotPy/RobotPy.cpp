@@ -32,7 +32,7 @@
 #include "NetworkCommunication/FRCComm.h"
 #include "NetworkCommunication/symModuleLink.h"
 
-#define ROBOTPY_BOOT "py/boot.py"
+#define ROBOTPY_BOOT "/c/py/boot.py"
 
 static void
 RobotTask()
@@ -40,7 +40,7 @@ RobotTask()
 	/* Initialize the Python interpreter.  Required. */
 	//Py_VerboseFlag = 2;
 	Py_SetProgramName(L"./RobotPy");
-	Py_SetPythonHome(L"/");
+	Py_SetPythonHome(L"/c/");
 	PyEval_InitThreads();
 	Py_Initialize();
 	puts("starting " ROBOTPY_BOOT);

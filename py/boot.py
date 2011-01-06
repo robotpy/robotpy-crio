@@ -20,8 +20,8 @@ class RollbackImporter:
 
 if __name__ == "__main__":
     #print(sys.path)
-    if "/py" not in sys.path:
-        sys.path.insert(0, "/py")
+    if "/c/py" not in sys.path:
+        sys.path.insert(0, "/c/py")
     if "." not in sys.path:
         sys.path.insert(0, ".")
 
