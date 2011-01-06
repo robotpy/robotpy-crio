@@ -88,7 +88,7 @@ FRC_UserProgram_StartupLibraryInit()
 	// Start robot task
 	// This is done to ensure that the C++ robot task is spawned with the floating point
 	// context save parameter.
-	robotTaskId = taskSpawn("FRC_RobotTask", 100, VX_FP_TASK, 64000,
+	robotTaskId = taskSpawn("FRC_RobotTask", 100, VX_FP_TASK, THREAD_STACK_SIZE,
 				(FUNCPTR)RobotTask, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 	if (robotTaskId == ERROR)
 		printf("error starting robot task: %s\n", strerror(errno));

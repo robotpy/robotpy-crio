@@ -20,7 +20,7 @@ public:
 	static const UINT32 kDefaultPriority = 100;
 	static const INT32 kInvalidTaskID = -1;
 
-	Task(const char* name, FUNCPTR function, INT32 priority = kDefaultPriority, UINT32 stackSize = 20000);
+	Task(const char* name, FUNCPTR function, INT32 priority = kDefaultPriority, UINT32 stackSize = 131072);
 	virtual ~Task();
 
 	bool Start(UINT32 arg0 = 0, UINT32 arg1 = 0, UINT32 arg2 = 0, UINT32 arg3 = 0, UINT32 arg4 = 0, 
