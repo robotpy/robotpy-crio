@@ -6,6 +6,8 @@
 
 #include "GearTooth.h"
 
+const double GearTooth::kGearToothThreshold;
+
 /**
  * Common code called by the constructors.
  */

@@ -11,8 +11,10 @@
 #include "Synchronized.h"
 #include "Utility.h"
 #include "WPIStatus.h"
+#include <math.h>
 
 static Resource *DIOChannels = NULL;
+static Resource *DO_PWMGenerators[tDIO::kNumSystems] = {NULL};
 
 /**
  * Get an instance of an Digital Module.
@@ -21,12 +23,15 @@ static Resource *DIOChannels = NULL;
  */
 DigitalModule* DigitalModule::GetInstance(UINT32 slot)
 {
-	CheckDigitalModule(slot);
-	if (m_modules[slot] == NULL)
+	if (CheckDigitalModule(slot))
 	{
-		m_modules[slot] = new DigitalModule(slot);
+		if (m_modules[slot] == NULL)
+		{
+			m_modules[slot] = new DigitalModule(slot);
+		}
+		return (DigitalModule*)m_modules[slot];
 	}
-	return (DigitalModule*)m_modules[slot]; 
+	return NULL;
 }
 
 UINT32 DigitalModule::SlotToIndex(UINT32 slot)
@@ -48,6 +53,7 @@ DigitalModule::DigitalModule(UINT32 slot)
 	, m_fpgaDIO (NULL)
 {
 	Resource::CreateResourceObject(&DIOChannels, tDIO::kNumSystems * kDigitalChannels);
+	Resource::CreateResourceObject(&DO_PWMGenerators[SlotToIndex(m_slot)], tDIO::kNumSystems * tDIO::kNumDO_PWMDutyCycleElements);
 	m_fpgaDIO = new tDIO(SlotToIndex(m_slot), &status);
 
 	// Make sure that the 9403 IONode has had a chance to initialize before continuing.
@@ -349,6 +355,88 @@ bool DigitalModule::IsPulsing()
 	UINT16 pulseRegister = m_fpgaDIO->readPulse(&status);
 	wpi_assertCleanStatus(status);
 	return pulseRegister != 0;
+}
+
+/**
+ * Allocate a DO PWM Generator.
+ * Allocate PWM generators so that they are not accidently reused.
+ */
+UINT32 DigitalModule::AllocateDO_PWM()
+{
+	return DO_PWMGenerators[SlotToIndex(m_slot)]->Allocate();
+}
+
+/**
+ * Free the resource associated with a DO PWM generator.
+ */
+void DigitalModule::FreeDO_PWM(UINT32 pwmGenerator)
+{
+	if (pwmGenerator == ~0ul) return;
+	DO_PWMGenerators[SlotToIndex(m_slot)]->Free(pwmGenerator);
+}
+
+/**
+ * Change the frequency of the DO PWM generator.
+ * 
+ * The valid range is from 0.6 Hz to 19 kHz.  The frequency resolution is logarithmic.
+ * 
+ * @param rate The frequency to output all digital output PWM signals on this module.
+ */
+void DigitalModule::SetDO_PWMRate(float rate)
+{
+	// Currently rounding in the log rate domain... heavy weight toward picking a higher freq.
+	// TODO: Round in the linear rate domain.
+	UINT8 pwmPeriodPower = (UINT8)(log(1.0 / (m_fpgaDIO->readLoopTiming(&status) * 0.25E-6 * rate))/log(2.0) + 0.5);
+	m_fpgaDIO->writeDO_PWMConfig_PeriodPower(pwmPeriodPower, &status);
+	wpi_assertCleanStatus(status);
+}
+
+/**
+ * Configure which DO channel the PWM siganl is output on
+ * @param pwmGenerator The generator index reserved by AllocateDO_PWM()
+ * @param channel The Digital Output channel to output on
+ */
+void DigitalModule::SetDO_PWMOutputChannel(UINT32 pwmGenerator, UINT32 channel)
+{
+	if (pwmGenerator == ~0ul) return;
+	switch(pwmGenerator)
+	{
+	case 0:
+		m_fpgaDIO->writeDO_PWMConfig_OutputSelect_0(RemapDigitalChannel(channel - 1), &status);
+		break;
+	case 1:
+		m_fpgaDIO->writeDO_PWMConfig_OutputSelect_1(RemapDigitalChannel(channel - 1), &status);
+		break;
+	case 2:
+		m_fpgaDIO->writeDO_PWMConfig_OutputSelect_2(RemapDigitalChannel(channel - 1), &status);
+		break;
+	case 3:
+		m_fpgaDIO->writeDO_PWMConfig_OutputSelect_3(RemapDigitalChannel(channel - 1), &status);
+		break;
+	}
+	wpi_assertCleanStatus(status);
+}
+
+/**
+ * Configure the duty-cycle of the PWM generator
+ * @param pwmGenerator The generator index reserved by AllocateDO_PWM()
+ * @param dutyCycle The percent duty cycle to output [0..1].
+ */
+void DigitalModule::SetDO_PWMDutyCycle(UINT32 pwmGenerator, float dutyCycle)
+{
+	if (pwmGenerator == ~0ul) return;
+	if (dutyCycle > 1.0) dutyCycle = 1.0;
+	if (dutyCycle < 0.0) dutyCycle = 0.0;
+	float rawDutyCycle = 256.0 * dutyCycle;
+	if (rawDutyCycle > 255.5) rawDutyCycle = 255.5;
+	UINT8 pwmPeriodPower = m_fpgaDIO->readDO_PWMConfig_PeriodPower(&status);
+	if (pwmPeriodPower < 4)
+	{
+		// The resolution of the duty cycle drops close to the highest frequencies.
+		rawDutyCycle = rawDutyCycle / pow(2.0, 4 - pwmPeriodPower);
+	}
+	m_fpgaDIO->writeDO_PWMDutyCycle(pwmGenerator, (UINT8)rawDutyCycle, &status);
+	wpi_assertCleanStatus(status);
 }
 
 /**

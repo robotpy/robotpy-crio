@@ -10,6 +10,8 @@
 #include "Base.h"
 #include <stdlib.h>
 #include <vxWorks.h>
+#include "MotorSafety.h"
+#include "MotorSafetyHelper.h"
 
 class SpeedController;
 class GenericHID;
@@ -22,7 +24,7 @@ class GenericHID;
  * used for either the Drive function (intended for hand created drive code, such as autonomous)
  * or with the Tank/Arcade functions intended to be used for Operator Control driving.
  */
-class RobotDrive
+class RobotDrive: public MotorSafety
 {
 public:
 	typedef enum
@@ -33,20 +35,18 @@ public:
 		kRearRightMotor = 3
 	} MotorType;
 
-	RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel, float sensitivity = 0.5);
+	RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel);
 	RobotDrive(UINT32 frontLeftMotorChannel, UINT32 rearLeftMotorChannel,
-				UINT32 frontRightMotorChannel, UINT32 rearRightMotorChannel, float sensitivity = 0.5);
-	RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor, float sensitivity = 0.5);
-	RobotDrive(SpeedController &leftMotor, SpeedController &rightMotor, float sensitivity = 0.5);
+				UINT32 frontRightMotorChannel, UINT32 rearRightMotorChannel);
+	RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor);
+	RobotDrive(SpeedController &leftMotor, SpeedController &rightMotor);
 	RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLeftMotor,
-				SpeedController *frontRightMotor, SpeedController *rearRightMotor,
-				float sensitivity = 0.5);
+				SpeedController *frontRightMotor, SpeedController *rearRightMotor);
 	RobotDrive(SpeedController &frontLeftMotor, SpeedController &rearLeftMotor,
-				SpeedController &frontRightMotor, SpeedController &rearRightMotor,
-				float sensitivity = 0.5);
+				SpeedController &frontRightMotor, SpeedController &rearRightMotor);
 	virtual ~RobotDrive();
 
-	void Drive(float speed, float curve);
+	void Drive(float outputMagnitude, float curve);
 	void TankDrive(GenericHID *leftStick, GenericHID *rightStick);
 	void TankDrive(GenericHID &leftStick, GenericHID &rightStick);
 	void TankDrive(GenericHID *leftStick, UINT32 leftAxis, GenericHID *rightStick, UINT32 rightAxis);
@@ -60,10 +60,20 @@ public:
 	void MecanumDrive_Cartesian(float x, float y, float rotation, float gyroAngle = 0.0);
 	void MecanumDrive_Polar(float magnitude, float direction, float rotation);
 	void HolonomicDrive(float magnitude, float direction, float rotation);
-	void SetLeftRightMotorSpeeds(float leftSpeed, float rightSpeed);
+	virtual void SetLeftRightMotorOutputs(float leftOutput, float rightOutput);
 	void SetInvertedMotor(MotorType motor, bool isInverted);
+	void SetSensitivity(float sensitivity);
+	void SetMaxOutput(double maxOutput);
 
-private:
+	void SetExpiration(float timeout);
+	float GetExpiration();
+	bool IsAlive();
+	void StopMotor();
+	bool IsSafetyEnabled();
+	void SetSafetyEnabled(bool enabled);
+
+protected:
+	void InitRobotDrive();
 	float Limit(float num);
 	void Normalize(double *wheelSpeeds);
 	void RotateVector(double &x, double &y, double angle);
@@ -72,11 +82,15 @@ private:
 
 	INT32 m_invertedMotors[kMaxNumberOfMotors];
 	float m_sensitivity;
+	double m_maxOutput;
 	bool m_deleteSpeedControllers;
 	SpeedController *m_frontLeftMotor;
 	SpeedController *m_frontRightMotor;
 	SpeedController *m_rearLeftMotor;
 	SpeedController *m_rearRightMotor;
+	MotorSafetyHelper *m_safetyHelper;
+	
+private:
 	DISALLOW_COPY_AND_ASSIGN(RobotDrive);
 };
 

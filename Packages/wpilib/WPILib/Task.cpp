@@ -13,6 +13,9 @@
 #include <taskLib.h>
 #include <usrLib.h>
 
+const UINT32 Task::kDefaultPriority;
+const INT32 Task::kInvalidTaskID;
+
 /**
  * Create but don't launch a task.
  * @param name The name of the task.  "FRC" will be prepended to the task name.

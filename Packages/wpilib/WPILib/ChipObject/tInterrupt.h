@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Interrupt_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Interrupt_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tInterrupt : public tScopedSystem
@@ -45,14 +45,14 @@ public:
 
    typedef enum
    {
-      kInterrupt0_TimeStampAddress = 0x8194,
-      kInterrupt1_TimeStampAddress = 0x818C,
-      kInterrupt2_TimeStampAddress = 0x8184,
-      kInterrupt3_TimeStampAddress = 0x817C,
-      kInterrupt4_TimeStampAddress = 0x8174,
-      kInterrupt5_TimeStampAddress = 0x816C,
-      kInterrupt6_TimeStampAddress = 0x8164,
-      kInterrupt7_TimeStampAddress = 0x815C,
+      kInterrupt0_TimeStampAddress = 0x8198,
+      kInterrupt1_TimeStampAddress = 0x8190,
+      kInterrupt2_TimeStampAddress = 0x8188,
+      kInterrupt3_TimeStampAddress = 0x8180,
+      kInterrupt4_TimeStampAddress = 0x8178,
+      kInterrupt5_TimeStampAddress = 0x8170,
+      kInterrupt6_TimeStampAddress = 0x8168,
+      kInterrupt7_TimeStampAddress = 0x8160,
    } tTimeStamp_Constants;
    static const unsigned int kTimeStampAddresses [];
 
@@ -62,13 +62,13 @@ public:
    typedef enum
    {
       kInterrupt0_ConfigAddress = 0x810C,
-      kInterrupt1_ConfigAddress = 0x8190,
-      kInterrupt2_ConfigAddress = 0x8188,
-      kInterrupt3_ConfigAddress = 0x8180,
-      kInterrupt4_ConfigAddress = 0x8178,
-      kInterrupt5_ConfigAddress = 0x8170,
-      kInterrupt6_ConfigAddress = 0x8168,
-      kInterrupt7_ConfigAddress = 0x8160,
+      kInterrupt1_ConfigAddress = 0x8194,
+      kInterrupt2_ConfigAddress = 0x818C,
+      kInterrupt3_ConfigAddress = 0x8184,
+      kInterrupt4_ConfigAddress = 0x817C,
+      kInterrupt5_ConfigAddress = 0x8174,
+      kInterrupt6_ConfigAddress = 0x816C,
+      kInterrupt7_ConfigAddress = 0x8164,
    } tConfig_Constants;
    static const unsigned int kConfigAddresses [];
 
@@ -99,4 +99,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Interrupt_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__

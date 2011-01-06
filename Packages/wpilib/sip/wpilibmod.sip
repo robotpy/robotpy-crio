@@ -166,12 +166,15 @@ Watchdog *GetWatchdog();
 %Include Jaguar.sip
 %Include Joystick.sip
 %Include Module.sip
+%Include MotorSafety.sip
+%Include MotorSafetyHelper.sip
 %Include PIDController.sip
 %Include PIDOutput.sip
 %Include PIDSource.sip
 %Include PWM.sip
 %Include Relay.sip
 %Include RobotDrive.sip
+%Include SafePWM.sip
 %Include SensorBase.sip
 %Include SerialPort.sip
 %Include Servo.sip

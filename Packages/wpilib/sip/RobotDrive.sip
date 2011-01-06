@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class RobotDrive
+class RobotDrive : MotorSafety
 {
 %TypeHeaderCode
 #include <WPILib/RobotDrive.h>
@@ -36,16 +36,15 @@ public:
 		kRearRightMotor = 3
 	};
 
-	RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel, float sensitivity = 0.5);
+	RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel);
 	RobotDrive(UINT32 frontLeftMotorChannel, UINT32 rearLeftMotorChannel,
-				UINT32 frontRightMotorChannel, UINT32 rearRightMotorChannel, float sensitivity = 0.5);
-	RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor, float sensitivity = 0.5);
+				UINT32 frontRightMotorChannel, UINT32 rearRightMotorChannel);
+	RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor);
 	RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLeftMotor,
-				SpeedController *frontRightMotor, SpeedController *rearRightMotor,
-				float sensitivity = 0.5);
+				SpeedController *frontRightMotor, SpeedController *rearRightMotor);
 	virtual ~RobotDrive();
 
-	void Drive(float speed, float curve);
+	void Drive(float outputMagnitude, float curve);
 	void TankDrive(GenericHID *leftStick, GenericHID *rightStick);
 	void TankDrive(GenericHID *leftStick, UINT32 leftAxis, GenericHID *rightStick, UINT32 rightAxis);
 	void TankDrive(float leftValue, float rightValue);
@@ -55,8 +54,23 @@ public:
 	void MecanumDrive_Cartesian(float x, float y, float rotation, float gyroAngle = 0.0);
 	void MecanumDrive_Polar(float magnitude, float direction, float rotation);
 	void HolonomicDrive(float magnitude, float direction, float rotation);
-	void SetLeftRightMotorSpeeds(float leftSpeed, float rightSpeed);
+	virtual void SetLeftRightMotorOutputs(float leftOutput, float rightOutput);
 	void SetInvertedMotor(MotorType motor, bool isInverted);
+	void SetSensitivity(float sensitivity);
+	void SetMaxOutput(double maxOutput);
+
+	void SetExpiration(float timeout);
+	float GetExpiration();
+	bool IsAlive();
+	void StopMotor();
+	bool IsSafetyEnabled();
+	void SetSafetyEnabled(bool enabled);
+
+protected:
+	//void InitRobotDrive();
+	//float Limit(float num);
+	//void Normalize(double *wheelSpeeds);
+	//void RotateVector(double &x, double &y, double angle);
 
 private:
 	RobotDrive(const RobotDrive&);

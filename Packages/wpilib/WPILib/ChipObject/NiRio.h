@@ -25,7 +25,9 @@
    #define kFalse false
 #endif
 
-#include "NiRioSrv.h"
+#include "NiRioStatus.h"
 
+// Definitions needed from internal header files.
+typedef tNIRIO_u32 tRioDeviceHandle;
 
 #endif // __NiRio_h__

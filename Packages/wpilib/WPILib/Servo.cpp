@@ -6,6 +6,9 @@
 
 #include "Servo.h"
 
+const float Servo::kMaxServoAngle;
+const float Servo::kMinServoAngle;
+
 /**
  * Common initialization code called by all constructors.
  *
@@ -23,7 +26,7 @@ void Servo::InitServo()
  *
  * @param channel The PWM channel on the digital module to which the servo is attached.
  */
-Servo::Servo(UINT32 channel) : PWM(channel)
+Servo::Servo(UINT32 channel) : SafePWM(channel)
 {
 	InitServo();
 }
@@ -34,7 +37,7 @@ Servo::Servo(UINT32 channel) : PWM(channel)
  * @param slot The slot in the chassis that the digital module is plugged into.
  * @param channel The PWM channel on the digital module to which the servo is attached.
  */
-Servo::Servo(UINT32 slot, UINT32 channel) : PWM(slot, channel)
+Servo::Servo(UINT32 slot, UINT32 channel) : SafePWM(slot, channel)
 {
 	InitServo();
 }
@@ -53,6 +56,15 @@ Servo::~Servo()
 void Servo::Set(float value)
 {
 	SetPosition(value);
+}
+
+/**
+ * Set the servo to offline.
+ * 
+ * Set the servo raw value to 0 (undriven)
+ */
+void Servo::SetOffline() {
+	SetRaw(0);
 }
 
 /**

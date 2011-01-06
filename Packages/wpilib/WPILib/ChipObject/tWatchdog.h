@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Watchdog_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Watchdog_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tWatchdog : public tScopedSystem
@@ -39,7 +39,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_StatusAddress = 0x8434,
+      kWatchdog_StatusAddress = 0x8448,
    } tStatus_Constants;
 
    tStatus readStatus(tRioStatusCode *status);
@@ -51,7 +51,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_FeedAddress = 0x8430,
+      kWatchdog_FeedAddress = 0x8444,
    } tFeed_Constants;
 
    void strobeFeed(tRioStatusCode *status);
@@ -59,7 +59,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_KillAddress = 0x842C,
+      kWatchdog_KillAddress = 0x8440,
    } tKill_Constants;
 
    void strobeKill(tRioStatusCode *status);
@@ -67,7 +67,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_ImmortalAddress = 0x8420,
+      kWatchdog_ImmortalAddress = 0x8434,
    } tImmortal_Constants;
 
    void writeImmortal(bool value, tRioStatusCode *status);
@@ -76,7 +76,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_ExpirationAddress = 0x8424,
+      kWatchdog_ExpirationAddress = 0x8438,
    } tExpiration_Constants;
 
    void writeExpiration(unsigned int value, tRioStatusCode *status);
@@ -85,7 +85,7 @@ public:
 
    typedef enum
    {
-      kWatchdog_TimerAddress = 0x8428,
+      kWatchdog_TimerAddress = 0x843C,
    } tTimer_Constants;
 
    unsigned int readTimer(tRioStatusCode *status);
@@ -100,4 +100,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Watchdog_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__

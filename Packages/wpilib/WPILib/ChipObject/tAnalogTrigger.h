@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_AnalogTrigger_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_AnalogTrigger_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tAnalogTrigger : public tScopedSystem
@@ -58,14 +58,14 @@ public:
    typedef enum
    {
       kSourceSelect_RolloverLimit_FixedPointIntegerShift = 4,
-      kAnalogTrigger0_SourceSelectAddress = 0x83B4,
-      kAnalogTrigger1_SourceSelectAddress = 0x83A8,
-      kAnalogTrigger2_SourceSelectAddress = 0x839C,
-      kAnalogTrigger3_SourceSelectAddress = 0x8390,
-      kAnalogTrigger4_SourceSelectAddress = 0x8384,
-      kAnalogTrigger5_SourceSelectAddress = 0x8378,
-      kAnalogTrigger6_SourceSelectAddress = 0x836C,
-      kAnalogTrigger7_SourceSelectAddress = 0x8360,
+      kAnalogTrigger0_SourceSelectAddress = 0x83C8,
+      kAnalogTrigger1_SourceSelectAddress = 0x83BC,
+      kAnalogTrigger2_SourceSelectAddress = 0x83B0,
+      kAnalogTrigger3_SourceSelectAddress = 0x83A4,
+      kAnalogTrigger4_SourceSelectAddress = 0x8398,
+      kAnalogTrigger5_SourceSelectAddress = 0x838C,
+      kAnalogTrigger6_SourceSelectAddress = 0x8380,
+      kAnalogTrigger7_SourceSelectAddress = 0x8374,
    } tSourceSelect_Constants;
    static const unsigned int kSourceSelectAddresses [];
 
@@ -87,14 +87,14 @@ public:
 
    typedef enum
    {
-      kAnalogTrigger0_UpperLimitAddress = 0x83B0,
-      kAnalogTrigger1_UpperLimitAddress = 0x83A4,
-      kAnalogTrigger2_UpperLimitAddress = 0x8398,
-      kAnalogTrigger3_UpperLimitAddress = 0x838C,
-      kAnalogTrigger4_UpperLimitAddress = 0x8380,
-      kAnalogTrigger5_UpperLimitAddress = 0x8368,
-      kAnalogTrigger6_UpperLimitAddress = 0x8374,
-      kAnalogTrigger7_UpperLimitAddress = 0x835C,
+      kAnalogTrigger0_UpperLimitAddress = 0x83C4,
+      kAnalogTrigger1_UpperLimitAddress = 0x83B8,
+      kAnalogTrigger2_UpperLimitAddress = 0x83AC,
+      kAnalogTrigger3_UpperLimitAddress = 0x83A0,
+      kAnalogTrigger4_UpperLimitAddress = 0x8394,
+      kAnalogTrigger5_UpperLimitAddress = 0x837C,
+      kAnalogTrigger6_UpperLimitAddress = 0x8388,
+      kAnalogTrigger7_UpperLimitAddress = 0x8370,
    } tUpperLimit_Constants;
    static const unsigned int kUpperLimitAddresses [];
 
@@ -104,14 +104,14 @@ public:
 
    typedef enum
    {
-      kAnalogTrigger0_LowerLimitAddress = 0x83AC,
-      kAnalogTrigger1_LowerLimitAddress = 0x83A0,
-      kAnalogTrigger2_LowerLimitAddress = 0x8394,
-      kAnalogTrigger3_LowerLimitAddress = 0x8388,
-      kAnalogTrigger4_LowerLimitAddress = 0x837C,
-      kAnalogTrigger5_LowerLimitAddress = 0x8364,
-      kAnalogTrigger6_LowerLimitAddress = 0x8370,
-      kAnalogTrigger7_LowerLimitAddress = 0x8358,
+      kAnalogTrigger0_LowerLimitAddress = 0x83C0,
+      kAnalogTrigger1_LowerLimitAddress = 0x83B4,
+      kAnalogTrigger2_LowerLimitAddress = 0x83A8,
+      kAnalogTrigger3_LowerLimitAddress = 0x839C,
+      kAnalogTrigger4_LowerLimitAddress = 0x8390,
+      kAnalogTrigger5_LowerLimitAddress = 0x8378,
+      kAnalogTrigger6_LowerLimitAddress = 0x8384,
+      kAnalogTrigger7_LowerLimitAddress = 0x836C,
    } tLowerLimit_Constants;
    static const unsigned int kLowerLimitAddresses [];
 
@@ -125,7 +125,7 @@ public:
       kNumOutputElements = 8,
       kOutput_ElementSize = 4,
       kOutput_ElementMask = 0xF,
-      kAnalogTrigger_OutputAddress = 0x83B8,
+      kAnalogTrigger_OutputAddress = 0x83CC,
    } tOutput_Constants;
 
    tOutput readOutput(unsigned char bitfield_index, tRioStatusCode *status);
@@ -145,4 +145,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_AnalogTrigger_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__

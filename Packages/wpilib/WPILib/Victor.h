@@ -7,23 +7,24 @@
 #ifndef VICTOR_H
 #define VICTOR_H
 
-#include "PWM.h"
+#include "SafePWM.h"
 #include "SpeedController.h"
 #include "PIDOutput.h"
 
 /**
  * IFI Victor Speed Controller
  */
-class Victor : public PWM, public SpeedController, public PIDOutput
+class Victor : public SafePWM, public SpeedController, public PIDOutput
 {
 public:
 	explicit Victor(UINT32 channel);
 	Victor(UINT32 slot, UINT32 channel);
 	virtual ~Victor();
-	void Set(float value);
-	float Get();
-	
-	void PIDWrite(float output);
+	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual float Get();
+	virtual void Disable();
+
+	virtual void PIDWrite(float output);
 
 private:
 	void InitVictor();

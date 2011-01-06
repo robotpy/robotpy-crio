@@ -76,7 +76,8 @@ bool AnalogTriggerOutput::GetAnalogTriggerForRouting()
 
 
 /**
- * Request interrupts asynchronously on this digital input.
+ * Request interrupts asynchronously on this analog trigger output.
+ * TODO: Hardware supports interrupts on Analog Trigger outputs... WPILib should too
  */
 void AnalogTriggerOutput::RequestInterrupts(tInterruptHandler handler, void *param)
 {
@@ -84,7 +85,8 @@ void AnalogTriggerOutput::RequestInterrupts(tInterruptHandler handler, void *par
 }
 
 /**
- * Request interrupts synchronously on this digital input.
+ * Request interrupts synchronously on this analog trigger output.
+ * TODO: Hardware supports interrupts on Analog Trigger outputs... WPILib should too
  */
 void AnalogTriggerOutput::RequestInterrupts()
 {

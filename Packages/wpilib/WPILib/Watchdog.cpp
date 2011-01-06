@@ -8,6 +8,8 @@
 
 #include "Utility.h"
 
+const double Watchdog::kDefaultWatchdogExpiration;
+
 /**
  * The Watchdog is born.
  */

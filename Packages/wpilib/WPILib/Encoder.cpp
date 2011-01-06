@@ -40,7 +40,7 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 		m_encoder->writeConfig_BSource_AnalogTrigger(m_bSource->GetAnalogTriggerForRouting(), &status);
 		m_encoder->strobeReset(&status);
 		m_encoder->writeConfig_Reverse(reverseDirection, &status);
-		m_encoder->writeTimerConfig_AverageSize(1, &status);
+		m_encoder->writeTimerConfig_AverageSize(4, &status);
 		m_counter = NULL;
 		break;
 	case k1X:
@@ -256,9 +256,10 @@ void Encoder::Reset()
  */
 double Encoder::GetPeriod()
 {
+	double measuredPeriod;
 	if (m_counter)
 	{
-		return m_counter->GetPeriod() * DecodingScaleFactor();
+		measuredPeriod = m_counter->GetPeriod();
 	}
 	else
 	{
@@ -272,11 +273,13 @@ double Encoder::GetPeriod()
 		}
 		else
 		{
-			value = (double)output.Period / (double)output.Count;
+			// output.Period is a fixed point number that counts by 2 (24 bits, 25 integer bits)
+			value = (double)(output.Period << 1) / (double)output.Count;
 		}
 		wpi_assertCleanStatus(status);
-		return value * 1.0e-6  / (DecodingScaleFactor() * 4.0);
+		measuredPeriod = value * 1.0e-6;
 	}
+	return measuredPeriod / DecodingScaleFactor();
 }
 
 /**
@@ -357,7 +360,6 @@ double Encoder::DecodingScaleFactor()
 	case k4X:
 		return 0.25;
 	default:
-		//TODO: fill this in
 		return 0.0;
 	}	
 }
@@ -380,7 +382,7 @@ double Encoder::GetDistance()
  */
 double Encoder::GetRate()
 {
-	return m_distancePerPulse / GetPeriod() * (GetDirection() ? 1.0 : -1.0);
+	return (m_distancePerPulse / GetPeriod());
 }
 
 /**

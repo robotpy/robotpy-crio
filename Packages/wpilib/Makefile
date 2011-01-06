@@ -33,12 +33,15 @@ PROJECT_OBJECTS += sip_wpilibInterruptableSensorBase.o
 PROJECT_OBJECTS += sip_wpilibJaguar.o
 PROJECT_OBJECTS += sip_wpilibJoystick.o
 PROJECT_OBJECTS += sip_wpilibModule.o
+PROJECT_OBJECTS += sip_wpilibMotorSafety.o
+PROJECT_OBJECTS += sip_wpilibMotorSafetyHelper.o
 PROJECT_OBJECTS += sip_wpilibPIDController.o
 PROJECT_OBJECTS += sip_wpilibPIDOutput.o
 PROJECT_OBJECTS += sip_wpilibPIDSource.o
 PROJECT_OBJECTS += sip_wpilibPWM.o
 PROJECT_OBJECTS += sip_wpilibRelay.o
 PROJECT_OBJECTS += sip_wpilibRobotDrive.o
+PROJECT_OBJECTS += sip_wpilibSafePWM.o
 PROJECT_OBJECTS += sip_wpilibSensorBase.o
 PROJECT_OBJECTS += sip_wpilibSerialPort.o
 PROJECT_OBJECTS += sip_wpilibServo.o
@@ -47,7 +50,6 @@ PROJECT_OBJECTS += sip_wpilibSpeedController.o
 PROJECT_OBJECTS += sip_wpilibTimer.o
 PROJECT_OBJECTS += sip_wpilibUltrasonic.o
 PROJECT_OBJECTS += sip_wpilibWatchdog.o
-PROJECT_OBJECTS += CANJaguar/CANJaguar.o
 
 PROJECT_OBJECTS += WPILib/CInterfaces/CDigitalInput.o
 PROJECT_OBJECTS += WPILib/Accelerometer.o
@@ -56,6 +58,7 @@ PROJECT_OBJECTS += WPILib/AnalogChannel.o
 PROJECT_OBJECTS += WPILib/AnalogModule.o
 PROJECT_OBJECTS += WPILib/AnalogTrigger.o
 PROJECT_OBJECTS += WPILib/AnalogTriggerOutput.o
+PROJECT_OBJECTS += WPILib/CANJaguar.o
 PROJECT_OBJECTS += WPILib/Compressor.o
 PROJECT_OBJECTS += WPILib/Counter.o
 PROJECT_OBJECTS += WPILib/Dashboard.o
@@ -78,6 +81,7 @@ PROJECT_OBJECTS += WPILib/IterativeRobot.o
 PROJECT_OBJECTS += WPILib/Jaguar.o
 PROJECT_OBJECTS += WPILib/Joystick.o
 PROJECT_OBJECTS += WPILib/Module.o
+PROJECT_OBJECTS += WPILib/MotorSafetyHelper.o
 PROJECT_OBJECTS += WPILib/Notifier.o
 PROJECT_OBJECTS += WPILib/PIDController.o
 PROJECT_OBJECTS += WPILib/PWM.o
@@ -85,6 +89,7 @@ PROJECT_OBJECTS += WPILib/Relay.o
 PROJECT_OBJECTS += WPILib/Resource.o
 PROJECT_OBJECTS += WPILib/RobotBase.o
 PROJECT_OBJECTS += WPILib/RobotDrive.o
+PROJECT_OBJECTS += WPILib/SafePWM.o
 PROJECT_OBJECTS += WPILib/SensorBase.o
 PROJECT_OBJECTS += WPILib/SerialPort.o
 PROJECT_OBJECTS += WPILib/Servo.o
@@ -99,7 +104,7 @@ PROJECT_OBJECTS += WPILib/Victor.o
 PROJECT_OBJECTS += WPILib/Watchdog.o
 
 ADDED_INCLUDES = -I../sip -I./WPILib -I./WPILib/CInterfaces
-ADDED_CFLAGS = -D'SVN_REV="2130"'
-ADDED_C++FLAGS = -D'SVN_REV="2130"'
+ADDED_CFLAGS = -D'SVN_REV="2222"'
+ADDED_C++FLAGS = -D'SVN_REV="2222"'
 
 include ../../mk/module.mk

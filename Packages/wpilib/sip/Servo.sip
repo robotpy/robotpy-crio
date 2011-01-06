@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Servo : PWM, SpeedController
+class Servo : SafePWM
 {
 %TypeHeaderCode
 #include <WPILib/Servo.h>
@@ -32,6 +32,7 @@ public:
 	Servo(UINT32 slot, UINT32 channel);
 	virtual ~Servo();
 	void Set(float value);
+	void SetOffline();
 	float Get();
 	void SetAngle(float angle);
 	float GetAngle();

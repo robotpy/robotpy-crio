@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Solenoid_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Solenoid_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Solenoid_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Solenoid_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tSolenoid : public tScopedSystem
@@ -30,7 +30,7 @@ public:
       kNumDO7_0Elements = 2,
       kDO7_0_ElementSize = 8,
       kDO7_0_ElementMask = 0xFF,
-      kSolenoid_DO7_0Address = 0x8410,
+      kSolenoid_DO7_0Address = 0x8424,
    } tDO7_0_Constants;
 
    void writeDO7_0(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
@@ -46,4 +46,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Solenoid_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Solenoid_h__

@@ -10,6 +10,9 @@
 #include "Resource.h"
 #include "Utility.h"
 
+const UINT32 PWM::kDefaultPwmPeriod;
+const UINT32 PWM::kDefaultMinPwmHigh;
+const INT32 PWM::kPwmDisabled;
 static Resource *allocated = NULL;
 
 /**

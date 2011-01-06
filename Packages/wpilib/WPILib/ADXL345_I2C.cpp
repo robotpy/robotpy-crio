@@ -10,6 +10,12 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
+const UINT8 ADXL345_I2C::kAddress;
+const UINT8 ADXL345_I2C::kPowerCtlRegister;
+const UINT8 ADXL345_I2C::kDataFormatRegister;
+const UINT8 ADXL345_I2C::kDataRegister;
+const double ADXL345_I2C::kGsPerLSB;
+
 /**
  * Constructor.
  * 
@@ -20,12 +26,15 @@ ADXL345_I2C::ADXL345_I2C(UINT32 slot, ADXL345_I2C::DataFormat_Range range)
 	: m_i2c (NULL)
 {
 	DigitalModule *module = DigitalModule::GetInstance(slot);
-	m_i2c = module->GetI2C(kAddress);
+	if (module)
+	{
+		m_i2c = module->GetI2C(kAddress);
 
-	// Turn on the measurements
-	m_i2c->Write(kPowerCtlRegister, kPowerCtl_Measure);
-	// Specify the data format to read
-	m_i2c->Write(kDataFormatRegister, kDataFormat_FullRes | (UINT8)range);
+		// Turn on the measurements
+		m_i2c->Write(kPowerCtlRegister, kPowerCtl_Measure);
+		// Specify the data format to read
+		m_i2c->Write(kDataFormatRegister, kDataFormat_FullRes | (UINT8)range);
+	}
 }
 
 /**
@@ -45,12 +54,14 @@ ADXL345_I2C::~ADXL345_I2C()
  */
 double ADXL345_I2C::GetAcceleration(ADXL345_I2C::Axes axis)
 {
-	INT16 rawAccel;
-	m_i2c->Read(kDataRegister + (UINT8)axis, sizeof(rawAccel), (UINT8 *)&rawAccel);
+	INT16 rawAccel = 0;
+	if(m_i2c)
+	{
+		m_i2c->Read(kDataRegister + (UINT8)axis, sizeof(rawAccel), (UINT8 *)&rawAccel);
 
-	// Sensor is little endian... swap bytes
-	rawAccel = ((rawAccel >> 8) & 0xFF) | (rawAccel << 8);
-
+		// Sensor is little endian... swap bytes
+		rawAccel = ((rawAccel >> 8) & 0xFF) | (rawAccel << 8);
+	}
 	return rawAccel * kGsPerLSB;
 }
 
@@ -61,19 +72,22 @@ double ADXL345_I2C::GetAcceleration(ADXL345_I2C::Axes axis)
  */
 ADXL345_I2C::AllAxes ADXL345_I2C::GetAccelerations()
 {
-	AllAxes data;
+	AllAxes data = {0.0};
 	INT16 rawData[3];
-	m_i2c->Read(kDataRegister, sizeof(rawData), (UINT8*)rawData);
-
-	// Sensor is little endian... swap bytes
-	for (INT32 i=0; i<3; i++)
+	if (m_i2c)
 	{
-		rawData[i] = ((rawData[i] >> 8) & 0xFF) | (rawData[i] << 8);
-	}
+		m_i2c->Read(kDataRegister, sizeof(rawData), (UINT8*)rawData);
 
-	data.XAxis = rawData[0] * kGsPerLSB;
-	data.YAxis = rawData[1] * kGsPerLSB;
-	data.ZAxis = rawData[2] * kGsPerLSB;
+		// Sensor is little endian... swap bytes
+		for (INT32 i=0; i<3; i++)
+		{
+			rawData[i] = ((rawData[i] >> 8) & 0xFF) | (rawData[i] << 8);
+		}
+
+		data.XAxis = rawData[0] * kGsPerLSB;
+		data.YAxis = rawData[1] * kGsPerLSB;
+		data.ZAxis = rawData[2] * kGsPerLSB;
+	}
 	return data;
 }
 

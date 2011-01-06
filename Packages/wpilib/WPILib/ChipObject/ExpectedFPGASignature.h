@@ -1,25 +1,25 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_ExpectedFPGASignature_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_ExpectedFPGASignature_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_ExpectedFPGASignature_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_ExpectedFPGASignature_h__
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
-   static const unsigned short g_ExpectedFPGAVersion = 2010;
-   static const unsigned int g_ExpectedFPGARevision = 0x00103000;
+   static const unsigned short g_ExpectedFPGAVersion = 2011;
+   static const unsigned int g_ExpectedFPGARevision = 0x00105003;
    static const unsigned int g_ExpectedFPGASignature[] = 
    {
-      0xAD9A5591,
-      0xCC64E4DF,
-      0x756D77D1,
-      0xB57A549E,
+      0x2EAA5E59,
+      0xCAF1A8A9,
+      0x66853A01,
+      0x1B61CC91,
    };
 
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_ExpectedFPGASignature_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_ExpectedFPGASignature_h__

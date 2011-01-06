@@ -11,6 +11,18 @@
 SimpleRobot::SimpleRobot()
 	: m_robotMainOverridden (true)
 {
+	m_watchdog.SetEnabled(false);
+}
+
+/**
+ * Robot-wide initialization code should go here.
+ * 
+ * Users should override this method for default Robot-wide initialization which will
+ * be called when the robot is first powered on.  It will be called exactly 1 time.
+ */
+void SimpleRobot::RobotInit()
+{
+	printf("Default %s() method... Overload me!\n", __FUNCTION__);
 }
 
 /**
@@ -70,8 +82,12 @@ void SimpleRobot::RobotMain()
 void SimpleRobot::StartCompetition()
 {
 	RobotMain();
+	
 	if (!m_robotMainOverridden)
 	{
+		// first and one-time initialization
+		RobotInit();
+
 		while (1)
 		{
 			if (IsDisabled())

@@ -10,7 +10,8 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
-static Resource *interrupts = NULL;
+// TODO: This is not a good place for this...
+Resource *interruptsResource = NULL;
 
 /**
  * Create an instance of a DigitalInput.
@@ -19,7 +20,7 @@ static Resource *interrupts = NULL;
  */
 void DigitalInput::InitDigitalInput(UINT32 slot, UINT32 channel)
 {
-	Resource::CreateResourceObject(&interrupts, 8);
+	Resource::CreateResourceObject(&interruptsResource, 8);
 	CheckDigitalChannel(channel);
 	CheckDigitalModule(slot);
 	m_channel = channel;
@@ -54,7 +55,7 @@ DigitalInput::~DigitalInput()
 	{
 		delete m_manager;
 		delete m_interrupt;
-		interrupts->Free(m_interruptIndex);
+		interruptsResource->Free(m_interruptIndex);
 	}
 	m_module->FreeDIO(m_channel);
 }
@@ -110,9 +111,10 @@ bool DigitalInput::GetAnalogTriggerForRouting()
  */
 void DigitalInput::RequestInterrupts(tInterruptHandler handler, void *param)
 {
-	m_interruptIndex = interrupts->Allocate();
+	m_interruptIndex = interruptsResource->Allocate();
 //TODO: check for error on allocation
 
+	// Creates a manager too
 	AllocateInterrupts(false);
 
 	m_interrupt->writeConfig_WaitForAck(false, &status);
@@ -133,7 +135,7 @@ void DigitalInput::RequestInterrupts(tInterruptHandler handler, void *param)
  */
 void DigitalInput::RequestInterrupts()
 {
-	m_interruptIndex = interrupts->Allocate();
+	m_interruptIndex = interruptsResource->Allocate();
 //TODO: check for errors
 
 	AllocateInterrupts(true);

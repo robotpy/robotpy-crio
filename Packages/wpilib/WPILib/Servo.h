@@ -7,7 +7,7 @@
 #ifndef SERVO_H
 #define SERVO_H
 
-#include "PWM.h"
+#include "SafePWM.h"
 #include "SpeedController.h"
 
 /**
@@ -16,13 +16,14 @@
  * The range parameters default to the appropriate values for the Hitec HS-322HD servo provided
  * in the FIRST Kit of Parts in 2008.
  */
-class Servo : public PWM, public SpeedController
+class Servo : public SafePWM
 {
 public:
 	explicit Servo(UINT32 channel);
 	Servo(UINT32 slot, UINT32 channel);
 	virtual ~Servo();
 	void Set(float value);
+	void SetOffline();
 	float Get();
 	void SetAngle(float angle);
 	float GetAngle();

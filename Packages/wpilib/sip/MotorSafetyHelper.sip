@@ -21,22 +21,20 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class I2C : SensorBase
+class MotorSafetyHelper
 {
 %TypeHeaderCode
-#include <WPILib/I2C.h>
+#include <WPILib/MotorSafetyHelper.h>
 %End
 
 public:
-	virtual ~I2C();
-	bool Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived /Out/, UINT8 receiveSize);
-	bool AddressOnly();
-	bool Write(UINT8 registerAddress, UINT8 data);
-	bool Read(UINT8 registerAddress, UINT8 count, UINT8 *data /Out/);
-	void Broadcast(UINT8 registerAddress, UINT8 data);
-	void SetCompatabilityMode(bool enable);
-
-	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
-private:
-	I2C(DigitalModule *module, UINT8 deviceAddress);
+	MotorSafetyHelper(MotorSafety *safeObject);
+	void Feed();
+	void SetExpiration(float expirationTime);
+	float GetExpiration();
+	bool IsAlive();
+	void Check();
+	void SetSafetyEnabled(bool enabled);
+	bool IsSafetyEnabled();
+	static void CheckMotors();
 };

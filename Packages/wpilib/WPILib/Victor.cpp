@@ -35,7 +35,7 @@ void Victor::InitVictor()
  * 
  * @param channel The PWM channel on the digital module that the Victor is attached to.
  */
-Victor::Victor(UINT32 channel) : PWM(channel)
+Victor::Victor(UINT32 channel) : SafePWM(channel)
 {
 	InitVictor();
 }
@@ -46,7 +46,7 @@ Victor::Victor(UINT32 channel) : PWM(channel)
  * @param slot The slot in the chassis that the digital module is plugged into.
  * @param channel The PWM channel on the digital module that the Victor is attached to.
  */
-Victor::Victor(UINT32 slot, UINT32 channel) : PWM(slot, channel)
+Victor::Victor(UINT32 slot, UINT32 channel) : SafePWM(slot, channel)
 {
 	InitVictor();
 }
@@ -62,8 +62,9 @@ Victor::~Victor()
  * scaling the value for the FPGA.
  * 
  * @param speed The speed value between -1.0 and 1.0 to set.
+ * @param syncGroup Unused interface.
  */
-void Victor::Set(float speed)
+void Victor::Set(float speed, UINT8 syncGroup)
 {
 	SetSpeed(speed);
 }
@@ -79,6 +80,14 @@ float Victor::Get()
 }
 
 /**
+ * Common interface for disabling a motor.
+ */
+void Victor::Disable()
+{
+	SetRaw(kPwmDisabled);
+}
+
+/**
  * Write out the PID value as seen in the PIDOutput base object.
  * 
  * @param output Write out the PWM value as was found in the PIDController
@@ -87,3 +96,4 @@ void Victor::PIDWrite(float output)
 {
 	Set(output);
 }
+

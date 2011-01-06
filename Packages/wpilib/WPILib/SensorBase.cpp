@@ -9,10 +9,19 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
+const UINT32 SensorBase::kSystemClockTicksPerMicrosecond;
+const UINT32 SensorBase::kDigitalChannels;
+const UINT32 SensorBase::kAnalogChannels;
+const UINT32 SensorBase::kAnalogModules;
+const UINT32 SensorBase::kDigitalModules;
+const UINT32 SensorBase::kSolenoidChannels;
+const UINT32 SensorBase::kSolenoidModules;
+const UINT32 SensorBase::kPwmChannels;
+const UINT32 SensorBase::kRelayChannels;
+const UINT32 SensorBase::kChassisSlots;
 UINT32 SensorBase::m_defaultAnalogModule = 1;
 UINT32 SensorBase::m_defaultDigitalModule = 4;
 UINT32 SensorBase::m_defaultSolenoidModule = 8;
-
 SensorBase *SensorBase::m_singletonList = NULL;
 
 // Slots are one based index, so ignore element 0.

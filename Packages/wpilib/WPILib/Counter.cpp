@@ -49,12 +49,14 @@ Counter::Counter(DigitalSource *source)
 {
 	InitCounter();
 	SetUpSource(source);
+	ClearDownSource();
 }
 
 Counter::Counter(DigitalSource &source)
 {
 	InitCounter();
 	SetUpSource(&source);
+	ClearDownSource();
 }
 
 /**
@@ -65,6 +67,7 @@ Counter::Counter(UINT32 channel)
 {
 	InitCounter();
 	SetUpSource(channel);
+	ClearDownSource();
 }
 
 /**
@@ -77,6 +80,7 @@ Counter::Counter(UINT32 slot, UINT32 channel)
 {
 	InitCounter();
 	SetUpSource(slot, channel);
+	ClearDownSource();
 }
 
 /**
@@ -88,6 +92,7 @@ Counter::Counter(AnalogTrigger *trigger)
 {
 	InitCounter();
 	SetUpSource(trigger->CreateOutput(AnalogTriggerOutput::kState));
+	ClearDownSource();
 	m_allocatedUpSource = true;
 }
 
@@ -95,6 +100,8 @@ Counter::Counter(AnalogTrigger &trigger)
 {
 	InitCounter();
 	SetUpSource(trigger.CreateOutput(AnalogTriggerOutput::kState));
+	ClearDownSource();
+	m_allocatedUpSource = true;
 }
 
 Counter::Counter(EncodingType encodingType, DigitalSource *upSource, DigitalSource *downSource, bool inverted)
@@ -105,9 +112,15 @@ Counter::Counter(EncodingType encodingType, DigitalSource *upSource, DigitalSour
 	SetDownSource(downSource);
 
 	if (encodingType == k1X)
+	{
 		SetUpSourceEdge(true, false);
+		m_counter->writeTimerConfig_AverageSize(1, &status);
+	}
 	else
+	{
 		SetUpSourceEdge(true, true);
+		m_counter->writeTimerConfig_AverageSize(2, &status);
+	}
 
 	SetDownSourceEdge(inverted, true);
 }
@@ -446,10 +459,11 @@ double Counter::GetPeriod()
 	}
 	else
 	{
-		period = (double)output.Period / (double)output.Count;
+		// output.Period is a fixed point number that counts by 2 (24 bits, 25 integer bits)
+		period = (double)(output.Period << 1) / (double)output.Count;
 	}
 	wpi_assertCleanStatus(status);
-	return period / 1.0e6;
+	return period * 1.0e-6;
 }
 
 /**

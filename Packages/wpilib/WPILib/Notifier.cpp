@@ -10,6 +10,7 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
+const UINT32 Notifier::kTimerInterruptNumber;
 Notifier *Notifier::timerQueueHead = NULL;
 SEM_ID Notifier::queueSemaphore = NULL;
 tAlarm *Notifier::talarm = NULL;

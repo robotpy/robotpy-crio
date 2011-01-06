@@ -10,6 +10,13 @@
 #include "WPIStatus.h"
 #include <math.h>
 
+const UINT32 Joystick::kDefaultXAxis;
+const UINT32 Joystick::kDefaultYAxis;
+const UINT32 Joystick::kDefaultZAxis;
+const UINT32 Joystick::kDefaultTwistAxis;
+const UINT32 Joystick::kDefaultThrottleAxis;
+const UINT32 Joystick::kDefaultTriggerButton;
+const UINT32 Joystick::kDefaultTopButton;
 static Joystick *joysticks[DriverStation::kJoystickPorts];
 static bool joySticksInitialized = false;
 

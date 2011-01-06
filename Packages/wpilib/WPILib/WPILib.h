@@ -16,6 +16,7 @@
 #include "AnalogModule.h"
 #include "AnalogTrigger.h"
 #include "AnalogTriggerOutput.h"
+#include "CANJaguar.h"
 #include "Compressor.h"
 #include "Counter.h"
 #include "Dashboard.h"

@@ -10,6 +10,13 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
+const UINT8 HiTechnicCompass::kAddress;
+const UINT8 HiTechnicCompass::kManufacturerBaseRegister;
+const UINT8 HiTechnicCompass::kManufacturerSize;
+const UINT8 HiTechnicCompass::kSensorTypeBaseRegister;
+const UINT8 HiTechnicCompass::kSensorTypeSize;
+const UINT8 HiTechnicCompass::kHeadingRegister;
+
 /**
  * Constructor.
  * 
@@ -19,19 +26,22 @@ HiTechnicCompass::HiTechnicCompass(UINT32 slot)
 	: m_i2c (NULL)
 {
 	DigitalModule *module = DigitalModule::GetInstance(slot);
-	m_i2c = module->GetI2C(kAddress);
-
-	// Verify Sensor
-	const UINT8 kExpectedManufacturer[] = "HiTechnc";
-	const UINT8 kExpectedSensorType[] = "Compass ";
-	if ( ! m_i2c->VerifySensor(kManufacturerBaseRegister, kManufacturerSize, kExpectedManufacturer) )
+	if (module)
 	{
-		wpi_fatal(CompassManufacturerError);
-		return;
-	}
-	if ( ! m_i2c->VerifySensor(kSensorTypeBaseRegister, kSensorTypeSize, kExpectedSensorType) )
-	{
-		wpi_fatal(CompassTypeError);
+		m_i2c = module->GetI2C(kAddress);
+	
+		// Verify Sensor
+		const UINT8 kExpectedManufacturer[] = "HiTechnc";
+		const UINT8 kExpectedSensorType[] = "Compass ";
+		if ( ! m_i2c->VerifySensor(kManufacturerBaseRegister, kManufacturerSize, kExpectedManufacturer) )
+		{
+			wpi_fatal(CompassManufacturerError);
+			return;
+		}
+		if ( ! m_i2c->VerifySensor(kSensorTypeBaseRegister, kSensorTypeSize, kExpectedSensorType) )
+		{
+			wpi_fatal(CompassTypeError);
+		}
 	}
 }
 
@@ -53,12 +63,14 @@ HiTechnicCompass::~HiTechnicCompass()
  */
 float HiTechnicCompass::GetAngle()
 {
-	UINT16 heading;
-	m_i2c->Read(kHeadingRegister, sizeof(heading), (UINT8 *)&heading);
+	UINT16 heading = 0;
+	if (m_i2c)
+	{
+		m_i2c->Read(kHeadingRegister, sizeof(heading), (UINT8 *)&heading);
 
-	// Sensor is little endian... swap bytes
-	heading = (heading >> 8) | (heading << 8);
-
+		// Sensor is little endian... swap bytes
+		heading = (heading >> 8) | (heading << 8);
+	}
 	return (float)heading;
 }
 

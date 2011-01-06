@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Victor : PWM, SpeedController, PIDOutput
+class Victor : SafePWM, SpeedController, PIDOutput
 {
 %TypeHeaderCode
 #include <WPILib/Victor.h>
@@ -31,8 +31,9 @@ public:
 	explicit Victor(UINT32 channel);
 	Victor(UINT32 slot, UINT32 channel);
 	virtual ~Victor();
-	void Set(float value);
-	float Get();
+	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual float Get();
+	virtual void Disable();
 
-	void PIDWrite(float output);
+	virtual void PIDWrite(float output);
 };

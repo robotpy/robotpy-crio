@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Accumulator_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Accumulator_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tAccumulator : public tScopedSystem
@@ -43,8 +43,8 @@ public:
 
    typedef enum
    {
-      kAccumulator0_OutputAddress = 0x83D0,
-      kAccumulator1_OutputAddress = 0x83C0,
+      kAccumulator0_OutputAddress = 0x83E4,
+      kAccumulator1_OutputAddress = 0x83D4,
    } tOutput_Constants;
    static const unsigned int kOutputAddresses [];
 
@@ -55,8 +55,8 @@ public:
 
    typedef enum
    {
-      kAccumulator0_CenterAddress = 0x83D8,
-      kAccumulator1_CenterAddress = 0x83C8,
+      kAccumulator0_CenterAddress = 0x83EC,
+      kAccumulator1_CenterAddress = 0x83DC,
    } tCenter_Constants;
    static const unsigned int kCenterAddresses [];
 
@@ -66,8 +66,8 @@ public:
 
    typedef enum
    {
-      kAccumulator0_ResetAddress = 0x83D4,
-      kAccumulator1_ResetAddress = 0x83C4,
+      kAccumulator0_ResetAddress = 0x83E8,
+      kAccumulator1_ResetAddress = 0x83D8,
    } tReset_Constants;
    static const unsigned int kResetAddresses [];
 
@@ -76,8 +76,8 @@ public:
 
    typedef enum
    {
-      kAccumulator0_DeadbandAddress = 0x83CC,
-      kAccumulator1_DeadbandAddress = 0x83BC,
+      kAccumulator0_DeadbandAddress = 0x83E0,
+      kAccumulator1_DeadbandAddress = 0x83D0,
    } tDeadband_Constants;
    static const unsigned int kDeadbandAddresses [];
 
@@ -96,4 +96,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Accumulator_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__

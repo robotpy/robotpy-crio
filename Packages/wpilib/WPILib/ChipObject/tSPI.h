@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_SPI_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_SPI_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tSPI : public tScopedSystem
@@ -70,7 +70,7 @@ public:
 
    typedef enum
    {
-      kSPI_StatusAddress = 0x8128,
+      kSPI_StatusAddress = 0x812C,
    } tStatus_Constants;
 
    tStatus readStatus(tRioStatusCode *status);
@@ -80,7 +80,7 @@ public:
 
    typedef enum
    {
-      kSPI_ReadReceivedDataAddress = 0x8138,
+      kSPI_ReadReceivedDataAddress = 0x813C,
    } tReadReceivedData_Constants;
 
    void strobeReadReceivedData(tRioStatusCode *status);
@@ -88,7 +88,7 @@ public:
 
    typedef enum
    {
-      kSPI_ConfigAddress = 0x8150,
+      kSPI_ConfigAddress = 0x8154,
    } tConfig_Constants;
 
    void writeConfig(tConfig value, tRioStatusCode *status);
@@ -115,7 +115,7 @@ public:
 
    typedef enum
    {
-      kSPI_ResetAddress = 0x8148,
+      kSPI_ResetAddress = 0x814C,
    } tReset_Constants;
 
    void strobeReset(tRioStatusCode *status);
@@ -123,7 +123,7 @@ public:
 
    typedef enum
    {
-      kSPI_DataToLoadAddress = 0x8140,
+      kSPI_DataToLoadAddress = 0x8144,
    } tDataToLoad_Constants;
 
    void writeDataToLoad(unsigned int value, tRioStatusCode *status);
@@ -132,7 +132,7 @@ public:
 
    typedef enum
    {
-      kSPI_ReceivedDataAddress = 0x8134,
+      kSPI_ReceivedDataAddress = 0x8138,
    } tReceivedData_Constants;
 
    unsigned int readReceivedData(tRioStatusCode *status);
@@ -140,7 +140,7 @@ public:
 
    typedef enum
    {
-      kSPI_ChannelsAddress = 0x814C,
+      kSPI_ChannelsAddress = 0x8150,
    } tChannels_Constants;
 
    void writeChannels(tChannels value, tRioStatusCode *status);
@@ -165,7 +165,7 @@ public:
 
    typedef enum
    {
-      kSPI_LoadAddress = 0x8144,
+      kSPI_LoadAddress = 0x8148,
    } tLoad_Constants;
 
    void strobeLoad(tRioStatusCode *status);
@@ -173,7 +173,7 @@ public:
 
    typedef enum
    {
-      kSPI_ReceivedElementsAddress = 0x8130,
+      kSPI_ReceivedElementsAddress = 0x8134,
    } tReceivedElements_Constants;
 
    unsigned short readReceivedElements(tRioStatusCode *status);
@@ -181,7 +181,7 @@ public:
 
    typedef enum
    {
-      kSPI_ClearReceivedDataAddress = 0x812C,
+      kSPI_ClearReceivedDataAddress = 0x8130,
    } tClearReceivedData_Constants;
 
    void strobeClearReceivedData(tRioStatusCode *status);
@@ -189,7 +189,7 @@ public:
 
    typedef enum
    {
-      kSPI_AvailableToLoadAddress = 0x813C,
+      kSPI_AvailableToLoadAddress = 0x8140,
    } tAvailableToLoad_Constants;
 
    unsigned short readAvailableToLoad(tRioStatusCode *status);
@@ -204,4 +204,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_SPI_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__

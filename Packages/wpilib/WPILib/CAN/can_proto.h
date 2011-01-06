@@ -3,24 +3,8 @@
 // can_proto.h - Definitions for the CAN protocol used to communicate with the
 //               BDC motor controller.
 //
-// Copyright (c) 2008-2009 Luminary Micro, Inc.  All rights reserved.
-// Software License Agreement
-//
-// Luminary Micro, Inc. (LMI) is supplying this software for use solely and
-// exclusively on LMI's microcontroller products.
-//
-// The software is owned by LMI and/or its suppliers, and is protected under
-// applicable copyright laws.  All rights are reserved.  You may not combine
-// this software with "viral" open-source software in order to form a larger
-// program.  Any use in violation of the foregoing restrictions may subject
-// the user to criminal sanctions under applicable laws, as well as to civil
-// liability for the breach of the terms and conditions of this license.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
-// OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
-// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
-// LMI SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
-// CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+// Copyright (c) 2008 Texas Instruments Incorporated.  All rights reserved.
+// TI Information - Selective Disclosure
 //
 //*****************************************************************************
 
@@ -118,6 +102,7 @@
 //*****************************************************************************
 #define CAN_API_MC_VOLTAGE      0x00000000
 #define CAN_API_MC_SPD          0x00000400
+#define CAN_API_MC_VCOMP        0x00000800
 #define CAN_API_MC_POS          0x00000c00
 #define CAN_API_MC_ICTRL        0x00001000
 #define CAN_API_MC_STATUS       0x00001400
@@ -126,7 +111,7 @@
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Control Voltage API definitions.
+// The Stellaris Motor Class Control Voltage API definitions.
 //
 //*****************************************************************************
 #define LM_API_VOLT             (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -136,31 +121,27 @@
 #define LM_API_VOLT_SET         (LM_API_VOLT | (2 << CAN_MSGID_API_S))
 #define LM_API_VOLT_SET_RAMP    (LM_API_VOLT | (3 << CAN_MSGID_API_S))
 //##### FIRST BEGIN #####
-#ifdef FIRST_FIRMWARE_VERSION
 #define LM_API_VOLT_T_EN        (LM_API_VOLT | (4 << CAN_MSGID_API_S))
 #define LM_API_VOLT_T_SET       (LM_API_VOLT | (5 << CAN_MSGID_API_S))
-#endif // FIRST_FIRMWARE_VERSION
 //##### FIRST END #####
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Control API definitions for
-// LM_API_VOLT_SET_RAMP.
+// The Stellaris Motor Class Control API definitions for LM_API_VOLT_SET_RAMP.
 //
 //*****************************************************************************
 #define LM_API_VOLT_RAMP_DIS    0
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Control API definitions for
-// CAN_MSGID_API_SYNC.
+// The Stellaris Motor Class Control API definitions for CAN_MSGID_API_SYNC.
 //
 //*****************************************************************************
 #define LM_API_SYNC_PEND_NOW    0
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Speed Control API definitions.
+// The Stellaris Motor Class Speed Control API definitions.
 //
 //*****************************************************************************
 #define LM_API_SPD              (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -173,15 +154,30 @@
 #define LM_API_SPD_DC           (LM_API_SPD | (5 << CAN_MSGID_API_S))
 #define LM_API_SPD_REF          (LM_API_SPD | (6 << CAN_MSGID_API_S))
 //##### FIRST BEGIN #####
-#ifdef FIRST_FIRMWARE_VERSION
 #define LM_API_SPD_T_EN         (LM_API_SPD | (7 << CAN_MSGID_API_S))
 #define LM_API_SPD_T_SET        (LM_API_SPD | (8 << CAN_MSGID_API_S))
-#endif // FIRST_FIRMWARE_VERSION
 //##### FIRST END #####
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Position Control API definitions.
+// The Stellaris Motor Control Voltage Compensation Control API definitions.
+//
+//*****************************************************************************
+#define LM_API_VCOMP            (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
+                                 CAN_API_MC_VCOMP)
+#define LM_API_VCOMP_EN         (LM_API_VCOMP | (0 << CAN_MSGID_API_S))
+#define LM_API_VCOMP_DIS        (LM_API_VCOMP | (1 << CAN_MSGID_API_S))
+#define LM_API_VCOMP_SET        (LM_API_VCOMP | (2 << CAN_MSGID_API_S))
+#define LM_API_VCOMP_IN_RAMP    (LM_API_VCOMP | (3 << CAN_MSGID_API_S))
+#define LM_API_VCOMP_COMP_RAMP  (LM_API_VCOMP | (4 << CAN_MSGID_API_S))
+//##### FIRST BEGIN #####
+#define LM_API_VCOMP_T_EN       (LM_API_VCOMP | (5 << CAN_MSGID_API_S))
+#define LM_API_VCOMP_T_SET      (LM_API_VCOMP | (6 << CAN_MSGID_API_S))
+//##### FIRST END #####
+
+//*****************************************************************************
+//
+// The Stellaris Motor Class Position Control API definitions.
 //
 //*****************************************************************************
 #define LM_API_POS              (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -194,15 +190,13 @@
 #define LM_API_POS_DC           (LM_API_POS | (5 << CAN_MSGID_API_S))
 #define LM_API_POS_REF          (LM_API_POS | (6 << CAN_MSGID_API_S))
 //##### FIRST BEGIN #####
-#ifdef FIRST_FIRMWARE_VERSION
 #define LM_API_POS_T_EN         (LM_API_POS | (7 << CAN_MSGID_API_S))
 #define LM_API_POS_T_SET        (LM_API_POS | (8 << CAN_MSGID_API_S))
-#endif // FIRST_FIRMWARE_VERSION
 //##### FIRST END #####
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Current Control API definitions.
+// The Stellaris Motor Class Current Control API definitions.
 //
 //*****************************************************************************
 #define LM_API_ICTRL            (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -214,15 +208,13 @@
 #define LM_API_ICTRL_IC         (LM_API_ICTRL | (4 << CAN_MSGID_API_S))
 #define LM_API_ICTRL_DC         (LM_API_ICTRL | (5 << CAN_MSGID_API_S))
 //##### FIRST BEGIN #####
-#ifdef FIRST_FIRMWARE_VERSION
 #define LM_API_ICTRL_T_EN       (LM_API_ICTRL | (6 << CAN_MSGID_API_S))
 #define LM_API_ICTRL_T_SET      (LM_API_ICTRL | (7 << CAN_MSGID_API_S))
-#endif // FIRST_FIRMWARE_VERSION
 //##### FIRST END #####
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Firmware Update API definitions.
+// The Stellaris Motor Class Firmware Update API definitions.
 //
 //*****************************************************************************
 #define LM_API_UPD              (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_UPDATE)
@@ -234,16 +226,14 @@
 #define LM_API_HWVER            (LM_API_UPD | (5 << CAN_MSGID_API_S))
 #define LM_API_UPD_REQUEST      (LM_API_UPD | (6 << CAN_MSGID_API_S))
 //##### FIRST BEGIN #####
-#ifdef FIRST_FIRMWARE_VERSION
 #define LM_API_UNTRUST_EN       (LM_API_UPD | (11 << CAN_MSGID_API_S))
 #define LM_API_TRUST_EN         (LM_API_UPD | (12 << CAN_MSGID_API_S))
 #define LM_API_TRUST_HEARTBEAT  (LM_API_UPD | (13 << CAN_MSGID_API_S))
-#endif // FIRST_FIRMWARE_VERSION
 //##### FIRST END #####
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Status API definitions.
+// The Stellaris Motor Class Status API definitions.
 //
 //*****************************************************************************
 #define LM_API_STATUS           (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -257,6 +247,8 @@
 #define LM_API_STATUS_LIMIT     (LM_API_STATUS | (6 << CAN_MSGID_API_S))
 #define LM_API_STATUS_FAULT     (LM_API_STATUS | (7 << CAN_MSGID_API_S))
 #define LM_API_STATUS_POWER     (LM_API_STATUS | (8 << CAN_MSGID_API_S))
+#define LM_API_STATUS_CMODE     (LM_API_STATUS | (9 << CAN_MSGID_API_S))
+#define LM_API_STATUS_VOUT      (LM_API_STATUS | (10 << CAN_MSGID_API_S))
 
 //*****************************************************************************
 //
@@ -278,7 +270,7 @@
 
 //*****************************************************************************
 //
-// The Luminary Micro Motor Class Configuration API definitions.
+// The Stellaris Motor Class Configuration API definitions.
 //
 //*****************************************************************************
 #define LM_API_CFG              (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -295,7 +287,7 @@
 
 //*****************************************************************************
 //
-// The Luminary Micro ACK API definition.
+// The Stellaris ACK API definition.
 //
 //*****************************************************************************
 #define LM_API_ACK              (CAN_MSGID_MFR_LM | CAN_MSGID_DTYPE_MOTOR |   \
@@ -309,5 +301,39 @@
 #define LM_HWVER_UNKNOWN        0x00
 #define LM_HWVER_JAG_1_0        0x01
 #define LM_HWVER_JAG_2_0        0x02
+
+//*****************************************************************************
+//
+// The 8 bit values that can be returned by a call to LM_API_STATUS_CMODE.
+//
+//*****************************************************************************
+#define LM_STATUS_CMODE_VOLT    0x00
+#define LM_STATUS_CMODE_CURRENT 0x01
+#define LM_STATUS_CMODE_SPEED   0x02
+#define LM_STATUS_CMODE_POS     0x03
+#define LM_STATUS_CMODE_VCOMP   0x04
+
+//*****************************************************************************
+//
+// The values that can specified as the position or speed reference.  Not all
+// values are valid for each reference; if an invalid reference is set, then
+// none will be selected.
+//
+//*****************************************************************************
+#define LM_REF_ENCODER          0x00
+#define LM_REF_POT              0x01
+#define LM_REF_INV_ENCODER      0x02
+#define LM_REF_QUAD_ENCODER     0x03
+#define LM_REF_NONE             0xff
+
+//*****************************************************************************
+//
+// The flags that are used to indicate the currently active fault sources.
+//
+//*****************************************************************************
+#define LM_FAULT_CURRENT        0x01
+#define LM_FAULT_TEMP           0x02
+#define LM_FAULT_VBUS           0x04
+#define LM_FAULT_GATE_DRIVE     0x08
 
 #endif // __CAN_PROTO_H__

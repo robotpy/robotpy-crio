@@ -10,6 +10,7 @@
 #include "WPIStatus.h"
 #include <strLib.h>
 
+const INT32 Dashboard::kMaxDashboardDataSize;
 UINT8 Dashboard::m_updateNumber = 0;
 
 /**

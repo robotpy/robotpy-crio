@@ -17,6 +17,7 @@ class SimpleRobot: public RobotBase
 public:
 	SimpleRobot();
 	virtual ~SimpleRobot() {}
+	virtual void RobotInit();
 	virtual void Disabled();
 	virtual void Autonomous();
 	virtual void OperatorControl();

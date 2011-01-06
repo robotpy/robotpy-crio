@@ -51,6 +51,11 @@ public:
 	void Pulse(UINT32 channel, float pulseLength);
 	bool IsPulsing(UINT32 channel);
 	bool IsPulsing();
+	UINT32 AllocateDO_PWM();
+	void FreeDO_PWM(UINT32 pwmGenerator);
+	void SetDO_PWMRate(float rate);
+	void SetDO_PWMDutyCycle(UINT32 pwmGenerator, float dutyCycle);
+	void SetDO_PWMOutputChannel(UINT32 pwmGenerator, UINT32 channel);
 
 	I2C* GetI2C(UINT32 address);
 

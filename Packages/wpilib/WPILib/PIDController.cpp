@@ -85,47 +85,61 @@ void PIDController::CallCalculate(void *controller)
   */	
 void PIDController::Calculate()
 {
+	bool enabled;
+	PIDSource *pidInput;
+
 	CRITICAL_REGION(m_semaphore)
 	{
-	if (m_pidInput == 0)
-		return;
-	if (m_pidOutput == 0)
-		return;
-	float input = m_pidInput->PIDGet();
-	
-	if (m_enabled)
-	{
-		m_error = m_setpoint - input;
-		if (m_continuous)
-		{
-			if (fabs(m_error) > 
-				(m_maximumInput - m_minimumInput) / 2)
-			{
-				if (m_error > 0)
-					m_error = m_error  - m_maximumInput + m_minimumInput;
-				else
-					m_error = m_error  +
-					m_maximumInput - m_minimumInput;
-			}
-		}
-
-		if (((m_totalError + m_error) * m_I < m_maximumOutput) &&
-				((m_totalError + m_error) * m_I > m_minimumOutput))
-			m_totalError += m_error;
-
-				
-		m_result = m_P * m_error + m_I * m_totalError + m_D * (m_error - m_prevError);
-		m_prevError = m_error;
-		
-		if (m_result > m_maximumOutput)
-			m_result = m_maximumOutput;
-		else if (m_result < m_minimumOutput)
-			m_result = m_minimumOutput;
-		
-		m_pidOutput->PIDWrite(m_result);
-	}
+		if (m_pidInput == 0) return;
+		if (m_pidOutput == 0) return;
+		enabled = m_enabled;
+		pidInput = m_pidInput;
 	}
 	END_REGION;
+
+	if (enabled)
+	{
+		float input = pidInput->PIDGet();
+		float result;
+		PIDOutput *pidOutput;
+
+		CRITICAL_REGION(m_semaphore)
+		{
+			m_error = m_setpoint - input;
+			if (m_continuous)
+			{
+				if (fabs(m_error) > (m_maximumInput - m_minimumInput) / 2)
+				{
+					if (m_error > 0)
+					{
+						m_error = m_error - m_maximumInput + m_minimumInput;
+					}
+					else
+					{
+						m_error = m_error + m_maximumInput - m_minimumInput;
+					}
+				}
+			}
+
+			if (((m_totalError + m_error) * m_I < m_maximumOutput) &&
+					((m_totalError + m_error) * m_I > m_minimumOutput))
+			{
+				m_totalError += m_error;
+			}
+
+			m_result = m_P * m_error + m_I * m_totalError + m_D * (m_error - m_prevError);
+			m_prevError = m_error;
+
+			if (m_result > m_maximumOutput) m_result = m_maximumOutput;
+			else if (m_result < m_minimumOutput) m_result = m_minimumOutput;
+
+			pidOutput = m_pidOutput;
+			result = m_result;
+		}
+		END_REGION;
+
+		pidOutput->PIDWrite(result);
+	}
 }
 
 /**
@@ -260,7 +274,8 @@ void PIDController::SetSetpoint(float setpoint)
 {
 	CRITICAL_REGION(m_semaphore)
 	{
-		if (m_maximumInput > m_minimumInput) {
+		if (m_maximumInput > m_minimumInput)
+		{
 			if (setpoint > m_maximumInput)
 				m_setpoint = m_maximumInput;
 			else if (setpoint < m_minimumInput)
@@ -269,7 +284,9 @@ void PIDController::SetSetpoint(float setpoint)
 				m_setpoint = setpoint;
 		}
 		else
+		{
 			m_setpoint = setpoint;
+		}
 	}
 	END_REGION;	
 }
@@ -295,7 +312,7 @@ float PIDController::GetSetpoint()
  */
 float PIDController::GetError()
 {
-	float  error;
+	float error;
 	CRITICAL_REGION(m_semaphore)
 	{
 		error = m_error;
@@ -328,8 +345,8 @@ bool PIDController::OnTarget()
 	bool temp;
 	CRITICAL_REGION(m_semaphore)
 	{
-		temp = (fabs(m_error)<m_tolerance / 100 * 
-				(m_maximumInput - m_minimumInput));
+		temp = fabs(m_error) < (m_tolerance / 100 * 
+			(m_maximumInput - m_minimumInput));
 	}
 	END_REGION;
 	return temp;
@@ -341,8 +358,7 @@ bool PIDController::OnTarget()
 void PIDController::Enable()
 {
 	CRITICAL_REGION(m_semaphore)
-	{
-			
+	{			
 		m_enabled = true;
 	}
 	END_REGION;	
@@ -352,7 +368,6 @@ void PIDController::Enable()
  */
 void PIDController::Disable()
 {
-
 	CRITICAL_REGION(m_semaphore)
 	{
 		m_pidOutput->PIDWrite(0);
@@ -362,12 +377,26 @@ void PIDController::Disable()
 }
 
 /**
+ * Return true if PIDController is enabled.
+ */
+bool PIDController::IsEnabled()
+{
+	bool enabled;
+	CRITICAL_REGION(m_semaphore)
+	{
+		enabled = m_enabled;
+	}
+	END_REGION;
+	return enabled;
+}
+
+/**
  * Reset the previous error,, the integral term, and disable the controller.
  */
 void PIDController::Reset()
 {
 	Disable();
-	
+
 	CRITICAL_REGION(m_semaphore)
 	{
 		m_prevError = 0;

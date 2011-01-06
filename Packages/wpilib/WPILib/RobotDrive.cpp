@@ -6,6 +6,7 @@
 
 #include "RobotDrive.h"
 
+#include "CANJaguar.h"
 #include "GenericHID.h"
 #include "Joystick.h"
 #include "Jaguar.h"
@@ -15,6 +16,8 @@
 
 #define max(x, y) (((x) > (y)) ? (x) : (y))
 
+const INT32 RobotDrive::kMaxNumberOfMotors;
+
 /*
  * Driving functions
  * These functions provide an interface to multiple motors that is used for C programming
@@ -22,21 +25,33 @@
  * to set speeds and direction independently in one call.
  */
 
+/**
+ * Common function to initialize all the robot drive constructors.
+ * Create a motor safety object (the real reason for the common code) and
+ * initialize all the motor assignments. The default timeout is set for the robot drive.
+ */
+void RobotDrive::InitRobotDrive() {
+	m_frontLeftMotor = NULL;
+	m_frontRightMotor = NULL;
+	m_rearRightMotor = NULL;
+	m_rearLeftMotor = NULL;
+	m_sensitivity = 0.5;
+	m_maxOutput = 1.0;
+	m_safetyHelper = new MotorSafetyHelper(this);
+	m_safetyHelper->SetSafetyEnabled(true);
+}
+
 /** Constructor for RobotDrive with 2 motors specified with channel numbers.
  * Set up parameters for a two wheel drive system where the
  * left and right motor pwm channels are specified in the call.
  * This call assumes Jaguars for controlling the motors.
  * @param leftMotorChannel The PWM channel number on the default digital module that drives the left motor.
  * @param rightMotorChannel The PWM channel number on the default digital module that drives the right motor.
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value).
  */
-RobotDrive::RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel,
-		float sensitivity)
+RobotDrive::RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel)
 {
-	m_sensitivity = sensitivity;
-	m_frontLeftMotor = NULL;
+	InitRobotDrive();
 	m_rearLeftMotor = new Jaguar(leftMotorChannel);
-	m_frontRightMotor = NULL;
 	m_rearRightMotor = new Jaguar(rightMotorChannel);
 	for (INT32 i=0; i < kMaxNumberOfMotors; i++)
 	{
@@ -55,12 +70,11 @@ RobotDrive::RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel,
  * @param rearLeftMotor Rear Left motor channel number on the default digital module
  * @param frontRightMotor Front right motor channel number on the default digital module
  * @param rearRightMotor Rear Right motor channel number on the default digital module
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
  */
 RobotDrive::RobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
-		UINT32 frontRightMotor, UINT32 rearRightMotor, float sensitivity)
+		UINT32 frontRightMotor, UINT32 rearRightMotor)
 {
-	m_sensitivity = sensitivity;
+	InitRobotDrive();
 	m_rearLeftMotor = new Jaguar(rearLeftMotor);
 	m_rearRightMotor = new Jaguar(rearRightMotor);
 	m_frontLeftMotor = new Jaguar(frontLeftMotor);
@@ -80,21 +94,18 @@ RobotDrive::RobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
  * the curve to suit motor bias or deadband elimination.
  * @param leftMotor The left SpeedController object used to drive the robot.
  * @param rightMotor the right SpeedController object used to drive the robot.
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
  */
-RobotDrive::RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor, float sensitivity)
+RobotDrive::RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor)
 {
+	InitRobotDrive();
 	if (leftMotor == NULL || rightMotor == NULL)
 	{
 		wpi_fatal(NullParameter);
 		m_rearLeftMotor = m_rearRightMotor = NULL;
 		return;
 	}
-	m_frontLeftMotor = NULL;
 	m_rearLeftMotor = leftMotor;
-	m_frontRightMotor = NULL;
 	m_rearRightMotor = rightMotor;
-	m_sensitivity = sensitivity;
 	for (INT32 i=0; i < kMaxNumberOfMotors; i++)
 	{
 		m_invertedMotors[i] = 1;
@@ -102,13 +113,11 @@ RobotDrive::RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor, 
 	m_deleteSpeedControllers = false;
 }
 
-RobotDrive::RobotDrive(SpeedController &leftMotor, SpeedController &rightMotor, float sensitivity)
+RobotDrive::RobotDrive(SpeedController &leftMotor, SpeedController &rightMotor)
 {
-	m_frontLeftMotor = NULL;
+	InitRobotDrive();
 	m_rearLeftMotor = &leftMotor;
-	m_frontRightMotor = NULL;
 	m_rearRightMotor = &rightMotor;
-	m_sensitivity = sensitivity;
 	for (INT32 i=0; i < kMaxNumberOfMotors; i++)
 	{
 		m_invertedMotors[i] = 1;
@@ -123,23 +132,20 @@ RobotDrive::RobotDrive(SpeedController &leftMotor, SpeedController &rightMotor, 
  * @param frontLeftMotor The front left SpeedController object used to drive the robot
  * @param rearRightMotor The back right SpeedController object used to drive the robot.
  * @param frontRightMotor The front right SpeedController object used to drive the robot.
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
  */
 RobotDrive::RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLeftMotor,
-						SpeedController *frontRightMotor, SpeedController *rearRightMotor,
-						float sensitivity)
+						SpeedController *frontRightMotor, SpeedController *rearRightMotor)
 {
+	InitRobotDrive();
 	if (frontLeftMotor == NULL || rearLeftMotor == NULL || frontRightMotor == NULL || rearRightMotor == NULL)
 	{
 		wpi_fatal(NullParameter);
-		m_frontLeftMotor = m_rearLeftMotor = m_frontRightMotor = m_rearRightMotor = NULL;
 		return;
 	}
 	m_frontLeftMotor = frontLeftMotor;
 	m_rearLeftMotor = rearLeftMotor;
 	m_frontRightMotor = frontRightMotor;
 	m_rearRightMotor = rearRightMotor;
-	m_sensitivity = sensitivity;
 	for (INT32 i=0; i < kMaxNumberOfMotors; i++)
 	{
 		m_invertedMotors[i] = 1;
@@ -148,14 +154,13 @@ RobotDrive::RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLef
 }
 
 RobotDrive::RobotDrive(SpeedController &frontLeftMotor, SpeedController &rearLeftMotor,
-						SpeedController &frontRightMotor, SpeedController &rearRightMotor,
-						float sensitivity)
+						SpeedController &frontRightMotor, SpeedController &rearRightMotor)
 {
+	InitRobotDrive();
 	m_frontLeftMotor = &frontLeftMotor;
 	m_rearLeftMotor = &rearLeftMotor;
 	m_frontRightMotor = &frontRightMotor;
 	m_rearRightMotor = &rearRightMotor;
-	m_sensitivity = sensitivity;
 	for (INT32 i=0; i < kMaxNumberOfMotors; i++)
 	{
 		m_invertedMotors[i] = 1;
@@ -176,6 +181,7 @@ RobotDrive::~RobotDrive()
 		delete m_frontRightMotor;
 		delete m_rearRightMotor;
 	}
+	delete m_safetyHelper;
 }
 
 /**
@@ -185,37 +191,37 @@ RobotDrive::~RobotDrive()
  * not turning. The algorithm for adding in the direction attempts to provide a constant
  * turn radius for differing speeds.
  *
- * This function sill most likely be used in an autonomous routine.
+ * This function will most likely be used in an autonomous routine.
  *
- * @param speed The forward component of the speed to send to the motors.
+ * @param outputMagnitude The forward component of the output magnitude to send to the motors.
  * @param curve The rate of turn, constant for different forward speeds.
  */
-void RobotDrive::Drive(float speed, float curve)
+void RobotDrive::Drive(float outputMagnitude, float curve)
 {
-	float leftSpeed, rightSpeed;
+	float leftOutput, rightOutput;
 
 	if (curve < 0)
 	{
 		float value = log(-curve);
 		float ratio = (value - m_sensitivity)/(value + m_sensitivity);
 		if (ratio == 0) ratio =.0000000001;
-		leftSpeed = speed / ratio;
-		rightSpeed = speed;
+		leftOutput = outputMagnitude / ratio;
+		rightOutput = outputMagnitude;
 	}
 	else if (curve > 0)
 	{
 		float value = log(curve);
 		float ratio = (value - m_sensitivity)/(value + m_sensitivity);
 		if (ratio == 0) ratio =.0000000001;
-		leftSpeed = speed;
-		rightSpeed = speed / ratio;
+		leftOutput = outputMagnitude;
+		rightOutput = outputMagnitude / ratio;
 	}
 	else
 	{
-		leftSpeed = speed;
-		rightSpeed = speed;
+		leftOutput = outputMagnitude;
+		rightOutput = outputMagnitude;
 	}
-	SetLeftRightMotorSpeeds(leftSpeed, rightSpeed);
+	SetLeftRightMotorOutputs(leftOutput, rightOutput);
 }
 
 /**
@@ -295,7 +301,7 @@ void RobotDrive::TankDrive(float leftValue, float rightValue)
 		rightValue = -(rightValue * rightValue);
 	}
 
-	SetLeftRightMotorSpeeds(leftValue, rightValue);
+	SetLeftRightMotorOutputs(leftValue, rightValue);
 }
 
 /**
@@ -379,8 +385,8 @@ void RobotDrive::ArcadeDrive(GenericHID &moveStick, UINT32 moveAxis,
 void RobotDrive::ArcadeDrive(float moveValue, float rotateValue, bool squaredInputs)
 {
 	// local variables to hold the computed PWM values for the motors
-	float leftMotorSpeed;
-	float rightMotorSpeed;
+	float leftMotorOutput;
+	float rightMotorOutput;
 
 	moveValue = Limit(moveValue);
 	rotateValue = Limit(rotateValue);
@@ -410,29 +416,29 @@ void RobotDrive::ArcadeDrive(float moveValue, float rotateValue, bool squaredInp
 	{
 		if (rotateValue > 0.0)
 		{
-			leftMotorSpeed = moveValue - rotateValue;
-			rightMotorSpeed = max(moveValue, rotateValue);
+			leftMotorOutput = moveValue - rotateValue;
+			rightMotorOutput = max(moveValue, rotateValue);
 		}
 		else
 		{
-			leftMotorSpeed = max(moveValue, -rotateValue);
-			rightMotorSpeed = moveValue + rotateValue;
+			leftMotorOutput = max(moveValue, -rotateValue);
+			rightMotorOutput = moveValue + rotateValue;
 		}
 	}
 	else
 	{
 		if (rotateValue > 0.0)
 		{
-			leftMotorSpeed = - max(-moveValue, rotateValue);
-			rightMotorSpeed = moveValue + rotateValue;
+			leftMotorOutput = - max(-moveValue, rotateValue);
+			rightMotorOutput = moveValue + rotateValue;
 		}
 		else
 		{
-			leftMotorSpeed = moveValue - rotateValue;
-			rightMotorSpeed = - max(-moveValue, -rotateValue);
+			leftMotorOutput = moveValue - rotateValue;
+			rightMotorOutput = - max(-moveValue, -rotateValue);
 		}
 	}
-	SetLeftRightMotorSpeeds(leftMotorSpeed, rightMotorSpeed);
+	SetLeftRightMotorOutputs(leftMotorOutput, rightMotorOutput);
 }
 
 /**
@@ -468,10 +474,16 @@ void RobotDrive::MecanumDrive_Cartesian(float x, float y, float rotation, float 
 
 	Normalize(wheelSpeeds);
 
-	m_frontLeftMotor->Set(wheelSpeeds[kFrontLeftMotor] * m_invertedMotors[kFrontLeftMotor]);
-	m_frontRightMotor->Set(wheelSpeeds[kFrontRightMotor] * m_invertedMotors[kFrontRightMotor]);
-	m_rearLeftMotor->Set(wheelSpeeds[kRearLeftMotor] * m_invertedMotors[kRearLeftMotor]);
-	m_rearRightMotor->Set(wheelSpeeds[kRearRightMotor] * m_invertedMotors[kRearRightMotor]);
+	UINT8 syncGroup = 0x80;
+
+	m_frontLeftMotor->Set(wheelSpeeds[kFrontLeftMotor] * m_invertedMotors[kFrontLeftMotor] * m_maxOutput, syncGroup);
+	m_frontRightMotor->Set(wheelSpeeds[kFrontRightMotor] * m_invertedMotors[kFrontRightMotor] * m_maxOutput, syncGroup);
+	m_rearLeftMotor->Set(wheelSpeeds[kRearLeftMotor] * m_invertedMotors[kRearLeftMotor] * m_maxOutput, syncGroup);
+	m_rearRightMotor->Set(wheelSpeeds[kRearRightMotor] * m_invertedMotors[kRearRightMotor] * m_maxOutput, syncGroup);
+
+	CANJaguar::UpdateSyncGroup(syncGroup);
+	
+	m_safetyHelper->Feed();
 }
 
 /**
@@ -504,10 +516,16 @@ void RobotDrive::MecanumDrive_Polar(float magnitude, float direction, float rota
 
 	Normalize(wheelSpeeds);
 
-	m_frontLeftMotor->Set(wheelSpeeds[kFrontLeftMotor] * m_invertedMotors[kFrontLeftMotor]);
-	m_frontRightMotor->Set(wheelSpeeds[kFrontRightMotor] * m_invertedMotors[kFrontRightMotor]);
-	m_rearLeftMotor->Set(wheelSpeeds[kRearLeftMotor] * m_invertedMotors[kRearLeftMotor]);
-	m_rearRightMotor->Set(wheelSpeeds[kRearRightMotor] * m_invertedMotors[kRearRightMotor]);
+	UINT8 syncGroup = 0x80;
+
+	m_frontLeftMotor->Set(wheelSpeeds[kFrontLeftMotor] * m_invertedMotors[kFrontLeftMotor] * m_maxOutput, syncGroup);
+	m_frontRightMotor->Set(wheelSpeeds[kFrontRightMotor] * m_invertedMotors[kFrontRightMotor] * m_maxOutput, syncGroup);
+	m_rearLeftMotor->Set(wheelSpeeds[kRearLeftMotor] * m_invertedMotors[kRearLeftMotor] * m_maxOutput, syncGroup);
+	m_rearRightMotor->Set(wheelSpeeds[kRearRightMotor] * m_invertedMotors[kRearRightMotor] * m_maxOutput, syncGroup);
+
+	CANJaguar::UpdateSyncGroup(syncGroup);
+	
+	m_safetyHelper->Feed();
 }
 
 /**
@@ -528,25 +546,28 @@ void RobotDrive::HolonomicDrive(float magnitude, float direction, float rotation
 
 /** Set the speed of the right and left motors.
  * This is used once an appropriate drive setup function is called such as
- * TwoWheelDrive(). The motors are set to "leftSpeed" and "rightSpeed"
+ * TwoWheelDrive(). The motors are set to "leftOutput" and "rightOutput"
  * and includes flipping the direction of one side for opposing motors.
- * @param leftSpeed The speed to send to the left side of the robot.
- * @param rightSpeed The speed to send to the right side of the robot.
+ * @param leftOutput The speed to send to the left side of the robot.
+ * @param rightOutput The speed to send to the right side of the robot.
  */
-void RobotDrive::SetLeftRightMotorSpeeds(float leftSpeed, float rightSpeed)
+void RobotDrive::SetLeftRightMotorOutputs(float leftOutput, float rightOutput)
 {
 	wpi_assert(m_rearLeftMotor != NULL && m_rearRightMotor != NULL);
 
-	leftSpeed = Limit(leftSpeed);
-	rightSpeed = Limit(rightSpeed);
+	UINT8 syncGroup = 0x80;
 
 	if (m_frontLeftMotor != NULL)
-		m_frontLeftMotor->Set(Limit(leftSpeed) * m_invertedMotors[kFrontLeftMotor]);
-	m_rearLeftMotor->Set(Limit(leftSpeed) * m_invertedMotors[kRearLeftMotor]);
+		m_frontLeftMotor->Set(Limit(leftOutput) * m_invertedMotors[kFrontLeftMotor] * m_maxOutput, syncGroup);
+	m_rearLeftMotor->Set(Limit(leftOutput) * m_invertedMotors[kRearLeftMotor] * m_maxOutput, syncGroup);
 
 	if (m_frontRightMotor != NULL)
-		m_frontRightMotor->Set(-Limit(rightSpeed) * m_invertedMotors[kFrontRightMotor]);
-	m_rearRightMotor->Set(-Limit(rightSpeed) * m_invertedMotors[kRearRightMotor]);
+		m_frontRightMotor->Set(-Limit(rightOutput) * m_invertedMotors[kFrontRightMotor] * m_maxOutput, syncGroup);
+	m_rearRightMotor->Set(-Limit(rightOutput) * m_invertedMotors[kRearRightMotor] * m_maxOutput, syncGroup);
+
+	CANJaguar::UpdateSyncGroup(syncGroup);
+
+	m_safetyHelper->Feed();
 }
 
 /**
@@ -617,4 +638,57 @@ void RobotDrive::SetInvertedMotor(MotorType motor, bool isInverted)
 	m_invertedMotors[motor] = isInverted ? -1 : 1;
 }
 
+/**
+ * Set the turning sensitivity.
+ * 
+ * This only impacts the Drive() entry-point.
+ * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
+ */
+void RobotDrive::SetSensitivity(float sensitivity)
+{
+	m_sensitivity = sensitivity;
+}
 
+/**
+ * Configure the scaling factor for using RobotDrive with motor controllers in a mode other than PercentVbus.
+ * @param maxOutput Multiplied with the output percentage computed by the drive functions.
+ */
+void RobotDrive::SetMaxOutput(double maxOutput)
+{
+	m_maxOutput = maxOutput;
+}
+
+
+
+void RobotDrive::SetExpiration(float timeout)
+{
+	m_safetyHelper->SetExpiration(timeout);
+}
+
+float RobotDrive::GetExpiration()
+{
+	return m_safetyHelper->GetExpiration();
+}
+
+bool RobotDrive::IsAlive()
+{
+	return m_safetyHelper->IsAlive();
+}
+
+bool RobotDrive::IsSafetyEnabled()
+{
+	return m_safetyHelper->IsSafetyEnabled();
+}
+
+void RobotDrive::SetSafetyEnabled(bool enabled)
+{
+	m_safetyHelper->SetSafetyEnabled(enabled);
+}
+
+void RobotDrive::StopMotor()
+{
+	if (m_frontLeftMotor != NULL) m_frontLeftMotor->Disable();
+	if (m_frontRightMotor != NULL) m_frontRightMotor->Disable();
+	if (m_rearLeftMotor != NULL) m_rearLeftMotor->Disable();
+	if (m_rearRightMotor != NULL) m_rearRightMotor->Disable();
+}

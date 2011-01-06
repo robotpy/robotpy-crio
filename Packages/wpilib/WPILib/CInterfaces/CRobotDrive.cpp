@@ -29,15 +29,13 @@ static RobotDrive *drive = NULL;
  * @param rearLeftMotor Rear Left motor channel number on the default digital module
  * @param frontRightMotor Front right motor channel number on the default digital module
  * @param rearRightMotor Rear Right motor channel number on the default digital module
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
  */
 void CreateRobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
-		UINT32 frontRightMotor, UINT32 rearRightMotor, float sensitivity)
+		UINT32 frontRightMotor, UINT32 rearRightMotor)
 {
 	if (drive == NULL)
 		drive = new RobotDrive(frontLeftMotor, rearLeftMotor,
-								frontRightMotor, rearRightMotor,
-								sensitivity);
+								frontRightMotor, rearRightMotor);
 }
 
 /**
@@ -48,12 +46,11 @@ void CreateRobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
  *
  * @param leftMotor Front left motor channel number on the default digital module
  * @param rightMotor Front right motor channel number on the default digital module
- * @param sensitivity Effectively sets the turning sensitivity (or turn radius for a given value)
  */
-void CreateRobotDrive(UINT32 leftMotor, UINT32 rightMotor, float sensitivity)
+void CreateRobotDrive(UINT32 leftMotor, UINT32 rightMotor)
 {
 	if (drive == NULL)
-		drive = new RobotDrive(leftMotor, rightMotor, sensitivity);
+		drive = new RobotDrive(leftMotor, rightMotor);
 }
 
 /**

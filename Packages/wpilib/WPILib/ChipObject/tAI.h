@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_AI_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_AI_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tAI : public tScopedSystem
@@ -52,8 +52,8 @@ public:
 
    typedef enum
    {
-      kAI0_ConfigAddress = 0x8400,
-      kAI1_ConfigAddress = 0x83EC,
+      kAI0_ConfigAddress = 0x8414,
+      kAI1_ConfigAddress = 0x8400,
    } tConfig_Constants;
    static const unsigned int kConfigAddresses [];
 
@@ -70,8 +70,8 @@ public:
       kNumScanListElements = 8,
       kScanList_ElementSize = 3,
       kScanList_ElementMask = 0x7,
-      kAI0_ScanListAddress = 0x83FC,
-      kAI1_ScanListAddress = 0x83E8,
+      kAI0_ScanListAddress = 0x8410,
+      kAI1_ScanListAddress = 0x83FC,
    } tScanList_Constants;
    static const unsigned int kScanListAddresses [];
 
@@ -84,8 +84,8 @@ public:
       kNumAverageBitsElements = 8,
       kAverageBits_ElementSize = 4,
       kAverageBits_ElementMask = 0xF,
-      kAI0_AverageBitsAddress = 0x83F4,
-      kAI1_AverageBitsAddress = 0x83E0,
+      kAI0_AverageBitsAddress = 0x8408,
+      kAI1_AverageBitsAddress = 0x83F4,
    } tAverageBits_Constants;
    static const unsigned int kAverageBitsAddresses [];
 
@@ -95,8 +95,8 @@ public:
 
    typedef enum
    {
-      kAI0_LoopTimingAddress = 0x83F0,
-      kAI1_LoopTimingAddress = 0x83DC,
+      kAI0_LoopTimingAddress = 0x8404,
+      kAI1_LoopTimingAddress = 0x83F0,
    } tLoopTiming_Constants;
    static const unsigned int kLoopTimingAddresses [];
 
@@ -108,8 +108,8 @@ public:
       kNumOversampleBitsElements = 8,
       kOversampleBits_ElementSize = 4,
       kOversampleBits_ElementMask = 0xF,
-      kAI0_OversampleBitsAddress = 0x83F8,
-      kAI1_OversampleBitsAddress = 0x83E4,
+      kAI0_OversampleBitsAddress = 0x840C,
+      kAI1_OversampleBitsAddress = 0x83F8,
    } tOversampleBits_Constants;
    static const unsigned int kOversampleBitsAddresses [];
 
@@ -120,7 +120,7 @@ public:
 
    typedef enum
    {
-      kAI_OutputAddress = 0x8404,
+      kAI_OutputAddress = 0x8418,
    } tOutput_Constants;
 
    signed int readOutput(tRioStatusCode *status);
@@ -128,7 +128,7 @@ public:
 
    typedef enum
    {
-      kAI_ReadSelectAddress = 0x840C,
+      kAI_ReadSelectAddress = 0x8420,
    } tReadSelect_Constants;
 
    void writeReadSelect(tReadSelect value, tRioStatusCode *status);
@@ -143,7 +143,7 @@ public:
 
    typedef enum
    {
-      kAI_LatchOutputAddress = 0x8408,
+      kAI_LatchOutputAddress = 0x841C,
    } tLatchOutput_Constants;
 
    void strobeLatchOutput(tRioStatusCode *status);
@@ -159,4 +159,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_AI_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__

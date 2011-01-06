@@ -19,8 +19,6 @@
  */
 class SensorBase: public ErrorBase {
 public:
-	static const UINT32 kSystemClockTicksPerMicrosecond = 40;
-
 	SensorBase();
 	virtual ~SensorBase();
 	static void SetDefaultAnalogModule(UINT32 slot);
@@ -41,12 +39,13 @@ public:
 	static bool CheckAnalogChannel(UINT32 channel);
 	static bool CheckSolenoidChannel(UINT32 channel);
 
+	static const UINT32 kSystemClockTicksPerMicrosecond = 40;
 	static const UINT32 kDigitalChannels = 14;
 	static const UINT32 kAnalogChannels = 8;
 	static const UINT32 kAnalogModules = 2;
 	static const UINT32 kDigitalModules = 2;
 	static const UINT32 kSolenoidChannels = 8;
-    static const UINT32 kSolenoidModules = 2;
+	static const UINT32 kSolenoidModules = 2;
 	static const UINT32 kPwmChannels = 10;
 	static const UINT32 kRelayChannels = 8;
 	static const UINT32 kChassisSlots = 8;

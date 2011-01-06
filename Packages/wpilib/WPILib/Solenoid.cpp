@@ -21,20 +21,22 @@ UINT32 Solenoid::m_refCount = 0;
  */
 void Solenoid::InitSolenoid()
 {
-	Resource::CreateResourceObject(&allocated, tSolenoid::kNumDO7_0Elements * kSolenoidChannels);
-	CheckSolenoidModule(m_chassisSlot);
-	CheckSolenoidChannel(m_channel);
-
-	m_refCount++;
-	if (m_refCount == 1)
+	if (CheckSolenoidModule(m_chassisSlot))
 	{
-		// Needs to be global since the protected resource spans all Solenoid objects.
-		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
-		m_fpgaSolenoidModule = new tSolenoid(&status);
+		CheckSolenoidChannel(m_channel);
+		Resource::CreateResourceObject(&allocated, tSolenoid::kNumDO7_0Elements * kSolenoidChannels);
+	
+		m_refCount++;
+		if (m_refCount == 1)
+		{
+			// Needs to be global since the protected resource spans all Solenoid objects.
+			m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
+			m_fpgaSolenoidModule = new tSolenoid(&status);
+		}
+	
+		allocated->Allocate(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
+		wpi_assertCleanStatus(status);
 	}
-
-	allocated->Allocate(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
-	wpi_assertCleanStatus(status);
 }
 
 /**
@@ -67,15 +69,18 @@ Solenoid::Solenoid(UINT32 slot, UINT32 channel)
  */
 Solenoid::~Solenoid()
 {
-	allocated->Free(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
-	if (m_refCount == 1)
+	if (CheckSolenoidModule(m_chassisSlot))
 	{
-		delete m_fpgaSolenoidModule;
-		m_fpgaSolenoidModule = NULL;
-		semDelete(m_semaphore);
-		m_semaphore = NULL;
+		allocated->Free(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_channel - 1);
+		if (m_refCount == 1)
+		{
+			delete m_fpgaSolenoidModule;
+			m_fpgaSolenoidModule = NULL;
+			semDelete(m_semaphore);
+			m_semaphore = NULL;
+		}
+		m_refCount--;
 	}
-	m_refCount--;
 }
 
 /**
@@ -96,6 +101,7 @@ UINT32 Solenoid::SlotToIndex(UINT32 slot)
  */
 void Solenoid::Set(bool on)
 {
+	if (CheckSolenoidModule(m_chassisSlot))
 	{
 		Synchronized sync(m_semaphore);
 		UINT8 value = m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status);
@@ -120,9 +126,13 @@ void Solenoid::Set(bool on)
  */
 bool Solenoid::Get()
 {
-	UINT32 value = m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status) & ( 1 << (m_channel - 1));
-	wpi_assertCleanStatus(status);
-	return (value != 0);
+	if (CheckSolenoidModule(m_chassisSlot))
+	{
+		UINT32 value = m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status) & ( 1 << (m_channel - 1));
+		wpi_assertCleanStatus(status);
+		return (value != 0);
+	}
+	return false;
 }
 
 /**
@@ -132,5 +142,9 @@ bool Solenoid::Get()
  */
 char Solenoid::GetAll()
 {
-	return m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status);
+	if (CheckSolenoidModule(m_chassisSlot))
+	{
+		return m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status);
+	}
+	return 0;
 }

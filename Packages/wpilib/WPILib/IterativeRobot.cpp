@@ -8,6 +8,8 @@
 #include "IterativeRobot.h"
 #include "Utility.h"
 
+const double IterativeRobot::kDefaultPeriod;
+
 /**
  * Constructor for RobotIterativeBase
  * 
@@ -20,6 +22,7 @@ IterativeRobot::IterativeRobot()
 	, m_teleopInitialized (false)
 	, m_period (kDefaultPeriod)
 {
+	m_watchdog.SetEnabled(false);
 }
 
 /**
@@ -217,7 +220,13 @@ void IterativeRobot::TeleopInit()
  */
 void IterativeRobot::DisabledPeriodic()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 
 /**
@@ -228,7 +237,13 @@ void IterativeRobot::DisabledPeriodic()
  */
 void IterativeRobot::AutonomousPeriodic()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 
 /**
@@ -239,7 +254,13 @@ void IterativeRobot::AutonomousPeriodic()
  */
 void IterativeRobot::TeleopPeriodic()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 
 /**
@@ -250,7 +271,13 @@ void IterativeRobot::TeleopPeriodic()
  */
 void IterativeRobot::DisabledContinuous()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 
 /**
@@ -261,7 +288,13 @@ void IterativeRobot::DisabledContinuous()
  */
 void IterativeRobot::AutonomousContinuous()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 
 /**
@@ -272,6 +305,12 @@ void IterativeRobot::AutonomousContinuous()
  */
 void IterativeRobot::TeleopContinuous()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	static bool firstRun = true;
+	if (firstRun)
+	{
+		printf("Default %s() method... Overload me!\n", __FUNCTION__);
+		firstRun = false;
+	}
+	taskDelay(1);
 }
 

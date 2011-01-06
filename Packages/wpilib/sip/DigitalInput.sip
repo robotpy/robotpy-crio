@@ -30,7 +30,7 @@ class DigitalInput : DigitalSource
 public:
 	explicit DigitalInput(UINT32 channel);
 	DigitalInput(UINT32 slot, UINT32 channel);
-	~DigitalInput();
+	virtual ~DigitalInput();
 	UINT32 Get();
 	UINT32 GetChannel();
 

@@ -12,7 +12,13 @@
 #include "WPIStatus.h"
 #include "NetworkCommunication/FRCComm.h"
 #include <strLib.h>
+#include "MotorSafetyHelper.h"
 
+const UINT32 DriverStation::kBatterySlot;
+const UINT32 DriverStation::kBatteryChannel;
+const UINT32 DriverStation::kJoystickPorts;
+const UINT32 DriverStation::kJoystickAxes;
+const float DriverStation::kUpdatePeriod;
 DriverStation* DriverStation::m_instance = NULL;
 
 /**
@@ -25,7 +31,7 @@ DriverStation::DriverStation()
 	, m_digitalOut (0)
 	, m_batteryChannel (NULL)
 	, m_statusDataSemaphore (semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE))
-	, m_task ("DriverStation", (FUNCPTR)DriverStation::InitTask)
+	, m_task ("DriverStation", (FUNCPTR)DriverStation::InitTask, 100)
 	, m_dashboardHigh(m_statusDataSemaphore)
 	, m_dashboardLow(m_statusDataSemaphore)
 	, m_newControlData (false)
@@ -95,12 +101,18 @@ void DriverStation::InitTask(DriverStation *ds)
 
 void DriverStation::Run()
 {
+	int period = 0;
 	while (true)
 	{
 		semTake(m_packetDataAvailableSem, WAIT_FOREVER);
 		SetData();
 		m_enhancedIO.UpdateData();
 		GetData();
+		if (++period >= 4)
+		{
+			MotorSafetyHelper::CheckMotors();
+			period = 0;
+		}
 	}
 }
 

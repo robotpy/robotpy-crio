@@ -21,25 +21,42 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class CANJaguar : SpeedController, PIDOutput
+class CANJaguar : SpeedController, MotorSafety, PIDOutput
 {
 %TypeHeaderCode
-#include <CANJaguar/CANJaguar.h>
+#include <WPILib/CANJaguar.h>
 %End
 
 public:
-	enum ControlMode {kPercentVoltage, kSpeed, kPosition, kCurrent};
+	enum {kControllerRate = 1000, kApproxBusVoltage = 12};
+	enum ControlMode {kPercentVbus, kCurrent, kSpeed, kPosition, kVoltage};
 	enum Faults {kCurrentFault = 1, kTemperatureFault = 2, kBusVoltageFault = 4};
 	enum Limits {kForwardLimit = 1, kReverseLimit = 2};
+	enum PositionReference {kPosRef_QuadEncoder = 0, kPosRef_Potentiometer = 1};
+	enum SpeedReference {kSpeedRef_Encoder = 0, kSpeedRef_InvEncoder = 2, kSpeedRef_QuadEncoder = 3};
+	enum NeutralMode {kNeutralMode_Jumper = 0, kNeutralMode_Brake = 1, kNeutralMode_Coast = 2};
+	enum LimitMode {kLimitMode_SwitchInputsOnly = 0, kLimitMode_SoftPositionLimits = 1};
 
-	explicit CANJaguar(UINT8 deviceNumber, ControlMode controlMode = kPercentVoltage);
+	explicit CANJaguar(UINT8 deviceNumber, ControlMode controlMode = kPercentVbus);
 	virtual ~CANJaguar();
 
-	float Get();
-	void Set(float value);
+	virtual float Get();
+	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual void Disable();
 
-	void PIDWrite(float output);
+	virtual void PIDWrite(float output);
 
+	void SetSpeedReference(SpeedReference reference);
+	void SetPositionReference(PositionReference reference);
+	PositionReference GetPositionReference();
+	void SetPID(double p, double i, double d);
+	double GetP();
+	double GetI();
+	double GetD();
+	void EnableControl(double encoderInitialPosition = 0.0);
+	void DisableControl();
+	void ChangeControlMode(ControlMode controlMode);
+	ControlMode GetControlMode();
 	float GetBusVoltage();
 	float GetOutputVoltage();
 	float GetOutputCurrent();
@@ -50,5 +67,23 @@ public:
 	bool GetReverseLimitOK();
 	UINT16 GetFaults();
 	bool GetPowerCycled();
-	UINT32 GetFirmwareVersion();
+	void SetVoltageRampRate(double rampRate);
+	virtual UINT32 GetFirmwareVersion();
+	UINT8 GetHardwareVersion();
+	void ConfigNeutralMode(NeutralMode mode);
+	void ConfigEncoderCodesPerRev(UINT16 codesPerRev);
+	void ConfigPotentiometerTurns(UINT16 turns);
+	void ConfigSoftPositionLimits(double forwardLimitPosition, double reverseLimitPosition);
+	void DisableSoftPositionLimits();
+	void ConfigMaxOutputVoltage(double voltage);
+	void ConfigFaultTime(float faultTime);
+
+	static void UpdateSyncGroup(UINT8 syncGroup);
+
+	void SetExpiration(float timeout);
+	float GetExpiration();
+	bool IsAlive();
+	void StopMotor();
+	bool IsSafetyEnabled();
+	void SetSafetyEnabled(bool enabled);
 };

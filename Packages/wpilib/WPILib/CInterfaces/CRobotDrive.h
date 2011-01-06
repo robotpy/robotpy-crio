@@ -9,9 +9,9 @@
 
 #include <VxWorks.h>
 
-void CreateRobotDrive(UINT32 leftMotor, UINT32 rightMotor, float sensitivity = 0.5);
+void CreateRobotDrive(UINT32 leftMotor, UINT32 rightMotor);
 void CreateRobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
-		UINT32 frontRightMotor, UINT32 rearRightMotor, float sensitivity = 0.5);
+		UINT32 frontRightMotor, UINT32 rearRightMotor);
 void Drive(float speed, float curve);
 void TankDrive(UINT32 leftStickPort, UINT32 rightStickPort);
 void ArcadeDrive(UINT32 stickPort, bool squaredInputs = false);

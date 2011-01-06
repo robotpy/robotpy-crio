@@ -18,7 +18,7 @@
  */
 S(IndexOutOfRange, -1, "Allocating channel or module that is out of range");
 S(NotAllocated, -2, "Attempting to free unallocated resource");
-S(ResourceAlreadyAllocated, -3, "Attempting to resuse an allocated resource");
+S(ResourceAlreadyAllocated, -3, "Attempting to reuse an allocated resource");
 S(NoAvailablePorts, -4, "No available ports to allocate");
 S(NullParameter, -5, "An address parameter to a method is NULL");
 S(GyroNotAccumulatorChannel, -6, "Gyro can only be used with Analog Channel 1 on either module");

@@ -20,9 +20,10 @@
 #include "ChipObject/tInterrupt.h"
 #include "ChipObject/tInterruptManager.h"
 #include "ChipObject/tSolenoid.h"
+#include "ChipObject/tSPI.h"
 #include "ChipObject/tWatchdog.h"
 
 using namespace nFPGA;
-using namespace nAD9A5591CC64E4DF756D77D1B57A549E;
+using namespace n2EAA5E59CAF1A8A966853A011B61CC91;
 
 #endif

@@ -29,6 +29,7 @@ public:
 	bool Write(UINT8 registerAddress, UINT8 data);
 	bool Read(UINT8 registerAddress, UINT8 count, UINT8 *data);
 	void Broadcast(UINT8 registerAddress, UINT8 data);
+	void SetCompatabilityMode(bool enable);
 
 	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
 private:
@@ -38,6 +39,7 @@ private:
 
 	DigitalModule *m_module;
 	UINT8 m_deviceAddress;
+	bool m_compatabilityMode;
 };
 
 #endif

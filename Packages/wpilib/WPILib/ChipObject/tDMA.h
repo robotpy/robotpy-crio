@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_DMA_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_DMA_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tDMA : public tScopedSystem
@@ -45,6 +45,14 @@ public:
          unsigned Enable_Encoders : 1;
          unsigned Enable_EncoderTimers : 1;
          unsigned ExternalClock : 1;
+      };
+      struct{
+         unsigned value : 20;
+      };
+   } tConfig;
+   typedef
+   union{
+      struct{
          unsigned ExternalClockSource_Channel : 4;
          unsigned ExternalClockSource_Module : 1;
          unsigned ExternalClockSource_AnalogTrigger : 1;
@@ -52,15 +60,15 @@ public:
          unsigned FallingEdge : 1;
       };
       struct{
-         unsigned value : 28;
+         unsigned value : 8;
       };
-   } tConfig;
+   } tExternalTriggers;
 
 
 
    typedef enum
    {
-      kDMA_RateAddress = 0x8158,
+      kDMA_RateAddress = 0x815C,
    } tRate_Constants;
 
    void writeRate(unsigned int value, tRioStatusCode *status);
@@ -69,7 +77,7 @@ public:
 
    typedef enum
    {
-      kDMA_ConfigAddress = 0x8154,
+      kDMA_ConfigAddress = 0x8158,
    } tConfig_Constants;
 
    void writeConfig(tConfig value, tRioStatusCode *status);
@@ -93,11 +101,6 @@ public:
    void writeConfig_Enable_Encoders(bool value, tRioStatusCode *status);
    void writeConfig_Enable_EncoderTimers(bool value, tRioStatusCode *status);
    void writeConfig_ExternalClock(bool value, tRioStatusCode *status);
-   void writeConfig_ExternalClockSource_Channel(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ExternalClockSource_Module(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ExternalClockSource_AnalogTrigger(bool value, tRioStatusCode *status);
-   void writeConfig_RisingEdge(bool value, tRioStatusCode *status);
-   void writeConfig_FallingEdge(bool value, tRioStatusCode *status);
    tConfig readConfig(tRioStatusCode *status);
    bool readConfig_Pause(tRioStatusCode *status);
    bool readConfig_Enable_AI0_Low(tRioStatusCode *status);
@@ -119,11 +122,28 @@ public:
    bool readConfig_Enable_Encoders(tRioStatusCode *status);
    bool readConfig_Enable_EncoderTimers(tRioStatusCode *status);
    bool readConfig_ExternalClock(tRioStatusCode *status);
-   unsigned char readConfig_ExternalClockSource_Channel(tRioStatusCode *status);
-   unsigned char readConfig_ExternalClockSource_Module(tRioStatusCode *status);
-   bool readConfig_ExternalClockSource_AnalogTrigger(tRioStatusCode *status);
-   bool readConfig_RisingEdge(tRioStatusCode *status);
-   bool readConfig_FallingEdge(tRioStatusCode *status);
+
+
+   typedef enum
+   {
+      kNumExternalTriggersElements = 4,
+      kExternalTriggers_ElementSize = 8,
+      kExternalTriggers_ElementMask = 0xFF,
+      kDMA_ExternalTriggersAddress = 0x8120,
+   } tExternalTriggers_Constants;
+
+   void writeExternalTriggers(unsigned char bitfield_index, tExternalTriggers value, tRioStatusCode *status);
+   void writeExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
+   void writeExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
+   void writeExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, bool value, tRioStatusCode *status);
+   void writeExternalTriggers_RisingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status);
+   void writeExternalTriggers_FallingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status);
+   tExternalTriggers readExternalTriggers(unsigned char bitfield_index, tRioStatusCode *status);
+   unsigned char readExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, tRioStatusCode *status);
+   unsigned char readExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, tRioStatusCode *status);
+   bool readExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, tRioStatusCode *status);
+   bool readExternalTriggers_RisingEdge(unsigned char bitfield_index, tRioStatusCode *status);
+   bool readExternalTriggers_FallingEdge(unsigned char bitfield_index, tRioStatusCode *status);
 
 
 
@@ -135,4 +155,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_DMA_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__

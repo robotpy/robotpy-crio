@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Counter_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Counter_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Counter_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Counter_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tCounter : public tScopedSystem
@@ -65,8 +65,8 @@ public:
    typedef
    union{
       struct{
-         unsigned Period : 24;
-         unsigned Count : 7;
+         unsigned Period : 23;
+         signed Count : 8;
          unsigned Stalled : 1;
       };
       struct{
@@ -88,14 +88,14 @@ public:
 
    typedef enum
    {
-      kCounter0_OutputAddress = 0x827C,
-      kCounter1_OutputAddress = 0x8268,
-      kCounter2_OutputAddress = 0x8254,
-      kCounter3_OutputAddress = 0x8240,
-      kCounter4_OutputAddress = 0x822C,
-      kCounter5_OutputAddress = 0x8218,
-      kCounter6_OutputAddress = 0x8204,
-      kCounter7_OutputAddress = 0x81F0,
+      kCounter0_OutputAddress = 0x8280,
+      kCounter1_OutputAddress = 0x826C,
+      kCounter2_OutputAddress = 0x8258,
+      kCounter3_OutputAddress = 0x8244,
+      kCounter4_OutputAddress = 0x8230,
+      kCounter5_OutputAddress = 0x821C,
+      kCounter6_OutputAddress = 0x8208,
+      kCounter7_OutputAddress = 0x81F4,
    } tOutput_Constants;
    static const unsigned int kOutputAddresses [];
 
@@ -107,14 +107,14 @@ public:
    typedef enum
    {
       kConfig_PulseLengthThreshold_FixedPointIntegerShift = 8,
-      kCounter0_ConfigAddress = 0x8284,
-      kCounter1_ConfigAddress = 0x8270,
-      kCounter2_ConfigAddress = 0x825C,
-      kCounter3_ConfigAddress = 0x8248,
-      kCounter4_ConfigAddress = 0x8234,
-      kCounter5_ConfigAddress = 0x8220,
-      kCounter6_ConfigAddress = 0x820C,
-      kCounter7_ConfigAddress = 0x81F8,
+      kCounter0_ConfigAddress = 0x8288,
+      kCounter1_ConfigAddress = 0x8274,
+      kCounter2_ConfigAddress = 0x8260,
+      kCounter3_ConfigAddress = 0x824C,
+      kCounter4_ConfigAddress = 0x8238,
+      kCounter5_ConfigAddress = 0x8224,
+      kCounter6_ConfigAddress = 0x8210,
+      kCounter7_ConfigAddress = 0x81FC,
    } tConfig_Constants;
    static const unsigned int kConfigAddresses [];
 
@@ -158,14 +158,14 @@ public:
 
    typedef enum
    {
-      kCounter0_ResetAddress = 0x8280,
-      kCounter1_ResetAddress = 0x826C,
-      kCounter2_ResetAddress = 0x8258,
-      kCounter3_ResetAddress = 0x8244,
-      kCounter4_ResetAddress = 0x8230,
-      kCounter5_ResetAddress = 0x821C,
-      kCounter6_ResetAddress = 0x8208,
-      kCounter7_ResetAddress = 0x81F4,
+      kCounter0_ResetAddress = 0x8284,
+      kCounter1_ResetAddress = 0x8270,
+      kCounter2_ResetAddress = 0x825C,
+      kCounter3_ResetAddress = 0x8248,
+      kCounter4_ResetAddress = 0x8234,
+      kCounter5_ResetAddress = 0x8220,
+      kCounter6_ResetAddress = 0x820C,
+      kCounter7_ResetAddress = 0x81F8,
    } tReset_Constants;
    static const unsigned int kResetAddresses [];
 
@@ -175,34 +175,34 @@ public:
    typedef enum
    {
       kTimerOutput_Period_FixedPointIntegerShift = 1,
-      kCounter0_TimerOutputAddress = 0x8274,
-      kCounter1_TimerOutputAddress = 0x8260,
-      kCounter2_TimerOutputAddress = 0x824C,
-      kCounter3_TimerOutputAddress = 0x8238,
-      kCounter4_TimerOutputAddress = 0x8224,
-      kCounter5_TimerOutputAddress = 0x8210,
-      kCounter6_TimerOutputAddress = 0x81FC,
-      kCounter7_TimerOutputAddress = 0x81E8,
+      kCounter0_TimerOutputAddress = 0x8278,
+      kCounter1_TimerOutputAddress = 0x8264,
+      kCounter2_TimerOutputAddress = 0x8250,
+      kCounter3_TimerOutputAddress = 0x823C,
+      kCounter4_TimerOutputAddress = 0x8228,
+      kCounter5_TimerOutputAddress = 0x8214,
+      kCounter6_TimerOutputAddress = 0x8200,
+      kCounter7_TimerOutputAddress = 0x81EC,
    } tTimerOutput_Constants;
    static const unsigned int kTimerOutputAddresses [];
 
    tTimerOutput readTimerOutput(tRioStatusCode *status);
    unsigned int readTimerOutput_Period(tRioStatusCode *status);
-   unsigned char readTimerOutput_Count(tRioStatusCode *status);
+   signed char readTimerOutput_Count(tRioStatusCode *status);
    bool readTimerOutput_Stalled(tRioStatusCode *status);
 
 
    typedef enum
    {
       kTimerConfig_StallPeriod_FixedPointIntegerShift = 1,
-      kCounter0_TimerConfigAddress = 0x8278,
-      kCounter1_TimerConfigAddress = 0x8264,
-      kCounter2_TimerConfigAddress = 0x8250,
-      kCounter3_TimerConfigAddress = 0x823C,
-      kCounter4_TimerConfigAddress = 0x8228,
-      kCounter5_TimerConfigAddress = 0x8214,
-      kCounter6_TimerConfigAddress = 0x8200,
-      kCounter7_TimerConfigAddress = 0x81EC,
+      kCounter0_TimerConfigAddress = 0x827C,
+      kCounter1_TimerConfigAddress = 0x8268,
+      kCounter2_TimerConfigAddress = 0x8254,
+      kCounter3_TimerConfigAddress = 0x8240,
+      kCounter4_TimerConfigAddress = 0x822C,
+      kCounter5_TimerConfigAddress = 0x8218,
+      kCounter6_TimerConfigAddress = 0x8204,
+      kCounter7_TimerConfigAddress = 0x81F0,
    } tTimerConfig_Constants;
    static const unsigned int kTimerConfigAddresses [];
 
@@ -227,4 +227,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Counter_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Counter_h__

@@ -11,6 +11,10 @@
 #include "WPIStatus.h"
 #include "NetworkCommunication/AICalibration.h"
 
+const long AnalogModule::kTimebase; ///< 40 MHz clock
+const long AnalogModule::kDefaultOversampleBits;
+const long AnalogModule::kDefaultAverageBits;
+const float AnalogModule::kDefaultSampleRate;
 SEM_ID AnalogModule::m_registerWindowSemaphore = NULL;
 
 /**
@@ -24,12 +28,15 @@ SEM_ID AnalogModule::m_registerWindowSemaphore = NULL;
  */
 AnalogModule* AnalogModule::GetInstance(UINT32 slot)
 {
-	CheckAnalogModule(slot);
-	if (m_modules[slot] == NULL)
+	if (CheckAnalogModule(slot))
 	{
-		m_modules[slot] = new AnalogModule(slot);
+		if (m_modules[slot] == NULL)
+		{
+			m_modules[slot] = new AnalogModule(slot);
+		}
+		return (AnalogModule*)m_modules[slot];
 	}
-	return (AnalogModule*)m_modules[slot]; 
+	return NULL;
 }
 
 /**

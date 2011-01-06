@@ -1,14 +1,14 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_Global_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_Global_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__
 
 #include "tScopedSystem.h"
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
 
 class tGlobal : public tScopedSystem
@@ -67,4 +67,4 @@ private:
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_Global_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__

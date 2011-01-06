@@ -12,6 +12,8 @@
 
 static Resource *channels = NULL;
 
+const UINT32 AnalogChannel::kAccumulatorSlot;
+const UINT32 AnalogChannel::kAccumulatorNumChannels;
 const UINT32 AnalogChannel::kAccumulatorChannels[] = {1, 2};
 
 /**

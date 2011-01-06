@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Jaguar : PWM, SpeedController, PIDOutput
+class Jaguar : SafePWM, SpeedController, PIDOutput
 {
 %TypeHeaderCode
 #include <WPILib/Jaguar.h>
@@ -31,8 +31,9 @@ public:
 	explicit Jaguar(UINT32 channel);
 	Jaguar(UINT32 slot, UINT32 channel);
 	virtual ~Jaguar();
-	float Get();
-	void Set(float value);
-    
-	void PIDWrite(float output);
+	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual float Get();
+	virtual void Disable();
+
+	virtual void PIDWrite(float output);
 };

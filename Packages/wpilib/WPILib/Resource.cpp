@@ -56,7 +56,7 @@ UINT32 Resource::Allocate()
 		}
 	}
 	wpi_fatal(NoAvailablePorts);
-	return 0;
+	return ~0ul;
 }
 
 /**
@@ -69,12 +69,12 @@ UINT32 Resource::Allocate(UINT32 index)
 	if (index >= m_size)
 	{
 		wpi_fatal(IndexOutOfRange);
-		return 0;
+		return ~0ul;
 	}
 	if ( m_isAllocated[index] )
 	{
 		wpi_fatal(ResourceAlreadyAllocated);
-		return 0;
+		return ~0ul;
 	}
 	m_isAllocated[index] = true;
 	return index;
@@ -93,7 +93,7 @@ void Resource::Free(UINT32 index)
 		wpi_fatal(IndexOutOfRange);
 		return;
 	}
-	if ( ! m_isAllocated[index] )
+	if (!m_isAllocated[index])
 	{
 		wpi_fatal(NotAllocated);
 		return;

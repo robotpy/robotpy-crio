@@ -7,26 +7,28 @@
 #ifndef JAGUAR_H
 #define JAGUAR_H
 
-#include "PWM.h"
+#include "SafePWM.h"
 #include "SpeedController.h"
 #include "PIDOutput.h"
 
 /**
  * Luminary Micro Jaguar Speed Control
  */
-class Jaguar : public PWM, public SpeedController, public PIDOutput
+class Jaguar : public SafePWM, public SpeedController, public PIDOutput
 {
 public:
 	explicit Jaguar(UINT32 channel);
 	Jaguar(UINT32 slot, UINT32 channel);
 	virtual ~Jaguar();
-	float Get();
-	void Set(float value);
-	
-	void PIDWrite(float output);
+	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual float Get();
+	virtual void Disable();
+
+	virtual void PIDWrite(float output);
 
 private:
 	void InitJaguar();
 };
+
 #endif
 

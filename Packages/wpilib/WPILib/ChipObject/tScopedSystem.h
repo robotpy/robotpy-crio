@@ -1,8 +1,8 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __nAD9A5591CC64E4DF756D77D1B57A549E_tScopedSystem_h__
-#define __nAD9A5591CC64E4DF756D77D1B57A549E_tScopedSystem_h__
+#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_tScopedSystem_h__
+#define __n2EAA5E59CAF1A8A966853A011B61CC91_tScopedSystem_h__
 
 #include "ExpectedFPGASignature.h"
 #include "tSystem.h"
@@ -10,7 +10,7 @@
 
 namespace nFPGA
 {
-namespace nAD9A5591CC64E4DF756D77D1B57A549E
+namespace n2EAA5E59CAF1A8A966853A011B61CC91
 {
    class tScopedSystem : public tSystem
    {
@@ -58,4 +58,4 @@ namespace nAD9A5591CC64E4DF756D77D1B57A549E
 }
 }
 
-#endif // __nAD9A5591CC64E4DF756D77D1B57A549E_tScopedSystem_h__
+#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_tScopedSystem_h__

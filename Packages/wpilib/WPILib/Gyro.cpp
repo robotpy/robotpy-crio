@@ -11,6 +11,11 @@
 #include "Utility.h"
 #include "WPIStatus.h"
 
+const UINT32 Gyro::kOversampleBits;
+const UINT32 Gyro::kAverageBits;
+const float Gyro::kSamplesPerSecond;
+const float Gyro::kCalibrationSampleTime;
+const float Gyro::kDefaultVoltsPerDegreePerSecond;
 
 /**
  * Initialize the gyro.

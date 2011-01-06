@@ -36,8 +36,8 @@ public:
 	explicit PWM(UINT32 channel);
 	PWM(UINT32 slot, UINT32 channel);
 	virtual ~PWM();
-	void SetRaw(UINT8 value);
-	UINT8 GetRaw();
+	virtual void SetRaw(UINT8 value);
+	virtual UINT8 GetRaw();
 	void SetPeriodMultiplier(PeriodMultiplier mult);
 	void EnableDeadbandElimination(bool eliminateDeadband);
 	void SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMin, INT32 min);
@@ -74,10 +74,10 @@ protected:
 
 	static const INT32 kPwmDisabled = 0;
 
-	void SetPosition(float pos);
-	float GetPosition();
-	void SetSpeed(float speed);
-	float GetSpeed();
+	virtual void SetPosition(float pos);
+	virtual float GetPosition();
+	virtual void SetSpeed(float speed);
+	virtual float GetSpeed();
 
 	bool m_eliminateDeadband;
 	INT32 m_maxPwm;

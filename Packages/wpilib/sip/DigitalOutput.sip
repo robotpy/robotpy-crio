@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class DigitalOutput
+class DigitalOutput : DigitalSource
 {
 %TypeHeaderCode
 #include <WPILib/DigitalOutput.h>
@@ -30,10 +30,24 @@ class DigitalOutput
 public:
 	explicit DigitalOutput(UINT32 channel);
 	DigitalOutput(UINT32 slot, UINT32 channel);
-	~DigitalOutput();
+	virtual ~DigitalOutput();
 	void Set(UINT32 value);
+	UINT32 GetChannel();
 	void Pulse(float length);
 	bool IsPulsing();
+
+	void SetPWMRate(float rate);
+	void EnablePWM(float initialDutyCycle);
+	void DisablePWM();
+	void UpdateDutyCycle(float dutyCycle);
+
+	virtual UINT32 GetChannelForRouting();
+	virtual UINT32 GetModuleForRouting();
+	virtual bool GetAnalogTriggerForRouting();
+	//virtual void RequestInterrupts(tInterruptHandler handler, void *param);
+	virtual void RequestInterrupts();
+
+	void SetUpSourceEdge(bool risingEdge, bool fallingEdge);
 
 private:
 	DigitalOutput(const DigitalOutput&);
