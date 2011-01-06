@@ -173,22 +173,22 @@ readline: $(OBJECTS) readline.h rldefs.h chardefs.h ./libreadline.a
 lint:	force
 	$(MAKE) $(MFLAGS) CCFLAGS='$(GCC_LINT_CFLAGS)' static
 
-Makefile makefile: config.status $(srcdir)/Makefile.in
-	CONFIG_FILES=Makefile CONFIG_HEADERS= $(SHELL) ./config.status
+#Makefile makefile: config.status $(srcdir)/Makefile.in
+#	CONFIG_FILES=Makefile CONFIG_HEADERS= $(SHELL) ./config.status
 
-Makefiles makefiles: config.status $(srcdir)/Makefile.in
-	@for mf in $(CREATED_MAKEFILES); do \
-		CONFIG_FILES=$$mf CONFIG_HEADERS= $(SHELL) ./config.status ; \
-	done
+#Makefiles makefiles: config.status $(srcdir)/Makefile.in
+#	@for mf in $(CREATED_MAKEFILES); do \
+#		CONFIG_FILES=$$mf CONFIG_HEADERS= $(SHELL) ./config.status ; \
+#	done
 
-config.status: configure
-	$(SHELL) ./config.status --recheck
+#config.status: configure
+#	$(SHELL) ./config.status --recheck
 
 config.h:	stamp-h
 
-stamp-h: config.status $(srcdir)/config.h.in
-	CONFIG_FILES= CONFIG_HEADERS=config.h ./config.status
-	echo > $@
+#stamp-h: config.status $(srcdir)/config.h.in
+#	CONFIG_FILES= CONFIG_HEADERS=config.h ./config.status
+#	echo > $@
 
 #$(srcdir)/configure: $(srcdir)/configure.in	## Comment-me-out in distribution
 #	cd $(srcdir) && autoconf	## Comment-me-out in distribution
