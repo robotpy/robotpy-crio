@@ -54,8 +54,8 @@ extern "C" {
 /*
  * Define the SIP version number.
  */
-#define SIP_VERSION         0x040b02
-#define SIP_VERSION_STR     "4.11.2"
+#define SIP_VERSION         0x040c00
+#define SIP_VERSION_STR     "4.12"
 
 
 /*
@@ -67,6 +67,9 @@ extern "C" {
  * to 0.
  *
  * History:
+ *
+ * 8.1  Revised the sipVariableDef structure.
+ *      sip_api_get_address() is now part of the public API.
  *
  * 8.0  Changed the size of the sipSimpleWrapper structure.
  *      Added sip_api_get_address().
@@ -172,7 +175,11 @@ extern "C" {
  * 0.0  Original version.
  */
 #define SIP_API_MAJOR_NR    8
-#define SIP_API_MINOR_NR    0
+#define SIP_API_MINOR_NR    1
+
+
+/* The name of the sip module. */
+#define SIP_MODULE_NAME     "sip"
 
 
 /*
@@ -301,6 +308,9 @@ typedef enum
     GuardedPointer,     /* Return the guarded pointer, ie. 0 if it has gone. */
     ReleaseGuard        /* Release the guard, if any. */
 } AccessFuncOp;
+
+struct _sipSimpleWrapper;
+struct _sipTypeDef;
 
 typedef void *(*sipInitFunc)(struct _sipSimpleWrapper *, PyObject *,
         PyObject *, PyObject **, PyObject **, PyObject **);
@@ -637,9 +647,49 @@ typedef struct _sipTypedefDef {
 
 
 /*
- * The information describing a variable.
+ * The information describing a variable or property.
  */
+
+typedef enum
+{
+    PropertyVariable,       /* A property. */
+    InstanceVariable,       /* An instance variable. */
+    ClassVariable           /* A class (i.e. static) variable. */
+} sipVariableType;
+
 typedef struct _sipVariableDef {
+    /* The type of variable. */
+    sipVariableType vd_type;
+
+    /* The name. */
+    const char *vd_name;
+
+    /*
+     * The getter.  If this is a variable (rather than a property) then the
+     * actual type is sipVariableGetterFunc.
+     */
+    PyMethodDef *vd_getter;
+
+    /*
+     * The setter.  If this is a variable (rather than a property) then the
+     * actual type is sipVariableSetterFunc.  It is NULL if the property cannot
+     * be set or the variable is const.
+     */
+    PyMethodDef *vd_setter;
+
+    /* The property deleter. */
+    PyMethodDef *vd_deleter;
+
+    /* The docstring. */
+    const char *vd_docstring;
+} sipVariableDef;
+
+
+/*
+ * The information describing a variable.  This is deprecated from v8.1 of the
+ * API and should be removed in v9.0.
+ */
+typedef struct _sipVariableDef_8 {
     /* The variable name. */
     const char *vd_name;
 
@@ -651,7 +701,7 @@ typedef struct _sipVariableDef {
 
     /* This is set if the variable is static. */
     int vd_is_static;
-} sipVariableDef;
+} sipVariableDef_8;
 
 
 /*
@@ -1399,6 +1449,9 @@ typedef struct _sipAPIDef {
             PyObject *sipKwdArgs, const char **kwdlist, PyObject **unused,
             const char *fmt, ...);
     void (*api_add_exception)(sipErrorState es, PyObject **parseErrp);
+    /*
+     * The following are part of the public API.
+     */
     void *(*api_get_address)(struct _sipSimpleWrapper *w);
 } sipAPIDef;
 

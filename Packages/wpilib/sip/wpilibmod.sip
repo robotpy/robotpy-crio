@@ -3,7 +3,7 @@
 //  This file is part of RobotPy.
 //
 
-%Module _wpilib 0
+%Module _wpilib
 
 %Copying
 Copyright (c) 2010 Peter Johnson
@@ -29,49 +29,15 @@ DEALINGS IN THE SOFTWARE.
 
 %DefaultEncoding "UTF-8"
 
-//typedef signed char INT8;
+typedef signed char INT8 /PyInt/;
 typedef short INT16;
 typedef int INT32;
 typedef long long INT64;
 
-//typedef unsigned char UINT8;
+typedef unsigned char UINT8 /PyInt/;
 typedef unsigned short UINT16;
 typedef unsigned int UINT32;
 typedef unsigned long long UINT64;
-
-%MappedType INT8
-{
-%ConvertToTypeCode
-	if (!sipIsErr)
-	{
-		if (!PyLong_Check(sipPy))
-			return 0;
-		return 1;
-	}
-	*sipCppPtr = new INT8(PyLong_AsLong(sipPy));
-	return SIP_TEMPORARY;
-%End
-%ConvertFromTypeCode
-	return PyLong_FromLong(*sipCpp);
-%End
-};
-
-%MappedType UINT8
-{
-%ConvertToTypeCode
-	if (!sipIsErr)
-	{
-		if (!PyLong_Check(sipPy))
-			return 0;
-		return 1;
-	}
-	*sipCppPtr = new UINT8(PyLong_AsLong(sipPy));
-	return SIP_TEMPORARY;
-%End
-%ConvertFromTypeCode
-	return PyLong_FromLong(*sipCpp);
-%End
-};
 
 %ModuleCode
 #include <WPILib/RobotBase.h>

@@ -20,6 +20,7 @@
 #include <Python.h>
 
 #include <stddef.h>
+#include <string.h>
 
 #include "sip.h"
 #include "sipint.h"
@@ -42,146 +43,21 @@ struct vp_values {
 };
 
 
+static int check_size(PyObject *self);
+static int check_rw(PyObject *self);
+static int check_index(PyObject *self, SIP_SSIZE_T idx);
+#if PY_VERSION_HEX < 0x02060000
+static SIP_SSIZE_T get_value_data(PyObject *value, void **value_ptr);
+#endif
+#if PY_VERSION_HEX < 0x02050000
+static void fix_bounds(int size, int *left, int *right);
+#endif
+#if PY_VERSION_HEX >= 0x02050000
+static void bad_key(PyObject *key);
+#endif
+static int check_slice_size(SIP_SSIZE_T size, SIP_SSIZE_T value_size);
 static PyObject *make_voidptr(void *voidptr, SIP_SSIZE_T size, int rw);
 static int vp_convertor(PyObject *arg, struct vp_values *vp);
-
-
-/*
- * Implement __new__ for the type.
- */
-static PyObject *sipVoidPtr_new(PyTypeObject *subtype, PyObject *args,
-        PyObject *kw)
-{
-    static char *kwlist[] = {"address", "size", "writeable", NULL};
-
-    struct vp_values vp_conversion;
-    SIP_SSIZE_T size = -1;
-    int rw = -1;
-    PyObject *obj;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kw,
-#if PY_VERSION_HEX >= 0x02050000
-            "O&|ni:voidptr",
-#else
-            "O&|ii:voidptr",
-#endif
-            kwlist, vp_convertor, &vp_conversion, &size, &rw))
-        return NULL;
-
-    /* Use the explicit size if one was given. */
-    if (size >= 0)
-        vp_conversion.size = size;
-
-    /* Use the explicit writeable flag if one was given. */
-    if (rw >= 0)
-        vp_conversion.rw = rw;
-
-    /* Create the instance. */
-    if ((obj = subtype->tp_alloc(subtype, 0)) == NULL)
-        return NULL;
-
-    /* Save the values. */
-    ((sipVoidPtrObject *)obj)->voidptr = vp_conversion.voidptr;
-    ((sipVoidPtrObject *)obj)->size = vp_conversion.size;
-    ((sipVoidPtrObject *)obj)->rw = vp_conversion.rw;
-
-    return obj;
-}
-
-
-#if PY_MAJOR_VERSION >= 3
-/*
- * The read buffer implementation for Python v3.
- */
-static int sipVoidPtr_getbuffer(PyObject *self, Py_buffer *buf, int flags)
-{
-    sipVoidPtrObject *v = (sipVoidPtrObject *)self;
-
-    return PyBuffer_FillInfo(buf, self, v->voidptr, v->size, !v->rw, flags);
-}
-#endif
-
-
-#if PY_MAJOR_VERSION < 3
-/*
- * The read buffer implementation for Python v2.
- */
-static SIP_SSIZE_T sipVoidPtr_getbuffer(PyObject *self, SIP_SSIZE_T seg,
-        void **ptr)
-{
-    SIP_SSIZE_T size = ((sipVoidPtrObject *)self)->size;
-
-    if (size < 0 || seg != 0)
-    {
-        PyErr_SetString(PyExc_SystemError, "invalid buffer segment");
-        return -1;
-    }
-
-    *ptr = ((sipVoidPtrObject *)self)->voidptr;
-
-    return size;
-}
-#endif
-
-
-#if PY_MAJOR_VERSION < 3
-/*
- * The write buffer implementation for Python v2.
- */
-static SIP_SSIZE_T sipVoidPtr_getwritebuffer(PyObject *self, SIP_SSIZE_T seg,
-        void **ptr)
-{
-    if (((sipVoidPtrObject *)self)->rw)
-        return sipVoidPtr_getbuffer(self, seg, ptr);
-
-    PyErr_SetString(PyExc_TypeError, "the sip.voidptr is not writeable");
-    return -1;
-}
-#endif
-
-
-#if PY_MAJOR_VERSION < 3
-/*
- * The segment count implementation for Python v2.
- */
-static SIP_SSIZE_T sipVoidPtr_getsegcount(PyObject *self, SIP_SSIZE_T *lenp)
-{
-    SIP_SSIZE_T segs, len;
-
-    len = ((sipVoidPtrObject *)self)->size;
-    segs = (len < 0 ? 0 : 1);
-
-    if (lenp != NULL)
-        *lenp = len;
-
-    return segs;
-}
-#endif
-
-
-/*
- * Implement int() for the type.
- */
-static PyObject *sipVoidPtr_int(sipVoidPtrObject *v)
-{
-    return PyLong_FromVoidPtr(v->voidptr);
-}
-
-
-#if PY_MAJOR_VERSION < 3
-/*
- * Implement hex() for the type.
- */
-static PyObject *sipVoidPtr_hex(sipVoidPtrObject *v)
-{
-    char buf[2 + 16 + 1];
-
-    PyOS_snprintf(buf, sizeof (buf), "0x%.*lx", (int)(sizeof (void *) * 2),
-            (unsigned long)v->voidptr);
-
-    return PyString_FromString(buf);
-}
-#endif
 
 
 #if defined(SIP_USE_PYCAPSULE)
@@ -232,7 +108,7 @@ static PyObject *sipVoidPtr_asstring(sipVoidPtrObject *v, PyObject *args,
     if (size < 0)
     {
         PyErr_SetString(PyExc_ValueError,
-                "a size must be given or the sip.voidptr must have a size");
+                "a size must be given or the sip.voidptr object must have a size");
         return NULL;
     }
 
@@ -325,6 +201,31 @@ static PyMethodDef sipVoidPtr_Methods[] = {
 };
 
 
+/*
+ * Implement int() for the type.
+ */
+static PyObject *sipVoidPtr_int(PyObject *self)
+{
+    return PyLong_FromVoidPtr(((sipVoidPtrObject *)self)->voidptr);
+}
+
+
+#if PY_MAJOR_VERSION < 3
+/*
+ * Implement hex() for the type.
+ */
+static PyObject *sipVoidPtr_hex(PyObject *self)
+{
+    char buf[2 + 16 + 1];
+
+    PyOS_snprintf(buf, sizeof (buf), "0x%.*lx", (int)(sizeof (void *) * 2),
+            (unsigned long)((sipVoidPtrObject *)self)->voidptr);
+
+    return PyString_FromString(buf);
+}
+#endif
+
+
 /* The number methods data structure. */
 static PyNumberMethods sipVoidPtr_NumberMethods = {
     0,                      /* nb_add */
@@ -349,12 +250,12 @@ static PyNumberMethods sipVoidPtr_NumberMethods = {
 #if PY_MAJOR_VERSION < 3
     0,                      /* nb_coerce */
 #endif
-    (unaryfunc)sipVoidPtr_int,  /* nb_int */
+    sipVoidPtr_int,         /* nb_int */
     0,                      /* nb_reserved (Python v3), nb_long (Python v2) */
     0,                      /* nb_float */
 #if PY_MAJOR_VERSION < 3
     0,                      /* nb_oct */
-    (unaryfunc)sipVoidPtr_hex,  /* nb_hex */
+    sipVoidPtr_hex,         /* nb_hex */
 #endif
     0,                      /* nb_inplace_add */
     0,                      /* nb_inplace_subtract */
@@ -379,21 +280,417 @@ static PyNumberMethods sipVoidPtr_NumberMethods = {
 };
 
 
+/*
+ * Implement len() for the type.
+ */
+static SIP_SSIZE_T sipVoidPtr_length(PyObject *self)
+{
+    if (check_size(self) < 0)
+        return -1;
+
+    return ((sipVoidPtrObject *)self)->size;
+}
+
+
+/*
+ * Implement sequence item sub-script for the type.
+ */
+static PyObject *sipVoidPtr_item(PyObject *self, SIP_SSIZE_T idx)
+{
+    if (check_size(self) < 0 || check_index(self, idx) < 0)
+        return NULL;
+
+    return SIPBytes_FromStringAndSize(
+            (char *)((sipVoidPtrObject *)self)->voidptr + idx, 1);
+}
+
+
+#if PY_VERSION_HEX < 0x02050000
+/*
+ * Implement sequence slice sub-script for the type.
+ */
+static PyObject *sipVoidPtr_slice(PyObject *self, int left, int right)
+{
+    sipVoidPtrObject *v;
+
+    if (check_size(self) < 0)
+        return NULL;
+
+    v = (sipVoidPtrObject *)self;
+
+    fix_bounds(v->size, &left, &right);
+
+    if (left == right)
+        left = right = 0;
+
+    return make_voidptr((char *)(v->voidptr) + left, right - left, v->rw);
+}
+
+
+/*
+ * Implement sequence assignment item sub-script for the type.
+ */
+static int sipVoidPtr_ass_item(PyObject *self, int idx, PyObject *value)
+{
+    int value_size;
+    void *value_ptr;
+
+    if (check_rw(self) < 0 || check_size(self) < 0 || check_index(self, idx) < 0)
+        return -1;
+
+    if ((value_size = get_value_data(value, &value_ptr)) < 0)
+        return -1;
+
+    if (value_size != 1)
+    {
+        PyErr_SetString(PyExc_TypeError,
+                "right operand must be a single byte");
+
+        return -1;
+    }
+
+    ((char *)((sipVoidPtrObject *)self)->voidptr)[idx] = *(char *)value_ptr;
+
+    return 0;
+}
+
+
+/*
+ * Implement sequence assignment slice sub-script for the type.
+ */
+static int sipVoidPtr_ass_slice(PyObject *self, int left, int right,
+        PyObject *value)
+{
+    sipVoidPtrObject *v;
+    int value_size;
+    void *value_ptr;
+
+    if (check_rw(self) < 0 || check_size(self) < 0)
+        return -1;
+
+    if ((value_size = get_value_data(value, &value_ptr)) < 0)
+        return -1;
+
+    v = (sipVoidPtrObject *)self;
+
+    fix_bounds(v->size, &left, &right);
+
+    if (check_slice_size(right - left, value_size) < 0)
+        return -1;
+
+    memmove((char *)(v->voidptr) + left, value_ptr, right - left);
+
+    return 0;
+}
+#endif
+
+
+/* The sequence methods data structure. */
+static PySequenceMethods sipVoidPtr_SequenceMethods = {
+    sipVoidPtr_length,      /* sq_length */
+    0,                      /* sq_concat */
+    0,                      /* sq_repeat */
+    sipVoidPtr_item,        /* sq_item */
+#if PY_VERSION_HEX < 0x02050000
+    sipVoidPtr_slice,       /* sq_slice */
+    sipVoidPtr_ass_item,    /* sq_ass_item */
+    sipVoidPtr_ass_slice,   /* sq_ass_slice */
+#endif
+};
+
+
+#if PY_VERSION_HEX >= 0x02050000
+/*
+ * Implement mapping sub-script for the type.
+ */
+static PyObject *sipVoidPtr_subscript(PyObject *self, PyObject *key)
+{
+    sipVoidPtrObject *v;
+
+    if (check_size(self) < 0)
+        return NULL;
+
+    v = (sipVoidPtrObject *)self;
+
+    if (PyIndex_Check(key))
+    {
+        Py_ssize_t idx = PyNumber_AsSsize_t(key, PyExc_IndexError);
+
+        if (idx == -1 && PyErr_Occurred())
+            return NULL;
+
+        if (idx < 0)
+            idx += v->size;
+
+        return sipVoidPtr_item(self, idx);
+    }
+
+    if (PySlice_Check(key))
+    {
+        Py_ssize_t start, stop, step, slicelength;
+
+        if (PySlice_GetIndicesEx((PySliceObject *)key, v->size, &start, &stop, &step, &slicelength) < 0)
+            return NULL;
+
+        if (step != 1)
+        {
+            PyErr_SetNone(PyExc_NotImplementedError);
+            return NULL;
+        }
+
+        return make_voidptr((char *)v->voidptr + start, slicelength, v->rw);
+    }
+
+    bad_key(key);
+
+    return NULL;
+}
+
+
+/*
+ * Implement mapping assignment sub-script for the type.
+ */
+static int sipVoidPtr_ass_subscript(PyObject *self, PyObject *key,
+        PyObject *value)
+{
+    sipVoidPtrObject *v;
+    Py_ssize_t start, size;
+#if PY_VERSION_HEX >= 0x02060000
+    Py_buffer value_view;
+#else
+    Py_ssize_t value_size;
+    void *value_ptr;
+#endif
+
+    if (check_rw(self) < 0 || check_size(self) < 0)
+        return -1;
+
+    v = (sipVoidPtrObject *)self;
+
+    if (PyIndex_Check(key))
+    {
+        start = PyNumber_AsSsize_t(key, PyExc_IndexError);
+
+        if (start == -1 && PyErr_Occurred())
+            return -1;
+
+        if (start < 0)
+            start += v->size;
+
+        if (check_index(self, start) < 0)
+            return -1;
+
+        size = 1;
+    }
+    else if (PySlice_Check(key))
+    {
+        Py_ssize_t stop, step;
+
+        if (PySlice_GetIndicesEx((PySliceObject *)key, v->size, &start, &stop, &step, &size) < 0)
+            return -1;
+
+        if (step != 1)
+        {
+            PyErr_SetNone(PyExc_NotImplementedError);
+            return -1;
+        }
+    }
+    else
+    {
+        bad_key(key);
+
+        return -1;
+    }
+
+#if PY_VERSION_HEX >= 0x02060000
+    if (PyObject_GetBuffer(value, &value_view, PyBUF_CONTIG_RO) < 0)
+        return -1;
+
+    /* We could allow any item size... */
+    if (value_view.itemsize != 1)
+    {
+        PyErr_Format(PyExc_TypeError, "'%s' must have an item size of 1",
+                Py_TYPE(value_view.obj)->tp_name);
+
+        PyBuffer_Release(&value_view);
+        return -1;
+    }
+
+    if (check_slice_size(size, value_view.len) < 0)
+    {
+        PyBuffer_Release(&value_view);
+        return -1;
+    }
+
+    memmove((char *)v->voidptr + start, value_view.buf, size);
+
+    PyBuffer_Release(&value_view);
+#else
+    if ((value_size = get_value_data(value, &value_ptr)) < 0)
+        return -1;
+
+    if (check_slice_size(size, value_size) < 0)
+        return -1;
+
+    memmove((char *)v->voidptr + start, value_ptr, size);
+#endif
+
+    return 0;
+}
+
+
+/* The mapping methods data structure. */
+static PyMappingMethods sipVoidPtr_MappingMethods = {
+    sipVoidPtr_length,      /* mp_length */
+    sipVoidPtr_subscript,   /* mp_subscript */
+    sipVoidPtr_ass_subscript,   /* mp_ass_subscript */
+};
+#endif
+
+
+#if PY_VERSION_HEX >= 0x02060000
+/*
+ * The buffer implementation for Python v2.6 and later.
+ */
+static int sipVoidPtr_getbuffer(PyObject *self, Py_buffer *buf, int flags)
+{
+    sipVoidPtrObject *v;
+
+    if (check_size(self) < 0)
+        return -1;
+
+    v = (sipVoidPtrObject *)self;
+
+    return PyBuffer_FillInfo(buf, self, v->voidptr, v->size, !v->rw, flags);
+}
+#endif
+
+
+#if PY_MAJOR_VERSION < 3
+/*
+ * The read buffer implementation for Python v2.
+ */
+static SIP_SSIZE_T sipVoidPtr_getreadbuffer(PyObject *self, SIP_SSIZE_T seg,
+        void **ptr)
+{
+    sipVoidPtrObject *v;
+
+    if (seg != 0)
+    {
+        PyErr_SetString(PyExc_SystemError, "invalid buffer segment");
+        return -1;
+    }
+
+    if (check_size(self) < 0)
+        return -1;
+
+    v = (sipVoidPtrObject *)self;
+
+    *ptr = v->voidptr;
+
+    return v->size;
+}
+#endif
+
+
+#if PY_MAJOR_VERSION < 3
+/*
+ * The write buffer implementation for Python v2.
+ */
+static SIP_SSIZE_T sipVoidPtr_getwritebuffer(PyObject *self, SIP_SSIZE_T seg,
+        void **ptr)
+{
+    if (((sipVoidPtrObject *)self)->rw)
+        return sipVoidPtr_getreadbuffer(self, seg, ptr);
+
+    PyErr_SetString(PyExc_TypeError, "sip.voidptr object is not writeable");
+    return -1;
+}
+#endif
+
+
+#if PY_MAJOR_VERSION < 3
+/*
+ * The segment count implementation for Python v2.
+ */
+static SIP_SSIZE_T sipVoidPtr_getsegcount(PyObject *self, SIP_SSIZE_T *lenp)
+{
+    SIP_SSIZE_T segs, len;
+
+    len = ((sipVoidPtrObject *)self)->size;
+    segs = (len < 0 ? 0 : 1);
+
+    if (lenp != NULL)
+        *lenp = len;
+
+    return segs;
+}
+#endif
+
+
 /* The buffer methods data structure. */
 static PyBufferProcs sipVoidPtr_BufferProcs = {
-    sipVoidPtr_getbuffer,
 #if PY_MAJOR_VERSION >= 3
-    NULL,
+    sipVoidPtr_getbuffer,   /* bf_getbuffer */
+    0                       /* bf_releasebuffer */
 #else
-    sipVoidPtr_getwritebuffer,
-    sipVoidPtr_getsegcount,
+    sipVoidPtr_getreadbuffer,   /* bf_getreadbuffer */
+    sipVoidPtr_getwritebuffer,  /* bf_getwritebuffer */
+    sipVoidPtr_getsegcount, /* bf_getsegcount */
 #if PY_VERSION_HEX >= 0x02050000
-    (charbufferproc)sipVoidPtr_getbuffer
+    (charbufferproc)sipVoidPtr_getreadbuffer,   /* bf_getcharbuffer */
+#if PY_VERSION_HEX >= 0x02060000
+    sipVoidPtr_getbuffer,   /* bf_getbuffer */
+    0                       /* bf_releasebuffer */
+#endif
 #else
-    (getcharbufferproc)sipVoidPtr_getbuffer
+    (getcharbufferproc)sipVoidPtr_getreadbuffer /* bf_getcharbuffer */
 #endif
 #endif
 };
+
+
+/*
+ * Implement __new__ for the type.
+ */
+static PyObject *sipVoidPtr_new(PyTypeObject *subtype, PyObject *args,
+        PyObject *kw)
+{
+    static char *kwlist[] = {"address", "size", "writeable", NULL};
+
+    struct vp_values vp_conversion;
+    SIP_SSIZE_T size = -1;
+    int rw = -1;
+    PyObject *obj;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kw,
+#if PY_VERSION_HEX >= 0x02050000
+            "O&|ni:voidptr",
+#else
+            "O&|ii:voidptr",
+#endif
+            kwlist, vp_convertor, &vp_conversion, &size, &rw))
+        return NULL;
+
+    /* Use the explicit size if one was given. */
+    if (size >= 0)
+        vp_conversion.size = size;
+
+    /* Use the explicit writeable flag if one was given. */
+    if (rw >= 0)
+        vp_conversion.rw = rw;
+
+    /* Create the instance. */
+    if ((obj = subtype->tp_alloc(subtype, 0)) == NULL)
+        return NULL;
+
+    /* Save the values. */
+    ((sipVoidPtrObject *)obj)->voidptr = vp_conversion.voidptr;
+    ((sipVoidPtrObject *)obj)->size = vp_conversion.size;
+    ((sipVoidPtrObject *)obj)->rw = vp_conversion.rw;
+
+    return obj;
+}
 
 
 /* The type data structure. */
@@ -409,15 +706,23 @@ PyTypeObject sipVoidPtr_Type = {
     0,                      /* tp_reserved (Python v3), tp_compare (Python v2) */
     0,                      /* tp_repr */
     &sipVoidPtr_NumberMethods,  /* tp_as_number */
-    0,                      /* tp_as_sequence */
+    &sipVoidPtr_SequenceMethods,    /* tp_as_sequence */
+#if PY_VERSION_HEX >= 0x02050000
+    &sipVoidPtr_MappingMethods, /* tp_as_mapping */
+#else
     0,                      /* tp_as_mapping */
+#endif
     0,                      /* tp_hash */
     0,                      /* tp_call */
     0,                      /* tp_str */
     0,                      /* tp_getattro */
     0,                      /* tp_setattro */
     &sipVoidPtr_BufferProcs,    /* tp_as_buffer */
+#if defined(Py_TPFLAGS_HAVE_NEWBUFFER)
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_NEWBUFFER,   /* tp_flags */
+#else
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,   /* tp_flags */
+#endif
     0,                      /* tp_doc */
     0,                      /* tp_traverse */
     0,                      /* tp_clear */
@@ -466,11 +771,7 @@ void *sip_api_convert_to_void_ptr(PyObject *obj)
         return PyCObject_AsVoidPtr(obj);
 #endif
 
-#if PY_MAJOR_VERSION >= 3
     return PyLong_AsVoidPtr(obj);
-#else
-    return (void *)PyInt_AsLong(obj);
-#endif
 }
 
 
@@ -508,6 +809,131 @@ PyObject *sip_api_convert_from_const_void_ptr_and_size(const void *val,
         SIP_SSIZE_T size)
 {
     return make_voidptr((void *)val, size, FALSE);
+}
+
+
+/*
+ * Check that a void pointer has an explicit size and raise an exception if it
+ * hasn't.
+ */
+static int check_size(PyObject *self)
+{
+    if (((sipVoidPtrObject *)self)->size >= 0)
+        return 0;
+
+    PyErr_SetString(PyExc_IndexError,
+            "sip.voidptr object has an unknown size");
+
+    return -1;
+}
+
+
+/*
+ * Check that a void pointer is writable.
+ */
+static int check_rw(PyObject *self)
+{
+    if (((sipVoidPtrObject *)self)->rw)
+        return 0;
+
+    PyErr_SetString(PyExc_TypeError,
+            "cannot modify a read-only sip.voidptr object");
+
+    return -1;
+}
+
+
+/*
+ * Check that an index is valid for a void pointer.
+ */
+static int check_index(PyObject *self, SIP_SSIZE_T idx)
+{
+    if (idx >= 0 && idx < ((sipVoidPtrObject *)self)->size)
+        return 0;
+
+    PyErr_SetString(PyExc_IndexError, "index out of bounds");
+
+    return -1;
+}
+
+
+#if PY_VERSION_HEX < 0x02060000
+/*
+ * Get the address and size of the data from a value that supports the buffer
+ * interface.
+ */
+static SIP_SSIZE_T get_value_data(PyObject *value, void **value_ptr)
+{
+    PyBufferProcs *bf = Py_TYPE(value)->tp_as_buffer;
+
+    if (bf == NULL || bf->bf_getreadbuffer == NULL || bf->bf_getsegcount == NULL)
+    {
+        PyErr_Format(PyExc_TypeError,
+                "'%s' does not support the buffer interface",
+                Py_TYPE(value)->tp_name);
+
+        return -1;
+    }
+
+    if ((*bf->bf_getsegcount)(value, NULL) != 1)
+    {
+        PyErr_SetString(PyExc_TypeError,
+                "single-segment buffer object expected");
+
+        return -1;
+    }
+
+    return (*bf->bf_getreadbuffer)(value, 0, value_ptr);
+}
+#endif
+
+
+#if PY_VERSION_HEX < 0x02050000
+/*
+ * Fix the bounds of a slice in the same way that the Python buffer object
+ * does.
+ */
+static void fix_bounds(int size, int *left, int *right)
+{
+    if (*left < 0)
+        *left = 0;
+    else if (*left > size)
+        *left = size;
+
+    if (*right < *left)
+        *right = *left;
+    else if (*right > size)
+        *right = size;
+}
+#endif
+
+
+#if PY_VERSION_HEX >= 0x02050000
+/*
+ * Raise an exception about a bad sub-script key.
+ */
+static void bad_key(PyObject *key)
+{
+    PyErr_Format(PyExc_TypeError,
+            "cannot index a sip.voidptr object using '%s'",
+            Py_TYPE(key)->tp_name);
+}
+#endif
+
+
+/*
+ * Check that the size of a value is the same as the size of the slice it is
+ * replacing.
+ */
+static int check_slice_size(SIP_SSIZE_T size, SIP_SSIZE_T value_size)
+{
+    if (value_size == size)
+        return 0;
+
+    PyErr_SetString(PyExc_ValueError,
+            "cannot modify the size of a sip.voidptr object");
+
+    return -1;
 }
 
 
@@ -562,18 +988,14 @@ static int vp_convertor(PyObject *arg, struct vp_values *vp)
     }
     else
     {
-#if PY_MAJOR_VERSION >= 3
         ptr = PyLong_AsVoidPtr(arg);
-#else
-        ptr = (void *)PyInt_AsLong(arg);
-#endif
 
         if (PyErr_Occurred())
         {
 #if PY_VERSION_HEX >= 0x03010000
-            PyErr_SetString(PyExc_TypeError, "a single integer, CObject, None or another voidptr is required");
+            PyErr_SetString(PyExc_TypeError, "a single integer, CObject, None or another sip.voidptr object is required");
 #else
-            PyErr_SetString(PyExc_TypeError, "a single integer, Capsule, CObject, None or another voidptr is required");
+            PyErr_SetString(PyExc_TypeError, "a single integer, Capsule, CObject, None or another sip.voidptr object is required");
 #endif
             return 0;
         }
