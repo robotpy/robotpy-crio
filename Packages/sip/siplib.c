@@ -363,6 +363,9 @@ static const sipAPIDef sip_api = {
     sip_api_keep_reference,
     sip_api_parse_kwd_args,
     sip_api_add_exception,
+    /*
+     * The following are part of the public API.
+     */
     sip_api_get_address
 };
 
@@ -655,6 +658,8 @@ static void clear_access_func(sipSimpleWrapper *sw);
 static int check_encoded_string(PyObject *obj);
 static int isNonlazyMethod(PyMethodDef *pmd);
 static int addMethod(PyObject *dict, PyMethodDef *pmd);
+static PyObject *create_property(sipVariableDef *vd);
+static PyObject *create_function(PyMethodDef *ml);
 
 
 /*
@@ -702,7 +707,7 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
 #if PY_MAJOR_VERSION >= 3
     static PyModuleDef module_def = {
         PyModuleDef_HEAD_INIT,
-        "sip",                  /* m_name */
+        SIP_MODULE_NAME,        /* m_name */
         NULL,                   /* m_doc */
         -1,                     /* m_size */
         methods,                /* m_methods */
@@ -724,13 +729,13 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
     sipWrapperType_Type.tp_base = &PyType_Type;
 
     if (PyType_Ready(&sipWrapperType_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.wrappertype type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.wrappertype type");
 
     if (PyType_Ready((PyTypeObject *)&sipSimpleWrapper_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.simplewrapper type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.simplewrapper type");
 
     if (sip_api_register_py_type((PyTypeObject *)&sipSimpleWrapper_Type) < 0)
-        SIP_FATAL("sip: Failed to register sip.simplewrapper type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to register sip.simplewrapper type");
 
 #if defined(STACKLESS)
     sipWrapper_Type.super.tp_base = (PyTypeObject *)&sipSimpleWrapper_Type;
@@ -741,30 +746,30 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
 #endif
 
     if (PyType_Ready((PyTypeObject *)&sipWrapper_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.wrapper type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.wrapper type");
 
     if (PyType_Ready(&sipMethodDescr_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.methoddescriptor type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.methoddescriptor type");
 
     if (PyType_Ready(&sipVariableDescr_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.variabledescriptor type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.variabledescriptor type");
 
     sipEnumType_Type.tp_base = &PyType_Type;
 
     if (PyType_Ready(&sipEnumType_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.enumtype type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.enumtype type");
 
     if (PyType_Ready(&sipVoidPtr_Type) < 0)
-        SIP_FATAL("sip: Failed to initialise sip.voidptr type");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to initialise sip.voidptr type");
 
 #if PY_MAJOR_VERSION >= 3
     mod = PyModule_Create(&module_def);
 #else
-    mod = Py_InitModule("sip", methods);
+    mod = Py_InitModule(SIP_MODULE_NAME, methods);
 #endif
 
     if (mod == NULL)
-        SIP_FATAL("sip: Failed to intialise sip module");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to intialise sip module");
 
     mod_dict = PyModule_GetDict(mod);
 
@@ -775,12 +780,12 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
     if (type_unpickler == NULL || enum_unpickler == NULL)
     {
         SIP_MODULE_DISCARD(mod);
-        SIP_FATAL("sip: Failed to get pickle helpers");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to get pickle helpers");
     }
 
     /* Publish the SIP API. */
 #if defined(SIP_USE_PYCAPSULE)
-    obj = PyCapsule_New((void *)&sip_api, "sip._C_API", NULL);
+    obj = PyCapsule_New((void *)&sip_api, SIP_MODULE_NAME "._C_API", NULL);
 #else
     obj = PyCObject_FromVoidPtr((void *)&sip_api, NULL);
 #endif
@@ -788,7 +793,7 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
     if (obj == NULL)
     {
         SIP_MODULE_DISCARD(mod);
-        SIP_FATAL("sip: Failed to create _C_API object");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to create _C_API object");
     }
 
     rc = PyDict_SetItemString(mod_dict, "_C_API", obj);
@@ -797,7 +802,7 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
     if (rc < 0)
     {
         SIP_MODULE_DISCARD(mod);
-        SIP_FATAL("sip: Failed to add _C_API object to module dictionary");
+        SIP_FATAL(SIP_MODULE_NAME ": Failed to add _C_API object to module dictionary");
     }
 
     /* Add the SIP version number, but don't worry about errors. */
@@ -1016,7 +1021,7 @@ static PyObject *cast(PyObject *self, PyObject *args)
         td = wt->type;
     else
     {
-        PyErr_SetString(PyExc_TypeError, "argument 1 of sip.cast() must be an instance of a sub or super-type of argument 2");
+        PyErr_SetString(PyExc_TypeError, "argument 1 of cast() must be an instance of a sub or super-type of argument 2");
         return NULL;
     }
 
@@ -1911,12 +1916,13 @@ static PyObject *buildObject(PyObject *obj, const char *fmt, va_list va)
 
         case 'd':
         case 'f':
-            el = PyFloat_FromDouble(va_arg(va,double));
+            el = PyFloat_FromDouble(va_arg(va, double));
             break;
 
         case 'e':
         case 'h':
         case 'i':
+        case 'L':
 #if PY_MAJOR_VERSION >= 3
             el = PyLong_FromLong(va_arg(va, int));
 #else
@@ -2006,6 +2012,7 @@ static PyObject *buildObject(PyObject *obj, const char *fmt, va_list va)
 
         case 't':
         case 'u':
+        case 'M':
             el = PyLong_FromUnsignedLong(va_arg(va, unsigned));
             break;
 
@@ -2127,6 +2134,7 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
     {
         char ch;
         const char *cp = ++fmt;
+        int sub_format = FALSE;
 
         tupsz = 0;
 
@@ -2140,12 +2148,18 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
                 break;
             }
 
-            /*
-             * Some format characters have a sub-format so skip the character
-             * and count the sub-format character next time round.
-             */
-            if (strchr("HDC", ch) == NULL)
+            if (sub_format)
+            {
+                sub_format = FALSE;
+            }
+            else
+            {
                 ++tupsz;
+
+                /* Some format characters have a sub-format. */
+                if (strchr("aAHDC", ch) != NULL)
+                    sub_format = TRUE;
+            }
         }
 
         if (rc == 0)
@@ -2319,6 +2333,30 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
                         invalid = TRUE;
                     else
                         *va_arg(va,float *) = v;
+                }
+
+                break;
+
+            case 'L':
+                {
+                    signed char v = SIPLong_AsLong(arg);
+
+                    if (PyErr_Occurred())
+                        invalid = TRUE;
+                    else
+                        *va_arg(va, signed char *) = v;
+                }
+
+                break;
+
+            case 'M':
+                {
+                    unsigned char v = sip_api_long_as_unsigned_long(arg);
+
+                    if (PyErr_Occurred())
+                        invalid = TRUE;
+                    else
+                        *va_arg(va, unsigned char *) = v;
                 }
 
                 break;
@@ -4023,6 +4061,56 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
                 if (arg != NULL)
                 {
                     unsigned v = sip_api_long_as_unsigned_long(arg);
+
+                    if (PyErr_Occurred())
+                    {
+                        failure.reason = WrongType;
+                        failure.detail_obj = arg;
+                        Py_INCREF(arg);
+                    }
+                    else
+                    {
+                        *p = v;
+                    }
+                }
+
+                break;
+            }
+
+        case 'L':
+            {
+                /* Signed char. */
+
+                signed char *p = va_arg(va, signed char *);
+
+                if (arg != NULL)
+                {
+                    signed char v = SIPLong_AsLong(arg);
+
+                    if (PyErr_Occurred())
+                    {
+                        failure.reason = WrongType;
+                        failure.detail_obj = arg;
+                        Py_INCREF(arg);
+                    }
+                    else
+                    {
+                        *p = v;
+                    }
+                }
+
+                break;
+            }
+
+        case 'M':
+            {
+                /* Unsigned char. */
+
+                unsigned char *p = va_arg(va, unsigned char *);
+
+                if (arg != NULL)
+                {
+                    unsigned char v = sip_api_long_as_unsigned_long(arg);
 
                     if (PyErr_Occurred())
                     {
@@ -5972,27 +6060,132 @@ static int add_lazy_container_attrs(sipTypeDef *td, sipContainerDef *cod,
     }
 
     /* Do the variables. */
-    vd = cod->cod_variables;
-
-    for (i = 0; i < cod->cod_nrvariables; ++i)
+    if (td->td_module->em_api_minor >= 1)
     {
-        int rc;
-        PyObject *descr;
+        vd = cod->cod_variables;
 
-        if ((descr = sipVariableDescr_New(vd, td, cod)) == NULL)
-            return -1;
+        for (i = 0; i < cod->cod_nrvariables; ++i)
+        {
+            int rc;
+            PyObject *descr;
 
-        rc = PyDict_SetItemString(dict, vd->vd_name, descr);
+            if (vd->vd_type == PropertyVariable)
+                descr = create_property(vd);
+            else
+                descr = sipVariableDescr_New(vd, td, cod);
 
-        Py_DECREF(descr);
+            if (descr == NULL)
+                return -1;
 
-        if (rc < 0)
-            return -1;
+            rc = PyDict_SetItemString(dict, vd->vd_name, descr);
 
-        ++vd;
+            Py_DECREF(descr);
+
+            if (rc < 0)
+                return -1;
+
+            ++vd;
+        }
+    }
+    else
+    {
+        sipVariableDef_8 *vd_8 = (sipVariableDef_8 *)cod->cod_variables;
+
+        for (i = 0; i < cod->cod_nrvariables; ++i)
+        {
+            int rc;
+            PyObject *descr;
+
+            /* Create a new-style structure from the old. */
+            if ((vd = sip_api_malloc(sizeof (sipVariableDef))) == NULL)
+                return -1;
+
+            vd->vd_type = (vd_8->vd_is_static ? ClassVariable : InstanceVariable);
+            vd->vd_name = vd_8->vd_name;
+            vd->vd_getter = (PyMethodDef *)vd_8->vd_getter;
+            vd->vd_setter = (PyMethodDef *)vd_8->vd_setter;
+            vd->vd_deleter = NULL;
+            vd->vd_docstring = NULL;
+
+            if ((descr = sipVariableDescr_New(vd, td, cod)) == NULL)
+            {
+                sip_api_free(vd);
+                return -1;
+            }
+
+            rc = PyDict_SetItemString(dict, vd->vd_name, descr);
+
+            Py_DECREF(descr);
+
+            if (rc < 0)
+            {
+                sip_api_free(vd);
+                return -1;
+            }
+
+            ++vd_8;
+        }
     }
 
     return 0;
+}
+
+
+/*
+ * Create a Python property object from the SIP generated structure.
+ */
+static PyObject *create_property(sipVariableDef *vd)
+{
+    PyObject *descr, *fget, *fset, *fdel, *doc;
+
+    descr = fget = fset = fdel = doc = NULL;
+
+    if ((fget = create_function(vd->vd_getter)) == NULL)
+        goto done;
+
+    if ((fset = create_function(vd->vd_setter)) == NULL)
+        goto done;
+
+    if ((fdel = create_function(vd->vd_deleter)) == NULL)
+        goto done;
+
+    if (vd->vd_docstring == NULL)
+    {
+        doc = Py_None;
+        Py_INCREF(doc);
+    }
+#if PY_MAJOR_VERSION >= 3
+    else if ((doc = PyUnicode_FromString(vd->vd_docstring)) == NULL)
+#else
+    else if ((doc = PyString_FromString(vd->vd_docstring)) == NULL)
+#endif
+    {
+        goto done;
+    }
+
+    descr = PyObject_CallFunctionObjArgs((PyObject *)&PyProperty_Type, fget,
+            fset, fdel, doc, NULL);
+
+done:
+    Py_XDECREF(fget);
+    Py_XDECREF(fset);
+    Py_XDECREF(fdel);
+    Py_XDECREF(doc);
+
+    return descr;
+}
+
+
+/*
+ * Return a PyCFunction as an object or Py_None if there isn't one.
+ */
+static PyObject *create_function(PyMethodDef *ml)
+{
+    if (ml != NULL)
+        return PyCFunction_New(ml, NULL);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 
@@ -7928,9 +8121,9 @@ static int compareTypeDef(const void *key, const void *el)
         /* Find which external type it is. */
         while (etd->et_nr >= 0)
         {
-            const sipTypeDef **tdp = &module_searched->em_types[etd->et_nr];
+            const void *tdp = &module_searched->em_types[etd->et_nr];
 
-            if (tdp == (const sipTypeDef **)el)
+            if (tdp == el)
             {
                 s2 = etd->et_name;
                 break;

@@ -3,7 +3,7 @@
 //  This file is part of RobotPy.
 //
 
-%Module _wpilib 0
+%Module _wpilib
 
 %Copying
 Copyright (c) 2010 Peter Johnson
