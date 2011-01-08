@@ -1,7 +1,5 @@
 PROJECT_TARGET = _wpilib.out
 PROJECT_OBJECTS = sip_wpilibcmodule.o
-PROJECT_OBJECTS += sip_wpilibINT8.o
-PROJECT_OBJECTS += sip_wpilibUINT8.o
 PROJECT_OBJECTS += sip_wpilibAccelerometer.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2C.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2CAllAxes.o
