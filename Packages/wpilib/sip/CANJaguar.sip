@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class CANJaguar : SpeedController, MotorSafety, PIDOutput
+class CANJaguar : MotorSafety, PIDOutput, SpeedController
 {
 %TypeHeaderCode
 #include <WPILib/CANJaguar.h>
@@ -32,8 +32,8 @@ public:
 	enum ControlMode {kPercentVbus, kCurrent, kSpeed, kPosition, kVoltage};
 	enum Faults {kCurrentFault = 1, kTemperatureFault = 2, kBusVoltageFault = 4};
 	enum Limits {kForwardLimit = 1, kReverseLimit = 2};
-	enum PositionReference {kPosRef_QuadEncoder = 0, kPosRef_Potentiometer = 1};
-	enum SpeedReference {kSpeedRef_Encoder = 0, kSpeedRef_InvEncoder = 2, kSpeedRef_QuadEncoder = 3};
+	enum PositionReference {kPosRef_QuadEncoder = 0, kPosRef_Potentiometer = 1, kPosRef_None = 0xFF};
+	enum SpeedReference {kSpeedRef_Encoder = 0, kSpeedRef_InvEncoder = 2, kSpeedRef_QuadEncoder = 3, kSpeedRef_None = 0xFF};
 	enum NeutralMode {kNeutralMode_Jumper = 0, kNeutralMode_Brake = 1, kNeutralMode_Coast = 2};
 	enum LimitMode {kLimitMode_SwitchInputsOnly = 0, kLimitMode_SoftPositionLimits = 1};
 
@@ -47,6 +47,7 @@ public:
 	virtual void PIDWrite(float output);
 
 	void SetSpeedReference(SpeedReference reference);
+	SpeedReference GetSpeedReference();
 	void SetPositionReference(PositionReference reference);
 	PositionReference GetPositionReference();
 	void SetPID(double p, double i, double d);

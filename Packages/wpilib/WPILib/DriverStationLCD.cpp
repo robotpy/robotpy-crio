@@ -11,10 +11,10 @@
 #include "Utility.h"
 #include <strLib.h>
 
-const UINT32 DriverStationLCD::kSyncTimeout_ms = 20;
-const UINT16 DriverStationLCD::kFullDisplayTextCommand = 0x9FFF;
-const INT32 DriverStationLCD::kLineLength = 21;
-const INT32 DriverStationLCD::kNumLines = 6;
+const UINT32 DriverStationLCD::kSyncTimeout_ms;
+const UINT16 DriverStationLCD::kFullDisplayTextCommand;
+const INT32 DriverStationLCD::kLineLength;
+const INT32 DriverStationLCD::kNumLines;
 DriverStationLCD* DriverStationLCD::m_instance = NULL;
 
 /**

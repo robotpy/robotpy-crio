@@ -5,13 +5,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Dashboard.h"
+#include "DriverStation.h"
 #include "Synchronized.h"
 #include "Utility.h"
 #include "WPIStatus.h"
 #include <strLib.h>
 
 const INT32 Dashboard::kMaxDashboardDataSize;
-UINT8 Dashboard::m_updateNumber = 0;
 
 /**
  * Dashboard contructor.
@@ -306,7 +306,7 @@ INT32 Dashboard::Finalize(void)
 	Synchronized sync(m_statusDataSemaphore);
 
 	// Sequence number
-	m_updateNumber++;
+	DriverStation::GetInstance()->IncrementUpdateNumber();
 
 	// Packed Dashboard Data
 	m_userStatusDataSize = m_packPtr - m_localBuffer;
@@ -327,7 +327,7 @@ void Dashboard::GetStatusBuffer(char **userStatusData, INT32* userStatusDataSize
 	if (m_localPrintBuffer[0] != 0)
 	{
 		// Sequence number
-		m_updateNumber++;
+		DriverStation::GetInstance()->IncrementUpdateNumber();
 
 		INT32 printSize;
 		Synchronized syncPrint(m_printSemaphore);

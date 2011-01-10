@@ -21,22 +21,27 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class I2C : SensorBase
+class DashboardBase : ErrorBase
 {
 %TypeHeaderCode
-#include <WPILib/I2C.h>
+#include <WPILib/DashboardBase.h>
 %End
 
 public:
-	virtual ~I2C();
-	bool Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived /Out/, UINT8 receiveSize);
-	bool AddressOnly();
-	bool Write(UINT8 registerAddress, UINT8 data);
-	bool Read(UINT8 registerAddress, UINT8 count, UINT8 *data /Out/);
-	void Broadcast(UINT8 registerAddress, UINT8 data);
-	void SetCompatibilityMode(bool enable);
+	virtual void GetStatusBuffer(char** userStatusData /Out,Array/, INT32* userStatusDataSize /Out,ArraySize/) = 0;
+%MethodCode
+            Py_BEGIN_ALLOW_THREADS
+            int a1_int;
+            sipCpp->GetStatusBuffer(&a0,&a1_int);
+            a1 = a1_int;
+            Py_END_ALLOW_THREADS
+%End
+	virtual void Flush() = 0;
+	virtual ~DashboardBase();
 
-	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
+protected:
+	DashboardBase();
+
 private:
-	I2C(DigitalModule *module, UINT8 deviceAddress);
+	DashboardBase(const DashboardBase&);
 };

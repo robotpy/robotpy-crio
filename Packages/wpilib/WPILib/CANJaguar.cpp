@@ -28,12 +28,15 @@ void CANJaguar::InitCANJaguar()
 	if (m_deviceNumber < 1 || m_deviceNumber > 63)
 	{
 		// Error
+		printf("ERROR: Invalid CAN device number \"%d\" - must be between 1 and 63.\n", m_deviceNumber);
 		return;
 	}
 	UINT32 fwVer = GetFirmwareVersion();
-	printf("fwVersion[%d]: %d\n", m_deviceNumber, fwVer);
+	// 3330 was the first shipping RDK firmware version for the Jaguar
 	if (fwVer >= 3330 || fwVer < 92)
 	{
+		printf("fwVersion[%d]: %d\n", m_deviceNumber, fwVer);
+		printf("ERROR: Jaguar %d must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
 		wpi_assertCleanStatus(kRIOStatusVersionMismatch);
 		return;
 	}
@@ -43,6 +46,7 @@ void CANJaguar::InitCANJaguar()
 	case kVoltage:
 		// No additional configuration required... start enabled.
 		EnableControl();
+		break;
 	default:
 		break;
 	}
@@ -209,7 +213,7 @@ void CANJaguar::PIDWrite(float output)
 	}
 	else
 	{
-		// TODO: Error
+		// TODO: Error... only percent vbus mode supported for PID API
 	}
 }
 
@@ -418,6 +422,24 @@ void CANJaguar::SetSpeedReference(SpeedReference reference)
 }
 
 /**
+ * Get the reference source device for speed controller mode.
+ * 
+ * @return A SpeedReference indicating the currently selected reference device for speed controller mode.
+ */
+CANJaguar::SpeedReference CANJaguar::GetSpeedReference(void)
+{
+	UINT8 dataBuffer[8];
+	UINT8 dataSize;
+
+	getTransaction(LM_API_SPD_REF, dataBuffer, &dataSize);
+	if (dataSize == sizeof(UINT8))
+	{
+		return (SpeedReference)*dataBuffer;
+	}
+	return kSpeedRef_None;
+}
+
+/**
  * Set the reference source device for position controller mode.
  * 
  * Choose between using and encoder and using a potentiometer
@@ -448,7 +470,7 @@ CANJaguar::PositionReference CANJaguar::GetPositionReference(void)
 	{
 		return (PositionReference)*dataBuffer;
 	}
-	return kPosRef_QuadEncoder;
+	return kPosRef_None;
 }
 
 /**
@@ -686,24 +708,28 @@ void CANJaguar::DisableControl()
 }
 
 /**
- * Change modes on the Jaguar.
+ * Change the control mode of this Jaguar object.
  * 
  * After changing modes, configure any PID constants or other settings needed
- * and then EnableControl().
+ * and then EnableControl() to actually change the mode on the Jaguar.
+ * 
+ * @param controlMode The new mode.
  */
 void CANJaguar::ChangeControlMode(ControlMode controlMode)
 {
-	// Update the local mode
-	m_controlMode = controlMode;
-
 	// Disable the previous mode
 	DisableControl();
+
+	// Update the local mode
+	m_controlMode = controlMode;
 }
 
 /**
  * Get the active control mode from the Jaguar.
  * 
  * Ask the Jag what mode it is in.
+ * 
+ * @return ControlMode that the Jag is in.
  */
 CANJaguar::ControlMode CANJaguar::GetControlMode()
 {

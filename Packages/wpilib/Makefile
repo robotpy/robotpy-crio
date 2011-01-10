@@ -12,6 +12,7 @@ PROJECT_OBJECTS += sip_wpilibCompressor.o
 PROJECT_OBJECTS += sip_wpilibCounter.o
 PROJECT_OBJECTS += sip_wpilibCounterBase.o
 PROJECT_OBJECTS += sip_wpilibDashboard.o
+PROJECT_OBJECTS += sip_wpilibDashboardBase.o
 PROJECT_OBJECTS += sip_wpilibDigitalInput.o
 PROJECT_OBJECTS += sip_wpilibDigitalModule.o
 PROJECT_OBJECTS += sip_wpilibDigitalOutput.o
@@ -43,6 +44,9 @@ PROJECT_OBJECTS += sip_wpilibSafePWM.o
 PROJECT_OBJECTS += sip_wpilibSensorBase.o
 PROJECT_OBJECTS += sip_wpilibSerialPort.o
 PROJECT_OBJECTS += sip_wpilibServo.o
+PROJECT_OBJECTS += sip_wpilibSmartDashboard.o
+PROJECT_OBJECTS += sip_wpilibSmartDashboardBuffer.o
+PROJECT_OBJECTS += sip_wpilibSmartDashboardPacketFactory.o
 PROJECT_OBJECTS += sip_wpilibSolenoid.o
 PROJECT_OBJECTS += sip_wpilibSpeedController.o
 PROJECT_OBJECTS += sip_wpilibTimer.o
@@ -92,6 +96,8 @@ PROJECT_OBJECTS += WPILib/SensorBase.o
 PROJECT_OBJECTS += WPILib/SerialPort.o
 PROJECT_OBJECTS += WPILib/Servo.o
 PROJECT_OBJECTS += WPILib/SimpleRobot.o
+PROJECT_OBJECTS += WPILib/SmartDashboard.o
+PROJECT_OBJECTS += WPILib/SmartDashboardPacketFactory.o
 PROJECT_OBJECTS += WPILib/Solenoid.o
 PROJECT_OBJECTS += WPILib/Synchronized.o
 PROJECT_OBJECTS += WPILib/Task.o
@@ -102,7 +108,7 @@ PROJECT_OBJECTS += WPILib/Victor.o
 PROJECT_OBJECTS += WPILib/Watchdog.o
 
 ADDED_INCLUDES = -I../sip -I./WPILib -I./WPILib/CInterfaces
-ADDED_CFLAGS = -D'SVN_REV="2222"'
-ADDED_C++FLAGS = -D'SVN_REV="2222"'
+ADDED_CFLAGS = -D'SVN_REV="2242"'
+ADDED_C++FLAGS = -D'SVN_REV="2242"'
 
 include ../../mk/module.mk

@@ -7,7 +7,7 @@
 #ifndef __DASHBOARD_H__
 #define __DASHBOARD_H__
 
-#include "ErrorBase.h"
+#include "DashboardBase.h"
 #include "NetworkCommunication/FRCComm.h"
 #include <stack>
 #include <vector>
@@ -17,12 +17,11 @@
  * Pack data into the "user data" field that gets sent to the dashboard laptop
  * via the driver station.
  */
-class Dashboard : public ErrorBase
-{
-	// Can only be constructed by the DriverStation class.
-	friend class DriverStation;
-	friend class DashboardTest;
+class Dashboard : public DashboardBase {
 public:
+	explicit Dashboard(SEM_ID statusDataSemaphore);
+	virtual ~Dashboard();
+
 	enum Type {kI8, kI16, kI32, kU8, kU16, kU32, kFloat, kDouble, kBoolean, kString, kOther};
 	enum ComplexType {kArray, kCluster};
 
@@ -46,12 +45,9 @@ public:
 	void Printf(const char *writeFmt, ...);
 
 	INT32 Finalize(void);
+	void GetStatusBuffer(char** userStatusData, INT32* userStatusDataSize);
+	void Flush() {}
 private:
-	Dashboard(SEM_ID statusDataSemaphore);
-	virtual ~Dashboard();
-	static UINT8 GetUpdateNumber(void) {return m_updateNumber;}
-	void GetStatusBuffer(char **userStatusData, INT32* userStatusDataSize);
-
 	static const INT32 kMaxDashboardDataSize = USER_STATUS_DATA_SIZE - sizeof(UINT32) * 3 - sizeof(UINT8); // 13 bytes needed for 3 size parameters and the sequence number
 
 	// Usage Guidelines...
@@ -72,7 +68,6 @@ private:
 	std::stack<ComplexType> m_complexTypeStack;
 	SEM_ID m_printSemaphore;
 	SEM_ID m_statusDataSemaphore;
-	static UINT8 m_updateNumber;
 };
 
 #endif

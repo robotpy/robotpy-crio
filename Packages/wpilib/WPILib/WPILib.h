@@ -51,6 +51,7 @@
 #include "SerialPort.h"
 #include "Servo.h"
 #include "SimpleRobot.h"
+#include "SmartDashboard.h"
 #include "Solenoid.h"
 #include "SpeedController.h"
 #include "Synchronized.h"

@@ -20,6 +20,7 @@ const UINT32 DriverStation::kJoystickPorts;
 const UINT32 DriverStation::kJoystickAxes;
 const float DriverStation::kUpdatePeriod;
 DriverStation* DriverStation::m_instance = NULL;
+UINT8 DriverStation::m_updateNumber = 0;
 
 /**
  * DriverStation contructor.
@@ -31,9 +32,11 @@ DriverStation::DriverStation()
 	, m_digitalOut (0)
 	, m_batteryChannel (NULL)
 	, m_statusDataSemaphore (semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE))
-	, m_task ("DriverStation", (FUNCPTR)DriverStation::InitTask, 100)
+	, m_task ("DriverStation", (FUNCPTR)DriverStation::InitTask)
 	, m_dashboardHigh(m_statusDataSemaphore)
 	, m_dashboardLow(m_statusDataSemaphore)
+	, m_dashboardInUseHigh(&m_dashboardHigh)
+	, m_dashboardInUseLow(&m_dashboardLow)
 	, m_newControlData (false)
 	, m_packetDataAvailableSem (0)
 	, m_enhancedIO()
@@ -141,11 +144,9 @@ void DriverStation::GetData()
 
 /**
  * Copy status data from the DS task for the user.
- * This is used primarily to set digital outputs on the DS.
  */
 void DriverStation::SetData()
 {
-	UINT8 userStatusUpdateNumber;
 	char *userStatusDataHigh;
 	INT32 userStatusDataHighSize;
 	char *userStatusDataLow;
@@ -153,11 +154,13 @@ void DriverStation::SetData()
 
 	Synchronized sync(m_statusDataSemaphore);
 
-	m_dashboardHigh.GetStatusBuffer(&userStatusDataHigh, &userStatusDataHighSize);
-	m_dashboardLow.GetStatusBuffer(&userStatusDataLow, &userStatusDataLowSize);
-	userStatusUpdateNumber = Dashboard::GetUpdateNumber();
-	setStatusData(GetBatteryVoltage(), m_digitalOut, userStatusUpdateNumber,
+	m_dashboardInUseHigh->GetStatusBuffer(&userStatusDataHigh, &userStatusDataHighSize);
+	m_dashboardInUseLow->GetStatusBuffer(&userStatusDataLow, &userStatusDataLowSize);
+	setStatusData(GetBatteryVoltage(), m_digitalOut, m_updateNumber,
 		userStatusDataHigh, userStatusDataHighSize, userStatusDataLow, userStatusDataLowSize, WAIT_FOREVER);
+	
+	m_dashboardInUseHigh->Flush();
+	m_dashboardInUseLow->Flush();
 }
 
 /**

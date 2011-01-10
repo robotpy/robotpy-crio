@@ -21,22 +21,24 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class I2C : SensorBase
+class SmartDashboardPacketFactory
 {
 %TypeHeaderCode
-#include <WPILib/I2C.h>
+#include <WPILib/SmartDashboardPacketFactory.h>
 %End
 
 public:
-	virtual ~I2C();
-	bool Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived /Out/, UINT8 receiveSize);
-	bool AddressOnly();
-	bool Write(UINT8 registerAddress, UINT8 data);
-	bool Read(UINT8 registerAddress, UINT8 count, UINT8 *data /Out/);
-	void Broadcast(UINT8 registerAddress, UINT8 data);
-	void SetCompatibilityMode(bool enable);
+	enum FRAME_TYPE {
+		ANNOUNCE_FRAME = 0, UPDATE_FRAME = 1, ANNOUNCE_PROFILE_FRAME = 2,
+	};
 
-	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
+	static void Announce(SmartDashboard::Buffer& buf, char id,
+			SmartDashboard::FIELD_TYPE type, const char* name);
+	static int GetAnnounceLength(const char* name);
+	static void UpdatePrefix(SmartDashboard::Buffer& buf, char id,
+			int dataLength);
+	static int GetUpdateLength(int dataLength);
+
 private:
-	I2C(DigitalModule *module, UINT8 deviceAddress);
+	SmartDashboardPacketFactory(const SmartDashboardPacketFactory&);
 };

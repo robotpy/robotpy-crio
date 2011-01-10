@@ -21,13 +21,16 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Dashboard : ErrorBase
+class Dashboard : DashboardBase
 {
 %TypeHeaderCode
 #include <WPILib/Dashboard.h>
 %End
 
 public:
+	explicit Dashboard(SEM_ID statusDataSemaphore);
+	virtual ~Dashboard();
+
 	enum Type {kI8, kI16, kI32, kU8, kU16, kU32, kFloat, kDouble, kBoolean, kString, kOther};
 	enum ComplexType {kArray, kCluster};
 
@@ -54,7 +57,13 @@ public:
 %End
 
 	INT32 Finalize();
-private:
-	Dashboard(int statusDataSemaphore);
-	virtual ~Dashboard();
+	void GetStatusBuffer(char** userStatusData /Out,Array/, INT32* userStatusDataSize /Out,ArraySize/);
+%MethodCode
+            Py_BEGIN_ALLOW_THREADS
+            int a1_int;
+            (sipSelfWasArg ? sipCpp->Dashboard::GetStatusBuffer(&a0,&a1_int) : sipCpp->GetStatusBuffer(&a0,&a1_int));
+            a1 = a1_int;
+            Py_END_ALLOW_THREADS
+%End
+	void Flush();
 };

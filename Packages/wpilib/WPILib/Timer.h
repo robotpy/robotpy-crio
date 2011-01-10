@@ -21,7 +21,7 @@ double GetTime(void);
  * Timer objects measure accumulated time in seconds.
  * The timer object functions like a stopwatch. It can be started, stopped, and cleared. When the
  * timer is running its value counts up in seconds. When stopped, the timer holds the current
- * value. The implemenation simply records the time when started and subtracts the current time
+ * value. The implementation simply records the time when started and subtracts the current time
  * whenever the value is requested.
  */
 class Timer

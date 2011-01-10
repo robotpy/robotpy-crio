@@ -52,9 +52,27 @@ public:
 
 	float GetBatteryVoltage();
 
-	Dashboard& GetHighPriorityDashboardPacker(void) {return m_dashboardHigh;}
-	Dashboard& GetLowPriorityDashboardPacker(void) {return m_dashboardLow;}
-	DriverStationEnhancedIO& GetEnhancedIO(void) {return m_enhancedIO;}
+	// Get the default dashboard packers. These instances stay around even after
+	// a call to SetHigh|LowPriorityDashboardPackerToUse() changes which packer
+	// is in use. You can restore the default high priority packer by calling
+	// SetHighPriorityDashboardPackerToUse(&GetHighPriorityDashboardPacker()).
+	Dashboard& GetHighPriorityDashboardPacker() { return m_dashboardHigh; }
+	Dashboard& GetLowPriorityDashboardPacker() { return m_dashboardLow; }
+
+	// Get/set the dashboard packers to use. This can sideline or restore the
+	// default packers. Initializing SmartDashboard changes the high priority
+	// packer in use so beware that the default packer will then be idle. These
+	// methods support any kind of DashboardBase, e.g. a Dashboard or a
+	// SmartDashboard.
+	DashboardBase* GetHighPriorityDashboardPackerInUse() { return m_dashboardInUseHigh; }
+	DashboardBase* GetLowPriorityDashboardPackerInUse() { return m_dashboardInUseLow; }
+	void SetHighPriorityDashboardPackerToUse(DashboardBase* db) { m_dashboardInUseHigh = db; }
+	void SetLowPriorityDashboardPackerToUse(DashboardBase* db) { m_dashboardInUseLow = db; }
+
+	DriverStationEnhancedIO& GetEnhancedIO() { return m_enhancedIO; }
+
+	void IncrementUpdateNumber() { m_updateNumber++; }
+	SEM_ID GetUserStatusDataSem() { return m_statusDataSemaphore; }
 
 protected:
 	DriverStation();
@@ -75,11 +93,14 @@ private:
 	AnalogChannel *m_batteryChannel;
 	SEM_ID m_statusDataSemaphore;
 	Task m_task;
-	Dashboard m_dashboardHigh;
+	Dashboard m_dashboardHigh;  // the default dashboard packers
 	Dashboard m_dashboardLow;
+	DashboardBase* m_dashboardInUseHigh;  // the current dashboard packers in use
+	DashboardBase* m_dashboardInUseLow;
 	bool m_newControlData;
 	SEM_ID m_packetDataAvailableSem;
 	DriverStationEnhancedIO m_enhancedIO;
+	static UINT8 m_updateNumber;
 };
 
 #endif

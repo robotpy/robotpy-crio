@@ -494,7 +494,7 @@ void RobotDrive::MecanumDrive_Cartesian(float x, float y, float rotation, float 
  * When looking at the wheels from the top, the roller axles should form an X across the robot.
  *
  * @param magnitude The speed that the robot should drive in a given direction. [-1.0..1.0]
- * @param direction The direction the robot should drive. The direction and maginitute are
+ * @param direction The direction the robot should drive in degrees. The direction and maginitute are
  * independent of the rotation rate.
  * @param rotation The rate of rotation for the robot that is completely independent of
  * the magnitute or direction. [-1.0..1.0]
@@ -531,7 +531,7 @@ void RobotDrive::MecanumDrive_Polar(float magnitude, float direction, float rota
 /**
  * Holonomic Drive method for Mecanum wheeled robots.
  *
- * This is an alias to MecanumDrive_Polar() for bacward compatability
+ * This is an alias to MecanumDrive_Polar() for backward compatability
  *
  * @param magnitude The speed that the robot should drive in a given direction.  [-1.0..1.0]
  * @param direction The direction the robot should drive. The direction and maginitute are

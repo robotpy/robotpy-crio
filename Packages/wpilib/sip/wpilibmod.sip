@@ -39,6 +39,8 @@ typedef unsigned short UINT16;
 typedef unsigned int UINT32;
 typedef unsigned long long UINT64;
 
+typedef struct semaphore * SEM_ID;
+
 %ModuleCode
 #include <WPILib/RobotBase.h>
 
@@ -113,6 +115,7 @@ Watchdog *GetWatchdog();
 %Include Counter.sip
 %Include CounterBase.sip
 %Include Dashboard.sip
+%Include DashboardBase.sip
 %Include DigitalInput.sip
 %Include DigitalModule.sip
 %Include DigitalOutput.sip
@@ -144,6 +147,8 @@ Watchdog *GetWatchdog();
 %Include SensorBase.sip
 %Include SerialPort.sip
 %Include Servo.sip
+%Include SmartDashboard.sip
+%Include SmartDashboardPacketFactory.sip
 %Include Solenoid.sip
 %Include SpeedController.sip
 %Include Timer.sip

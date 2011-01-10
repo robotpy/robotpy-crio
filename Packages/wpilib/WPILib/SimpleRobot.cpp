@@ -17,42 +17,42 @@ SimpleRobot::SimpleRobot()
 /**
  * Robot-wide initialization code should go here.
  * 
- * Users should override this method for default Robot-wide initialization which will
+ * Programmers should override this method for default Robot-wide initialization which will
  * be called when the robot is first powered on.  It will be called exactly 1 time.
  */
 void SimpleRobot::RobotInit()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	printf("Default %s() method... Override me!\n", __FUNCTION__);
 }
 
 /**
  * Disabled should go here.
- * Users should overload this method to run code that should run while the field is
+ * Programmers should override this method to run code that should run while the field is
  * disabled.
  */
 void SimpleRobot::Disabled()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	printf("Default %s() method... Override me!\n", __FUNCTION__);
 }
 
 /**
  * Autonomous should go here.
- * Users should overload this method to run code that should run while the field is
+ * Programmers should override this method to run code that should run while the field is
  * in the autonomous period.
  */
 void SimpleRobot::Autonomous()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	printf("Default %s() method... Override me!\n", __FUNCTION__);
 }
 
 /**
  * Operator control (tele-operated) code should go here.
- * Users should overload this method to run code that should run while the field is
+ * Programmers should override this method to run code that should run while the field is
  * in the Operator Control (tele-operated) period.
  */
 void SimpleRobot::OperatorControl()
 {
-	printf("Default %s() method... Overload me!\n", __FUNCTION__);
+	printf("Default %s() method... Override me!\n", __FUNCTION__);
 }
 
 /**
@@ -108,4 +108,3 @@ void SimpleRobot::StartCompetition()
 		}
 	}
 }
-

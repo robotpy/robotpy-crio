@@ -105,7 +105,7 @@ double Timer::Get()
 /**
  * Reset the timer by setting the time to 0.
  * 
- * Make the timer startTime the current time so new requests will be relative now
+ * Make the timer startTime the current time so new requests will be relative to now
  */
 void Timer::Reset()
 {
@@ -148,7 +148,10 @@ void Timer::Stop()
 }
 
 /**
- * Check if the period specified has passed and advance advance by that period if it has.
+ * Check if the period specified has passed and if it has, advance the start
+ * time by that period. This is useful to decide if it's time to do periodic
+ * work without drifting later by the time it took to get around to checking.
+ *
  * @param period The period to check for (in seconds).
  * @return If the period has passed.
  */

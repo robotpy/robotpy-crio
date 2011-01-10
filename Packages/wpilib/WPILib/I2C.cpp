@@ -21,7 +21,7 @@ SEM_ID I2C::m_semaphore = NULL;
 I2C::I2C(DigitalModule *module, UINT8 deviceAddress)
 	: m_module (module)
 	, m_deviceAddress (deviceAddress)
-	, m_compatabilityMode (false)
+	, m_compatibilityMode (false)
 {
 	if (m_semaphore == NULL)
 	{
@@ -80,7 +80,7 @@ bool I2C::Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived, UI
 		m_module->m_fpgaDIO->writeI2CConfig_BytesToRead(receiveSize, &status);
 		if (sendSize > 0) m_module->m_fpgaDIO->writeI2CDataToSend(data, &status);
 		if (sendSize > sizeof(data)) m_module->m_fpgaDIO->writeI2CConfig_DataToSendHigh(dataHigh, &status);
-		m_module->m_fpgaDIO->writeI2CConfig_BitwiseHandshake(m_compatabilityMode, &status);
+		m_module->m_fpgaDIO->writeI2CConfig_BitwiseHandshake(m_compatibilityMode, &status);
 		UINT8 transaction = m_module->m_fpgaDIO->readI2CStatus_Transaction(&status);
 		m_module->m_fpgaDIO->strobeI2CStart(&status);
 		while(transaction == m_module->m_fpgaDIO->readI2CStatus_Transaction(&status)) taskDelay(1);
@@ -174,16 +174,16 @@ void I2C::Broadcast(UINT8 registerAddress, UINT8 data)
 }
 
 /**
- * SetCompatabilityMode
+ * SetCompatibilityMode
  * 
  * Enables bitwise clock skewing detection.  This will reduce the I2C interface speed,
  * but will allow you to communicate with devices that skew the clock at abnormal times.
-
- * @param enable Enable compatability mode for this sensor or not.
+ *
+ * @param enable Enable compatibility mode for this sensor or not.
  */
-void I2C::SetCompatabilityMode(bool enable)
+void I2C::SetCompatibilityMode(bool enable)
 {
-	m_compatabilityMode = enable;
+	m_compatibilityMode = enable;
 }
 
 /**

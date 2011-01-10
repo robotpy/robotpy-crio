@@ -61,7 +61,16 @@ public:
 
 	Dashboard& GetHighPriorityDashboardPacker();
 	Dashboard& GetLowPriorityDashboardPacker();
+
+	DashboardBase* GetHighPriorityDashboardPackerInUse();
+	DashboardBase* GetLowPriorityDashboardPackerInUse();
+	void SetHighPriorityDashboardPackerToUse(DashboardBase* db);
+	void SetLowPriorityDashboardPackerToUse(DashboardBase* db);
+
 	DriverStationEnhancedIO& GetEnhancedIO();
+
+	void IncrementUpdateNumber();
+	SEM_ID GetUserStatusDataSem();
 
 protected:
 	DriverStation();
