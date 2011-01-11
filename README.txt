@@ -70,8 +70,8 @@ Major Differences from standard Python
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *  Several Python modules with large and/or incompatible dependencies removed,
-   namely: curses, dbm, gdbm, tkinter, nis, ossaudiodev, readline, resource,
-   spwd, syslog, termios, audioop, bz2, crypt, grp, ssl, pwd, and mmap.
+   namely: curses, dbm, gdbm, tkinter, nis, ossaudiodev, resource, spwd,
+   syslog, termios, audioop, bz2, crypt, grp, ssl, pwd, and mmap.
 
 Licensing
 ===========
