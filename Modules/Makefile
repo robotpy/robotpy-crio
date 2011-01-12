@@ -1,41 +1,42 @@
-.PHONY: all clean
+SUBDIRS =
+SUBDIRS += _bisect
+SUBDIRS += _collections
+SUBDIRS += _csv
+SUBDIRS += _elementtree
+SUBDIRS += _heapq
+SUBDIRS += _md5
+SUBDIRS += _pickle
+SUBDIRS += _random
+SUBDIRS += _sha1
+SUBDIRS += _sha256
+SUBDIRS += _sha512
+SUBDIRS += _socket
+SUBDIRS += _struct
+SUBDIRS += array
+SUBDIRS += atexit
+SUBDIRS += binascii
+SUBDIRS += cmath
+SUBDIRS += datetime
+SUBDIRS += fcntl
+SUBDIRS += fpectl
+SUBDIRS += itertools
+SUBDIRS += math
+SUBDIRS += operator
+SUBDIRS += parser
+SUBDIRS += pyexpat
+SUBDIRS += readline
+SUBDIRS += select
+SUBDIRS += time
+SUBDIRS += unicodedata
+SUBDIRS += zlib
 
-DIRS = \
-	_bisect \
-	_collections \
-	_csv \
-	_elementtree \
-	_heapq \
-	_md5 \
-	_pickle \
-	_random \
-	_sha1 \
-	_sha256 \
-	_sha512 \
-	_socket \
-	_struct \
-	array \
-	atexit \
-	binascii \
-	cmath \
-	datetime \
-	fcntl \
-	fpectl \
-	itertools \
-	math \
-	operator \
-	parser \
-	pyexpat \
-	readline \
-	select \
-	time \
-	unicodedata \
-	zlib
-	
-all:
-	-for d in $(DIRS); do $(MAKE) -C $$d; done
-	
-clean:
-	-for d in $(DIRS); do $(MAKE) -C $$d clean; done
+.PHONY: all clean $(SUBDIRS)
 
+all: $(SUBDIRS)
 
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+clean:: $(addsuffix -clean,$(SUBDIRS))
+%-clean::
+	$(MAKE) -C $* clean

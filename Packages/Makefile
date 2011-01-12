@@ -1,10 +1,14 @@
-.PHONY: all clean
+SUBDIRS =
+SUBDIRS += sip
+SUBDIRS += wpilib
 
-all:
-	$(MAKE) -C sip
-	$(MAKE) -C wpilib
-	
-clean:
-	$(MAKE) -C sip clean
-	$(MAKE) -C wpilib clean
+.PHONY: all clean $(SUBDIRS)
 
+all: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+clean:: $(addsuffix -clean,$(SUBDIRS))
+%-clean::
+	$(MAKE) -C $* clean

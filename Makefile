@@ -1,12 +1,15 @@
-.PHONY: all clean
+SUBDIRS =
+SUBDIRS += RobotPy
+SUBDIRS += Modules
+SUBDIRS += Packages
 
-all:
-	$(MAKE) -C RobotPy/PPC603gnu DEBUG_MODE=0
-	$(MAKE) -C Modules
-	$(MAKE) -C Packages
-	
-clean:
-	-cd RobotPy/PPC603gnu && $(MAKE) clean DEBUG_MODE=0
-	$(MAKE) -C Modules clean
-	$(MAKE) -C Packages clean
+.PHONY: all clean $(SUBDIRS)
 
+all: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
+
+clean:: $(addsuffix -clean,$(SUBDIRS))
+%-clean::
+	$(MAKE) -C $* clean
