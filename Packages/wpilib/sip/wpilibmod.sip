@@ -154,4 +154,5 @@ Watchdog *GetWatchdog();
 %Include Timer.sip
 %Include Ultrasonic.sip
 %Include Utility.sip
+%Include Victor.sip
 %Include Watchdog.sip

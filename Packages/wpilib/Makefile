@@ -51,6 +51,7 @@ PROJECT_OBJECTS += sip_wpilibSolenoid.o
 PROJECT_OBJECTS += sip_wpilibSpeedController.o
 PROJECT_OBJECTS += sip_wpilibTimer.o
 PROJECT_OBJECTS += sip_wpilibUltrasonic.o
+PROJECT_OBJECTS += sip_wpilibVictor.o
 PROJECT_OBJECTS += sip_wpilibWatchdog.o
 
 PROJECT_OBJECTS += WPILib/CInterfaces/CDigitalInput.o
