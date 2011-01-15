@@ -1,5 +1,7 @@
 SUBDIRS =
 SUBDIRS += sip
+SUBDIRS += vision
+SUBDIRS += vision2009
 SUBDIRS += wpilib
 
 .PHONY: all clean $(SUBDIRS)
