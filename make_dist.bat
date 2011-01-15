@@ -32,4 +32,10 @@ xcopy /i /e samples dist\RobotPy-WPILib\samples
 for /r Packages\wpilib %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 for /r Packages\wpilib %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 
+for /r Packages\vision %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\vision %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+
+for /r Packages\vision2009 %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+for /r Packages\vision2009 %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
+
 pause
