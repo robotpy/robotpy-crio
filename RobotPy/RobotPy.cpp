@@ -61,7 +61,7 @@ INT32 robotTaskId = -1;
 extern "C" INT32
 FRC_UserProgram_StartupLibraryInit()
 {
-	puts("RobotPy 2011.1 (2011-01-10)");
+	puts("RobotPy 2011.2 (2011-01-16)");
 	// Check for startup code already running
 	INT32 oldId = taskNameToId("FRC_RobotTask");
 	if (oldId != ERROR)
