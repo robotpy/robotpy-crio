@@ -15,7 +15,7 @@ PROJECT_OBJECTS += Vision/PCVideoServer.o
 PROJECT_OBJECTS += Vision/RGBImage.o
 PROJECT_OBJECTS += Vision/Threshold.o
 
-ADDED_INCLUDES = -I../sip -I. -I../vision2009 -I../nivision/WPILib -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
+ADDED_INCLUDES = -I../sip -I. -I../vision2009 -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
 ADDED_CFLAGS = -D'SVN_REV="2242"'
 ADDED_C++FLAGS = -D'SVN_REV="2242"'
 

@@ -7,7 +7,7 @@ PROJECT_OBJECTS += Vision2009/FrcError.o
 PROJECT_OBJECTS += Vision2009/TrackAPI.o
 PROJECT_OBJECTS += Vision2009/VisionAPI.o
 
-ADDED_INCLUDES = -I../sip -I../nivision/WPILib -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
+ADDED_INCLUDES = -I../sip -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
 ADDED_CFLAGS = -D'SVN_REV="2130"'
 ADDED_C++FLAGS = -D'SVN_REV="2130"'
 
