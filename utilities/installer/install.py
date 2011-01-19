@@ -48,7 +48,7 @@ class RobotCodeInstaller(object):
     def close(self):
         self.ftp.quit()
     
-    def upload_directory( self, remote_root, local_root, recursive=True, verbose=False ):
+    def upload_directory( self, remote_root, local_root, recursive=True, verbose=False, skip_special=True ):
         '''
             Parameters:
             
@@ -64,6 +64,9 @@ class RobotCodeInstaller(object):
                 verbose:
                     Set to true to output the name of each file as it is 
                     being uploaded
+                    
+                skip_special:
+                    Don't upload .pyc, .git, .svn, .hg directories
         '''
 
         # save cwd
@@ -85,7 +88,15 @@ class RobotCodeInstaller(object):
     
         for root, dirs, files in os.walk( '.' ):
         
+            # skip .svn, .git, .hg directories
+            if skip_special:
+                for d in dirs[:]:
+                    if d in ['.svn', '.hg', '.git']:
+                        dirs.remove(d)
+        
             sys.stdout.write(root + ': ')
+            if verbose:
+                sys.stdout.write('\n')
         
             remote_files = []
         
@@ -107,7 +118,7 @@ class RobotCodeInstaller(object):
                 r, ext = os.path.splitext( fn )
             
                 # if this accidentally got in there, don't upload it
-                if ext == '.pyc':
+                if skip_special and ext == '.pyc':
                     continue
             
                 # for each py file, delete a pyc file associated with it
