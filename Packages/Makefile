@@ -1,5 +1,6 @@
 SUBDIRS =
 SUBDIRS += sip
+SUBDIRS += nivision
 SUBDIRS += vision
 SUBDIRS += vision2009
 SUBDIRS += wpilib
