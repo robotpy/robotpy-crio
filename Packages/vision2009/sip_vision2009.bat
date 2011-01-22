@@ -1,2 +1,2 @@
-sip -c . -g -P -w sip/vision2009mod.sip
+sip -c . -g -w sip/vision2009mod.sip
 pause
