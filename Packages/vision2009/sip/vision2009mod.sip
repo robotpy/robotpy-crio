@@ -30,9 +30,10 @@ DEALINGS IN THE SOFTWARE.
 %DefaultEncoding "UTF-8"
 
 %Import ../wpilib/sip/wpilibmod.sip
+%Import ../nivision/sip/nivisionmod.sip
 
-//%Include AxisCamera.sip
+%Include AxisCamera.sip
 %Include BaeUtilities.sip
 %Include FrcError.sip
-//%Include TrackAPI.sip
-//%Include VisionAPI.sip
+%Include TrackAPI.sip
+%Include VisionAPI.sip
