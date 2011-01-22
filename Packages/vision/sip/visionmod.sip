@@ -31,15 +31,16 @@ DEALINGS IN THE SOFTWARE.
 
 %Import ../wpilib/sip/wpilibmod.sip
 %Import ../vision2009/sip/vision2009mod.sip
-//%Import ../nivision/sip/nivisionmod.sip
-//%Include ../sip/stdvector.sip
+%Import ../nivision/sip/nivisionmod.sip
+%Include ../sip/stdvector.sip
 
 //%Include AxisCamera.sip
 //%Include AxisCameraParams.sip
-//%Include BinaryImage.sip
-//%Include ColorImage.sip
-//%Include HSLImage.sip
-//%Include ImageBase.sip
-//%Include MonoImage.sip
+%Include BinaryImage.sip
+%Include ColorImage.sip
+%Include HSLImage.sip
+%Include ImageBase.sip
+%Include MonoImage.sip
 %Include PCVideoServer.sip
-//%Include RGBImage.sip
+%Include RGBImage.sip
+%Include Threshold.sip

@@ -2067,13 +2067,13 @@ struct RangeFloat {
     float minValue;
     float maxValue;
 };
-/*
+
 struct ShapeDetectionOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
     unsigned int mode;
-    RangeFloat*  angleRanges;
+    //TODO:RangeFloat*  angleRanges;
     int          numAngleRanges;
     RangeFloat   scaleRange;
     double       minMatchScore;
@@ -2083,7 +2083,7 @@ struct Curve {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    PointFloat*  points;
+    //TODO:PointFloat*  points;
     unsigned int numPoints;
     int          closed;
     double       curveLength;
@@ -2106,7 +2106,7 @@ struct CurveOptions {
     int            onlyClosed;
     int            subpixelAccuracy;
 };
-
+/*
 struct Barcode2DInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
