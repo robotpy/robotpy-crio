@@ -34,8 +34,8 @@ DEALINGS IN THE SOFTWARE.
 %Import ../nivision/sip/nivisionmod.sip
 %Include ../sip/stdvector.sip
 
-//%Include AxisCamera.sip
-//%Include AxisCameraParams.sip
+%Include AxisCamera.sip
+%Include AxisCameraParams.sip
 %Include BinaryImage.sip
 %Include ColorImage.sip
 %Include HSLImage.sip

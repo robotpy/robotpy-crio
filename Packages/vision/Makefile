@@ -1,5 +1,7 @@
 PROJECT_TARGET = _vision.out
 PROJECT_OBJECTS = sip_visioncmodule.o
+PROJECT_OBJECTS += sip_visionAxisCamera.o
+PROJECT_OBJECTS += sip_visionAxisCameraParams.o
 PROJECT_OBJECTS += sip_visionBinaryImage.o
 PROJECT_OBJECTS += sip_visionColorImage.o
 PROJECT_OBJECTS += sip_visionHSLImage.o
