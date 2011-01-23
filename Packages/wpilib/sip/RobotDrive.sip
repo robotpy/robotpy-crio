@@ -67,10 +67,10 @@ public:
 	void SetSafetyEnabled(bool enabled);
 
 protected:
-	//void InitRobotDrive();
-	//float Limit(float num);
+	void InitRobotDrive();
+	float Limit(float num);
 	//void Normalize(double *wheelSpeeds);
-	//void RotateVector(double &x, double &y, double angle);
+	void RotateVector(double &x /In,Out/, double &y /In,Out/, double angle);
 
 private:
 	RobotDrive(const RobotDrive&);
