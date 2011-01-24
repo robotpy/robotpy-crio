@@ -56,7 +56,6 @@ void StartImageAcquisition();
 void StopImageAcquisition();
 void StartImageSignal(int taskId);
 
-int frcCameraInitialized();
 int GetCameraMetric(FrcvCameraMetric metric);
 
 int ConfigureCamera(char *configString);

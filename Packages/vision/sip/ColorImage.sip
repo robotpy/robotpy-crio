@@ -43,9 +43,6 @@ public:
 	MonoImage *GetHSLHuePlane() /Factory/;
 	MonoImage *GetHSVHuePlane() /Factory/;
 	MonoImage *GetHSIHuePlane() /Factory/;
-	MonoImage *GetHSLSaturationPlane() /Factory/;
-	MonoImage *GetHSVSaturationPlane() /Factory/;
-	MonoImage *GetHSISaturationPlane() /Factory/;
 	MonoImage *GetLuminancePlane() /Factory/;
 	MonoImage *GetValuePlane() /Factory/;
 	MonoImage *GetIntensityPlane() /Factory/;
