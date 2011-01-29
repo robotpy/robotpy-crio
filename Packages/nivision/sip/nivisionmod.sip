@@ -1226,12 +1226,48 @@ enum WindowBackgroundHatchStyle {
 //============================================================================
 //  Forward Declare Data Structures
 //============================================================================
-typedef struct CharSet_struct CharSet;
-typedef struct ClassifierSession_struct ClassifierSession;
-//typedef struct Image_struct Image;
 typedef struct MultipleGeometicPattern_struct MultipleGeometricPattern;
 typedef struct Overlay_struct Overlay;
-typedef struct ROI_struct ROI;
+
+struct CharSet {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    CharSet();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        sipCpp = imaqCreateCharSet();
+        Py_END_ALLOW_THREADS
+    %End
+    ~CharSet();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+private:
+    CharSet(const CharSet&);
+};
+
+struct ClassifierSession {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ClassifierSession(ClassifierType type);
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        sipCpp = imaqCreateClassifier(a0);
+        Py_END_ALLOW_THREADS
+    %End
+    ~ClassifierSession();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+private:
+    ClassifierSession(const ClassifierSession&);
+};
 
 struct Image {
 %TypeHeaderCode
@@ -1260,6 +1296,26 @@ struct Image {
         imaqDispose(sipCpp); sipCppV = 0;
         Py_END_ALLOW_THREADS
     %End
+};
+
+struct ROI {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ROI();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        sipCpp = imaqCreateROI();
+        Py_END_ALLOW_THREADS
+    %End
+    ~ROI();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+private:
+    ROI(const ROI&);
 };
 
 typedef int ContourID;
@@ -1327,10 +1383,19 @@ struct RGBValue {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    unsigned char B;
-    unsigned char G;
-    unsigned char R;
-    unsigned char alpha;
+    RGBValue();
+    RGBValue(unsigned char B /PyInt/, unsigned char G /PyInt/, unsigned char R /PyInt/, unsigned char alpha /PyInt/ = 0);
+    %MethodCode
+        sipCpp = new RGBValue;
+        sipCpp->B = a0;
+        sipCpp->G = a1;
+        sipCpp->R = a2;
+        sipCpp->alpha = a3;
+    %End
+    unsigned char B /PyInt/;
+    unsigned char G /PyInt/;
+    unsigned char R /PyInt/;
+    unsigned char alpha /PyInt/;
 };
 
 struct EdgeOptions2 {
@@ -1369,7 +1434,7 @@ struct FindEdgeReport {
     StraightEdge* straightEdges;
     unsigned int  numStraightEdges;
 };
-
+*/
 struct FindTransformRectOptions2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1404,7 +1469,7 @@ struct FindTransformRectsOptions2 {
     EdgeOptions2           primaryEdgeOptions;
     EdgeOptions2           secondaryEdgeOptions;
 };
-
+/*
 struct ReadTextReport3 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1443,10 +1508,17 @@ struct PointFloat {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    PointFloat();
+    PointFloat(float x, float y);
+    %MethodCode
+        sipCpp = new PointFloat;
+        sipCpp->x = a0;
+        sipCpp->y = a1;
+    %End
     float x;
     float y;
 };
-/*
+
 struct ArcInfo2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1461,13 +1533,22 @@ struct EdgeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    EdgeInfo*    edges;
+    ~EdgeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*    edges;
     unsigned int numEdges;
     //TODO double*      gradientInfo;
     unsigned int numGradientInfo;
     int          calibrationValid;
+private:
+    EdgeReport2();
+    EdgeReport2(const EdgeReport2&);
 };
-
+/*
 struct SearchArcInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1475,31 +1556,49 @@ struct SearchArcInfo {
     ArcInfo2    arcCoordinates;
     EdgeReport2 edgeReport;
 };
-
+*/
 struct ConcentricRakeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    EdgeInfo*      firstEdges;
+    ~ConcentricRakeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*      firstEdges;
     unsigned int   numFirstEdges;
-    EdgeInfo*      lastEdges;
+    //EdgeInfo*      lastEdges;
     unsigned int   numLastEdges;
-    SearchArcInfo* searchArcs;
+    //SearchArcInfo* searchArcs;
     unsigned int   numSearchArcs;
+private:
+    ConcentricRakeReport2();
+    ConcentricRakeReport2(const ConcentricRakeReport2&);
 };
 
 struct SpokeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    EdgeInfo*       firstEdges;
+    ~SpokeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*       firstEdges;
     unsigned int    numFirstEdges;
-    EdgeInfo*       lastEdges;
+    //EdgeInfo*       lastEdges;
     unsigned int    numLastEdges;
-    SearchLineInfo* searchLines;
+    //SearchLineInfo* searchLines;
     unsigned int    numSearchLines;
+private:
+    SpokeReport2();
+    SpokeReport2(const SpokeReport2&);
 };
-
+/*
 struct EdgeInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1528,19 +1627,28 @@ struct SearchLineInfo {
     LineFloat   lineCoordinates;
     EdgeReport2 edgeReport;
 };
-
+*/
 struct RakeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    EdgeInfo*       firstEdges;
+    ~RakeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*       firstEdges;
     unsigned int    numFirstEdges;
-    EdgeInfo*       lastEdges;
+    //EdgeInfo*       lastEdges;
     unsigned int    numLastEdges;
-    SearchLineInfo* searchLines;
+    //SearchLineInfo* searchLines;
     unsigned int    numSearchLines;
+private:
+    RakeReport2();
+    RakeReport2(const RakeReport2&);
 };
-
+/*
 struct TransformBehaviors {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1569,15 +1677,24 @@ struct ParticleFilterOptions {
     int rejectBorder;
     int connectivity8;
 };
-/*
+
 struct StraightEdgeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    StraightEdge*   straightEdges;
+    ~StraightEdgeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //StraightEdge*   straightEdges;
     unsigned int    numStraightEdges;
-    SearchLineInfo* searchLines;
+    //SearchLineInfo* searchLines;
     unsigned int    numSearchLines;
+private:
+    StraightEdgeReport2();
+    StraightEdgeReport2(const StraightEdgeReport2&);
 };
 
 struct StraightEdgeOptions {
@@ -1596,7 +1713,7 @@ struct StraightEdgeOptions {
     double                 minCoverage;
     unsigned int           houghIterations;
 };
-
+/*
 struct StraightEdge {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2580,6 +2697,13 @@ struct Point {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    Point();
+    Point(int x, int y);
+    %MethodCode
+        sipCpp = new Point;
+        sipCpp->x = a0;
+        sipCpp->y = a1;
+    %End
     int x;
     int y;
 };
@@ -2602,7 +2726,7 @@ struct EdgeLocationReport {
     PointFloat* edges;
     int         numEdges;
 };
-
+*/
 struct EdgeOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2613,7 +2737,7 @@ struct EdgeOptions {
     InterpolationMethod subpixelType;
     unsigned            subpixelDivisions;
 };
-
+/*
 struct EdgeReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2669,7 +2793,7 @@ struct DetectExtremesOptions {
     double threshold;
     int    width;
 };
-
+*/
 struct ImageInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2684,11 +2808,11 @@ struct ImageInfo {
     int             yOffset;
     int             border;
     int             pixelsPerLine;
-    void*           reserved0;
-    void*           reserved1;
-    void*           imageStart;
+    //void*           reserved0;
+    //void*           reserved1;
+    //void*           imageStart;
 };
-
+/*
 struct LCDOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2752,11 +2876,17 @@ struct Line {
     Point start;
     Point end;
 };
-/*
+
 struct LinearAverages {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~LinearAverages();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     //TODO float* columnAverages;
     int    columnCount;
     //TODO float* rowAverages;
@@ -2765,8 +2895,11 @@ struct LinearAverages {
     int    risingDiagCount;
     //TODO float* fallingDiagAverages;
     int    fallingDiagCount;
+private:
+    LinearAverages();
+    LinearAverages(const LinearAverages&);
 };
-*/
+
 struct LineEquation {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2780,6 +2913,12 @@ struct LineProfile {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~LineProfile();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     //TODO float* profileData;
     Rect   boundingBox;
     float  min;
@@ -2787,6 +2926,9 @@ struct LineProfile {
     float  mean;
     float  stdDev;
     int    dataCount;
+private:
+    LineProfile();
+    LineProfile(const LineProfile&);
 };
 
 struct MatchColorPatternOptions {
@@ -2810,6 +2952,12 @@ struct HistogramReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~HistogramReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     //TODO int*  histogram;
     int   histogramCount;
     float min;
@@ -2819,6 +2967,9 @@ struct HistogramReport {
     float mean;
     float stdDev;
     int   numPixels;
+private:
+    HistogramReport();
+    HistogramReport(const HistogramReport&);
 };
 
 struct ArcInfo {
@@ -2944,7 +3095,7 @@ struct CalibrationPoints {
     PointFloat* realWorldCoordinates;
     int         numCoordinates;
 };
-
+*/
 struct CaliperOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2953,7 +3104,7 @@ struct CaliperOptions {
     float               separation;
     float               separationDeviation;
 };
-
+/*
 struct CaliperReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2965,7 +3116,7 @@ struct CaliperReport {
     float      separation;
     float      reserved;
 };
-
+*/
 struct DrawTextOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2979,7 +3130,7 @@ struct DrawTextOptions {
     TextAlignment textAlignment;
     FontColor     fontColor;
 };
-
+/*
 struct CircleReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3001,9 +3152,18 @@ struct ColorHistogramReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~ColorHistogramReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     HistogramReport plane1;
     HistogramReport plane2;
     HistogramReport plane3;
+private:
+    ColorHistogramReport();
+    ColorHistogramReport(const ColorHistogramReport&);
 };
 
 struct ColorInformation {
@@ -3019,6 +3179,9 @@ struct ColorInformation {
     int     infoCount;
     int     saturation;
     //TODO double* info;
+private:
+    ColorInformation();
+    ColorInformation(const ColorInformation&);
 };
 
 struct Complex {
@@ -3268,7 +3431,7 @@ struct PatternMatch {
     float      score;
     //TODO PointFloat corner[4];
 };
-
+*/
 struct QuantifyData {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3286,11 +3449,20 @@ struct QuantifyReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~QuantifyReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     QuantifyData  global;
-    QuantifyData* regions;
+    //QuantifyData* regions;
     int           regionCount;
+private:
+    QuantifyReport();
+    QuantifyReport(const QuantifyReport&);
 };
-
+/*
 struct RakeOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3448,15 +3620,24 @@ struct RotatedRect {
     int    width;
     double angle;
 };
-/*
+
 struct ROIProfile {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~ROIProfile();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     LineProfile report;
     //TODO Point*      pixels;
+private:
+    ROIProfile();
+    ROIProfile(const ROIProfile&);
 };
-
+/*
 struct ToolWindowOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3493,17 +3674,6 @@ struct SpokeOptions {
 };
 
 //============================================================================
-//  Globals
-//============================================================================
-//const RGBValue IMAQ_RGB_TRANSPARENT = {   0,   0,   0, 1 };
-//const RGBValue IMAQ_RGB_RED         = {   0,   0, 255, 0 };
-//const RGBValue IMAQ_RGB_BLUE        = { 255,   0,   0, 0 };
-//const RGBValue IMAQ_RGB_GREEN       = {   0, 255,   0, 0 };
-//const RGBValue IMAQ_RGB_YELLOW      = {   0, 255, 255, 0 };
-//const RGBValue IMAQ_RGB_WHITE       = { 255, 255, 255, 0 };
-//const RGBValue IMAQ_RGB_BLACK       = {   0,   0,   0, 0 };
-
-//============================================================================
 //  Display functions
 //============================================================================
 int   imaqAreToolsContextSensitive(int* sensitive);
@@ -3529,6 +3699,7 @@ int    imaqSetupSequence(SESSION_ID sessionID, Image** images, int numImages, in
 Image* imaqSnap(SESSION_ID sessionID, Image* image, Rect rect);
 int    imaqStartAcquisition(SESSION_ID sessionID);
 int    imaqStopAcquisition(SESSION_ID sessionID);
+*/
 
 //============================================================================
 //  Arithmetic functions
@@ -3556,37 +3727,44 @@ int imaqSubtractConstant(Image* dest, const Image* source, PixelValue value);
 //============================================================================
 //  Caliper functions
 //============================================================================
-CaliperReport*         imaqCaliperTool(const Image* image, const Point* points, int numPoints, const EdgeOptions* edgeOptions, const CaliperOptions* caliperOptions, int* numEdgePairs);
-ConcentricRakeReport2* imaqConcentricRake2(Image* image, ROI* roi, ConcentricRakeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions);
-ExtremeReport*         imaqDetectExtremes(const double* pixels, int numPixels, DetectionMode mode, const DetectExtremesOptions* options, int* numExtremes);
-int                    imaqDetectRotation(const Image* referenceImage, const Image* testImage, PointFloat referenceCenter, PointFloat testCenter, int radius, float precision, double* angle);
-EdgeReport2*           imaqEdgeTool4(Image* image, ROI* roi, EdgeProcess processType, EdgeOptions2* edgeOptions, const unsigned int reverseDirection);
+//CaliperReport*         imaqCaliperTool(const Image* image, const Point* points /Array/, int numPoints /ArraySize/, const EdgeOptions* edgeOptions, const CaliperOptions* caliperOptions, int* numEdgePairs /Out/ = NULL);
+ConcentricRakeReport2* imaqConcentricRake2(Image* image, ROI* roi, ConcentricRakeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions) /Factory/;
+//ExtremeReport*         imaqDetectExtremes(const double* pixels, int numPixels, DetectionMode mode, const DetectExtremesOptions* options, int* numExtremes);
+int                    imaqDetectRotation(const Image* referenceImage, const Image* testImage, PointFloat referenceCenter, PointFloat testCenter, int radius, float precision, double* angle /Out/);
+EdgeReport2*           imaqEdgeTool4(Image* image, ROI* roi, EdgeProcess processType, EdgeOptions2* edgeOptions, const unsigned int reverseDirection) /Factory/;
+/*
 FindEdgeReport*        imaqFindEdge2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const FindEdgeOptions2* findEdgeOptions, const StraightEdgeOptions* straightEdgeOptions);
-int                    imaqFindTransformRect2(Image* image, const ROI* roi, FindTransformMode mode, CoordinateSystem* baseSystem, CoordinateSystem* newSystem, const FindTransformRectOptions2* findTransformOptions, const StraightEdgeOptions* straightEdgeOptions, AxisReport* axisReport);
-int                    imaqFindTransformRects2(Image* image, const ROI* primaryROI, const ROI* secondaryROI, FindTransformMode mode, CoordinateSystem* baseSystem, CoordinateSystem* newSystem, const FindTransformRectsOptions2* findTransformOptions, const StraightEdgeOptions* primaryStraightEdgeOptions, const StraightEdgeOptions* secondaryStraightEdgeOptions, AxisReport* axisReport);
-int                    imaqLineGaugeTool2(const Image* image, Point start, Point end, LineGaugeMethod method, const EdgeOptions* edgeOptions, const CoordinateTransform2* transform, float* distance);
-RakeReport2*           imaqRake2(Image* image, ROI* roi, RakeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions);
-PointFloat*            imaqSimpleEdge(const Image* image, const Point* points, int numPoints, const SimpleEdgeOptions* options, int* numEdges);
-SpokeReport2*          imaqSpoke2(Image* image, ROI* roi, SpokeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions);
-StraightEdgeReport2*   imaqStraightEdge(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions);
+*/
+int                    imaqFindTransformRect2(Image* image, const ROI* roi, FindTransformMode mode, CoordinateSystem* baseSystem, CoordinateSystem* newSystem, const FindTransformRectOptions2* findTransformOptions, const StraightEdgeOptions* straightEdgeOptions, AxisReport* axisReport /Out/ = NULL);
+int                    imaqFindTransformRects2(Image* image, const ROI* primaryROI, const ROI* secondaryROI, FindTransformMode mode, CoordinateSystem* baseSystem, CoordinateSystem* newSystem, const FindTransformRectsOptions2* findTransformOptions, const StraightEdgeOptions* primaryStraightEdgeOptions, const StraightEdgeOptions* secondaryStraightEdgeOptions, AxisReport* axisReport /Out/ = NULL);
+int                    imaqLineGaugeTool2(const Image* image, Point start, Point end, LineGaugeMethod method, const EdgeOptions* edgeOptions, const CoordinateTransform2* transform, float* distance /Out/ = NULL);
+RakeReport2*           imaqRake2(Image* image, ROI* roi, RakeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions) /Factory/;
+//PointFloat*            imaqSimpleEdge(const Image* image, const Point* points, int numPoints, const SimpleEdgeOptions* options, int* numEdges);
+SpokeReport2*          imaqSpoke2(Image* image, ROI* roi, SpokeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions) /Factory/;
+StraightEdgeReport2*   imaqStraightEdge(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions) /Factory/;
 
 //============================================================================
 //  Spatial Filters functions
 //============================================================================
 int imaqCannyEdgeFilter(Image* dest, const Image* source, const CannyOptions* options);
-int imaqConvolve2(Image* dest, Image* source, float* kernel, int matrixRows, int matrixCols, float normalize, Image* mask, RoundingMode roundingMode);
+int imaqConvolve2(Image* dest, Image* source, Kernel kernel, int matrixRows, int matrixCols, float normalize, Image* mask, RoundingMode roundingMode);
+%MethodCode
+    Py_BEGIN_ALLOW_THREADS
+    sipRes = imaqConvolve2(a0,a1,(float*)a2,a3,a4,a5,a6,a7);
+    Py_END_ALLOW_THREADS
+%End
 int imaqCorrelate(Image* dest, Image* source, const Image* templateImage, Rect rect);
-int imaqEdgeFilter(Image* dest, Image* source, OutlineMethod method, const Image* mask);
-int imaqLowPass(Image* dest, Image* source, int width, int height, float tolerance, const Image* mask);
-int imaqMedianFilter(Image* dest, Image* source, int width, int height, const Image* mask);
-int imaqNthOrderFilter(Image* dest, Image* source, int width, int height, int n, const Image* mask);
+int imaqEdgeFilter(Image* dest, Image* source, OutlineMethod method, const Image* mask = NULL);
+int imaqLowPass(Image* dest, Image* source, int width, int height, float tolerance, const Image* mask = NULL);
+int imaqMedianFilter(Image* dest, Image* source, int width, int height, const Image* mask = NULL);
+int imaqNthOrderFilter(Image* dest, Image* source, int width, int height, int n, const Image* mask = NULL);
 
 //============================================================================
 //  Drawing functions
 //============================================================================
 int imaqDrawLineOnImage(Image* dest, const Image* source, DrawMode mode, Point start, Point end, float newPixelValue);
 int imaqDrawShapeOnImage(Image* dest, const Image* source, Rect rect, DrawMode mode, ShapeMode shape, float newPixelValue);
-int imaqDrawTextOnImage(Image* dest, const Image* source, Point coord, const char* text, const DrawTextOptions* options, int* fontNameUsed);
+//NOT ROBOT: int imaqDrawTextOnImage(Image* dest, const Image* source, Point coord, const char* text, const DrawTextOptions* options, int* fontNameUsed /Out/);
 
 //============================================================================
 //  Interlacing functions
@@ -3598,26 +3776,27 @@ int imaqInterlaceSeparate(const Image* frame, Image* odd, Image* even);
 //  Image Information functions
 //============================================================================
 //TODO char** imaqEnumerateCustomKeys(const Image* image, unsigned int* size);
-int    imaqGetBitDepth(const Image* image, unsigned int* bitDepth);
-int    imaqGetBytesPerPixel(const Image* image, int* byteCount);
-int    imaqGetImageInfo(const Image* image, ImageInfo* info);
-int    imaqGetImageSize(const Image* image, int* width, int* height);
-int    imaqGetImageType(const Image* image, ImageType* type);
-int    imaqGetMaskOffset(const Image* image, Point* offset);
-void*  imaqGetPixelAddress(const Image* image, Point pixel);
-int    imaqGetVisionInfoTypes(const Image* image, unsigned int* present);
-int    imaqIsImageEmpty(const Image* image, int* empty);
-void*  imaqReadCustomData(const Image* image, const char* key, unsigned int* size);
+int    imaqGetBitDepth(const Image* image, unsigned int* bitDepth /Out/);
+int    imaqGetBytesPerPixel(const Image* image, int* byteCount /Out/);
+int    imaqGetImageInfo(const Image* image, ImageInfo* info /Out/);
+int    imaqGetImageSize(const Image* image, int* width /Out/, int* height /Out/);
+int    imaqGetImageType(const Image* image, ImageType* type /Out/);
+int    imaqGetMaskOffset(const Image* image, Point* offset /Out/);
+//void*  imaqGetPixelAddress(const Image* image, Point pixel);
+int    imaqGetVisionInfoTypes(const Image* image, unsigned int* present /Out/);
+int    imaqIsImageEmpty(const Image* image, int* empty /Out/);
+//void*  imaqReadCustomData(const Image* image, const char* key, unsigned int* size);
 int    imaqRemoveCustomData(Image* image, const char* key);
 int    imaqRemoveVisionInfo2(const Image* image, unsigned int info);
 int    imaqSetBitDepth(Image* image, unsigned int bitDepth);
 int    imaqSetImageSize(Image* image, int width, int height);
 int    imaqSetMaskOffset(Image* image, Point offset);
-int    imaqWriteCustomData(Image* image, const char* key, const void* data, unsigned int size);
+//int    imaqWriteCustomData(Image* image, const char* key, const void* data, unsigned int size);
 
 //============================================================================
 //  Tool Window functions
 //============================================================================
+/*
 int   imaqCloseToolWindow();
 int   imaqGetCurrentTool(Tool* currentTool);
 int   imaqGetLastEvent(WindowEventType* type, int* windowNumber, Tool* tool, Rect* rect);
@@ -3912,18 +4091,19 @@ int           imaqSetContourColor(ROI* roi, ContourID id, const RGBValue* color)
 //  Regions of Interest functions
 //============================================================================
 int  imaqConstructROI2(const Image* image, ROI* roi, Tool initialTool, const ToolWindowOptions* tools, const ConstructROIOptions2* options, int* okay);
-ROI* imaqCreateROI();
-int  imaqGetROIBoundingBox(const ROI* roi, Rect* boundingBox);
-int  imaqGetROIColor(const ROI* roi, RGBValue* roiColor);
-ROI* imaqGetWindowROI(int windowNumber);
+*/
+ROI* imaqCreateROI() /Factory/;
+int  imaqGetROIBoundingBox(const ROI* roi, Rect* boundingBox /Out/);
+int  imaqGetROIColor(const ROI* roi, RGBValue* roiColor /Out/);
+//NOT ROBOT: ROI* imaqGetWindowROI(int windowNumber) /Factory/;
 int  imaqSetROIColor(ROI* roi, const RGBValue* color);
-int  imaqSetWindowROI(int windowNumber, const ROI* roi);
+//NOT ROBOT: int  imaqSetWindowROI(int windowNumber, const ROI* roi);
 
 //============================================================================
 //  Image Analysis functions
 //============================================================================
-int              imaqCentroid(const Image* image, PointFloat* centroid, const Image* mask);
-Curve*           imaqExtractCurves(const Image* image, const ROI* roi, const CurveOptions* curveOptions, unsigned int* numCurves);
+int              imaqCentroid(const Image* image, PointFloat* centroid /Out/, const Image* mask = NULL);
+//Curve*           imaqExtractCurves(const Image* image, const ROI* roi, const CurveOptions* curveOptions, unsigned int* numCurves);
 HistogramReport* imaqHistogram(const Image* image, int numClasses, float min, float max, const Image* mask);
 LinearAverages*  imaqLinearAverages2(Image* image, LinearAveragesMode mode, Rect rect);
 LineProfile*     imaqLineProfile(const Image* image, Point start, Point end);
@@ -3932,6 +4112,7 @@ QuantifyReport*  imaqQuantify(const Image* image, const Image* mask);
 //============================================================================
 //  Error Management functions
 //============================================================================
+/*
 int         imaqClearError();
 char*       imaqGetErrorText(int errorCode);
 int         imaqGetLastError();
@@ -3946,11 +4127,6 @@ int            imaqLocalThreshold(Image* dest, const Image* source, unsigned int
 int            imaqMagicWand(Image* dest, const Image* source, Point coord, float tolerance, int connectivity8, float replaceValue);
 int            imaqMultithreshold(Image* dest, const Image* source, const ThresholdData* ranges, int numRanges);
 int            imaqThreshold(Image* dest, const Image* source, float rangeMin, float rangeMax, int useNewValue, float newValue);
-
-//============================================================================
-//  Memory Management functions
-//============================================================================
-int imaqDispose(void* object);
 
 //============================================================================
 //  File I/O functions
@@ -4004,19 +4180,20 @@ int    imaqSetPixel(Image* image, Point coord, PixelValue value);
 //============================================================================
 int        imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
 LCDReport* imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options);
-
+*/
 //============================================================================
 //  Regions of Interest Manipulation functions
 //============================================================================
-ROI*        imaqMaskToROI(const Image* mask, int* withinLimit);
-ROIProfile* imaqROIProfile(const Image* image, const ROI* roi);
-int         imaqROIToMask(Image* mask, const ROI* roi, int fillValue, const Image* imageModel, int* inSpace);
+ROI*        imaqMaskToROI(const Image* mask, int* withinLimit) /Factory/;
+ROIProfile* imaqROIProfile(const Image* image, const ROI* roi) /Factory/;
+int         imaqROIToMask(Image* mask, const ROI* roi, int fillValue, const Image* imageModel, int* inSpace /Out/ = NULL);
 int         imaqTransformROI2(ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem);
 
 //============================================================================
 //  OCR functions
 //============================================================================
-CharSet*         imaqCreateCharSet();
+/*
+CharSet*         imaqCreateCharSet() /Factory/;
 int              imaqDeleteChar(CharSet* set, int index);
 int              imaqGetCharCount(const CharSet* set);
 CharInfo2*       imaqGetCharInfo2(const CharSet* set, int index);
