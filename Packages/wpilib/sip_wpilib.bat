@@ -1,2 +1,2 @@
-sip -c . -g -P -w sip/wpilibmod.sip
+sip -c . -g -w sip/wpilibmod.sip
 pause

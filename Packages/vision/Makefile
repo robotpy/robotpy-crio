@@ -1,6 +1,19 @@
 PROJECT_TARGET = _vision.out
 PROJECT_OBJECTS = sip_visioncmodule.o
+PROJECT_OBJECTS += sip_visionAxisCamera.o
+PROJECT_OBJECTS += sip_visionAxisCameraParams.o
+PROJECT_OBJECTS += sip_visionBinaryImage.o
+PROJECT_OBJECTS += sip_visionColorImage.o
+PROJECT_OBJECTS += sip_visionHSLImage.o
+PROJECT_OBJECTS += sip_visionImageBase.o
+PROJECT_OBJECTS += sip_visionMonoImage.o
 PROJECT_OBJECTS += sip_visionPCVideoServer.o
+PROJECT_OBJECTS += sip_visionRGBImage.o
+PROJECT_OBJECTS += sip_visionstdvector0100EllipseMatch.o
+PROJECT_OBJECTS += sip_visionstdvector0100ParticleAnalysisReport.o
+PROJECT_OBJECTS += sip_visionstdvector1800.o
+PROJECT_OBJECTS += sip_visionstdvector2400.o
+PROJECT_OBJECTS += sip_visionThreshold.o
 
 PROJECT_OBJECTS += Vision/AxisCamera.o
 PROJECT_OBJECTS += Vision/AxisCameraParams.o

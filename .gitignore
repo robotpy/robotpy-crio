@@ -1,4 +1,5 @@
 
+*.sw?
 /RobotPy/PPC603gnu
 /Modules/*/ctdt.*
 /Modules/*/*.d
@@ -25,4 +26,10 @@
 /Packages/wpilib/WPILib/*.o
 /Packages/wpilib/WPILib/CInterfaces/*.d
 /Packages/wpilib/WPILib/CInterfaces/*.o
+/Packages/nivision/*.cpp
+/Packages/nivision/*.h
+/Packages/vision/*.cpp
+/Packages/vision/*.h
+/Packages/vision2009/*.cpp
+/Packages/vision2009/*.h
 /dist
