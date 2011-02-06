@@ -34,6 +34,6 @@ public:
 	virtual void Set(bool on);
 	virtual bool Get();
 
-protected:
-	//UINT32 SlotToIndex(UINT32 slot);
+private:
+	void InitSolenoid();
 };
