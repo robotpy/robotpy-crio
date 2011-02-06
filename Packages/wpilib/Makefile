@@ -4,6 +4,7 @@ PROJECT_OBJECTS += sip_wpilibAccelerometer.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2C.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2CAllAxes.o
 PROJECT_OBJECTS += sip_wpilibADXL345_SPI.o
+PROJECT_OBJECTS += sip_wpilibADXL345_SPIAllAxes.o
 PROJECT_OBJECTS += sip_wpilibAnalogChannel.o
 PROJECT_OBJECTS += sip_wpilibAnalogModule.o
 PROJECT_OBJECTS += sip_wpilibAnalogTrigger.o
