@@ -36,7 +36,14 @@ void CANJaguar::InitCANJaguar()
 	if (fwVer >= 3330 || fwVer < 92)
 	{
 		printf("fwVersion[%d]: %d\n", m_deviceNumber, fwVer);
-		printf("ERROR: Jaguar %d must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
+		if (fwVer < 3330)
+		{
+			printf("ERROR: Jaguar %d firmware is too old.  It must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
+		}
+		else
+		{
+			printf("ERROR: Jaguar %d firmware is not FIRST approved.  It must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
+		}
 		wpi_assertCleanStatus(kRIOStatusVersionMismatch);
 		return;
 	}
@@ -63,6 +70,7 @@ CANJaguar::CANJaguar(UINT8 deviceNumber, ControlMode controlMode)
 	, m_controlMode (controlMode)
 	, m_transactionSemaphore (NULL)
 	, m_maxOutputVoltage (kApproxBusVoltage)
+	, m_safetyHelper (NULL)
 {
 	InitCANJaguar();
 }
@@ -70,6 +78,7 @@ CANJaguar::CANJaguar(UINT8 deviceNumber, ControlMode controlMode)
 CANJaguar::~CANJaguar()
 {
 	delete m_safetyHelper;
+	m_safetyHelper = NULL;
 	semDelete(m_transactionSemaphore);
 	m_transactionSemaphore = NULL;
 }
@@ -77,7 +86,12 @@ CANJaguar::~CANJaguar()
 /**
  * Set the output set-point value.  
  * 
- * In PercentVbus Mode, the input is in the range -1.0 to 1.0
+ * The scale and the units depend on the mode the Jaguar is in.
+ * In PercentVbus Mode, the outputValue is from -1.0 to 1.0 (same as PWM Jaguar).
+ * In Voltage Mode, the outputValue is in Volts.
+ * In Current Mode, the outputValue is in Amps.
+ * In Speed Mode, the outputValue is in Rotations/Minute.
+ * In Position Mode, the outputValue is in Rotations.
  * 
  * @param outputValue The set-point to sent to the motor controller.
  * @param syncGroup The update group to add this Set() to, pending UpdateSyncGroup().  If 0, update immediately.
@@ -88,7 +102,7 @@ void CANJaguar::Set(float outputValue, UINT8 syncGroup)
 	UINT8 dataBuffer[8];
 	UINT8 dataSize;
 
-	if (!m_safetyHelper->IsAlive())
+	if (m_safetyHelper && !m_safetyHelper->IsAlive())
 	{
 		EnableControl();
 	}
@@ -136,13 +150,18 @@ void CANJaguar::Set(float outputValue, UINT8 syncGroup)
 		dataSize++;
 	}
 	setTransaction(messageID, dataBuffer, dataSize);
-	m_safetyHelper->Feed();
+	if (m_safetyHelper) m_safetyHelper->Feed();
 }
 
 /**
  * Get the recently set outputValue setpoint.
  * 
- * In PercentVbus Mode, the outputValue is in the range -1.0 to 1.0
+ * The scale and the units depend on the mode the Jaguar is in.
+ * In PercentVbus Mode, the outputValue is from -1.0 to 1.0 (same as PWM Jaguar).
+ * In Voltage Mode, the outputValue is in Volts.
+ * In Current Mode, the outputValue is in Amps.
+ * In Speed Mode, the outputValue is in Rotations/Minute.
+ * In Position Mode, the outputValue is in Rotations.
  * 
  * @return The most recently set outputValue setpoint.
  */
@@ -194,6 +213,8 @@ float CANJaguar::Get()
 
 /**
  * Common interface for disabling a motor.
+ * 
+ * @deprecated Call DisableControl instead.
  */
 void CANJaguar::Disable()
 {
@@ -202,6 +223,8 @@ void CANJaguar::Disable()
 
 /**
  * Write out the PID value as seen in the PIDOutput base object.
+ * 
+ * @deprecated Call Set instead.
  * 
  * @param output Write out the PercentVbus value as was computed by the PIDController
  */
@@ -1141,29 +1164,38 @@ void CANJaguar::UpdateSyncGroup(UINT8 syncGroup)
 
 void CANJaguar::SetExpiration(float timeout)
 {
-	m_safetyHelper->SetExpiration(timeout);
+	if (m_safetyHelper) m_safetyHelper->SetExpiration(timeout);
 }
 
 float CANJaguar::GetExpiration()
 {
+	if (!m_safetyHelper) return 0.0;
 	return m_safetyHelper->GetExpiration();
 }
 
 bool CANJaguar::IsAlive()
 {
+	if (!m_safetyHelper) return false;
 	return m_safetyHelper->IsAlive();
 }
 
 bool CANJaguar::IsSafetyEnabled()
 {
+	if (!m_safetyHelper) return false;
 	return m_safetyHelper->IsSafetyEnabled();
 }
 
 void CANJaguar::SetSafetyEnabled(bool enabled)
 {
-	m_safetyHelper->SetSafetyEnabled(enabled);
+	if (m_safetyHelper) m_safetyHelper->SetSafetyEnabled(enabled);
 }
 
+/**
+ * Common interface for stopping the motor
+ * Part of the MotorSafety interface
+ * 
+ * @deprecated Call DisableControl instead.
+ */
 void CANJaguar::StopMotor()
 {
 	DisableControl();

@@ -21,19 +21,22 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Solenoid : SolenoidBase
+class SolenoidBase : SensorBase 
 {
 %TypeHeaderCode
-#include <WPILib/Solenoid.h>
+#include <WPILib/SolenoidBase.h>
 %End
 
 public:
-	explicit Solenoid(UINT32 channel);
-	Solenoid(UINT32 slot, UINT32 channel);
-	virtual ~Solenoid();
-	virtual void Set(bool on);
-	virtual bool Get();
+	virtual ~SolenoidBase();
+	UINT8 GetAll();
 
 protected:
-	//UINT32 SlotToIndex(UINT32 slot);
+	explicit SolenoidBase(UINT32 slot);
+	UINT32 SlotToIndex(UINT32 slot);
+	void Set(UINT8 value, UINT8 mask);
+	virtual void InitSolenoid() = 0;
+
+	//UINT32 m_chassisSlot; ///< Slot number where the module is plugged into the chassis.
+	//static Resource *m_allocated;
 };

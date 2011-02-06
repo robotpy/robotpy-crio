@@ -12,6 +12,7 @@
 
 #include "Accelerometer.h"
 #include "ADXL345_I2C.h"
+#include "ADXL345_SPI.h"
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
 #include "AnalogTrigger.h"
@@ -24,6 +25,7 @@
 #include "DigitalModule.h"
 #include "DigitalOutput.h"
 #include "DigitalSource.h"
+#include "DoubleSolenoid.h"
 #include "DriverStation.h"
 #include "DriverStationEnhancedIO.h"
 #include "DriverStationLCD.h"
@@ -54,6 +56,7 @@
 #include "SmartDashboard.h"
 #include "Solenoid.h"
 #include "SpeedController.h"
+#include "SPI.h"
 #include "Synchronized.h"
 #include "Task.h"
 #include "Timer.h"

@@ -28,6 +28,8 @@ class Encoder: SensorBase, CounterBase
 %End
 
 public:
+    typedef enum {kDistance, kRate} PIDSourceParameter;
+
 	Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
 	Encoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 _bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
 	Encoder(DigitalSource *aSource, DigitalSource *bSource, bool reverseDirection=false, EncodingType encodingType = k4X);
@@ -48,4 +50,7 @@ public:
 	void SetMinRate(double minRate);
 	void SetDistancePerPulse(double distancePerPulse);
 	void SetReverseDirection(bool reverseDirection);
+    
+    void SetPIDSourceParameter(PIDSourceParameter pidSource);
+	double PIDGet();
 };

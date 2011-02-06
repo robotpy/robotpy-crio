@@ -163,6 +163,7 @@ void Counter::SetUpSource(UINT32 slot, UINT32 channel)
 void Counter::SetUpSource(UINT32 channel)
 {
 	SetUpSource(GetDefaultDigitalModule(), channel);
+	m_allocatedUpSource = true;
 }
 
 /**
@@ -177,12 +178,27 @@ void Counter::SetUpSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::Typ
 }
 
 /**
+ * Set the up counting source to be an analog trigger.
+ * @param analogTrigger The analog trigger object that is used for the Up Source
+ * @param triggerType The analog trigger output that will trigger the counter.
+ */
+void Counter::SetUpSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType)
+{
+	SetUpSource(&analogTrigger, triggerType);
+}
+
+/**
  * Set the source object that causes the counter to count up.
  * Set the up counting DigitalSource.
  */
 void Counter::SetUpSource(DigitalSource *source)
 {
-	wpi_assert(m_upSource == NULL);
+	if (m_allocatedUpSource)
+	{
+		delete m_upSource;
+		m_upSource = NULL;
+		m_allocatedUpSource = false;
+	}
 	m_upSource = source;
 	m_counter->writeConfig_UpSource_Module(source->GetModuleForRouting(), &status);
 	m_counter->writeConfig_UpSource_Channel(source->GetChannelForRouting(), &status);
@@ -195,17 +211,6 @@ void Counter::SetUpSource(DigitalSource *source)
 	}
 	m_counter->strobeReset(&status);
 	wpi_assertCleanStatus(status);
-}
-
-/**
- * Set the up counting source to be an analog trigger.
- * @param analogTrigger The analog trigger object that is used for the Up Source
- * @param triggerType The analog trigger output that will trigger the counter.
- */
-void Counter::SetUpSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType)
-{
-	SetUpSource(analogTrigger.CreateOutput(triggerType));
-	m_allocatedUpSource = true;
 }
 
 /**
@@ -233,7 +238,6 @@ void Counter::SetUpSourceEdge(bool risingEdge, bool fallingEdge)
  */
 void Counter::ClearUpSource()
 {
-	wpi_assert(m_upSource != NULL);
 	if (m_allocatedUpSource)
 	{
 		delete m_upSource;
@@ -258,6 +262,7 @@ void Counter::ClearUpSource()
 void Counter::SetDownSource(UINT32 channel)
 {
 	SetDownSource(new DigitalInput(channel));
+	m_allocatedDownSource = true;
 }
 
 /**
@@ -266,6 +271,7 @@ void Counter::SetDownSource(UINT32 channel)
 void Counter::SetDownSource(UINT32 slot, UINT32 channel)
 {
 	SetDownSource(new DigitalInput(slot, channel));
+	m_allocatedDownSource = true;
 }
 
 /**
@@ -280,12 +286,27 @@ void Counter::SetDownSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::T
 }
 
 /**
+ * Set the down counting source to be an analog trigger.
+ * @param analogTrigger The analog trigger object that is used for the Down Source
+ * @param triggerType The analog trigger output that will trigger the counter.
+ */
+void Counter::SetDownSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType)
+{
+	SetDownSource(&analogTrigger, triggerType);
+}
+
+/**
  * Set the source object that causes the counter to count down.
  * Set the down counting DigitalSource.
  */
 void Counter::SetDownSource(DigitalSource *source)
 {
-	wpi_assert(m_downSource == NULL);
+	if (m_allocatedDownSource)
+	{
+		delete m_downSource;
+		m_downSource = NULL;
+		m_allocatedDownSource = false;
+	}
 	unsigned char mode = m_counter->readConfig_Mode(&status);
 	wpi_assert(mode == kTwoPulse || mode == kExternalDirection);
 	m_downSource = source;
@@ -296,17 +317,6 @@ void Counter::SetDownSource(DigitalSource *source)
 	SetDownSourceEdge(true, false);
 	m_counter->strobeReset(&status);
 	wpi_assertCleanStatus(status);
-}
-
-/**
- * Set the down counting source to be an analog trigger.
- * @param analogTrigger The analog trigger object that is used for the Down Source
- * @param triggerType The analog trigger output that will trigger the counter.
- */
-void Counter::SetDownSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType)
-{
-	SetDownSource(analogTrigger.CreateOutput(triggerType));
-	m_allocatedDownSource = true;
 }
 
 /**
@@ -334,7 +344,6 @@ void Counter::SetDownSourceEdge(bool risingEdge, bool fallingEdge)
  */
 void Counter::ClearDownSource()
 {
-	wpi_assert(m_downSource != NULL);
 	if (m_allocatedDownSource)
 	{
 		delete m_downSource;

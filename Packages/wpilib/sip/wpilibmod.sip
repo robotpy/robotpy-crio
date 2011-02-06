@@ -106,6 +106,7 @@ Watchdog *GetWatchdog();
 
 %Include Accelerometer.sip
 %Include ADXL345_I2C.sip
+%Include ADXL345_SPI.sip
 %Include AnalogChannel.sip
 %Include AnalogModule.sip
 %Include AnalogTrigger.sip
@@ -120,6 +121,7 @@ Watchdog *GetWatchdog();
 %Include DigitalModule.sip
 %Include DigitalOutput.sip
 %Include DigitalSource.sip
+%Include DoubleSolenoid.sip
 %Include DriverStation.sip
 %Include DriverStationEnhancedIO.sip
 %Include DriverStationLCD.sip
@@ -150,6 +152,8 @@ Watchdog *GetWatchdog();
 %Include SmartDashboard.sip
 %Include SmartDashboardPacketFactory.sip
 %Include Solenoid.sip
+%Include SolenoidBase.sip
+%Include SPI.sip
 %Include SpeedController.sip
 %Include Timer.sip
 %Include Ultrasonic.sip

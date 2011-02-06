@@ -21,19 +21,18 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Solenoid : SolenoidBase
+class DoubleSolenoid : SolenoidBase 
 {
 %TypeHeaderCode
-#include <WPILib/Solenoid.h>
+#include <WPILib/DoubleSolenoid.h>
 %End
 
 public:
-	explicit Solenoid(UINT32 channel);
-	Solenoid(UINT32 slot, UINT32 channel);
-	virtual ~Solenoid();
-	virtual void Set(bool on);
-	virtual bool Get();
+	enum Value {kOff, kForward, kReverse};
 
-protected:
-	//UINT32 SlotToIndex(UINT32 slot);
+	explicit DoubleSolenoid(UINT32 forwardChannel, UINT32 reverseChannel);
+	DoubleSolenoid(UINT32 slot, UINT32 forwardChannel, UINT32 reverseChannel);
+	virtual ~DoubleSolenoid();
+	virtual void Set(Value value);
+	virtual Value Get();
 };

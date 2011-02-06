@@ -44,6 +44,7 @@ S(DashboardDataCollision, -25, "The same buffer was used for packing data and fo
 S(EnhancedIOMissing, -26, "IO is not attached or Enhanced IO is not enabled.");
 S(LineNotOutput, -27, "Cannot SetDigitalOutput for a line not configured for output.");
 S(ParameterOutOfRange, -28, "A parameter is out of range.");
+S(SPIClockRateTooLow, -29, "SPI clock rate was below the minimum supported");
 /*
  * Warnings
  */
@@ -57,6 +58,9 @@ S(BadJoystickIndex, 7, "Joystick index is out of range, should be 1-4");
 S(BadJoystickAxis, 8, "Joystick axis is out of range");
 S(InvalidMotorIndex, 9, "Motor index is out of range, should be 0-3");
 S(DriverStationTaskError, 10, "Driver Station task won't start");
-S(EnhancedIOPWMPeriodOutOfRange, 10, "Driver Station Enhanced IO PWM Output period out of range.");
+S(EnhancedIOPWMPeriodOutOfRange, 11, "Driver Station Enhanced IO PWM Output period out of range.");
+S(SPIWriteNoMOSI, 12, "Cannot write to SPI port with no MOSI output");
+S(SPIReadNoMISO, 13, "Cannot read from SPI port with no MISO input");
+S(SPIReadNoData, 14, "No data available to read from SPI");
 
 #endif
