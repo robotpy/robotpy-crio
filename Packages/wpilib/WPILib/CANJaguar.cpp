@@ -432,7 +432,6 @@ void CANJaguar::getTransaction(UINT32 messageID, UINT8 *data, UINT8 *dataSize)
  * Set the reference source device for speed controller mode.
  * 
  * Choose encoder as the source of speed feedback when in speed control mode.
- * This is currently the only possible value, so we'll just call it for you in the constructor.
  * 
  * @param reference Specify a SpeedReference.
  */
