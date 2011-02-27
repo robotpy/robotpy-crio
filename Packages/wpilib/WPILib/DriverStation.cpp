@@ -259,7 +259,7 @@ short DriverStation::GetStickButtons(UINT32 stick)
 
 /**
  * Get an analog voltage from the Driver Station.
- * The analog values are returned as UINT32 values for the Driver Station analog inputs.
+ * The analog values are returned as voltage values for the Driver Station analog inputs.
  * These inputs are typically used for advanced operator interfaces consisting of potentiometers
  * or resistor networks representing values on a rotary switch.
  * 

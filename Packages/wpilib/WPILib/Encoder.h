@@ -24,9 +24,11 @@ class DigitalSource;
  * generates negative values. Quadrature encoders have two digital outputs, an A Channel and a B Channel
  * that are out of phase with each other to allow the FPGA to do direction sensing. 
  */
-class Encoder: public SensorBase, public CounterBase
+class Encoder: public SensorBase, public CounterBase, public PIDSource
 {
 public:
+	typedef enum {kDistance, kRate} PIDSourceParameter;
+
 	Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
 	Encoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 _bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
 	Encoder(DigitalSource *aSource, DigitalSource *bSource, bool reverseDirection=false, EncodingType encodingType = k4X);
@@ -49,6 +51,9 @@ public:
 	void SetDistancePerPulse(double distancePerPulse);
 	void SetReverseDirection(bool reverseDirection);
 
+	void SetPIDSourceParameter(PIDSourceParameter pidSource);
+	double PIDGet();
+
 private:
 	void InitEncoder(bool _reverseDirection, EncodingType encodingType);
 	double DecodingScaleFactor();
@@ -62,6 +67,7 @@ private:
 	double m_distancePerPulse;		// distance of travel for each encoder tick
 	Counter *m_counter;				// Counter object for 1x and 2x encoding
 	EncodingType m_encodingType;	// Encoding type
+	PIDSourceParameter m_pidSource;// Encoder parameter that sources a PID controller
 };
 
 #endif

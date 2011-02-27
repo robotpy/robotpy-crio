@@ -49,6 +49,7 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 		break;
 	}
 	m_distancePerPulse = 1.0;
+	m_pidSource = kDistance;
 	wpi_assertCleanStatus(status);
 }
 
@@ -427,5 +428,33 @@ void Encoder::SetReverseDirection(bool reverseDirection)
 	{
 		m_encoder->writeConfig_Reverse(reverseDirection, &status);
 		wpi_assertCleanStatus(status);
+	}
+}
+
+/**
+ * Set which parameter of the encoder you are using as a process control variable.
+ * 
+ * @param pidSource An enum to select the parameter.
+ */
+void Encoder::SetPIDSourceParameter(PIDSourceParameter pidSource)
+{
+	m_pidSource = pidSource;
+}
+
+/**
+ * Implement the PIDSource interface.
+ * 
+ * @return The current value of the selected source parameter.
+ */
+double Encoder::PIDGet()
+{
+	switch (m_pidSource)
+	{
+	case kDistance:
+		return GetDistance();
+	case kRate:
+		return GetRate();
+	default:
+		return 0.0;
 	}
 }

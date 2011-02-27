@@ -3,6 +3,8 @@ PROJECT_OBJECTS = sip_wpilibcmodule.o
 PROJECT_OBJECTS += sip_wpilibAccelerometer.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2C.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2CAllAxes.o
+PROJECT_OBJECTS += sip_wpilibADXL345_SPI.o
+PROJECT_OBJECTS += sip_wpilibADXL345_SPIAllAxes.o
 PROJECT_OBJECTS += sip_wpilibAnalogChannel.o
 PROJECT_OBJECTS += sip_wpilibAnalogModule.o
 PROJECT_OBJECTS += sip_wpilibAnalogTrigger.o
@@ -17,6 +19,7 @@ PROJECT_OBJECTS += sip_wpilibDigitalInput.o
 PROJECT_OBJECTS += sip_wpilibDigitalModule.o
 PROJECT_OBJECTS += sip_wpilibDigitalOutput.o
 PROJECT_OBJECTS += sip_wpilibDigitalSource.o
+PROJECT_OBJECTS += sip_wpilibDoubleSolenoid.o
 PROJECT_OBJECTS += sip_wpilibDriverStation.o
 PROJECT_OBJECTS += sip_wpilibDriverStationEnhancedIO.o
 PROJECT_OBJECTS += sip_wpilibDriverStationLCD.o
@@ -48,6 +51,8 @@ PROJECT_OBJECTS += sip_wpilibSmartDashboard.o
 PROJECT_OBJECTS += sip_wpilibSmartDashboardBuffer.o
 PROJECT_OBJECTS += sip_wpilibSmartDashboardPacketFactory.o
 PROJECT_OBJECTS += sip_wpilibSolenoid.o
+PROJECT_OBJECTS += sip_wpilibSolenoidBase.o
+PROJECT_OBJECTS += sip_wpilibSPI.o
 PROJECT_OBJECTS += sip_wpilibSpeedController.o
 PROJECT_OBJECTS += sip_wpilibTimer.o
 PROJECT_OBJECTS += sip_wpilibUltrasonic.o
@@ -57,6 +62,7 @@ PROJECT_OBJECTS += sip_wpilibWatchdog.o
 PROJECT_OBJECTS += WPILib/CInterfaces/CDigitalInput.o
 PROJECT_OBJECTS += WPILib/Accelerometer.o
 PROJECT_OBJECTS += WPILib/ADXL345_I2C.o
+PROJECT_OBJECTS += WPILib/ADXL345_SPI.o
 PROJECT_OBJECTS += WPILib/AnalogChannel.o
 PROJECT_OBJECTS += WPILib/AnalogModule.o
 PROJECT_OBJECTS += WPILib/AnalogTrigger.o
@@ -69,6 +75,7 @@ PROJECT_OBJECTS += WPILib/DigitalInput.o
 PROJECT_OBJECTS += WPILib/DigitalModule.o
 PROJECT_OBJECTS += WPILib/DigitalOutput.o
 PROJECT_OBJECTS += WPILib/DigitalSource.o
+PROJECT_OBJECTS += WPILib/DoubleSolenoid.o
 PROJECT_OBJECTS += WPILib/DriverStation.o
 PROJECT_OBJECTS += WPILib/DriverStationEnhancedIO.o
 PROJECT_OBJECTS += WPILib/DriverStationLCD.o
@@ -100,6 +107,8 @@ PROJECT_OBJECTS += WPILib/SimpleRobot.o
 PROJECT_OBJECTS += WPILib/SmartDashboard.o
 PROJECT_OBJECTS += WPILib/SmartDashboardPacketFactory.o
 PROJECT_OBJECTS += WPILib/Solenoid.o
+PROJECT_OBJECTS += WPILib/SolenoidBase.o
+PROJECT_OBJECTS += WPILib/SPI.o
 PROJECT_OBJECTS += WPILib/Synchronized.o
 PROJECT_OBJECTS += WPILib/Task.o
 PROJECT_OBJECTS += WPILib/Timer.o
@@ -109,7 +118,7 @@ PROJECT_OBJECTS += WPILib/Victor.o
 PROJECT_OBJECTS += WPILib/Watchdog.o
 
 ADDED_INCLUDES = -I../sip -I./WPILib -I./WPILib/CInterfaces
-ADDED_CFLAGS = -D'SVN_REV="2242"'
-ADDED_C++FLAGS = -D'SVN_REV="2242"'
+ADDED_CFLAGS = -D'SVN_REV="2259"'
+ADDED_C++FLAGS = -D'SVN_REV="2259"'
 
 include ../../mk/module.mk

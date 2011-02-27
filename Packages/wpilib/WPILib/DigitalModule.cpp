@@ -53,7 +53,7 @@ DigitalModule::DigitalModule(UINT32 slot)
 	, m_fpgaDIO (NULL)
 {
 	Resource::CreateResourceObject(&DIOChannels, tDIO::kNumSystems * kDigitalChannels);
-	Resource::CreateResourceObject(&DO_PWMGenerators[SlotToIndex(m_slot)], tDIO::kNumSystems * tDIO::kNumDO_PWMDutyCycleElements);
+	Resource::CreateResourceObject(&DO_PWMGenerators[SlotToIndex(m_slot)], tDIO::kNumDO_PWMDutyCycleElements);
 	m_fpgaDIO = new tDIO(SlotToIndex(m_slot), &status);
 
 	// Make sure that the 9403 IONode has had a chance to initialize before continuing.

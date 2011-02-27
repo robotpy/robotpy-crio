@@ -41,4 +41,13 @@ for /r Packages\vision %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\
 for /r Packages\vision2009 %%X in (*.out) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 for /r Packages\vision2009 %%X in (*.py) do (copy %%X dist\RobotPy-WPILib\robot\lib\python3.1\site-packages)
 
+
+rem RobotPy-Utilities distribution
+mkdir dist\RobotPy-Utilities
+xcopy /i /e utilities dist\RobotPy-Utilities
+
+rem Include the installer with the dist
+copy utilities\installer\install.py dist\RobotPy-Core
+copy utilities\installer\install.py dist\RobotPy-WPILib
+
 pause

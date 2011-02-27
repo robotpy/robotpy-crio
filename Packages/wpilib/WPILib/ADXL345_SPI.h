@@ -4,27 +4,29 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#ifndef __ADXL345_I2C_h__
-#define __ADXL345_I2C_h__
+#ifndef __ADXL345_SPI_h__
+#define __ADXL345_SPI_h__
 
 #include "SensorBase.h"
 
-class I2C;
+class DigitalInput;
+class DigitalOutput;
+class SPI;
 
 /**
- * ADXL345 Accelerometer on I2C.
+ * ADXL345 Accelerometer on SPI.
  * 
- * This class alows access to a Analog Devices ADXL345 3-axis accelerometer on an I2C bus.
- * This class assumes the default (not alternate) sensor address of 0x3A (8-bit address).
+ * This class alows access to an Analog Devices ADXL345 3-axis accelerometer via SPI.
+ * This class assumes the sensor is wired in 4-wire SPI mode.
  */
-class ADXL345_I2C : public SensorBase
+class ADXL345_SPI : public SensorBase
 {
 protected:
-	static const UINT8 kAddress = 0x3A;
 	static const UINT8 kPowerCtlRegister = 0x2D;
 	static const UINT8 kDataFormatRegister = 0x31;
 	static const UINT8 kDataRegister = 0x32;
 	static const double kGsPerLSB = 0.00390625;
+	enum SPIAddressFields {kAddress_Read=0x80, kAddress_MultiByte=0x40};
 	enum PowerCtlFields {kPowerCtl_Link=0x20, kPowerCtl_AutoSleep=0x10, kPowerCtl_Measure=0x08, kPowerCtl_Sleep=0x04};
 	enum DataFormatFields {kDataFormat_SelfTest=0x80, kDataFormat_SPI=0x40, kDataFormat_IntInvert=0x20,
 		kDataFormat_FullRes=0x08, kDataFormat_Justify=0x04};
@@ -40,13 +42,25 @@ public:
 	};
 
 public:
-	explicit ADXL345_I2C(UINT32 slot, DataFormat_Range range=kRange_2G);
-	virtual ~ADXL345_I2C();
+	ADXL345_SPI(DigitalOutput &clk, DigitalOutput &mosi, DigitalInput &miso,
+		DigitalOutput &cs, DataFormat_Range range=kRange_2G);
+	ADXL345_SPI(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *miso,
+		DigitalOutput *cs, DataFormat_Range range=kRange_2G);
+	ADXL345_SPI(UINT32 slot, UINT32 clk, UINT32 mosi, UINT32 miso, UINT32 cs,
+		DataFormat_Range range=kRange_2G);
+	virtual ~ADXL345_SPI();
 	virtual double GetAcceleration(Axes axis);
 	virtual AllAxes GetAccelerations();
 
 protected:
-	I2C* m_i2c;
+	void Init(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *miso,
+		DigitalOutput *cs, DataFormat_Range range);
+
+	DigitalOutput *m_clk;
+	DigitalOutput *m_mosi;
+	DigitalInput *m_miso;
+	DigitalOutput *m_cs;
+	SPI* m_spi;
 };
 
 #endif
