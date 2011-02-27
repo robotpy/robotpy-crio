@@ -2812,7 +2812,7 @@ struct ImageInfo {
     //void*           reserved1;
     //void*           imageStart;
 };
-/*
+
 struct LCDOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2827,8 +2827,14 @@ struct LCDReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
+    ~LCDReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
     const char*  text;
-    LCDSegments* segmentInfo;
+    //LCDSegments* segmentInfo;
     int          numCharacters;
     int          reserved;
 };
@@ -2845,7 +2851,7 @@ struct LCDSegments {
     unsigned f;
     unsigned g;
 };
-
+/*
 struct LearnCalibrationOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3796,7 +3802,7 @@ int    imaqSetMaskOffset(Image* image, Point offset);
 //============================================================================
 //  Tool Window functions
 //============================================================================
-/*
+/* NOT ROBOT
 int   imaqCloseToolWindow();
 int   imaqGetCurrentTool(Tool* currentTool);
 int   imaqGetLastEvent(WindowEventType* type, int* windowNumber, Tool* tool, Rect* rect);
@@ -3808,10 +3814,12 @@ int   imaqSetCurrentTool(Tool currentTool);
 int   imaqSetToolColor(const RGBValue* color);
 int   imaqSetupToolWindow(int showCoordinates, int maxIconsPerLine, const ToolWindowOptions* options);
 int   imaqShowToolWindow(int visible);
+*/
 
 //============================================================================
 //  Morphology functions
 //============================================================================
+/*
 int           imaqConvexHull(Image* dest, Image* source, int connectivity8);
 int           imaqDanielssonDistance(Image* dest, Image* source);
 int           imaqFillHoles(Image* dest, const Image* source, int connectivity8);
@@ -4118,19 +4126,21 @@ char*       imaqGetErrorText(int errorCode);
 int         imaqGetLastError();
 const char* imaqGetLastErrorFunc();
 int         imaqSetError(int errorCode, const char* function);
+*/
 
 //============================================================================
 //  Threshold functions
 //============================================================================
-ThresholdData* imaqAutoThreshold2(Image* dest, const Image* source, int numClasses, ThresholdMethod method, const Image* mask);
+//ThresholdData* imaqAutoThreshold2(Image* dest, const Image* source, int numClasses, ThresholdMethod method, const Image* mask);
 int            imaqLocalThreshold(Image* dest, const Image* source, unsigned int windowWidth, unsigned int windowHeight, LocalThresholdMethod method, double deviationWeight, ObjectType type, float replaceValue);
 int            imaqMagicWand(Image* dest, const Image* source, Point coord, float tolerance, int connectivity8, float replaceValue);
-int            imaqMultithreshold(Image* dest, const Image* source, const ThresholdData* ranges, int numRanges);
+int            imaqMultithreshold(Image* dest, const Image* source, const ThresholdData* ranges /Array/, int numRanges /ArraySize/);
 int            imaqThreshold(Image* dest, const Image* source, float rangeMin, float rangeMax, int useNewValue, float newValue);
 
 //============================================================================
 //  File I/O functions
 //============================================================================
+/*
 int         imaqCloseAVI(AVISession session);
 AVISession  imaqCreateAVI(const char* fileName, const char* compressionFilter, int quality, unsigned int framesPerSecond, unsigned int maxDataSize);
 int         imaqGetAVIInfo(AVISession session, AVIInfo* info);
@@ -4149,6 +4159,7 @@ int         imaqWriteJPEG2000File(const Image* image, const char* fileName, int 
 int         imaqWritePNGFile2(const Image* image, const char* fileName, unsigned int compressionSpeed, const RGBValue* colorTable, int useBitDepth);
 int         imaqWriteTIFFFile(const Image* image, const char* fileName, const TIFFFileOptions* options, const RGBValue* colorTable);
 int         imaqWriteVisionFile(const Image* image, const char* fileName, const RGBValue* colorTable);
+*/
 
 //============================================================================
 //  Frequency Domain Analysis functions
@@ -4163,24 +4174,24 @@ int imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float r
 //============================================================================
 //  Pixel Manipulation functions
 //============================================================================
-int    imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
+//int    imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
 //TODO float* imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* columns, int* rows);
 int    imaqExtractColorPlanes(const Image* image, ColorMode mode, Image* plane1, Image* plane2, Image* plane3);
 int    imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
 int    imaqFillImage(Image* image, PixelValue value, const Image* mask);
-void*  imaqGetLine(const Image* image, Point start, Point end, int* numPoints);
-int    imaqGetPixel(const Image* image, Point pixel, PixelValue* value);
+//void*  imaqGetLine(const Image* image, Point start, Point end, int* numPoints);
+int    imaqGetPixel(const Image* image, Point pixel, PixelValue* value /Out/);
 int    imaqReplaceColorPlanes(Image* dest, const Image* source, ColorMode mode, const Image* plane1, const Image* plane2, const Image* plane3);
 int    imaqReplaceComplexPlane(Image* dest, const Image* source, const Image* newValues, ComplexPlane plane);
-int    imaqSetLine(Image* image, const void* array, int arraySize, Point start, Point end);
+//int    imaqSetLine(Image* image, const void* array, int arraySize, Point start, Point end);
 int    imaqSetPixel(Image* image, Point coord, PixelValue value);
 
 //============================================================================
 //  LCD functions
 //============================================================================
 int        imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
-LCDReport* imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options);
-*/
+LCDReport* imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options) /Factory/;
+
 //============================================================================
 //  Regions of Interest Manipulation functions
 //============================================================================
