@@ -33,6 +33,6 @@ public:
 	std::vector<EllipseMatch> * DetectEllipses(EllipseDescriptor *ellipseDescriptor,
 					CurveOptions *curveOptions,
 					ShapeDetectionOptions *shapeDetectionOptions,
-					ROI *roi) /Factory/;
+					ROI *roi = NULL) /Factory/;
 	std::vector<EllipseMatch> * DetectEllipses(EllipseDescriptor *ellipseDescriptor) /Factory/;
 };
