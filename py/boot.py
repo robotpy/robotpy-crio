@@ -42,7 +42,7 @@ def main():
         except SystemExit:
             pass
         except:
-            print("Exception in user code:")
+            print("Exception in user code, type 'reboot' to restart:")
             print("-"*60)
             traceback.print_exc(file=sys.stdout)
             print("-"*60)
