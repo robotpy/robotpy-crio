@@ -19,12 +19,20 @@ Python, a powerful dynamic programming language.
 Installation
 ==============
 
+To write robot code, you'll want to install both the Core and WPILib
+distributions.  The Core distribution contains only the Python interpreter and
+standard libraries, while the WPILib distribution contains the Python WPILib
+library typically used for interfacing to robot functions.
+
 Unzip the release .zip to a temporary directory.
 
-Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
-where XXYY is your team number).  Copy all files and directories in the
-distribution's ``robot`` directory to the root (top level) directory on the
-robot.  Note: this will overwrite any UserProgram.out currently on the robot
-with the Python interpreter.
+The preferred installation method is to run install.py.  This requires a local
+(Windows) installation of Python.  Note: this will overwrite any
+UserProgram.out currently on the robot with the Python interpreter.
+
+Alternatively, you can use any FTP client (e.g. FileZilla) to install.  Connect
+to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``, where XXYY
+is your team number).  Copy all files and directories in the distribution's
+``robot`` directory to the root (top level) directory on the robot.
 
 .. vim: tw=80 et ts=3 sw=3 ft=rst fenc=utf-8

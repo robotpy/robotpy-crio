@@ -27,24 +27,15 @@ Features
 Installation from Source
 ==========================
 
-Two steps are required: building the RobotPy interpreter, and building the
-loadable modules.
-
-To build the interpreter: open the RobotPy directory as a Wind River project.
-Build the project and download the code to your robot.  Now you have the
-Python interpreter on the robot.
-
-To build the loadable modules: Run Start|Programs|Wind River|
+To build the interpreter and loadable modules: Run Start|Programs|Wind River|
 VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
-CD to the directory where you cloned the git repository.  Run "make".
-
-Run ``make_dist.bat``.  Delete the ``dist\RobotPy-Core\robot\ni-rt``
-directory tree.
+CD to the directory where you cloned the git repository.  Run "make dist".
 
 Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
 where XXYY is your team number).  Copy the ``dist\RobotPy-Core\robot`` and
 ``dist\RobotPy-WPILib\robot`` directory trees to the root (top level)
-directory on the robot.
+directory on the robot.  Alternatively, install.py can be run in each of
+these directories to do this for you.
 
 Technical Overview
 ====================
@@ -57,12 +48,10 @@ file ``py/boot.py``.  From there, all responsibility is given to the
 ``boot.py`` script, which is referred to as the bootloader.
 
 If ``boot.py`` ever exits (due to an exception, for example), the C++ code
-exits.  The default ``boot.py`` catches any user exceptions and reloads the
-user code after 5 seconds.  This is how code reloads are performed.  Note:
-because of the way code reloads are performed, changes to ``boot.py`` and parts
-of the Python system library (files in lib/python3.1) require a full robot
-reboot (e.g. power cycle) to reload.  As boot.py is written in Python, this
-restart behavior can be customized as desired.
+exits.  The default ``boot.py`` simply exits on any user exception.  If this
+happens, you can reboot easily via NetConsole by simply typing "reboot"
+followed by hitting the enter key.  This is how code reloads are performed.
+As boot.py is written in Python, this behavior can be customized as desired.
 
 .. _SIP: http://www.riverbankcomputing.com/software/sip/intro
 
