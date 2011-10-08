@@ -7,8 +7,7 @@
 #include "Encoder.h"
 #include "DigitalInput.h"
 #include "Resource.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 static Resource *quadEncoders = NULL;
 
@@ -25,22 +24,38 @@ static Resource *quadEncoders = NULL;
 void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 {
 	m_encodingType = encodingType;
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 	switch (encodingType)
 	{
 	case k4X:
 		Resource::CreateResourceObject(&quadEncoders, tEncoder::kNumSystems);
-		//TODO: need to check for errors here
-		m_index = quadEncoders->Allocate();
-		m_encoder = new tEncoder(m_index, &status);
-		m_encoder->writeConfig_ASource_Module(m_aSource->GetModuleForRouting(), &status);
-		m_encoder->writeConfig_ASource_Channel(m_aSource->GetChannelForRouting(), &status);
-		m_encoder->writeConfig_ASource_AnalogTrigger(m_aSource->GetAnalogTriggerForRouting(), &status);
-		m_encoder->writeConfig_BSource_Module(m_bSource->GetModuleForRouting(), &status);
-		m_encoder->writeConfig_BSource_Channel(m_bSource->GetChannelForRouting(), &status);
-		m_encoder->writeConfig_BSource_AnalogTrigger(m_bSource->GetAnalogTriggerForRouting(), &status);
-		m_encoder->strobeReset(&status);
-		m_encoder->writeConfig_Reverse(reverseDirection, &status);
-		m_encoder->writeTimerConfig_AverageSize(4, &status);
+		UINT32 index = quadEncoders->Allocate("4X Encoder");
+		if (index == ~0ul)
+		{
+			CloneError(quadEncoders);
+			return;
+		}
+		if (m_aSource->StatusIsFatal())
+		{
+			CloneError(m_aSource);
+			return;
+		}
+		if (m_bSource->StatusIsFatal())
+		{
+			CloneError(m_bSource);
+			return;
+		}
+		m_index = index;
+		m_encoder = tEncoder::create(m_index, &localStatus);
+		m_encoder->writeConfig_ASource_Module(m_aSource->GetModuleForRouting(), &localStatus);
+		m_encoder->writeConfig_ASource_Channel(m_aSource->GetChannelForRouting(), &localStatus);
+		m_encoder->writeConfig_ASource_AnalogTrigger(m_aSource->GetAnalogTriggerForRouting(), &localStatus);
+		m_encoder->writeConfig_BSource_Module(m_bSource->GetModuleForRouting(), &localStatus);
+		m_encoder->writeConfig_BSource_Channel(m_bSource->GetChannelForRouting(), &localStatus);
+		m_encoder->writeConfig_BSource_AnalogTrigger(m_bSource->GetAnalogTriggerForRouting(), &localStatus);
+		m_encoder->strobeReset(&localStatus);
+		m_encoder->writeConfig_Reverse(reverseDirection, &localStatus);
+		m_encoder->writeTimerConfig_AverageSize(4, &localStatus);
 		m_counter = NULL;
 		break;
 	case k1X:
@@ -50,15 +65,15 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 	}
 	m_distancePerPulse = 1.0;
 	m_pidSource = kDistance;
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 }
 
 /**
  * Encoder constructor.
  * Construct a Encoder given a and b modules and channels fully specified.
- * @param aSlot The a channel digital input module.
+ * @param aModuleNumber The a channel digital input module.
  * @param aChannel The a channel digital input channel.
- * @param bSlot The b channel digital input module.
+ * @param bModuleNumber The b channel digital input module.
  * @param bChannel The b channel digital input channel.
  * @param reverseDirection represents the orientation of the encoder and inverts the output values
  * if necessary so forward represents positive values.
@@ -68,12 +83,14 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
  * a counter object will be used and the returned value will either exactly match the spec'd count
  * or be double (2x) the spec'd count.
  */
-Encoder::Encoder(UINT32 aSlot, UINT32 aChannel,
-						UINT32 bSlot, UINT32 bChannel,
-						bool reverseDirection, EncodingType encodingType)
+Encoder::Encoder(UINT8 aModuleNumber, UINT32 aChannel,
+						UINT8 bModuleNumber, UINT32 bChannel,
+						bool reverseDirection, EncodingType encodingType) :
+	m_encoder(NULL),
+	m_counter(NULL)
 {
-	m_aSource = new DigitalInput(aSlot, aChannel);
-	m_bSource = new DigitalInput(bSlot, bChannel);
+	m_aSource = new DigitalInput(aModuleNumber, aChannel);
+	m_bSource = new DigitalInput(bModuleNumber, bChannel);
 	InitEncoder(reverseDirection, encodingType);
 	m_allocatedASource = true;
 	m_allocatedBSource = true;
@@ -92,7 +109,9 @@ Encoder::Encoder(UINT32 aSlot, UINT32 aChannel,
  * a counter object will be used and the returned value will either exactly match the spec'd count
  * or be double (2x) the spec'd count.
  */
-Encoder::Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection, EncodingType encodingType)
+Encoder::Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection, EncodingType encodingType) :
+	m_encoder(NULL),
+	m_counter(NULL)
 {
 	m_aSource = new DigitalInput(aChannel);
 	m_bSource = new DigitalInput(bChannel);
@@ -116,14 +135,16 @@ Encoder::Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection, Encodi
  * a counter object will be used and the returned value will either exactly match the spec'd count
  * or be double (2x) the spec'd count.
  */
-Encoder::Encoder(DigitalSource *aSource, DigitalSource *bSource, bool reverseDirection, EncodingType encodingType)
+Encoder::Encoder(DigitalSource *aSource, DigitalSource *bSource, bool reverseDirection, EncodingType encodingType) :
+	m_encoder(NULL),
+	m_counter(NULL)
 {
 	m_aSource = aSource;
 	m_bSource = bSource;
 	m_allocatedASource = false;
 	m_allocatedBSource = false;
 	if (m_aSource == NULL || m_bSource == NULL)
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 	else
 		InitEncoder(reverseDirection, encodingType);
 }
@@ -143,7 +164,9 @@ Encoder::Encoder(DigitalSource *aSource, DigitalSource *bSource, bool reverseDir
  * a counter object will be used and the returned value will either exactly match the spec'd count
  * or be double (2x) the spec'd count.
  */
-Encoder::Encoder(DigitalSource &aSource, DigitalSource &bSource, bool reverseDirection, EncodingType encodingType)
+Encoder::Encoder(DigitalSource &aSource, DigitalSource &bSource, bool reverseDirection, EncodingType encodingType) :
+	m_encoder(NULL),
+	m_counter(NULL)
 {
 	m_aSource = &aSource;
 	m_bSource = &bSource;
@@ -177,12 +200,14 @@ Encoder::~Encoder()
  */
 void Encoder::Start()
 {
+	if (StatusIsFatal()) return;
 	if (m_counter)
 		m_counter->Start();
 	else
 	{
-		m_encoder->writeConfig_Enable(1, &status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_encoder->writeConfig_Enable(1, &localStatus);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -191,12 +216,14 @@ void Encoder::Start()
  */
 void Encoder::Stop()
 {
+	if (StatusIsFatal()) return;
 	if (m_counter)
 		m_counter->Stop();
 	else
 	{
-		m_encoder->writeConfig_Enable(0, &status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_encoder->writeConfig_Enable(0, &localStatus);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -208,13 +235,15 @@ void Encoder::Stop()
  */
 INT32 Encoder::GetRaw()
 {
+	if (StatusIsFatal()) return 0;
 	INT32 value;
 	if (m_counter)
 		value = m_counter->Get();
 	else
 	{
-		value = m_encoder->readOutput_Value(&status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		value = m_encoder->readOutput_Value(&localStatus);
+		wpi_setError(localStatus);
 	}
 	return value;
 }
@@ -228,6 +257,7 @@ INT32 Encoder::GetRaw()
  */
 INT32 Encoder::Get()
 {
+	if (StatusIsFatal()) return 0;
 	return (INT32) (GetRaw() * DecodingScaleFactor());
 }
 
@@ -237,12 +267,14 @@ INT32 Encoder::Get()
  */
 void Encoder::Reset()
 {
+	if (StatusIsFatal()) return;
 	if (m_counter)
 		m_counter->Reset();
 	else
 	{
-		m_encoder->strobeReset(&status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_encoder->strobeReset(&localStatus);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -257,6 +289,7 @@ void Encoder::Reset()
  */
 double Encoder::GetPeriod()
 {
+	if (StatusIsFatal()) return 0.0;
 	double measuredPeriod;
 	if (m_counter)
 	{
@@ -264,7 +297,8 @@ double Encoder::GetPeriod()
 	}
 	else
 	{
-		tEncoder::tTimerOutput output = m_encoder->readTimerOutput(&status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		tEncoder::tTimerOutput output = m_encoder->readTimerOutput(&localStatus);
 		double value;
 		if (output.Stalled)
 		{
@@ -277,7 +311,7 @@ double Encoder::GetPeriod()
 			// output.Period is a fixed point number that counts by 2 (24 bits, 25 integer bits)
 			value = (double)(output.Period << 1) / (double)output.Count;
 		}
-		wpi_assertCleanStatus(status);
+		wpi_setError(localStatus);
 		measuredPeriod = value * 1.0e-6;
 	}
 	return measuredPeriod / DecodingScaleFactor();
@@ -297,14 +331,16 @@ double Encoder::GetPeriod()
  */
 void Encoder::SetMaxPeriod(double maxPeriod)
 {
+	if (StatusIsFatal()) return;
 	if (m_counter)
 	{
 		m_counter->SetMaxPeriod(maxPeriod * DecodingScaleFactor());
 	}
 	else
 	{
-		m_encoder->writeTimerConfig_StallPeriod((UINT32)(maxPeriod * 1.0e6 * DecodingScaleFactor()), &status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_encoder->writeTimerConfig_StallPeriod((UINT32)(maxPeriod * 1.0e6 * DecodingScaleFactor()), &localStatus);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -317,14 +353,16 @@ void Encoder::SetMaxPeriod(double maxPeriod)
  */
 bool Encoder::GetStopped()
 {
+	if (StatusIsFatal()) return true;
 	if (m_counter)
 	{
 		return m_counter->GetStopped();
 	}
 	else
 	{
-		bool value = m_encoder->readTimerOutput_Stalled(&status) != 0;
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		bool value = m_encoder->readTimerOutput_Stalled(&localStatus) != 0;
+		wpi_setError(localStatus);
 		return value;
 	}
 }
@@ -335,14 +373,16 @@ bool Encoder::GetStopped()
  */
 bool Encoder::GetDirection()
 {
+	if (StatusIsFatal()) return false;
 	if (m_counter)
 	{
 		return m_counter->GetDirection();
 	}
 	else
 	{
-		bool value = m_encoder->readOutput_Direction(&status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		bool value = m_encoder->readOutput_Direction(&localStatus);
+		wpi_setError(localStatus);
 		return value;
 	}
 }
@@ -352,6 +392,7 @@ bool Encoder::GetDirection()
  */
 double Encoder::DecodingScaleFactor()
 {
+	if (StatusIsFatal()) return 0.0;
 	switch (m_encodingType)
 	{
 	case k1X:
@@ -372,6 +413,7 @@ double Encoder::DecodingScaleFactor()
  */
 double Encoder::GetDistance()
 {
+	if (StatusIsFatal()) return 0.0;
 	return GetRaw() * DecodingScaleFactor() * m_distancePerPulse;
 }
 
@@ -383,6 +425,7 @@ double Encoder::GetDistance()
  */
 double Encoder::GetRate()
 {
+	if (StatusIsFatal()) return 0.0;
 	return (m_distancePerPulse / GetPeriod());
 }
 
@@ -393,6 +436,7 @@ double Encoder::GetRate()
  */
 void Encoder::SetMinRate(double minRate)
 {
+	if (StatusIsFatal()) return;
 	SetMaxPeriod(m_distancePerPulse / minRate);
 }
 
@@ -409,6 +453,7 @@ void Encoder::SetMinRate(double minRate)
  */
 void Encoder::SetDistancePerPulse(double distancePerPulse)
 {
+	if (StatusIsFatal()) return;
 	m_distancePerPulse = distancePerPulse;
 }
 
@@ -420,14 +465,16 @@ void Encoder::SetDistancePerPulse(double distancePerPulse)
  */
 void Encoder::SetReverseDirection(bool reverseDirection)
 {
+	if (StatusIsFatal()) return;
 	if (m_counter)
 	{
 		m_counter->SetReverseDirection(reverseDirection);
 	}
 	else
 	{
-		m_encoder->writeConfig_Reverse(reverseDirection, &status);
-		wpi_assertCleanStatus(status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_encoder->writeConfig_Reverse(reverseDirection, &localStatus);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -438,6 +485,7 @@ void Encoder::SetReverseDirection(bool reverseDirection)
  */
 void Encoder::SetPIDSourceParameter(PIDSourceParameter pidSource)
 {
+	if (StatusIsFatal()) return;
 	m_pidSource = pidSource;
 }
 
@@ -448,6 +496,7 @@ void Encoder::SetPIDSourceParameter(PIDSourceParameter pidSource)
  */
 double Encoder::PIDGet()
 {
+	if (StatusIsFatal()) return 0.0;
 	switch (m_pidSource)
 	{
 	case kDistance:

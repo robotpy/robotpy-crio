@@ -3,7 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
-#include "CUltrasonic.h"
+#include "CInterfaces/CUltrasonic.h"
 #include "DigitalModule.h"
 
 static Ultrasonic* ultrasonics[SensorBase::kChassisSlots][SensorBase::kDigitalChannels];
@@ -19,7 +19,7 @@ static bool initialized = false;
  * @param echoSlot The slot for the digital module for the echo connection
  * @param echoChannel The channel on the digital module for the echo connection
  */
-static void USinit(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+static void USinit(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
 	if (!initialized)
 	{
@@ -28,15 +28,15 @@ static void USinit(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 
 			for (unsigned j = 0; j < SensorBase::kDigitalChannels; j++)
 				ultrasonics[i][j] = NULL;
 	}
-	if (SensorBase::CheckDigitalModule(pingSlot)
+	if (SensorBase::CheckDigitalModule(pingModuleNumber)
 			&& SensorBase::CheckDigitalChannel(pingChannel)
-		 	&& SensorBase::CheckDigitalModule(echoSlot)
+		 	&& SensorBase::CheckDigitalModule(echoModuleNumber)
 			&& SensorBase::CheckDigitalChannel(echoChannel))
 	{
-		if (ultrasonics[DigitalModule::SlotToIndex(pingSlot)][pingChannel - 1] == NULL)
+		if (ultrasonics[pingModuleNumber - 1][pingChannel - 1] == NULL)
 		{
-			ultrasonics[DigitalModule::SlotToIndex(pingSlot)][pingChannel - 1] = new Ultrasonic(pingSlot, pingChannel, echoSlot, echoChannel);
-			printf("new Ultrasonic(%d, %d, %d, %d)\n", pingSlot, pingChannel, echoSlot, echoChannel);
+			ultrasonics[pingModuleNumber - 1][pingChannel - 1] = new Ultrasonic(pingModuleNumber, pingChannel, echoModuleNumber, echoChannel);
+			printf("new Ultrasonic(%d, %d, %d, %d)\n", pingModuleNumber, pingChannel, echoModuleNumber, echoChannel);
 		}
 		Ultrasonic::SetAutomaticMode(true);
 	}
@@ -50,11 +50,11 @@ static void USinit(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 
  * @param pingSlot The slot for the digital module for the ping connection
  * @param pingChannel The channel on the digital module for the ping connection
  */
-static Ultrasonic *USptr(UINT32 pingSlot, UINT32 pingChannel)
+static Ultrasonic *USptr(UINT8 pingModuleNumber, UINT32 pingChannel)
 {
-	if (!SensorBase::CheckDigitalModule(pingSlot) || !SensorBase::CheckDigitalChannel(pingChannel))
+	if (!SensorBase::CheckDigitalModule(pingModuleNumber) || !SensorBase::CheckDigitalChannel(pingChannel))
 		return NULL;
-	Ultrasonic *us = ultrasonics[DigitalModule::SlotToIndex(pingSlot)][pingChannel - 1];
+	Ultrasonic *us = ultrasonics[pingModuleNumber - 1][pingChannel - 1];
 	return us;
 }
 
@@ -69,10 +69,10 @@ static Ultrasonic *USptr(UINT32 pingSlot, UINT32 pingChannel)
  * @param echoSlot The slot for the digital module for the echo connection
  * @param echoChannel The channel on the digital module for the echo connection
  */
-void InitUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+void InitUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
-	Ultrasonic *us = USptr(pingSlot, pingChannel);
-	if (!us) USinit(pingSlot, pingChannel, echoSlot, echoChannel);
+	Ultrasonic *us = USptr(pingModuleNumber, pingChannel);
+	if (!us) USinit(pingModuleNumber, pingChannel, echoModuleNumber, echoChannel);
 }
 
 /**
@@ -100,9 +100,9 @@ void InitUltrasonic(UINT32 pingChannel, UINT32 echoChannel)
  * @param echoSlot The slot for the digital module for the echo connection
  * @param echoChannel The channel on the digital module for the echo connection
  */
-double GetUltrasonicInches(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+double GetUltrasonicInches(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
-	Ultrasonic *us = USptr(pingSlot, pingChannel);
+	Ultrasonic *us = USptr(pingModuleNumber, pingChannel);
 	if (us != NULL)
 		return us->GetRangeInches();
 	else
@@ -133,9 +133,9 @@ double GetUltrasonicInches(UINT32 pingChannel, UINT32 echoChannel)
  * @param echoSlot The slot for the digital module for the echo connection
  * @param echoChannel The channel on the digital module for the echo connection
  */
-double GetUltrasonicMM(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+double GetUltrasonicMM(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
-	Ultrasonic *us = USptr(pingSlot, pingChannel);
+	Ultrasonic *us = USptr(pingModuleNumber, pingChannel);
 	if (us != NULL)
 		return us->GetRangeMM();
 	else
@@ -165,12 +165,12 @@ double GetUltrasonicMM(UINT32 pingChannel, UINT32 echoChannel)
  * @param echoSlot The slot for the digital module for the echo connection
  * @param echoChannel The channel on the digital module for the echo connection
  */
-void DeleteUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+void DeleteUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
-	if (SensorBase::CheckDigitalModule(pingSlot) && SensorBase::CheckDigitalChannel(pingChannel))
+	if (SensorBase::CheckDigitalModule(pingModuleNumber) && SensorBase::CheckDigitalChannel(pingChannel))
 	{
-		delete ultrasonics[DigitalModule::SlotToIndex(pingSlot)][pingChannel - 1];
-		ultrasonics[DigitalModule::SlotToIndex(pingSlot)][pingChannel - 1] = NULL;
+		delete ultrasonics[pingModuleNumber - 1][pingChannel - 1];
+		ultrasonics[pingModuleNumber - 1][pingChannel - 1] = NULL;
 	}
 }
 
@@ -191,9 +191,9 @@ UltrasonicObject CreateUltrasonic(UINT32 pingChannel, UINT32 echoChannel)
 	return (UltrasonicObject) new Ultrasonic(pingChannel, echoChannel);
 }
 
-UltrasonicObject CreateUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel)
+UltrasonicObject CreateUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel)
 {
-	return (UltrasonicObject) new Ultrasonic(pingSlot, pingChannel, echoSlot, echoChannel);
+	return (UltrasonicObject) new Ultrasonic(pingModuleNumber, pingChannel, echoModuleNumber, echoChannel);
 }
 
 double GetUltrasonicInches(UltrasonicObject o)

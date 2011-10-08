@@ -18,25 +18,14 @@
 #define wpi_assertNotEqual(a, b) wpi_assertNotEqual_impl(a, b, NULL, __FILE__, __LINE__, __FUNCTION__)
 #define wpi_assertNotEqualWithMessage(a, b, message) wpi_assertNotEqual_impl(a, b, message, __FILE__, __LINE__, __FUNCTION__)
 
-#define wpi_imaqAssert(status, message) wpi_imaqAssert_impl(status, message, __FILE__, __LINE__, __FUNCTION__)
-
-#define wpi_assertCleanStatus(status) wpi_assertCleanStatus_impl(status, __FILE__, __LINE__, __FUNCTION__)
-
 bool wpi_assert_impl(bool conditionValue, const char *conditionText, const char *message, const char *fileName, UINT32 lineNumber, const char *funcName);
 bool wpi_assertEqual_impl(int valueA, int valueB, const char *message, const char *fileName,UINT32 lineNumber, const char *funcName);
 bool wpi_assertNotEqual_impl(int valueA, int valueB, const char *message, const char *fileName,UINT32 lineNumber, const char *funcName);
 
-void wpi_imaqAssert_impl(int imaqStatus, const char *message,
-							const char *fileName,
-							UINT32 lineNumber,
-							const char *funcName);
-void wpi_assertCleanStatus_impl(INT32 status, const char *fileName, UINT32 lineNumber, const char *funcName);
-
-#define wpi_fatal(error) wpi_fatal_impl(wpi_v_##error, wpi_s_##error, __FILE__, __LINE__, __FUNCTION__)
-void wpi_fatal_impl(const INT32 statusCode, const char *statusString, const char *fileName, UINT32 lineNumber, const char *funcName);
-
+char *wpi_getLabel(UINT addr, INT32 *found = NULL);
+void wpi_selfTrace();
 void wpi_suspendOnAssertEnabled(bool enabled);
-void wpi_stackTraceEnable(bool enabled);
+void wpi_stackTraceOnAssertEnable(bool enabled);
 
 UINT16 GetFPGAVersion();
 UINT32 GetFPGARevision();

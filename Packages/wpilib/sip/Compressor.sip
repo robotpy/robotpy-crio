@@ -29,8 +29,8 @@ class Compressor: SensorBase
 
 public:
 	Compressor(UINT32 pressureSwitchChannel, UINT32 compressorRelayChannel);
-	Compressor(UINT32 pressureSwitchSlot, UINT32 pressureSwitchChannel,
-				UINT32 compresssorRelaySlot, UINT32 compressorRelayChannel);
+	Compressor(UINT8 pressureSwitchModuleNumber, UINT32 pressureSwitchChannel,
+				UINT8 compresssorRelayModuleNumber, UINT32 compressorRelayChannel);
 	~Compressor();
 
 	void Start();

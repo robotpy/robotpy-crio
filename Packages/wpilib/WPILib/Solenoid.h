@@ -18,7 +18,7 @@
 class Solenoid : public SolenoidBase {
 public:
 	explicit Solenoid(UINT32 channel);
-	Solenoid(UINT32 slot, UINT32 channel);
+	Solenoid(UINT8 moduleNumber, UINT32 channel);
 	virtual ~Solenoid();
 	virtual void Set(bool on);
 	virtual bool Get();

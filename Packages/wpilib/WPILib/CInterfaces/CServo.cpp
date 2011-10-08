@@ -5,8 +5,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Servo.h"
-#include "CServo.h"
-#include "CPWM.h"
+#include "CInterfaces/CServo.h"
+#include "CInterfaces/CPWM.h"
 
 static SensorBase *CreateServoStatic(UINT32 slot, UINT32 channel)
 {

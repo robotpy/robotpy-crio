@@ -42,7 +42,7 @@ enum { CAM_NUM_METRICS=17 };
 
 int Priv_SetWriteFileAllowed(UINT32 enable);
 
-enum ImageSize { k640x480, k320x240, k160x120 };
+enum ImageResolution { k640x480, k320x240, k160x120 };
 enum ImageRotation { ROT_0 = 0, ROT_180 = 180 };
 
 int StartCameraTask();
@@ -62,6 +62,6 @@ int ConfigureCamera(char *configString);
 int GetCameraSetting(char *configString, char *cameraResponse);
 int GetImageSetting(char *configString, char *cameraResponse);
 
-int StartCameraTask(int frames, int compression, ImageSize resolution, ImageRotation rotation);
+int StartCameraTask(int frames, int compression, ImageResolution resolution, ImageRotation rotation);
 int StopCameraTask();
 

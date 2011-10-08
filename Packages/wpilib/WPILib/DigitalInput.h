@@ -21,7 +21,7 @@ class DigitalModule;
 class DigitalInput : public DigitalSource {
 public:
 	explicit DigitalInput(UINT32 channel);
-	DigitalInput(UINT32 slot, UINT32 channel);
+	DigitalInput(UINT8 moduleNumber, UINT32 channel);
 	virtual ~DigitalInput();
 	UINT32 Get();
 	UINT32 GetChannel();
@@ -37,14 +37,11 @@ public:
 	void SetUpSourceEdge(bool risingEdge, bool fallingEdge);
 
 private:
-	void InitDigitalInput(UINT32 slot, UINT32 channel);
+	void InitDigitalInput(UINT8 moduleNumber, UINT32 channel);
 	UINT32 m_channel;
 	DigitalModule *m_module;
 	bool m_lastValue;
 };
-
-UINT32 GetDigitalInput(UINT32 slot, UINT32 channel);
-UINT32 GetDigitalInput(UINT32 channel);
 
 #endif
 

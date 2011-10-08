@@ -7,8 +7,7 @@
 #include "Compressor.h"
 #include "DigitalInput.h"
 #include "Timer.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 /**
  * Internal task.
@@ -42,23 +41,18 @@ static void compressorChecker(Compressor *c)
  * 
  * You MUST start the compressor by calling the Start() method.
  */
-void Compressor::InitCompressor(UINT32 pressureSwitchSlot,
+void Compressor::InitCompressor(UINT8 pressureSwitchModuleNumber,
 		UINT32 pressureSwitchChannel,
-		UINT32 compresssorRelaySlot,
+		UINT8 compresssorRelayModuleNumber,
 		UINT32 compressorRelayChannel)
 {
-	CheckDigitalModule(pressureSwitchSlot);
-	CheckRelayModule(compresssorRelaySlot);
-	CheckDigitalChannel(pressureSwitchChannel);
-	CheckRelayChannel(compressorRelayChannel);
-
 	m_enabled = false;
-	m_pressureSwitch = new DigitalInput(pressureSwitchSlot, pressureSwitchChannel);
-	m_relay = new Relay(compresssorRelaySlot, compressorRelayChannel, Relay::kForwardOnly);
+	m_pressureSwitch = new DigitalInput(pressureSwitchModuleNumber, pressureSwitchChannel);
+	m_relay = new Relay(compresssorRelayModuleNumber, compressorRelayChannel, Relay::kForwardOnly);
 
 	if (!m_task.Start((INT32)this))
 	{
-		wpi_fatal(CompressorTaskError);
+		wpi_setWPIError(CompressorTaskError);
 	}
 }
 
@@ -68,20 +62,20 @@ void Compressor::InitCompressor(UINT32 pressureSwitchSlot,
  * 
  * You MUST start the compressor by calling the Start() method.
  * 
- * @param pressureSwitchSlot The module that the pressure switch is attached to.
+ * @param pressureSwitchModuleNumber The digital module that the pressure switch is attached to.
  * @param pressureSwitchChannel The GPIO channel that the pressure switch is attached to.
- * @param compresssorRelaySlot The module that the compressor relay is attached to.
+ * @param compresssorRelayModuleNumber The digital module that the compressor relay is attached to.
  * @param compressorRelayChannel The relay channel that the compressor relay is attached to.
  */
-Compressor::Compressor(UINT32 pressureSwitchSlot,
+Compressor::Compressor(UINT8 pressureSwitchModuleNumber,
 		UINT32 pressureSwitchChannel,
-		UINT32 compresssorRelaySlot,
+		UINT8 compresssorRelayModuleNumber,
 		UINT32 compressorRelayChannel)
 	: m_task ("Compressor", (FUNCPTR)compressorChecker)
 {
-	InitCompressor(pressureSwitchSlot,
+	InitCompressor(pressureSwitchModuleNumber,
 		pressureSwitchChannel,
-		compresssorRelaySlot,
+		compresssorRelayModuleNumber,
 		compressorRelayChannel);
 }
 

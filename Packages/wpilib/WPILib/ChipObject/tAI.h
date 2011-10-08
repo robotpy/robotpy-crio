@@ -1,31 +1,31 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__
+#ifndef __nFRC_2012_1_6_4_AI_h__
+#define __nFRC_2012_1_6_4_AI_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tAI : public tScopedSystem
+class tAI
 {
 public:
-   tAI(unsigned char sys_index, tRioStatusCode *status);
-   ~tAI();
+   tAI(){}
+   virtual ~tAI(){}
 
-   inline unsigned char getSystemIndex()
-   {
-      return _SystemIndex;
-   }
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tAI* create(unsigned char sys_index, tRioStatusCode *status);
+   virtual unsigned char getSystemIndex() = 0;
+
 
    typedef enum
    {
       kNumSystems = 2,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -52,111 +52,87 @@ public:
 
    typedef enum
    {
-      kAI0_ConfigAddress = 0x8414,
-      kAI1_ConfigAddress = 0x8400,
-   } tConfig_Constants;
-   static const unsigned int kConfigAddresses [];
+   } tConfig_IfaceConstants;
 
-   void writeConfig(tConfig value, tRioStatusCode *status);
-   void writeConfig_ScanSize(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ConvertRate(unsigned int value, tRioStatusCode *status);
-   tConfig readConfig(tRioStatusCode *status);
-   unsigned char readConfig_ScanSize(tRioStatusCode *status);
-   unsigned int readConfig_ConvertRate(tRioStatusCode *status);
+   virtual void writeConfig(tConfig value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ScanSize(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ConvertRate(unsigned int value, tRioStatusCode *status) = 0;
+   virtual tConfig readConfig(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_ScanSize(tRioStatusCode *status) = 0;
+   virtual unsigned int readConfig_ConvertRate(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
       kNumScanListElements = 8,
-      kScanList_ElementSize = 3,
-      kScanList_ElementMask = 0x7,
-      kAI0_ScanListAddress = 0x8410,
-      kAI1_ScanListAddress = 0x83FC,
-   } tScanList_Constants;
-   static const unsigned int kScanListAddresses [];
+   } tScanList_IfaceConstants;
 
-   void writeScanList(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
-   unsigned char readScanList(unsigned char bitfield_index, tRioStatusCode *status);
+   virtual void writeScanList(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status) = 0;
+   virtual unsigned char readScanList(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tLoopTiming_IfaceConstants;
+
+   virtual unsigned int readLoopTiming(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
       kNumAverageBitsElements = 8,
-      kAverageBits_ElementSize = 4,
-      kAverageBits_ElementMask = 0xF,
-      kAI0_AverageBitsAddress = 0x8408,
-      kAI1_AverageBitsAddress = 0x83F4,
-   } tAverageBits_Constants;
-   static const unsigned int kAverageBitsAddresses [];
+   } tAverageBits_IfaceConstants;
 
-   void writeAverageBits(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
-   unsigned char readAverageBits(unsigned char bitfield_index, tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kAI0_LoopTimingAddress = 0x8404,
-      kAI1_LoopTimingAddress = 0x83F0,
-   } tLoopTiming_Constants;
-   static const unsigned int kLoopTimingAddresses [];
-
-   unsigned int readLoopTiming(tRioStatusCode *status);
+   virtual void writeAverageBits(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status) = 0;
+   virtual unsigned char readAverageBits(unsigned char bitfield_index, tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
       kNumOversampleBitsElements = 8,
-      kOversampleBits_ElementSize = 4,
-      kOversampleBits_ElementMask = 0xF,
-      kAI0_OversampleBitsAddress = 0x840C,
-      kAI1_OversampleBitsAddress = 0x83F8,
-   } tOversampleBits_Constants;
-   static const unsigned int kOversampleBitsAddresses [];
+   } tOversampleBits_IfaceConstants;
 
-   void writeOversampleBits(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
-   unsigned char readOversampleBits(unsigned char bitfield_index, tRioStatusCode *status);
+   virtual void writeOversampleBits(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status) = 0;
+   virtual unsigned char readOversampleBits(unsigned char bitfield_index, tRioStatusCode *status) = 0;
 
 
 
    typedef enum
    {
-      kAI_OutputAddress = 0x8418,
-   } tOutput_Constants;
+   } tOutput_IfaceConstants;
 
-   signed int readOutput(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kAI_ReadSelectAddress = 0x8420,
-   } tReadSelect_Constants;
-
-   void writeReadSelect(tReadSelect value, tRioStatusCode *status);
-   void writeReadSelect_Channel(unsigned char value, tRioStatusCode *status);
-   void writeReadSelect_Module(unsigned char value, tRioStatusCode *status);
-   void writeReadSelect_Averaged(bool value, tRioStatusCode *status);
-   tReadSelect readReadSelect(tRioStatusCode *status);
-   unsigned char readReadSelect_Channel(tRioStatusCode *status);
-   unsigned char readReadSelect_Module(tRioStatusCode *status);
-   bool readReadSelect_Averaged(tRioStatusCode *status);
+   virtual signed int readOutput(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAI_LatchOutputAddress = 0x841C,
-   } tLatchOutput_Constants;
+   } tReadSelect_IfaceConstants;
 
-   void strobeLatchOutput(tRioStatusCode *status);
+   virtual void writeReadSelect(tReadSelect value, tRioStatusCode *status) = 0;
+   virtual void writeReadSelect_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeReadSelect_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeReadSelect_Averaged(bool value, tRioStatusCode *status) = 0;
+   virtual tReadSelect readReadSelect(tRioStatusCode *status) = 0;
+   virtual unsigned char readReadSelect_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readReadSelect_Module(tRioStatusCode *status) = 0;
+   virtual bool readReadSelect_Averaged(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tLatchOutput_IfaceConstants;
+
+   virtual void strobeLatchOutput(tRioStatusCode *status) = 0;
 
 
 
 
 private:
-   unsigned char _SystemIndex;
-
+   tAI(const tAI&);
+   void operator=(const tAI&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_AI_h__
+#endif // __nFRC_2012_1_6_4_AI_h__

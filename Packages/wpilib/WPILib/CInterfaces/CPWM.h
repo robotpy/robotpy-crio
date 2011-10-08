@@ -11,8 +11,8 @@
 #include "CWrappers.h"
 #include "PWM.h"
 
-PWM *AllocatePWM(UINT32 slot, UINT32 channel, SensorCreator creator);
+PWM *AllocatePWM(UINT8 moduleNumber, UINT32 channel, SensorCreator creator);
 PWM *AllocatePWM(UINT32 channel, SensorCreator creator);
-void DeletePWM(UINT32 slot, UINT32 channel);
+void DeletePWM(UINT8 moduleNumber, UINT32 channel);
 
 #endif

@@ -12,12 +12,16 @@
 #include <sockLib.h> 
 #include <inetLib.h>
 
-#include "AxisCameraParams.h"
-#include "ColorImage.h"
-#include "HSLImage.h"
+#include "Vision/AxisCameraParams.h"
+#if JAVA_CAMERA_LIB != 1
+#include "Vision/ColorImage.h"
+#include "Vision/HSLImage.h"
+#endif
 #include "nivision.h"
 #include <set>
 #include "Task.h"
+
+class PCVideoServer;
 
 /**
  * AxisCamera class.
@@ -27,20 +31,23 @@
  * - parameter handler task in the base class that monitors for changes to
  *     parameters and updates the camera
  */
-class AxisCamera: public AxisCameraParams
+class AxisCamera : public AxisCameraParams
 {
-	AxisCamera(const char *cameraIP = "192.168.0.90");
+private:
+	explicit AxisCamera(const char *cameraIP);
 public:
 	virtual ~AxisCamera();
-	static AxisCamera& GetInstance();
-	void DeleteInstance();
+	static AxisCamera& GetInstance(const char *cameraIP = NULL);
+	static void DeleteInstance();
 
 	bool IsFreshImage();
 	SEM_ID GetNewImageSem();
 
 	int GetImage(Image *imaqImage);
+#if JAVA_CAMERA_LIB != 1
 	int GetImage(ColorImage *image);
 	HSLImage *GetImage();
+#endif
 
 	int CopyJPEG(char **destImage, int &destImageSize, int &destImageBufferSize);
 
@@ -53,7 +60,7 @@ private:
 
 	virtual void RestartCameraTask();
 
-	static AxisCamera *m_instance;
+	static AxisCamera *_instance;
 	int m_cameraSocket;
 	typedef std::set<SEM_ID> SemSet_t;
 	SemSet_t m_newImageSemSet;
@@ -65,10 +72,15 @@ private:
 	bool m_freshImage;
 
 	Task m_imageStreamTask;
+
+	PCVideoServer *m_videoServer;
 };
 
+#if JAVA_CAMERA_LIB == 1
+#ifdef __cplusplus
 extern "C" {
-	void AxisCameraStart();
+#endif
+	void AxisCameraStart(const char *IPAddress);
 	int AxisCameraGetImage(Image *image);
 	void AxisCameraDeleteInstance();
 	int AxisCameraFreshImage();
@@ -94,6 +106,9 @@ extern "C" {
 	int AxisCameraGetCompression();
 	void AxisCameraWriteRotation(AxisCameraParams::Rotation_t rotation);
 	AxisCameraParams::Rotation_t AxisCameraGetRotation();
+#ifdef __cplusplus
 }
+#endif
+#endif // JAVA_CAMERA_LIB == 1
 
 #endif

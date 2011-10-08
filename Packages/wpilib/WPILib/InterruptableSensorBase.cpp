@@ -23,9 +23,11 @@ void InterruptableSensorBase::AllocateInterrupts(bool watcher)
 	wpi_assert(m_interrupt == NULL);
 	wpi_assert(m_manager == NULL);
 	// Expects the calling leaf class to allocate an interrupt index.
-	m_interrupt = new tInterrupt(m_interruptIndex, &status);
-	m_interrupt->writeConfig_WaitForAck(false, &status);
-	m_manager = new tInterruptManager(1 << m_interruptIndex, watcher, &status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_interrupt = tInterrupt::create(m_interruptIndex, &localStatus);
+	m_interrupt->writeConfig_WaitForAck(false, &localStatus);
+	m_manager = new tInterruptManager(1 << m_interruptIndex, watcher, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -50,8 +52,9 @@ void InterruptableSensorBase::WaitForInterrupt(float timeout)
 {
 	wpi_assert(m_manager != NULL);
 	wpi_assert(m_interrupt != NULL);
-	m_manager->watch((INT32)(timeout * 1e3), &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_manager->watch((INT32)(timeout * 1e3), &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -63,8 +66,9 @@ void InterruptableSensorBase::EnableInterrupts()
 {
 	wpi_assert(m_manager != NULL);
 	wpi_assert(m_interrupt != NULL);
-	m_manager->enable(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_manager->enable(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -74,8 +78,9 @@ void InterruptableSensorBase::DisableInterrupts()
 {
 	wpi_assert(m_manager != NULL);
 	wpi_assert(m_interrupt != NULL);
-	m_manager->disable(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_manager->disable(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -86,5 +91,8 @@ void InterruptableSensorBase::DisableInterrupts()
 double InterruptableSensorBase::ReadInterruptTimestamp()
 {
 	wpi_assert(m_interrupt != NULL);
-	return m_interrupt->readTimeStamp(&status) * 1e-6;
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 timestamp = m_interrupt->readTimeStamp(&localStatus);
+	wpi_setError(localStatus);
+	return timestamp * 1e-6;
 }

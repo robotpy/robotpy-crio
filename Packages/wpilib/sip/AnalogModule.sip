@@ -47,10 +47,9 @@ public:
 	INT32 GetOffset(UINT32 channel);
 	INT32 VoltsToValue(INT32 channel, float voltage);
 
-	static UINT32 SlotToIndex(UINT32 slot);
-	static AnalogModule* GetInstance(UINT32 slot);
+	static AnalogModule* GetInstance(UINT8 moduleNumber);
 
 protected:
-	explicit AnalogModule(UINT32 slot);
+	explicit AnalogModule(UINT8 moduleNumber);
 	virtual ~AnalogModule();
 };

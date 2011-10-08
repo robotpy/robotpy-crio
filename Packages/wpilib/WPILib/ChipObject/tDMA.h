@@ -1,26 +1,29 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__
+#ifndef __nFRC_2012_1_6_4_DMA_h__
+#define __nFRC_2012_1_6_4_DMA_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tDMA : public tScopedSystem
+class tDMA
 {
 public:
-   tDMA(tRioStatusCode *status);
-   ~tDMA();
+   tDMA(){}
+   virtual ~tDMA(){}
+
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tDMA* create(tRioStatusCode *status);
 
    typedef enum
    {
       kNumSystems = 1,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -68,91 +71,87 @@ public:
 
    typedef enum
    {
-      kDMA_RateAddress = 0x815C,
-   } tRate_Constants;
+   } tRate_IfaceConstants;
 
-   void writeRate(unsigned int value, tRioStatusCode *status);
-   unsigned int readRate(tRioStatusCode *status);
+   virtual void writeRate(unsigned int value, tRioStatusCode *status) = 0;
+   virtual unsigned int readRate(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kDMA_ConfigAddress = 0x8158,
-   } tConfig_Constants;
+   } tConfig_IfaceConstants;
 
-   void writeConfig(tConfig value, tRioStatusCode *status);
-   void writeConfig_Pause(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AI0_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AI0_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AIAveraged0_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AIAveraged0_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AI1_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AI1_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AIAveraged1_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AIAveraged1_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_Accumulator0(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_Accumulator1(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_DI(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_AnalogTriggers(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_Counters_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_Counters_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_CounterTimers_Low(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_CounterTimers_High(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_Encoders(bool value, tRioStatusCode *status);
-   void writeConfig_Enable_EncoderTimers(bool value, tRioStatusCode *status);
-   void writeConfig_ExternalClock(bool value, tRioStatusCode *status);
-   tConfig readConfig(tRioStatusCode *status);
-   bool readConfig_Pause(tRioStatusCode *status);
-   bool readConfig_Enable_AI0_Low(tRioStatusCode *status);
-   bool readConfig_Enable_AI0_High(tRioStatusCode *status);
-   bool readConfig_Enable_AIAveraged0_Low(tRioStatusCode *status);
-   bool readConfig_Enable_AIAveraged0_High(tRioStatusCode *status);
-   bool readConfig_Enable_AI1_Low(tRioStatusCode *status);
-   bool readConfig_Enable_AI1_High(tRioStatusCode *status);
-   bool readConfig_Enable_AIAveraged1_Low(tRioStatusCode *status);
-   bool readConfig_Enable_AIAveraged1_High(tRioStatusCode *status);
-   bool readConfig_Enable_Accumulator0(tRioStatusCode *status);
-   bool readConfig_Enable_Accumulator1(tRioStatusCode *status);
-   bool readConfig_Enable_DI(tRioStatusCode *status);
-   bool readConfig_Enable_AnalogTriggers(tRioStatusCode *status);
-   bool readConfig_Enable_Counters_Low(tRioStatusCode *status);
-   bool readConfig_Enable_Counters_High(tRioStatusCode *status);
-   bool readConfig_Enable_CounterTimers_Low(tRioStatusCode *status);
-   bool readConfig_Enable_CounterTimers_High(tRioStatusCode *status);
-   bool readConfig_Enable_Encoders(tRioStatusCode *status);
-   bool readConfig_Enable_EncoderTimers(tRioStatusCode *status);
-   bool readConfig_ExternalClock(tRioStatusCode *status);
+   virtual void writeConfig(tConfig value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Pause(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AI0_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AI0_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AIAveraged0_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AIAveraged0_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AI1_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AI1_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AIAveraged1_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AIAveraged1_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_Accumulator0(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_Accumulator1(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_DI(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_AnalogTriggers(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_Counters_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_Counters_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_CounterTimers_Low(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_CounterTimers_High(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_Encoders(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable_EncoderTimers(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ExternalClock(bool value, tRioStatusCode *status) = 0;
+   virtual tConfig readConfig(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Pause(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AI0_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AI0_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AIAveraged0_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AIAveraged0_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AI1_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AI1_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AIAveraged1_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AIAveraged1_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_Accumulator0(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_Accumulator1(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_DI(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_AnalogTriggers(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_Counters_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_Counters_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_CounterTimers_Low(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_CounterTimers_High(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_Encoders(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable_EncoderTimers(tRioStatusCode *status) = 0;
+   virtual bool readConfig_ExternalClock(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
       kNumExternalTriggersElements = 4,
-      kExternalTriggers_ElementSize = 8,
-      kExternalTriggers_ElementMask = 0xFF,
-      kDMA_ExternalTriggersAddress = 0x8120,
-   } tExternalTriggers_Constants;
+   } tExternalTriggers_IfaceConstants;
 
-   void writeExternalTriggers(unsigned char bitfield_index, tExternalTriggers value, tRioStatusCode *status);
-   void writeExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
-   void writeExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status);
-   void writeExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, bool value, tRioStatusCode *status);
-   void writeExternalTriggers_RisingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status);
-   void writeExternalTriggers_FallingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status);
-   tExternalTriggers readExternalTriggers(unsigned char bitfield_index, tRioStatusCode *status);
-   unsigned char readExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, tRioStatusCode *status);
-   unsigned char readExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readExternalTriggers_RisingEdge(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readExternalTriggers_FallingEdge(unsigned char bitfield_index, tRioStatusCode *status);
+   virtual void writeExternalTriggers(unsigned char bitfield_index, tExternalTriggers value, tRioStatusCode *status) = 0;
+   virtual void writeExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, bool value, tRioStatusCode *status) = 0;
+   virtual void writeExternalTriggers_RisingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status) = 0;
+   virtual void writeExternalTriggers_FallingEdge(unsigned char bitfield_index, bool value, tRioStatusCode *status) = 0;
+   virtual tExternalTriggers readExternalTriggers(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual unsigned char readExternalTriggers_ExternalClockSource_Channel(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual unsigned char readExternalTriggers_ExternalClockSource_Module(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readExternalTriggers_ExternalClockSource_AnalogTrigger(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readExternalTriggers_RisingEdge(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readExternalTriggers_FallingEdge(unsigned char bitfield_index, tRioStatusCode *status) = 0;
 
 
 
 
 private:
-
+   tDMA(const tDMA&);
+   void operator=(const tDMA&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_DMA_h__
+#endif // __nFRC_2012_1_6_4_DMA_h__

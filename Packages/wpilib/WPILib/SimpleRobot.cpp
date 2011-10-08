@@ -6,6 +6,7 @@
 
 #include "SimpleRobot.h"
 
+#include "DriverStation.h"
 #include "Timer.h"
 
 SimpleRobot::SimpleRobot()
@@ -88,22 +89,28 @@ void SimpleRobot::StartCompetition()
 		// first and one-time initialization
 		RobotInit();
 
-		while (1)
+		while (true)
 		{
 			if (IsDisabled())
 			{
+				m_ds->InDisabled(true);
 				Disabled();
-				while (IsDisabled()) Wait(.01);
+				m_ds->InDisabled(false);
+				while (IsDisabled()) m_ds->WaitForData();
 			}
 			else if (IsAutonomous())
 			{
+				m_ds->InAutonomous(true);
 				Autonomous();
-				while (IsAutonomous() && IsEnabled()) Wait(.01);
+				m_ds->InAutonomous(false);
+				while (IsAutonomous() && IsEnabled()) m_ds->WaitForData();
 			}
 			else
 			{
+				m_ds->InOperatorControl(true);
 				OperatorControl();
-				while (IsOperatorControl() && IsEnabled()) Wait(.01);
+				m_ds->InOperatorControl(false);
+				while (IsOperatorControl() && IsEnabled()) m_ds->WaitForData();
 			}
 		}
 	}

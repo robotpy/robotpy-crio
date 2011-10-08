@@ -8,13 +8,26 @@
 #define _ERROR_BASE_H
 
 #include "Base.h"
-#include "ChipObject.h"
+#include "ChipObject/NiRio.h"
 #include "Error.h"
 #include <semLib.h>
 #include <vxWorks.h>
 
-/// Use this macro to set the error.
-#define wpi_setError(errorBase, code)   ((errorBase).SetError((code), __FILE__, __LINE__))
+#define wpi_setErrnoErrorWithContext(context)   (this->SetErrnoError((context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setErrnoError()   (wpi_setErrnoErrorWithContext(""))
+#define wpi_setImaqErrorWithContext(code, context)   (this->SetImaqError((code), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setErrorWithContext(code, context)   (this->SetError((code), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setError(code)   (wpi_setErrorWithContext(code, ""))
+#define wpi_setStaticErrorWithContext(object, code, context)   (object->SetError((code), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setStaticError(object, code)   (wpi_setStaticErrorWithContext(object, code, ""))
+#define wpi_setGlobalErrorWithContext(code, context)   (ErrorBase::SetGlobalError((code), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setGlobalError(code)   (wpi_setGlobalErrorWithContext(code, ""))
+#define wpi_setWPIErrorWithContext(error, context)   (this->SetWPIError((wpi_error_s_##error), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setWPIError(error)   (wpi_setWPIErrorWithContext(error, ""))
+#define wpi_setStaticWPIErrorWithContext(object, error, context)   (object->SetWPIError((wpi_error_s_##error), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setStaticWPIError(object, error)   (wpi_setStaticWPIErrorWithContext(object, error, ""))
+#define wpi_setGlobalWPIErrorWithContext(error, context)   (ErrorBase::SetGlobalWPIError((wpi_error_s_##error), (context), __FILE__, __FUNCTION__, __LINE__))
+#define wpi_setGlobalWPIError(error)   (wpi_setGlobalWPIErrorWithContext(error, ""))
 
 /**
  * Base class for most objects.
@@ -28,16 +41,27 @@ public:
 	virtual ~ErrorBase();
 	virtual Error& GetError();
 	virtual const Error& GetError() const;
-	virtual void SetError(Error::Code code, const char* filename, UINT32 lineNumber) const;
-    virtual void ClearError();
-    virtual bool StatusIsFatal() const;
-    static Error& GetGlobalError();
+	virtual void SetErrnoError(const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetImaqError(int success, const char *contextMessage,
+        const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetError(Error::Code code, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetWPIError(const char *errorMessage, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void CloneError(ErrorBase *rhs) const;
+	virtual void ClearError() const;
+	virtual bool StatusIsFatal() const;
+	static void SetGlobalError(Error::Code code, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber);
+	static void SetGlobalWPIError(const char *errorMessage, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber);
+	static Error& GetGlobalError();
 protected:
-    //  TODO: Get rid of status when rest of the code does not need it
-    tRioStatusCode status;
-	mutable Error error;
-    static SEM_ID globalErrorMutex;
-	static Error globalError;
+	mutable Error m_error;
+	// TODO: Replace globalError with a global list of all errors.
+	static SEM_ID _globalErrorMutex;
+	static Error _globalError;
 	ErrorBase();
 private:
 	DISALLOW_COPY_AND_ASSIGN(ErrorBase);

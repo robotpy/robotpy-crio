@@ -26,8 +26,8 @@ class Compressor: public SensorBase
 {
 public:
 	Compressor(UINT32 pressureSwitchChannel, UINT32 compressorRelayChannel);
-	Compressor(UINT32 pressureSwitchSlot, UINT32 pressureSwitchChannel,
-				UINT32 compresssorRelaySlot, UINT32 compressorRelayChannel);
+	Compressor(UINT8 pressureSwitchModuleNumber, UINT32 pressureSwitchChannel,
+			UINT8 compresssorRelayModuleNumber, UINT32 compressorRelayChannel);
 	~Compressor();
 
 	void Start();
@@ -37,8 +37,8 @@ public:
 	void SetRelayValue(Relay::Value relayValue);
 
 private:
-	void InitCompressor(UINT32 pressureSwitchSlot, UINT32 pressureSwitchChannel,
-					UINT32 compresssorRelaySlot, UINT32 compressorRelayChannel);
+	void InitCompressor(UINT8 pressureSwitchModuleNumber, UINT32 pressureSwitchChannel,
+				UINT8 compresssorRelayModuleNumber, UINT32 compressorRelayChannel);
 
 	DigitalInput *m_pressureSwitch;
 	Relay *m_relay;

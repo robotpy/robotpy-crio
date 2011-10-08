@@ -7,8 +7,7 @@
 #include "DriverStationLCD.h"
 #include "NetworkCommunication/FRCComm.h"
 #include "Synchronized.h"
-#include "WPIStatus.h"
-#include "Utility.h"
+#include "WPIErrors.h"
 #include <strLib.h>
 
 const UINT32 DriverStationLCD::kSyncTimeout_ms;
@@ -82,13 +81,13 @@ void DriverStationLCD::Printf(Line line, INT32 startingColumn, const char *write
 
 	if (startingColumn < 1 || startingColumn > kLineLength)
 	{
-		wpi_fatal(ParameterOutOfRange);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "startingColumn");
 		return;
 	}
 
 	if (line < kMain_Line6 || line > kUser_Line6)
 	{
-		wpi_fatal(ParameterOutOfRange);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "line");
 		return;
 	}
 
@@ -121,7 +120,7 @@ void DriverStationLCD::PrintfLine(Line line, const char *writeFmt, ...)
 
 	if (line < kMain_Line6 || line > kUser_Line6)
 	{
-		wpi_fatal(ParameterOutOfRange);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "line");
 		return;
 	}
 

@@ -7,29 +7,47 @@
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
 #include "Resource.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 static Resource *channels = NULL;
 
-const UINT32 AnalogChannel::kAccumulatorSlot;
+const UINT8 AnalogChannel::kAccumulatorModuleNumber;
 const UINT32 AnalogChannel::kAccumulatorNumChannels;
 const UINT32 AnalogChannel::kAccumulatorChannels[] = {1, 2};
 
 /**
  * Common initialization.
  */
-void AnalogChannel::InitChannel(UINT32 slot, UINT32 channel)
+void AnalogChannel::InitChannel(UINT8 moduleNumber, UINT32 channel)
 {
+	char buf[64];
 	Resource::CreateResourceObject(&channels, kAnalogModules * kAnalogChannels);
-	CheckAnalogModule(slot);
-	CheckAnalogChannel(slot);
-	channels->Allocate(AnalogModule::SlotToIndex(slot) * kAnalogModules + channel - 1);
+	if (!CheckAnalogModule(moduleNumber))
+	{
+		snprintf(buf, 64, "Analog Module %d", moduleNumber);
+		wpi_setWPIErrorWithContext(ModuleIndexOutOfRange, buf);
+		return;
+	}
+	if (!CheckAnalogChannel(channel))
+	{
+		snprintf(buf, 64, "Analog Channel %d", channel);
+		wpi_setWPIErrorWithContext(ChannelIndexOutOfRange, buf);
+		return;
+	}
+
+	snprintf(buf, 64, "Analog Input %d (Module: %d)", channel, moduleNumber);
+	if (channels->Allocate((moduleNumber - 1) * kAnalogChannels + channel - 1, buf) == ~0ul)
+	{
+		CloneError(channels);
+		return;
+	}
 	m_channel = channel;
-	m_module = AnalogModule::GetInstance(slot);
+	m_module = AnalogModule::GetInstance(moduleNumber);
 	if (IsAccumulatorChannel())
 	{
-		m_accumulator = new tAccumulator(channel - 1, &status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_accumulator = tAccumulator::create(channel - 1, &localStatus);
+		wpi_setError(localStatus);
 		m_accumulatorOffset=0;
 	}
 	else
@@ -41,12 +59,12 @@ void AnalogChannel::InitChannel(UINT32 slot, UINT32 channel)
 /**
  * Construct an analog channel on a specified module.
  * 
- * @param slot The slot that the analog module is plugged into.
+ * @param moduleNumber The analog module (1 or 2).
  * @param channel The channel number to represent.
  */
-AnalogChannel::AnalogChannel(UINT32 slot, UINT32 channel)
+AnalogChannel::AnalogChannel(UINT8 moduleNumber, UINT32 channel)
 {
-	InitChannel(slot, channel);
+	InitChannel(moduleNumber, channel);
 }
 
 /**
@@ -64,7 +82,7 @@ AnalogChannel::AnalogChannel(UINT32 channel)
  */
 AnalogChannel::~AnalogChannel()
 {
-	channels->Free(AnalogModule::SlotToIndex(GetSlot()) * kAnalogModules + m_channel - 1);
+	channels->Free((m_module->GetNumber() - 1) * kAnalogChannels + m_channel - 1);
 }
 
 /**
@@ -73,6 +91,7 @@ AnalogChannel::~AnalogChannel()
  */
 AnalogModule *AnalogChannel::GetModule()
 {
+	if (StatusIsFatal()) return NULL;
 	return m_module;
 }
 
@@ -84,6 +103,7 @@ AnalogModule *AnalogChannel::GetModule()
  */
 INT16 AnalogChannel::GetValue()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetValue(m_channel);
 }
 
@@ -98,6 +118,7 @@ INT16 AnalogChannel::GetValue()
  */
 INT32 AnalogChannel::GetAverageValue()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetAverageValue(m_channel);
 }
 
@@ -108,6 +129,7 @@ INT32 AnalogChannel::GetAverageValue()
  */
 float AnalogChannel::GetVoltage()
 {
+	if (StatusIsFatal()) return 0.0f;
 	return m_module->GetVoltage(m_channel);
 }
 
@@ -120,6 +142,7 @@ float AnalogChannel::GetVoltage()
  */
 float AnalogChannel::GetAverageVoltage()
 {
+	if (StatusIsFatal()) return 0.0f;
 	return m_module->GetAverageVoltage(m_channel);
 }
 
@@ -134,6 +157,7 @@ float AnalogChannel::GetAverageVoltage()
  */
 UINT32 AnalogChannel::GetLSBWeight()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetLSBWeight(m_channel);
 }
 
@@ -148,6 +172,7 @@ UINT32 AnalogChannel::GetLSBWeight()
  */
 INT32 AnalogChannel::GetOffset()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetOffset(m_channel);
 }
 
@@ -157,16 +182,18 @@ INT32 AnalogChannel::GetOffset()
  */
 UINT32 AnalogChannel::GetChannel()
 {
+	if (StatusIsFatal()) return 0;
 	return m_channel;
 }
 
 /**
- * Get the slot that the analog module is plugged into.
- * @return The slot that the analog module is plugged into.
+ * Get the module number.
+ * @return The module number.
  */
-UINT32 AnalogChannel::GetSlot()
+UINT8 AnalogChannel::GetModuleNumber()
 {
-	return m_module->GetSlot();
+	if (StatusIsFatal()) return 0;
+	return m_module->GetNumber();
 }
 
 /**
@@ -179,6 +206,7 @@ UINT32 AnalogChannel::GetSlot()
  */
 void AnalogChannel::SetAverageBits(UINT32 bits)
 {
+	if (StatusIsFatal()) return;
 	m_module->SetAverageBits(m_channel, bits);
 }
 
@@ -191,6 +219,7 @@ void AnalogChannel::SetAverageBits(UINT32 bits)
  */
 UINT32 AnalogChannel::GetAverageBits()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetAverageBits(m_channel);
 }
 
@@ -204,6 +233,7 @@ UINT32 AnalogChannel::GetAverageBits()
  */
 void AnalogChannel::SetOversampleBits(UINT32 bits)
 {
+	if (StatusIsFatal()) return;
 	m_module->SetOversampleBits(m_channel, bits);
 }
 
@@ -216,6 +246,7 @@ void AnalogChannel::SetOversampleBits(UINT32 bits)
  */
 UINT32 AnalogChannel::GetOversampleBits()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetOversampleBits(m_channel);
 }
 
@@ -226,7 +257,8 @@ UINT32 AnalogChannel::GetOversampleBits()
  */
 bool AnalogChannel::IsAccumulatorChannel()
 {
-	if(m_module->GetSlot() != kAccumulatorSlot) return false;
+	if (StatusIsFatal()) return false;
+	if(m_module->GetNumber() != kAccumulatorModuleNumber) return false;
 	for (UINT32 i=0; i<kAccumulatorNumChannels; i++)
 	{
 		if (m_channel == kAccumulatorChannels[i]) return true;
@@ -239,6 +271,7 @@ bool AnalogChannel::IsAccumulatorChannel()
  */
 void AnalogChannel::InitAccumulator()
 {
+	if (StatusIsFatal()) return;
 	m_accumulatorOffset = 0;
 	SetAccumulatorCenter(0);
 	ResetAccumulator();
@@ -253,6 +286,7 @@ void AnalogChannel::InitAccumulator()
  */
 void AnalogChannel::SetAccumulatorInitialValue(INT64 initialValue)
 {
+	if (StatusIsFatal()) return;
 	m_accumulatorOffset = initialValue;
 }
 
@@ -261,13 +295,15 @@ void AnalogChannel::SetAccumulatorInitialValue(INT64 initialValue)
  */
 void AnalogChannel::ResetAccumulator()
 {
+	if (StatusIsFatal()) return;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
-	m_accumulator->strobeReset(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_accumulator->strobeReset(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -282,13 +318,15 @@ void AnalogChannel::ResetAccumulator()
  */
 void AnalogChannel::SetAccumulatorCenter(INT32 center)
 {
+	if (StatusIsFatal()) return;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
-	m_accumulator->writeCenter(center, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_accumulator->writeCenter(center, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -296,13 +334,15 @@ void AnalogChannel::SetAccumulatorCenter(INT32 center)
  */
 void AnalogChannel::SetAccumulatorDeadband(INT32 deadband)
 {
+	if (StatusIsFatal()) return;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
-	m_accumulator->writeDeadband(deadband, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_accumulator->writeDeadband(deadband, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -315,13 +355,15 @@ void AnalogChannel::SetAccumulatorDeadband(INT32 deadband)
  */
 INT64 AnalogChannel::GetAccumulatorValue()
 {
+	if (StatusIsFatal()) return 0;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return 0;
 	}
-	INT64 value = m_accumulator->readOutput_Value(&status) + m_accumulatorOffset;
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	INT64 value = m_accumulator->readOutput_Value(&localStatus) + m_accumulatorOffset;
+	wpi_setError(localStatus);
 	return value;
 }
 
@@ -334,14 +376,15 @@ INT64 AnalogChannel::GetAccumulatorValue()
  */
 UINT32 AnalogChannel::GetAccumulatorCount()
 {
-	status = 0;
+	if (StatusIsFatal()) return 0;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return 0;
 	}
-	UINT32 count = m_accumulator->readOutput_Count(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 count = m_accumulator->readOutput_Count(&localStatus);
+	wpi_setError(localStatus);
 	return count;
 }
 
@@ -357,22 +400,23 @@ UINT32 AnalogChannel::GetAccumulatorCount()
  */
 void AnalogChannel::GetAccumulatorOutput(INT64 *value, UINT32 *count)
 {
-	status = 0;
+	if (StatusIsFatal()) return;
 	if (m_accumulator == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 	if (value == NULL || count == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 
-	tAccumulator::tOutput output = m_accumulator->readOutput(&status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	tAccumulator::tOutput output = m_accumulator->readOutput(&localStatus);
 	*value = output.Value + m_accumulatorOffset;
 	*count = output.Count;
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -382,5 +426,6 @@ void AnalogChannel::GetAccumulatorOutput(INT64 *value, UINT32 *count)
  */
 double AnalogChannel::PIDGet() 
 {
+	if (StatusIsFatal()) return 0.0;
 	return GetAverageValue();
 }

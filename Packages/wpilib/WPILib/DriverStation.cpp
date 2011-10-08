@@ -8,13 +8,13 @@
 #include "AnalogChannel.h"
 #include "Synchronized.h"
 #include "Timer.h"
-#include "Utility.h"
-#include "WPIStatus.h"
 #include "NetworkCommunication/FRCComm.h"
-#include <strLib.h>
 #include "MotorSafetyHelper.h"
+#include "Utility.h"
+#include "WPIErrors.h"
+#include <strLib.h>
 
-const UINT32 DriverStation::kBatterySlot;
+const UINT32 DriverStation::kBatteryModuleNumber;
 const UINT32 DriverStation::kBatteryChannel;
 const UINT32 DriverStation::kJoystickPorts;
 const UINT32 DriverStation::kJoystickAxes;
@@ -40,6 +40,11 @@ DriverStation::DriverStation()
 	, m_newControlData (false)
 	, m_packetDataAvailableSem (0)
 	, m_enhancedIO()
+	, m_waitForDataSem(0)
+	, m_approxMatchTimeOffset(-1.0)
+	, m_userInDisabled(false)
+	, m_userInAutonomous(false)
+	, m_userInTeleop(false)
 {
 	// Create a new semaphore
 	m_packetDataAvailableSem = semBCreate (SEM_Q_PRIORITY, SEM_EMPTY);
@@ -47,6 +52,8 @@ DriverStation::DriverStation()
 	// Register that semaphore with the network communications task.
 	// It will signal when new packet data is available. 
 	setNewDataSem(m_packetDataAvailableSem);
+
+	m_waitForDataSem = semBCreate (SEM_Q_PRIORITY, SEM_EMPTY);
 
 	m_controlData = new FRCCommonControlData;
 
@@ -75,13 +82,13 @@ DriverStation::DriverStation()
 	m_controlData->analog4 = 0;
 	m_controlData->dsDigitalIn = 0;
 
-	m_batteryChannel = new AnalogChannel(kBatterySlot, kBatteryChannel);
+	m_batteryChannel = new AnalogChannel(kBatteryModuleNumber, kBatteryChannel);
 
 	AddToSingletonList();
 
 	if (!m_task.Start((INT32)this))
 	{
-		wpi_fatal(DriverStationTaskError);
+		wpi_setWPIError(DriverStationTaskError);
 	}
 }
 
@@ -92,6 +99,7 @@ DriverStation::~DriverStation()
 	delete m_batteryChannel;
 	delete m_controlData;
 	m_instance = NULL;
+	semDelete(m_waitForDataSem);
 	// Unregister our semaphore.
 	setNewDataSem(0);
 	semDelete(m_packetDataAvailableSem);
@@ -111,11 +119,18 @@ void DriverStation::Run()
 		SetData();
 		m_enhancedIO.UpdateData();
 		GetData();
+		semFlush(m_waitForDataSem);
 		if (++period >= 4)
 		{
 			MotorSafetyHelper::CheckMotors();
 			period = 0;
 		}
+		if (m_userInDisabled)
+			FRC_NetworkCommunication_observeUserProgramDisabled();
+		if (m_userInAutonomous)
+			FRC_NetworkCommunication_observeUserProgramAutonomous();
+		if (m_userInTeleop)
+			FRC_NetworkCommunication_observeUserProgramTeleop();
 	}
 }
 
@@ -138,7 +153,21 @@ DriverStation* DriverStation::GetInstance()
  */
 void DriverStation::GetData()
 {
+	static bool lastEnabled = false;
 	getCommonControlData(m_controlData, WAIT_FOREVER);
+	if (!lastEnabled && IsEnabled()) 
+	{
+		// If starting teleop, assume that autonomous just took up 15 seconds
+		if (IsAutonomous())
+			m_approxMatchTimeOffset = Timer::GetFPGATimestamp();
+		else
+			m_approxMatchTimeOffset = Timer::GetFPGATimestamp() - 15.0;
+	}
+	else if (lastEnabled && !IsEnabled())
+	{
+		m_approxMatchTimeOffset = -1.0;
+	}
+	lastEnabled = IsEnabled();
 	m_newControlData = true;
 }
 
@@ -173,7 +202,8 @@ void DriverStation::SetData()
  */
 float DriverStation::GetBatteryVoltage()
 {
-	wpi_assert(m_batteryChannel != NULL);
+	if (m_batteryChannel == NULL)
+		wpi_setWPIError(NullParameter);
 
 	// The Analog bumper has a voltage divider on the battery source.
 	// Vbatt *--/\/\/\--* Vsample *--/\/\/\--* Gnd
@@ -193,7 +223,7 @@ float DriverStation::GetStickAxis(UINT32 stick, UINT32 axis)
 {
 	if (axis < 1 || axis > kJoystickAxes)
 	{
-		wpi_fatal(BadJoystickAxis);
+		wpi_setWPIError(BadJoystickAxis);
 		return 0.0;
 	}
 
@@ -213,7 +243,7 @@ float DriverStation::GetStickAxis(UINT32 stick, UINT32 axis)
 			value = m_controlData->stick3Axes[axis-1];
 			break;
 		default:
-			wpi_fatal(BadJoystickIndex);
+			wpi_setWPIError(BadJoystickIndex);
 			return 0.0;
 	}
 	
@@ -239,7 +269,9 @@ float DriverStation::GetStickAxis(UINT32 stick, UINT32 axis)
  */
 short DriverStation::GetStickButtons(UINT32 stick)
 {
-	wpi_assert ((stick >= 1) && (stick <= 4));
+	if (stick < 1 || stick > 4)
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "stick must be between 1 and 4");
+
 	switch (stick)
 	{
 	case 1:
@@ -268,7 +300,9 @@ short DriverStation::GetStickButtons(UINT32 stick)
  */
 float DriverStation::GetAnalogIn(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 4));
+	if (channel < 1 || channel > 4)
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 4");
+
 	switch (channel)
 	{
 	case 1:
@@ -291,7 +325,9 @@ float DriverStation::GetAnalogIn(UINT32 channel)
  */
 bool DriverStation::GetDigitalIn(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 8));
+	if (channel < 1 || channel > 8)
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+
 	return ((m_controlData->dsDigitalIn >> (channel-1)) & 0x1) ? true : false;
 }
 
@@ -306,7 +342,9 @@ bool DriverStation::GetDigitalIn(UINT32 channel)
  */
 void DriverStation::SetDigitalOut(UINT32 channel, bool value) 
 {
-	wpi_assert ((channel >= 1) && (channel <= 8));
+	if (channel < 1 || channel > 8)
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+
 	m_digitalOut &= ~(0x1 << (channel-1));
 	m_digitalOut |= ((UINT8)value << (channel-1));
 }
@@ -318,7 +356,9 @@ void DriverStation::SetDigitalOut(UINT32 channel, bool value)
  */
 bool DriverStation::GetDigitalOut(UINT32 channel) 
 {
-	wpi_assert ((channel >= 1) && (channel <= 8));
+	if (channel < 1 || channel > 8)
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+
 	return ((m_digitalOut >> (channel-1)) & 0x1) ? true : false;;
 }
 
@@ -344,6 +384,8 @@ bool DriverStation::IsOperatorControl()
 
 /**
  * Has a new control packet from the driver station arrived since the last time this function was called?
+ * Warning: If you call this function from more than one place at the same time,
+ * you will not get the get the intended behavior
  * @return True if the control data has been updated since the last call.
  */
 bool DriverStation::IsNewControlData()
@@ -367,13 +409,18 @@ bool DriverStation::IsFMSAttached()
  * Return the DS packet number.
  * The packet number is the index of this set of data returned by the driver station.
  * Each time new data is received, the packet number (included with the sent data) is returned.
+ * @return The driver station packet number
  */
 UINT32 DriverStation::GetPacketNumber()
 {
 	return m_controlData->packetIndex;
 }
 
-
+/**
+ * Return the alliance that the driver station says it is on.
+ * This could return kRed or kBlue
+ * @return The Alliance enum
+ */
 DriverStation::Alliance DriverStation::GetAlliance()
 {
 	if (m_controlData->dsID_Alliance == 'R') return kRed;
@@ -382,9 +429,49 @@ DriverStation::Alliance DriverStation::GetAlliance()
 	return kInvalid;
 }
 
+/**
+ * Return the driver station location on the field
+ * This could return 1, 2, or 3
+ * @return The location of the driver station
+ */
 UINT32 DriverStation::GetLocation()
 {
 	wpi_assert ((m_controlData->dsID_Position >= '1') && (m_controlData->dsID_Position <= '3'));
 	return m_controlData->dsID_Position - '0';
 }
 
+/**
+ * Wait until a new packet comes from the driver station
+ * This blocks on a semaphore, so the waiting is efficient.
+ * This is a good way to delay processing until there is new driver station data to act on
+ */
+void DriverStation::WaitForData()
+{
+	semTake(m_waitForDataSem, WAIT_FOREVER);
+}
+
+/**
+ * Return the approximate match time
+ * The FMS does not currently send the official match time to the robots
+ * This returns the time since the enable signal sent from the Driver Station
+ * At the beginning of autonomous, the time is reset to 0.0 seconds
+ * At the beginning of teleop, the time is reset to +15.0 seconds
+ * If the robot is disabled, this returns 0.0 seconds
+ * Warning: This is not an official time (so it cannot be used to argue with referees)
+ * @return Match time in seconds since the beginning of autonomous
+ */
+double DriverStation::GetMatchTime()
+{
+	if (m_approxMatchTimeOffset < 0.0)
+		return 0.0;
+	return Timer::GetFPGATimestamp() - m_approxMatchTimeOffset;
+}
+
+/**
+ * Return the team number that the Driver Station is configured for
+ * @return The team number
+ */
+UINT16 DriverStation::GetTeamNumber()
+{
+	return m_controlData->teamID;
+}

@@ -46,7 +46,7 @@ public:
 		DigitalOutput &cs, DataFormat_Range range=kRange_2G);
 	ADXL345_SPI(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *miso,
 		DigitalOutput *cs, DataFormat_Range range=kRange_2G);
-	ADXL345_SPI(UINT32 slot, UINT32 clk, UINT32 mosi, UINT32 miso, UINT32 cs,
+	ADXL345_SPI(UINT8 moduleNumber, UINT32 clk, UINT32 mosi, UINT32 miso, UINT32 cs,
 		DataFormat_Range range=kRange_2G);
 	virtual ~ADXL345_SPI();
 	virtual double GetAcceleration(Axes axis);

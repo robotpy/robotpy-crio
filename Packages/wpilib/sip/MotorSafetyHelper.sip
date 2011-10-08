@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class MotorSafetyHelper
+class MotorSafetyHelper : ErrorBase
 {
 %TypeHeaderCode
 #include <WPILib/MotorSafetyHelper.h>
@@ -29,6 +29,7 @@ class MotorSafetyHelper
 
 public:
 	MotorSafetyHelper(MotorSafety *safeObject);
+	~MotorSafetyHelper();
 	void Feed();
 	void SetExpiration(float expirationTime);
 	float GetExpiration();

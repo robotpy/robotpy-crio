@@ -30,9 +30,21 @@ class ErrorBase
 public:
 	virtual ~ErrorBase();
 	virtual Error& GetError();
-	virtual void SetError(Error::Code code, const char* filename, UINT32 lineNumber) const;
+	virtual void SetErrnoError(const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetImaqError(int success, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetError(Error::Code code, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void SetWPIError(const char *errorMessage, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber) const;
+	virtual void CloneError(ErrorBase *rhs) const;
 	virtual void ClearError();
 	virtual bool StatusIsFatal() const;
+	static void SetGlobalError(Error::Code code, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber);
+	static void SetGlobalWPIError(const char *errorMessage, const char *contextMessage,
+		const char* filename, const char* function, UINT32 lineNumber);
 	static Error& GetGlobalError();
 protected:
 	ErrorBase();

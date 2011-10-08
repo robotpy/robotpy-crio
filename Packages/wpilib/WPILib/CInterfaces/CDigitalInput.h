@@ -7,14 +7,14 @@
 #ifndef _C_DIGITAL_INPUT_H
 #define _C_DIGITIL_INPUT_H
 
-UINT32 GetDigitalInput(UINT32 slot, UINT32 channel);
+UINT32 GetDigitalInput(UINT8 moduleNumber, UINT32 channel);
 UINT32 GetDigitalInput(UINT32 channel);
-void DeleteDigitalInput(UINT32 slot, UINT32 channel);
+void DeleteDigitalInput(UINT8 moduleNumber, UINT32 channel);
 void DeleteDigitalInput(UINT32 channel);
 
 typedef void *DigitalInputObject;
 
-DigitalInputObject CreateDigitalInput(UINT32 slot, UINT32 channel);
+DigitalInputObject CreateDigitalInput(UINT8 moduleNumber, UINT32 channel);
 DigitalInputObject CreateDigitalInput(UINT32 channel);
 bool GetDigitalInput(DigitalInputObject o);
 void DeleteDigitalInput(DigitalInputObject o);

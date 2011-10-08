@@ -5,39 +5,41 @@
 #define __tSystem_h__
 
 #include "NiRio.h"
-#include "tDMAChannelDescriptor.h"
 #include <vxWorks.h>
+
+#define FRC_FPGA_PRELOAD_BITFILE
+
+typedef uint32_t NiFpga_Session;
 
 namespace nFPGA
 {
 
-#define FPGA_INTERRUPT_BASE_ADDRESS 0x8000
-#define FPGA_SIGNATURE_REGISTER 0x8108
-
 class tSystem
 {
 public:
-   tSystem(tRioStatusCode *status, bool getLVHandle = false);
+   tSystem(tRioStatusCode *status);
    ~tSystem();
-   void getFpgaGuid(unsigned *guid_ptr, tRioStatusCode *status);
-   void downloadFPGAImage(const char *imageFileName, tRioStatusCode *status);
+   void getFpgaGuid(uint32_t *guid_ptr, tRioStatusCode *status);
 
 protected:
-   void configDMA(const tDMAChannelDescriptor *descriptors, int numChannels, unsigned int dmaVersion, tRioStatusCode *status);
-   static tRioDeviceHandle _DeviceHandle;
-   tRioDeviceHandle _LVDeviceHandle;
-   static const tDMAChannelDescriptor *_configuredDmaDescriptors;
-   static int _numDmaDescriptors;
-   bool getFPGAReconfigured()
-   {
-      return _fpgaReconfigured;
-   }
+   static NiFpga_Session _DeviceHandle;
 
+#ifdef FRC_FPGA_PRELOAD_BITFILE
+   void NiFpga_SharedOpen_common(const char*     bitfile);
+   NiFpga_Status NiFpga_SharedOpen(const char*     bitfile,
+                            const char*     signature,
+                            const char*     resource,
+                            uint32_t        attribute,
+                            NiFpga_Session* session);
+   NiFpga_Status NiFpgaLv_SharedOpen(const char* const     bitfile,
+                            const char* const     apiSignature,
+                            const char* const     resource,
+                            const uint32_t        attribute,
+                            NiFpga_Session* const session);
 private:
-   void abortFPGA(tRioStatusCode *status);
-   static int _ReferenceCount;
-   static SEM_ID _ReferenceMutex;
-   static bool _fpgaReconfigured;
+    static char *_FileName;
+    static char *_Bitfile;
+#endif
 };
 
 }

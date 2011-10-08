@@ -28,7 +28,7 @@ class DigitalModule: Module
 %End
 
 protected:
-	explicit DigitalModule(UINT32 slot);
+	explicit DigitalModule(UINT8 moduleNumber);
 	virtual ~DigitalModule();
 
 public:
@@ -59,8 +59,8 @@ public:
 
 	I2C* GetI2C(UINT32 address);
 
-	static UINT32 SlotToIndex(UINT32 slot);
-	static DigitalModule* GetInstance(UINT32 slot);
+	static DigitalModule* GetInstance(UINT8 moduleNumber);
+
 	static UINT8 RemapDigitalChannel(UINT32 channel);
 	static UINT8 UnmapDigitalChannel(UINT32 channel);
 };

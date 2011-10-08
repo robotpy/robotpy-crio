@@ -28,7 +28,7 @@ class AnalogTrigger: SensorBase
 %End
 
 public:
-	AnalogTrigger(UINT32 slot, UINT32 channel);
+	AnalogTrigger(UINT8 moduleNumber, UINT32 channel);
 	explicit AnalogTrigger(UINT32 channel);
 	explicit AnalogTrigger(AnalogChannel *channel);
 	virtual ~AnalogTrigger();

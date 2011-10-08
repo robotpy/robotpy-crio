@@ -36,131 +36,13 @@ DEALINGS IN THE SOFTWARE.
 //============================================================================
 //  Enumerated Types
 //============================================================================
-enum SearchStrategy {
-    IMAQ_CONSERVATIVE               = 1,
-    IMAQ_BALANCED                   = 2,
-    IMAQ_AGGRESSIVE                 = 3,
-    IMAQ_VERY_AGGRESSIVE            = 4,
-    IMAQ_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum MeterArcMode {
-    IMAQ_METER_ARC_ROI             = 0,
-    IMAQ_METER_ARC_POINTS          = 1,
-    IMAQ_METER_ARC_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum MorphologyMethod {
-    IMAQ_AUTOM                        = 0,
-    IMAQ_CLOSE                        = 1,
-    IMAQ_DILATE                       = 2,
-    IMAQ_ERODE                        = 3,
-    IMAQ_GRADIENT                     = 4,
-    IMAQ_GRADIENTOUT                  = 5,
-    IMAQ_GRADIENTIN                   = 6,
-    IMAQ_HITMISS                      = 7,
-    IMAQ_OPEN                         = 8,
-    IMAQ_PCLOSE                       = 9,
-    IMAQ_POPEN                        = 10,
-    IMAQ_THICK                        = 11,
-    IMAQ_THIN                         = 12,
-    IMAQ_MORPHOLOGY_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ObjectType {
-    IMAQ_BRIGHT_OBJECTS         = 0,
-    IMAQ_DARK_OBJECTS           = 1,
-    IMAQ_OBJECT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum OutlineMethod {
-    IMAQ_EDGE_DIFFERENCE           = 0,
-    IMAQ_EDGE_GRADIENT             = 1,
-    IMAQ_EDGE_PREWITT              = 2,
-    IMAQ_EDGE_ROBERTS              = 3,
-    IMAQ_EDGE_SIGMA                = 4,
-    IMAQ_EDGE_SOBEL                = 5,
-    IMAQ_OUTLINE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum PaletteType {
-    IMAQ_PALETTE_GRAY            = 0,
-    IMAQ_PALETTE_BINARY          = 1,
-    IMAQ_PALETTE_GRADIENT        = 2,
-    IMAQ_PALETTE_RAINBOW         = 3,
-    IMAQ_PALETTE_TEMPERATURE     = 4,
-    IMAQ_PALETTE_USER            = 5,
-    IMAQ_PALETTE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ParticleInfoMode {
-    IMAQ_BASIC_INFO                    = 0,
-    IMAQ_ALL_INFO                      = 1,
-    IMAQ_PARTICLE_INFO_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum PhotometricMode {
-    IMAQ_WHITE_IS_ZERO               = 0,
-    IMAQ_BLACK_IS_ZERO               = 1,
-    IMAQ_PHOTOMETRIC_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Plane3D {
-    IMAQ_3D_REAL             = 0,
-    IMAQ_3D_IMAGINARY        = 1,
-    IMAQ_3D_MAGNITUDE        = 2,
-    IMAQ_3D_PHASE            = 3,
-    IMAQ_PLANE_3D_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum PointSymbol {
-    IMAQ_POINT_AS_PIXEL          = 0,
-    IMAQ_POINT_AS_CROSS          = 1,
-    IMAQ_POINT_USER_DEFINED      = 2,
-    IMAQ_POINT_SYMBOL_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum PolarityType {
-    IMAQ_EDGE_RISING              = 1,
-    IMAQ_EDGE_FALLING             = -1,
-    IMAQ_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum RakeDirection {
-    IMAQ_LEFT_TO_RIGHT             = 0,
-    IMAQ_RIGHT_TO_LEFT             = 1,
-    IMAQ_TOP_TO_BOTTOM             = 2,
-    IMAQ_BOTTOM_TO_TOP             = 3,
-    IMAQ_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum RectOrientation {
-    IMAQ_BASE_INSIDE                 = 0,
-    IMAQ_BASE_OUTSIDE                = 1,
-    IMAQ_TEXT_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ReferenceMode {
-    IMAQ_COORD_X_Y                 = 0,
-    IMAQ_COORD_ORIGIN_X            = 1,
-    IMAQ_REFERENCE_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum WindowOptions {
-    IMAQ_WIND_RESIZABLE            = 1,
-    IMAQ_WIND_TITLEBAR             = 2,
-    IMAQ_WIND_CLOSEABLE            = 4,
-    IMAQ_WIND_TOPMOST              = 8,
-    IMAQ_WINDOW_OPTIONS_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ThresholdMethod {
-    IMAQ_THRESH_CLUSTERING           = 0,
-    IMAQ_THRESH_ENTROPY              = 1,
-    IMAQ_THRESH_METRIC               = 2,
-    IMAQ_THRESH_MOMENTS              = 3,
-    IMAQ_THRESH_INTERCLASS           = 4,
-    IMAQ_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum AIMGrade {
+    IMAQ_AIM_GRADE_F                      = 0,
+    IMAQ_AIM_GRADE_D                      = 1,
+    IMAQ_AIM_GRADE_C                      = 2,
+    IMAQ_AIM_GRADE_B                      = 3,
+    IMAQ_AIM_GRADE_A                      = 4,
+    IMAQ_DATA_MATRIX_AIM_GRADE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum AttenuateMode {
@@ -169,110 +51,111 @@ enum AttenuateMode {
     IMAQ_ATTENUATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum VisionInfoType {
-    IMAQ_ANY_VISION_INFO             = 0,
-    IMAQ_PATTERN_MATCHING_INFO       = 1,
-    IMAQ_CALIBRATION_INFO            = 2,
-    IMAQ_OVERLAY_INFO                = 3,
-    IMAQ_VISION_INFO_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum AxisOrientation {
+    IMAQ_DIRECT                      = 0,
+    IMAQ_INDIRECT                    = 1,
+    IMAQ_AXIS_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum VerticalTextAlignment {
-    IMAQ_BOTTOM                             = 0,
-    IMAQ_TOP                                = 1,
-    IMAQ_BASELINE                           = 2,
-    IMAQ_VERTICAL_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
+enum Barcode2DCellShape {
+    IMAQ_SQUARE_CELLS                     = 0,
+    IMAQ_ROUND_CELLS                      = 1,
+    IMAQ_BARCODE_2D_CELL_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum TwoEdgePolarityType {
-    IMAQ_NONE                              = 0,
-    IMAQ_RISING_FALLING                    = 1,
-    IMAQ_FALLING_RISING                    = 2,
-    IMAQ_RISING_RISING                     = 3,
-    IMAQ_FALLING_FALLING                   = 4,
-    IMAQ_TWO_EDGE_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum Barcode2DContrast {
+    IMAQ_ALL_BARCODE_2D_CONTRASTS       = 0,
+    IMAQ_BLACK_ON_WHITE_BARCODE_2D      = 1,
+    IMAQ_WHITE_ON_BLACK_BARCODE_2D      = 2,
+    IMAQ_BARCODE_2D_CONTRAST_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum TruncateMode {
-    IMAQ_TRUNCATE_LOW             = 0,
-    IMAQ_TRUNCATE_HIGH            = 1,
-    IMAQ_TRUNCATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum Barcode2DSearchMode {
+    IMAQ_SEARCH_MULTIPLE                   = 0,
+    IMAQ_SEARCH_SINGLE_CONSERVATIVE        = 1,
+    IMAQ_SEARCH_SINGLE_AGGRESSIVE          = 2,
+    IMAQ_BARCODE_2D_SEARCH_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ScalingMethod {
-    IMAQ_SCALE_TO_PRESERVE_AREA    = 0,
-    IMAQ_SCALE_TO_FIT              = 1,
-    IMAQ_SCALING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum Barcode2DShape {
+    IMAQ_SQUARE_BARCODE_2D           = 0,
+    IMAQ_RECTANGULAR_BARCODE_2D      = 1,
+    IMAQ_BARCODE_2D_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum TIFFCompressionType {
-    IMAQ_NO_COMPRESSION                   = 0,
-    IMAQ_JPEG                             = 1,
-    IMAQ_RUN_LENGTH                       = 2,
-    IMAQ_ZIP                              = 3,
-    IMAQ_TIFF_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum Barcode2DType {
+    IMAQ_PDF417                     = 0,
+    IMAQ_DATA_MATRIX_ECC_000        = 1,
+    IMAQ_DATA_MATRIX_ECC_050        = 2,
+    IMAQ_DATA_MATRIX_ECC_080        = 3,
+    IMAQ_DATA_MATRIX_ECC_100        = 4,
+    IMAQ_DATA_MATRIX_ECC_140        = 5,
+    IMAQ_DATA_MATRIX_ECC_200        = 6,
+    IMAQ_BARCODE_2D_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ScalingMode {
-    IMAQ_SCALE_LARGER            = 0,
-    IMAQ_SCALE_SMALLER           = 1,
-    IMAQ_SCALING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum BarcodeType {
+    IMAQ_INVALID                 = -1,
+    IMAQ_CODABAR                 = 1,
+    IMAQ_CODE39                  = 2,
+    IMAQ_CODE93                  = 4,
+    IMAQ_CODE128                 = 8,
+    IMAQ_EAN8                    = 16,
+    IMAQ_EAN13                   = 32,
+    IMAQ_I2_OF_5                 = 64,
+    IMAQ_MSI                     = 128,
+    IMAQ_UPCA                    = 256,
+    IMAQ_PHARMACODE              = 512,
+    IMAQ_RSS_LIMITED             = 1024,
+    IMAQ_BARCODE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum TextAlignment {
-    IMAQ_LEFT                      = 0,
-    IMAQ_CENTER                    = 1,
-    IMAQ_RIGHT                     = 2,
-    IMAQ_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
+enum BorderMethod {
+    IMAQ_BORDER_MIRROR            = 0,
+    IMAQ_BORDER_COPY              = 1,
+    IMAQ_BORDER_CLEAR             = 2,
+    IMAQ_BORDER_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum SpokeDirection {
-    IMAQ_OUTSIDE_TO_INSIDE          = 0,
-    IMAQ_INSIDE_TO_OUTSIDE          = 1,
-    IMAQ_SPOKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+enum BrowserFrameStyle {
+    IMAQ_RAISED_FRAME                   = 0,
+    IMAQ_BEVELLED_FRAME                 = 1,
+    IMAQ_OUTLINE_FRAME                  = 2,
+    IMAQ_HIDDEN_FRAME                   = 3,
+    IMAQ_STEP_FRAME                     = 4,
+    IMAQ_RAISED_OUTLINE_FRAME           = 5,
+    IMAQ_BROWSER_FRAME_STYLE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum SkeletonMethod {
-    IMAQ_SKELETON_L                 = 0,
-    IMAQ_SKELETON_M                 = 1,
-    IMAQ_SKELETON_INVERSE           = 2,
-    IMAQ_SKELETON_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum BrowserLocation {
+    IMAQ_INSERT_FIRST_FREE           = 0,
+    IMAQ_INSERT_END                  = 1,
+    IMAQ_BROWSER_LOCATION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum SizeType {
-    IMAQ_KEEP_LARGE           = 0,
-    IMAQ_KEEP_SMALL           = 1,
-    IMAQ_SIZE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum ButtonLabel {
+    IMAQ_BUTTON_OK               = 0,
+    IMAQ_BUTTON_SAVE             = 1,
+    IMAQ_BUTTON_SELECT           = 2,
+    IMAQ_BUTTON_LOAD             = 3,
+    IMAQ_BUTTON_LABEL_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ShapeMode {
-    IMAQ_SHAPE_RECT            = 1,
-    IMAQ_SHAPE_OVAL            = 2,
-    IMAQ_SHAPE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum CalibrationMode2 {
+    IMAQ_PERSPECTIVE_MODE             = 0,
+    IMAQ_MICROPLANE_MODE              = 1,
+    IMAQ_SIMPLE_CALIBRATION_MODE      = 2,
+    IMAQ_CORRECTED_IMAGE_MODE         = 3,
+    IMAQ_NO_CALIBRATION_MODE          = 4,
+    IMAQ_CALIBRATION_MODE2_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum MatchingMode {
-    IMAQ_MATCH_SHIFT_INVARIANT    = 1,
-    IMAQ_MATCH_ROTATION_INVARIANT = 2,
-    IMAQ_MATCHING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Tool {
-    IMAQ_NO_TOOL              = -1,
-    IMAQ_SELECTION_TOOL       = 0,
-    IMAQ_POINT_TOOL           = 1,
-    IMAQ_LINE_TOOL            = 2,
-    IMAQ_RECTANGLE_TOOL       = 3,
-    IMAQ_OVAL_TOOL            = 4,
-    IMAQ_POLYGON_TOOL         = 5,
-    IMAQ_CLOSED_FREEHAND_TOOL = 6,
-    IMAQ_ANNULUS_TOOL         = 7,
-    IMAQ_ZOOM_TOOL            = 8,
-    IMAQ_PAN_TOOL             = 9,
-    IMAQ_POLYLINE_TOOL        = 10,
-    IMAQ_FREEHAND_TOOL        = 11,
-    IMAQ_ROTATED_RECT_TOOL    = 12,
-    IMAQ_TOOL_SIZE_GUARD      = 0xFFFFFFFF   
+enum CalibrationMode {
+    IMAQ_PERSPECTIVE                 = 0,
+    IMAQ_NONLINEAR                   = 1,
+    IMAQ_SIMPLE_CALIBRATION          = 2,
+    IMAQ_CORRECTED_IMAGE             = 3,
+    IMAQ_CALIBRATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum CalibrationROI {
@@ -284,105 +167,11 @@ enum CalibrationROI {
     IMAQ_CALIBRATION_ROI_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum MeasurementValue {
-    IMAQ_AREA                         = 0,
-    IMAQ_AREA_CALIBRATED              = 1,
-    IMAQ_NUM_HOLES                    = 2,
-    IMAQ_AREA_OF_HOLES                = 3,
-    IMAQ_TOTAL_AREA                   = 4,
-    IMAQ_IMAGE_AREA                   = 5,
-    IMAQ_PARTICLE_TO_IMAGE            = 6,
-    IMAQ_PARTICLE_TO_TOTAL            = 7,
-    IMAQ_CENTER_MASS_X                = 8,
-    IMAQ_CENTER_MASS_Y                = 9,
-    IMAQ_LEFT_COLUMN                  = 10,
-    IMAQ_TOP_ROW                      = 11,
-    IMAQ_RIGHT_COLUMN                 = 12,
-    IMAQ_BOTTOM_ROW                   = 13,
-    IMAQ_WIDTH                        = 14,
-    IMAQ_HEIGHT                       = 15,
-    IMAQ_MAX_SEGMENT_LENGTH           = 16,
-    IMAQ_MAX_SEGMENT_LEFT_COLUMN      = 17,
-    IMAQ_MAX_SEGMENT_TOP_ROW          = 18,
-    IMAQ_PERIMETER                    = 19,
-    IMAQ_PERIMETER_OF_HOLES           = 20,
-    IMAQ_SIGMA_X                      = 21,
-    IMAQ_SIGMA_Y                      = 22,
-    IMAQ_SIGMA_XX                     = 23,
-    IMAQ_SIGMA_YY                     = 24,
-    IMAQ_SIGMA_XY                     = 25,
-    IMAQ_PROJ_X                       = 26,
-    IMAQ_PROJ_Y                       = 27,
-    IMAQ_INERTIA_XX                   = 28,
-    IMAQ_INERTIA_YY                   = 29,
-    IMAQ_INERTIA_XY                   = 30,
-    IMAQ_MEAN_H                       = 31,
-    IMAQ_MEAN_V                       = 32,
-    IMAQ_MAX_INTERCEPT                = 33,
-    IMAQ_MEAN_INTERCEPT               = 34,
-    IMAQ_ORIENTATION                  = 35,
-    IMAQ_EQUIV_ELLIPSE_MINOR          = 36,
-    IMAQ_ELLIPSE_MAJOR                = 37,
-    IMAQ_ELLIPSE_MINOR                = 38,
-    IMAQ_ELLIPSE_RATIO                = 39,
-    IMAQ_RECT_LONG_SIDE               = 40,
-    IMAQ_RECT_SHORT_SIDE              = 41,
-    IMAQ_RECT_RATIO                   = 42,
-    IMAQ_ELONGATION                   = 43,
-    IMAQ_COMPACTNESS                  = 44,
-    IMAQ_HEYWOOD                      = 45,
-    IMAQ_TYPE_FACTOR                  = 46,
-    IMAQ_HYDRAULIC                    = 47,
-    IMAQ_WADDLE_DISK                  = 48,
-    IMAQ_DIAGONAL                     = 49,
-    IMAQ_MEASUREMENT_VALUE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ComplexPlane {
-    IMAQ_REAL                     = 0,
-    IMAQ_IMAGINARY                = 1,
-    IMAQ_MAGNITUDE                = 2,
-    IMAQ_PHASE                    = 3,
-    IMAQ_COMPLEX_PLANE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ComparisonFunction {
-    IMAQ_CLEAR_LESS                  = 0,
-    IMAQ_CLEAR_LESS_OR_EQUAL         = 1,
-    IMAQ_CLEAR_EQUAL                 = 2,
-    IMAQ_CLEAR_GREATER_OR_EQUAL      = 3,
-    IMAQ_CLEAR_GREATER               = 4,
-    IMAQ_COMPARE_FUNCTION_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ColorSensitivity {
-    IMAQ_SENSITIVITY_LOW              = 0,
-    IMAQ_SENSITIVITY_MED              = 1,
-    IMAQ_SENSITIVITY_HIGH             = 2,
-    IMAQ_COLOR_SENSITIVITY_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ColorMode {
-    IMAQ_RGB                   = 0,
-    IMAQ_HSL                   = 1,
-    IMAQ_HSV                   = 2,
-    IMAQ_HSI                   = 3,
-    IMAQ_CIE                   = 4,
-    IMAQ_CIEXYZ                = 5,
-    IMAQ_COLOR_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ContourType {
-    IMAQ_EMPTY_CONTOUR           = 0,
-    IMAQ_POINT                   = 1,
-    IMAQ_LINE                    = 2,
-    IMAQ_RECT                    = 3,
-    IMAQ_OVAL                    = 4,
-    IMAQ_CLOSED_CONTOUR          = 5,
-    IMAQ_OPEN_CONTOUR            = 6,
-    IMAQ_ANNULUS                 = 7,
-    IMAQ_ROTATED_RECT            = 8,
-    IMAQ_CONTOUR_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum CalibrationThumbnailType {
+    IMAQ_CAMARA_MODEL_TYPE                     = 0,
+    IMAQ_PERSPECTIVE_TYPE                      = 1,
+    IMAQ_MICRO_PLANE_TYPE                      = 2,
+    IMAQ_CALIBRATION_THUMBNAIL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum CalibrationUnit {
@@ -402,63 +191,26 @@ enum CalibrationUnit {
     IMAQ_CALIBRATION_UNIT_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum DetectionMode {
-    IMAQ_DETECT_PEAKS              = 0,
-    IMAQ_DETECT_VALLEYS            = 1,
-    IMAQ_DETECTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum ClassifierEngineType {
+    IMAQ_ENGINE_NONE                       = 0,
+    IMAQ_ENGINE_NEAREST_NEIGHBOR           = 1,
+    IMAQ_ENGINE_SUPPORT_VECTOR_MACHINE     = 2,           
+    IMAQ_CLASSIFIER_ENGINE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum CalibrationMode {
-    IMAQ_PERSPECTIVE                = 0,
-    IMAQ_NONLINEAR                  = 1,
-    IMAQ_SIMPLE_CALIBRATION         = 2,
-    IMAQ_CORRECTED_IMAGE            = 3,
-    IMAQ_DISTORTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum ClassifierType {
+    IMAQ_CLASSIFIER_CUSTOM          = 0,
+    IMAQ_CLASSIFIER_PARTICLE        = 1,
+    IMAQ_CLASSIFIER_COLOR           = 2,
+    IMAQ_CLASSIFIER_TEXTURE         = 3,
+    IMAQ_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum BrowserLocation {
-    IMAQ_INSERT_FIRST_FREE           = 0,
-    IMAQ_INSERT_END                  = 1,
-    IMAQ_BROWSER_LOCATION_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum BrowserFrameStyle {
-    IMAQ_RAISED_FRAME                   = 0,
-    IMAQ_BEVELLED_FRAME                 = 1,
-    IMAQ_OUTLINE_FRAME                  = 2,
-    IMAQ_HIDDEN_FRAME                   = 3,
-    IMAQ_STEP_FRAME                     = 4,
-    IMAQ_RAISED_OUTLINE_FRAME           = 5,
-    IMAQ_BROWSER_FRAME_STYLE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum BorderMethod {
-    IMAQ_BORDER_MIRROR            = 0,
-    IMAQ_BORDER_COPY              = 1,
-    IMAQ_BORDER_CLEAR             = 2,
-    IMAQ_BORDER_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum BarcodeType {
-    IMAQ_INVALID                 = -1,
-    IMAQ_CODABAR                 = 1,
-    IMAQ_CODE39                  = 2,
-    IMAQ_CODE93                  = 4,
-    IMAQ_CODE128                 = 8,
-    IMAQ_EAN8                    = 16,
-    IMAQ_EAN13                   = 32,
-    IMAQ_I2_OF_5                 = 64,
-    IMAQ_MSI                     = 128,
-    IMAQ_UPCA                    = 256,
-    IMAQ_PHARMACODE              = 512,
-    IMAQ_RSS_LIMITED             = 1024,
-    IMAQ_BARCODE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum AxisOrientation {
-    IMAQ_DIRECT                      = 0,
-    IMAQ_INDIRECT                    = 1,
-    IMAQ_AXIS_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
+enum ColorClassificationResolution {
+    IMAQ_CLASSIFIER_LOW_RESOLUTION        = 0,
+    IMAQ_CLASSIFIER_MEDIUM_RESOLUTION     = 1,
+    IMAQ_CLASSIFIER_HIGH_RESOLUTION       = 2,
+    IMAQ_CLASSIFIER_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum ColorIgnoreMode {
@@ -469,52 +221,51 @@ enum ColorIgnoreMode {
     IMAQ_BLACK_WHITE_IGNORE_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ImageType {
-    IMAQ_IMAGE_U8              = 0,
-    IMAQ_IMAGE_U16             = 7,
-    IMAQ_IMAGE_I16             = 1,
-    IMAQ_IMAGE_SGL             = 2,
-    IMAQ_IMAGE_COMPLEX         = 3,
-    IMAQ_IMAGE_RGB             = 4,
-    IMAQ_IMAGE_HSL             = 5,
-    IMAQ_IMAGE_RGB_U64         = 6,
-    IMAQ_IMAGE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum ColorMode {
+    IMAQ_RGB                   = 0,
+    IMAQ_HSL                   = 1,
+    IMAQ_HSV                   = 2,
+    IMAQ_HSI                   = 3,
+    IMAQ_CIE                   = 4,
+    IMAQ_CIEXYZ                = 5,
+    IMAQ_COLOR_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum WindowThreadPolicy {
-    IMAQ_CALLING_THREAD                  = 0,
-    IMAQ_SEPARATE_THREAD                 = 1,
-    IMAQ_WINDOW_THREAD_POLICY_SIZE_GUARD = 0xFFFFFFFF   
+enum ColorSensitivity {
+    IMAQ_SENSITIVITY_LOW              = 0,
+    IMAQ_SENSITIVITY_MED              = 1,
+    IMAQ_SENSITIVITY_HIGH             = 2,
+    IMAQ_COLOR_SENSITIVITY_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum MappingMethod {
-    IMAQ_FULL_DYNAMIC              = 0,
-    IMAQ_DOWNSHIFT                 = 1,
-    IMAQ_RANGE                     = 2,
-    IMAQ_90_PCT_DYNAMIC            = 3,
-    IMAQ_PERCENT_RANGE             = 4,
-    IMAQ_MAPPING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum ColumnProcessingMode {
+    IMAQ_AVERAGE_COLUMNS                   = 0,
+    IMAQ_MEDIAN_COLUMNS                    = 1,
+    IMAQ_COLUMN_PROCESSING_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum LineGaugeMethod {
-    IMAQ_EDGE_TO_EDGE                 = 0,
-    IMAQ_EDGE_TO_POINT                = 1,
-    IMAQ_POINT_TO_EDGE                = 2,
-    IMAQ_POINT_TO_POINT               = 3,
-    IMAQ_LINE_GAUGE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum ComparisonFunction {
+    IMAQ_CLEAR_LESS                  = 0,
+    IMAQ_CLEAR_LESS_OR_EQUAL         = 1,
+    IMAQ_CLEAR_EQUAL                 = 2,
+    IMAQ_CLEAR_GREATER_OR_EQUAL      = 3,
+    IMAQ_CLEAR_GREATER               = 4,
+    IMAQ_COMPARE_FUNCTION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum LevelType {
-    IMAQ_ABSOLUTE              = 0,
-    IMAQ_RELATIVE              = 1,
-    IMAQ_LEVEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum ComplexPlane {
+    IMAQ_REAL                     = 0,
+    IMAQ_IMAGINARY                = 1,
+    IMAQ_MAGNITUDE                = 2,
+    IMAQ_PHASE                    = 3,
+    IMAQ_COMPLEX_PLANE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum LearningMode {
-    IMAQ_LEARN_ALL                  = 0,
-    IMAQ_LEARN_SHIFT_INFORMATION    = 1,
-    IMAQ_LEARN_ROTATION_INFORMATION = 2,
-    IMAQ_LEARNING_MODE_SIZE_GUARD   = 0xFFFFFFFF   
+enum CompressionType {
+    IMAQ_COMPRESSION_NONE            = 0,
+    IMAQ_COMPRESSION_JPEG            = 1,
+    IMAQ_COMPRESSION_PACKED_BINARY   = 2,
+    IMAQ_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum ConcentricRakeDirection {
@@ -523,143 +274,45 @@ enum ConcentricRakeDirection {
     IMAQ_CONCENTRIC_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum InterpolationMethod {
-    IMAQ_ZERO_ORDER                      = 0,
-    IMAQ_BILINEAR                        = 1,
-    IMAQ_QUADRATIC                       = 2,
-    IMAQ_CUBIC_SPLINE                    = 3,
-    IMAQ_BILINEAR_FIXED                  = 4,
-    IMAQ_INTERPOLATION_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum ConnectionConstraintType {
+    IMAQ_DISTANCE_CONSTRAINT              = 0,
+    IMAQ_ANGLE_CONSTRAINT                 = 1,
+    IMAQ_CONNECTIVITY_CONSTRAINT          = 2,
+    IMAQ_GRADIENT_CONSTRAINT              = 3,
+    IMAQ_NUM_CONNECTION_CONSTRAINT_TYPES  = 4,
+    IMAQ_CONNECTION_CONSTRAINT_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum MathTransformMethod {
-    IMAQ_TRANSFORM_LINEAR                 = 0,
-    IMAQ_TRANSFORM_LOG                    = 1,
-    IMAQ_TRANSFORM_EXP                    = 2,
-    IMAQ_TRANSFORM_SQR                    = 3,
-    IMAQ_TRANSFORM_SQRT                   = 4,
-    IMAQ_TRANSFORM_POWX                   = 5,
-    IMAQ_TRANSFORM_POW1X                  = 6,
-    IMAQ_MATH_TRANSFORM_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum Connectivity {
+    IMAQ_FOUR_CONNECTED          = 0,
+    IMAQ_EIGHT_CONNECTED         = 1,
+    IMAQ_CONNECTIVITY_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ImageFeatureMode {
-    IMAQ_COLOR_AND_SHAPE_FEATURES = 0,
-    IMAQ_COLOR_FEATURES           = 1,
-    IMAQ_SHAPE_FEATURES           = 2,
-    IMAQ_FEATURE_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+enum ContourType {
+    IMAQ_EMPTY_CONTOUR           = 0,
+    IMAQ_POINT                   = 1,
+    IMAQ_LINE                    = 2,
+    IMAQ_RECT                    = 3,
+    IMAQ_OVAL                    = 4,
+    IMAQ_CLOSED_CONTOUR          = 5,
+    IMAQ_OPEN_CONTOUR            = 6,
+    IMAQ_ANNULUS                 = 7,
+    IMAQ_ROTATED_RECT            = 8,
+    IMAQ_CONTOUR_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum FontColor {
-    IMAQ_WHITE                 = 0,
-    IMAQ_BLACK                 = 1,
-    IMAQ_INVERT                = 2,
-    IMAQ_BLACK_ON_WHITE        = 3,
-    IMAQ_WHITE_ON_BLACK        = 4,
-    IMAQ_FONT_COLOR_SIZE_GUARD = 0xFFFFFFFF   
+enum ContrastMode {
+    IMAQ_ORIGINAL_CONTRAST = 0,
+    IMAQ_REVERSED_CONTRAST = 1,
+    IMAQ_BOTH_CONTRASTS    = 2,
 };
 
-enum FlipAxis {
-    IMAQ_HORIZONTAL_AXIS      = 0,
-    IMAQ_VERTICAL_AXIS        = 1,
-    IMAQ_CENTER_AXIS          = 2,
-    IMAQ_DIAG_L_TO_R_AXIS     = 3,
-    IMAQ_DIAG_R_TO_L_AXIS     = 4,
-    IMAQ_FLIP_AXIS_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum EdgeProcess {
-    IMAQ_FIRST                   = 0,
-    IMAQ_FIRST_AND_LAST          = 1,
-    IMAQ_ALL                     = 2,
-    IMAQ_BEST                    = 3,
-    IMAQ_EDGE_PROCESS_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DrawMode {
-    IMAQ_DRAW_VALUE           = 0,
-    IMAQ_DRAW_INVERT          = 2,
-    IMAQ_PAINT_VALUE          = 1,
-    IMAQ_PAINT_INVERT         = 3,
-    IMAQ_HIGHLIGHT_VALUE      = 4,
-    IMAQ_DRAW_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Direction3D {
-    IMAQ_3D_NW                   = 0,
-    IMAQ_3D_SW                   = 1,
-    IMAQ_3D_SE                   = 2,
-    IMAQ_3D_NE                   = 3,
-    IMAQ_DIRECTION_3D_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum KernelFamily {
-    IMAQ_GRADIENT_FAMILY          = 0,
-    IMAQ_LAPLACIAN_FAMILY         = 1,
-    IMAQ_SMOOTHING_FAMILY         = 2,
-    IMAQ_GAUSSIAN_FAMILY          = 3,
-    IMAQ_KERNEL_FAMILY_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum WindowEventType {
-    IMAQ_NO_EVENT                     = 0,
-    IMAQ_CLICK_EVENT                  = 1,
-    IMAQ_DRAW_EVENT                   = 2,
-    IMAQ_MOVE_EVENT                   = 3,
-    IMAQ_SIZE_EVENT                   = 4,
-    IMAQ_SCROLL_EVENT                 = 5,
-    IMAQ_ACTIVATE_EVENT               = 6,
-    IMAQ_CLOSE_EVENT                  = 7,
-    IMAQ_DOUBLE_CLICK_EVENT           = 8,
-    IMAQ_WINDOW_EVENT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum SearchDirection {
-    IMAQ_SEARCH_DIRECTION_LEFT_TO_RIGHT = 0,
-    IMAQ_SEARCH_DIRECTION_RIGHT_TO_LEFT = 1,
-    IMAQ_SEARCH_DIRECTION_TOP_TO_BOTTOM = 2,
-    IMAQ_SEARCH_DIRECTION_BOTTOM_TO_TOP = 3,
-    IMAQ_SEARCH_DIRECTION_SIZE_GUARD    = 0xFFFFFFFF   
-};
-
-enum WaveletTransformMode {
-    IMAQ_WAVELET_TRANSFORM_INTEGER         = 0,
-    IMAQ_WAVELET_TRANSFORM_FLOATING_POINT  = 1,
-    IMAQ_WAVELET_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DataMatrixGradingMode {
-    IMAQ_NO_GRADING                          = 0,
-    IMAQ_PREPARE_FOR_AIM                     = 1,
-    IMAQ_DATA_MATRIX_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DataMatrixRotationMode {
-    IMAQ_UNLIMITED_ROTATION                   = 0,
-    IMAQ_0_DEGREES                            = 1,
-    IMAQ_90_DEGREES                           = 2,
-    IMAQ_180_DEGREES                          = 3,
-    IMAQ_270_DEGREES                          = 4,
-    IMAQ_DATA_MATRIX_ROTATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DataMatrixMirrorMode {
-    IMAQ_AUTO_DETECT_MIRROR                 = -2,
-    IMAQ_APPEARS_NORMAL                     = 0,
-    IMAQ_APPEARS_MIRRORED                   = 1,
-    IMAQ_DATA_MATRIX_MIRROR_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DataMatrixCellSampleSize {
-    IMAQ_AUTO_DETECT_CELL_SAMPLE_SIZE            = -2,
-    IMAQ_1x1                                     = 1,
-    IMAQ_2x2                                     = 2,
-    IMAQ_3x3                                     = 3,
-    IMAQ_4x4                                     = 4,
-    IMAQ_5x5                                     = 5,
-    IMAQ_6x6                                     = 6,
-    IMAQ_7x7                                     = 7,
-    IMAQ_DATA_MATRIX_CELL_SAMPLE_SIZE_SIZE_GUARD = 0xFFFFFFFF   
+enum DataMatrixCellFillMode {
+    IMAQ_AUTO_DETECT_CELL_FILL_MODE            = -2,
+    IMAQ_LOW_FILL                              = 0,
+    IMAQ_NORMAL_FILL                           = 1,
+    IMAQ_DATA_MATRIX_CELL_FILL_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum DataMatrixCellFilterMode {
@@ -675,11 +328,25 @@ enum DataMatrixCellFilterMode {
     IMAQ_DATA_MATRIX_CELL_FILTER_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum DataMatrixPolarity {
-    IMAQ_AUTO_DETECT_POLARITY            = -2,
-    IMAQ_BLACK_DATA_ON_WHITE_BACKGROUND  = 0,
-    IMAQ_WHITE_DATA_ON_BLACK_BACKGROUND  = 1,
-    IMAQ_DATA_MATRIX_POLARITY_SIZE_GUARD = 0xFFFFFFFF   
+enum DataMatrixCellSampleSize {
+    IMAQ_AUTO_DETECT_CELL_SAMPLE_SIZE            = -2,
+    IMAQ_1x1                                     = 1,
+    IMAQ_2x2                                     = 2,
+    IMAQ_3x3                                     = 3,
+    IMAQ_4x4                                     = 4,
+    IMAQ_5x5                                     = 5,
+    IMAQ_6x6                                     = 6,
+    IMAQ_7x7                                     = 7,
+    IMAQ_DATA_MATRIX_CELL_SAMPLE_SIZE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum DataMatrixDemodulationMode {
+    IMAQ_AUTO_DETECT_DEMODULATION_MODE            = -2,
+    IMAQ_HISTOGRAM                                = 0,
+    IMAQ_LOCAL_CONTRAST                           = 1,
+    IMAQ_COMBINED                                 = 2,
+    IMAQ_ALL_DEMODULATION_MODES                   = 3,
+    IMAQ_DATA_MATRIX_DEMODULATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum DataMatrixECC {
@@ -694,29 +361,76 @@ enum DataMatrixECC {
     IMAQ_DATA_MATRIX_ECC_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum DataMatrixDemodulationMode {
-    IMAQ_AUTO_DETECT_DEMODULATION_MODE            = -2,
-    IMAQ_HISTOGRAM                                = 0,
-    IMAQ_LOCAL_CONTRAST                           = 1,
-    IMAQ_COMBINED                                 = 2,
-    IMAQ_ALL_DEMODULATION_MODES                   = 3,
-    IMAQ_DATA_MATRIX_DEMODULATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum DataMatrixGradingMode {
+    IMAQ_NO_GRADING                          = 0,
+    IMAQ_PREPARE_FOR_AIM                     = 1,
+    IMAQ_DATA_MATRIX_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum DataMatrixCellFillMode {
-    IMAQ_AUTO_DETECT_CELL_FILL_MODE            = -2,
-    IMAQ_LOW_FILL                              = 0,
-    IMAQ_NORMAL_FILL                           = 1,
-    IMAQ_DATA_MATRIX_CELL_FILL_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum DataMatrixMirrorMode {
+    IMAQ_AUTO_DETECT_MIRROR                 = -2,
+    IMAQ_APPEARS_NORMAL                     = 0,
+    IMAQ_APPEARS_MIRRORED                   = 1,
+    IMAQ_DATA_MATRIX_MIRROR_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum AIMGrade {
-    IMAQ_AIM_GRADE_F                      = 0,
-    IMAQ_AIM_GRADE_D                      = 1,
-    IMAQ_AIM_GRADE_C                      = 2,
-    IMAQ_AIM_GRADE_B                      = 3,
-    IMAQ_AIM_GRADE_A                      = 4,
-    IMAQ_DATA_MATRIX_AIM_GRADE_SIZE_GUARD = 0xFFFFFFFF   
+enum DataMatrixPolarity {
+    IMAQ_AUTO_DETECT_POLARITY            = -2,
+    IMAQ_BLACK_DATA_ON_WHITE_BACKGROUND  = 0,
+    IMAQ_WHITE_DATA_ON_BLACK_BACKGROUND  = 1,
+    IMAQ_DATA_MATRIX_POLARITY_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum DataMatrixRotationMode {
+    IMAQ_UNLIMITED_ROTATION                   = 0,
+    IMAQ_0_DEGREES                            = 1,
+    IMAQ_90_DEGREES                           = 2,
+    IMAQ_180_DEGREES                          = 3,
+    IMAQ_270_DEGREES                          = 4,
+    IMAQ_DATA_MATRIX_ROTATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum DataMatrixSubtype {
+    IMAQ_ALL_DATA_MATRIX_SUBTYPES             = 0,
+    IMAQ_DATA_MATRIX_SUBTYPES_ECC_000_ECC_140 = 1,
+    IMAQ_DATA_MATRIX_SUBTYPE_ECC_200          = 2,
+    IMAQ_DATA_MATRIX_SUBTYPE_SIZE_GUARD       = 0xFFFFFFFF   
+};
+
+enum DetectionMode {
+    IMAQ_DETECT_PEAKS              = 0,
+    IMAQ_DETECT_VALLEYS            = 1,
+    IMAQ_DETECTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum Direction3D {
+    IMAQ_3D_NW                   = 0,
+    IMAQ_3D_SW                   = 1,
+    IMAQ_3D_SE                   = 2,
+    IMAQ_3D_NE                   = 3,
+    IMAQ_DIRECTION_3D_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum DistortionModel {
+    IMAQ_POLYNOMIAL_MODEL    = 0,
+    IMAQ_DIVISION_MODEL      = 1,
+    IMAQ_NO_DISTORTION_MODEL = -1,
+};
+
+enum DrawMode {
+    IMAQ_DRAW_VALUE           = 0,
+    IMAQ_DRAW_INVERT          = 2,
+    IMAQ_PAINT_VALUE          = 1,
+    IMAQ_PAINT_INVERT         = 3,
+    IMAQ_HIGHLIGHT_VALUE      = 4,
+    IMAQ_DRAW_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum EdgeFilterSize {
+    IMAQ_FINE                        = 0,
+    IMAQ_NORMAL                      = 1,
+    IMAQ_CONTOUR_TRACING             = 2,
+    IMAQ_EDGE_FILTER_SIZE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum EdgePolaritySearchMode {
@@ -726,25 +440,52 @@ enum EdgePolaritySearchMode {
     IMAQ_EDGE_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ColumnProcessingMode {
-    IMAQ_AVERAGE_COLUMNS                   = 0,
-    IMAQ_MEDIAN_COLUMNS                    = 1,
-    IMAQ_COLUMN_PROCESSING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum EdgeProcess {
+    IMAQ_FIRST                   = 0,
+    IMAQ_FIRST_AND_LAST          = 1,
+    IMAQ_ALL                     = 2,
+    IMAQ_BEST                    = 3,
+    IMAQ_EDGE_PROCESS_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRDemodulationMode {
-    IMAQ_QR_DEMODULATION_MODE_AUTO_DETECT    = -2,
-    IMAQ_QR_DEMODULATION_MODE_HISTOGRAM      = 0,
-    IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST = 1,
-    IMAQ_QR_DEMODULATION_MODE_COMBINED       = 2,
-    IMAQ_QR_DEMODULATION_MODE_ALL            = 3,
-    IMAQ_QR_DEMODULATION_MODE_SIZE_GUARD     = 0xFFFFFFFF   
+enum ExtractContourDirection {
+    IMAQ_RECT_LEFT_RIGHT                      = 0,
+    IMAQ_RECT_RIGHT_LEFT                      = 1,
+    IMAQ_RECT_TOP_BOTTOM                      = 2,
+    IMAQ_RECT_BOTTOM_TOP                      = 3,
+    IMAQ_ANNULUS_INNER_OUTER                  = 4,
+    IMAQ_ANNULUS_OUTER_INNER                  = 5,
+    IMAQ_ANNULUS_START_STOP                   = 6,
+    IMAQ_ANNULUS_STOP_START                   = 7,
+    IMAQ_EXTRACT_CONTOUR_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum FindTransformMode {
-    IMAQ_FIND_REFERENCE                 = 0,
-    IMAQ_UPDATE_TRANSFORM               = 1,
-    IMAQ_FIND_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum ExtractContourSelection {
+    IMAQ_CLOSEST                              = 0,
+    IMAQ_LONGEST                              = 1,
+    IMAQ_STRONGEST                            = 2,
+    IMAQ_EXTRACT_CONTOUR_SELECTION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ExtractionMode {
+    IMAQ_NORMAL_IMAGE               = 0,
+    IMAQ_UNIFORM_REGIONS            = 1,
+    IMAQ_EXTRACTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum FeatureType {
+    IMAQ_NOT_FOUND_FEATURE                   = 0,
+    IMAQ_CIRCLE_FEATURE                      = 1,
+    IMAQ_ELLIPSE_FEATURE                     = 2,
+    IMAQ_CONST_CURVE_FEATURE                 = 3,
+    IMAQ_RECTANGLE_FEATURE                   = 4,
+    IMAQ_LEG_FEATURE                         = 5,
+    IMAQ_CORNER_FEATURE                      = 6,
+    IMAQ_PARALLEL_LINE_PAIR_FEATURE          = 7,
+    IMAQ_PAIR_OF_PARALLEL_LINE_PAIRS_FEATURE = 8,
+    IMAQ_LINE_FEATURE                        = 9,
+    IMAQ_CLOSED_CURVE_FEATURE                = 10,
+    IMAQ_FEATURE_TYPE_SIZE_GUARD             = 0xFFFFFFFF   
 };
 
 enum FindReferenceDirection {
@@ -759,11 +500,78 @@ enum FindReferenceDirection {
     IMAQ_FIND_COORD_SYS_DIR_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum MulticoreOperation {
-    IMAQ_GET_CORES                      = 0,
-    IMAQ_SET_CORES                      = 1,
-    IMAQ_USE_MAX_AVAILABLE              = 2,
-    IMAQ_MULTICORE_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
+enum FindTransformMode {
+    IMAQ_FIND_REFERENCE                 = 0,
+    IMAQ_UPDATE_TRANSFORM               = 1,
+    IMAQ_FIND_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum FlattenType {
+    IMAQ_FLATTEN_IMAGE                 = 0,
+    IMAQ_FLATTEN_IMAGE_AND_VISION_INFO = 1,
+    IMAQ_FLATTEN_TYPE_SIZE_GUARD       = 0xFFFFFFFF   
+};
+
+enum FlipAxis {
+    IMAQ_HORIZONTAL_AXIS      = 0,
+    IMAQ_VERTICAL_AXIS        = 1,
+    IMAQ_CENTER_AXIS          = 2,
+    IMAQ_DIAG_L_TO_R_AXIS     = 3,
+    IMAQ_DIAG_R_TO_L_AXIS     = 4,
+    IMAQ_FLIP_AXIS_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum FontColor {
+    IMAQ_WHITE                 = 0,
+    IMAQ_BLACK                 = 1,
+    IMAQ_INVERT                = 2,
+    IMAQ_BLACK_ON_WHITE        = 3,
+    IMAQ_WHITE_ON_BLACK        = 4,
+    IMAQ_FONT_COLOR_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum GeometricMatchingMode {
+    IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT     = 0,
+    IMAQ_GEOMETRIC_MATCH_ROTATION_INVARIANT  = 1,
+    IMAQ_GEOMETRIC_MATCH_SCALE_INVARIANT     = 2,
+    IMAQ_GEOMETRIC_MATCH_OCCLUSION_INVARIANT = 4,
+    IMAQ_GEOMETRIC_MATCHING_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum GeometricMatchingSearchStrategy {
+    IMAQ_GEOMETRIC_MATCHING_CONSERVATIVE               = 0,
+    IMAQ_GEOMETRIC_MATCHING_BALANCED                   = 1,
+    IMAQ_GEOMETRIC_MATCHING_AGGRESSIVE                 = 2,
+    IMAQ_GEOMETRIC_MATCHING_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum GeometricSetupDataItem {
+    IMAQ_CURVE_EXTRACTION_MODE             = 0,
+    IMAQ_CURVE_EDGE_THRSHOLD               = 1,
+    IMAQ_CURVE_EDGE_FILTER                 = 2,
+    IMAQ_MINIMUM_CURVE_LENGTH              = 3,
+    IMAQ_CURVE_ROW_SEARCH_STEP_SIZE        = 4,
+    IMAQ_CURVE_COL_SEARCH_STEP_SIZE        = 5,
+    IMAQ_CURVE_MAX_END_POINT_GAP           = 6,
+    IMAQ_EXTRACT_CLOSED_CURVES             = 7,
+    IMAQ_ENABLE_SUBPIXEL_CURVE_EXTRACTION  = 8,
+    IMAQ_ENABLE_CORRELATION_SCORE          = 9,
+    IMAQ_ENABLE_SUBPIXEL_ACCURACY          = 10,
+    IMAQ_SUBPIXEL_ITERATIONS               = 11,
+    IMAQ_SUBPIXEL_TOLERANCE                = 12,
+    IMAQ_INITIAL_MATCH_LIST_LENGTH         = 13,
+    IMAQ_ENABLE_TARGET_TEMPLATE_CURVESCORE = 14,
+    IMAQ_MINIMUM_MATCH_SEPARATION_DISTANCE = 15,
+    IMAQ_MINIMUM_MATCH_SEPARATION_ANGLE    = 16,
+    IMAQ_MINIMUM_MATCH_SEPARATION_SCALE    = 17,
+    IMAQ_MAXIMUM_MATCH_OVERLAP             = 18,
+    IMAQ_ENABLE_COARSE_RESULT              = 19,
+    IMAQ_ENABLE_CALIBRATION_SUPPORT        = 20,
+    IMAQ_ENABLE_CONTRAST_REVERSAL          = 21,
+    IMAQ_SEARCH_STRATEGY                   = 22,
+    IMAQ_REFINEMENT_MATCH_FACTOR           = 23,
+    IMAQ_SUBPIXEL_MATCH_FACTOR             = 24,
+    IMAQ_MAX_REFINEMENT_ITERATIONS         = 25,
 };
 
 enum GroupBehavior {
@@ -773,121 +581,61 @@ enum GroupBehavior {
     IMAQ_GROUP_BEHAVIOR_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRDimensions {
-    IMAQ_QR_DIMENSIONS_AUTO_DETECT = 0,
-    IMAQ_QR_DIMENSIONS_11x11       = 11,
-    IMAQ_QR_DIMENSIONS_13x13       = 13,
-    IMAQ_QR_DIMENSIONS_15x15       = 15,
-    IMAQ_QR_DIMENSIONS_17x17       = 17,
-    IMAQ_QR_DIMENSIONS_21x21       = 21,
-    IMAQ_QR_DIMENSIONS_25x25       = 25,
-    IMAQ_QR_DIMENSIONS_29x29       = 29,
-    IMAQ_QR_DIMENSIONS_33x33       = 33,
-    IMAQ_QR_DIMENSIONS_37x37       = 37,
-    IMAQ_QR_DIMENSIONS_41x41       = 41,
-    IMAQ_QR_DIMENSIONS_45x45       = 45,
-    IMAQ_QR_DIMENSIONS_49x49       = 49,
-    IMAQ_QR_DIMENSIONS_53x53       = 53,
-    IMAQ_QR_DIMENSIONS_57x57       = 57,
-    IMAQ_QR_DIMENSIONS_61x61       = 61,
-    IMAQ_QR_DIMENSIONS_65x65       = 65,
-    IMAQ_QR_DIMENSIONS_69x69       = 69,
-    IMAQ_QR_DIMENSIONS_73x73       = 73,
-    IMAQ_QR_DIMENSIONS_77x77       = 77,
-    IMAQ_QR_DIMENSIONS_81x81       = 81,
-    IMAQ_QR_DIMENSIONS_85x85       = 85,
-    IMAQ_QR_DIMENSIONS_89x89       = 89,
-    IMAQ_QR_DIMENSIONS_93x93       = 93,
-    IMAQ_QR_DIMENSIONS_97x97       = 97,
-    IMAQ_QR_DIMENSIONS_101x101     = 101,
-    IMAQ_QR_DIMENSIONS_105x105     = 105,
-    IMAQ_QR_DIMENSIONS_109x109     = 109,
-    IMAQ_QR_DIMENSIONS_113x113     = 113,
-    IMAQ_QR_DIMENSIONS_117x117     = 117,
-    IMAQ_QR_DIMENSIONS_121x121     = 121,
-    IMAQ_QR_DIMENSIONS_125x125     = 125,
-    IMAQ_QR_DIMENSIONS_128x128     = 128,
-    IMAQ_QR_DIMENSIONS_133x133     = 133,
-    IMAQ_QR_DIMENSIONS_137x137     = 137,
-    IMAQ_QR_DIMENSIONS_141x141     = 141,
-    IMAQ_QR_DIMENSIONS_145x145     = 145,
-    IMAQ_QR_DIMENSIONS_149x149     = 149,
-    IMAQ_QR_DIMENSIONS_153x153     = 153,
-    IMAQ_QR_DIMENSIONS_157x157     = 157,
-    IMAQ_QR_DIMENSIONS_161x161     = 161,
-    IMAQ_QR_DIMENSIONS_165x165     = 165,
-    IMAQ_QR_DIMENSIONS_169x169     = 169,
-    IMAQ_QR_DIMENSIONS_173x173     = 173,
-    IMAQ_QR_DIMENSIONS_177x177     = 177,
-    IMAQ_QR_DIMENSIONS_SIZE_GUARD  = 0xFFFFFFFF   
+enum ImageFeatureMode {
+    IMAQ_COLOR_AND_SHAPE_FEATURES = 0,
+    IMAQ_COLOR_FEATURES           = 1,
+    IMAQ_SHAPE_FEATURES           = 2,
+    IMAQ_FEATURE_MODE_SIZE_GUARD  = 0xFFFFFFFF   
 };
 
-enum QRModelType {
-    IMAQ_QR_MODELTYPE_AUTO_DETECT = 0,
-    IMAQ_QR_MODELTYPE_MICRO       = 1,
-    IMAQ_QR_MODELTYPE_MODEL1      = 2,
-    IMAQ_QR_MODELTYPE_MODEL2      = 3,
-    IMAQ_QR_MODEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum ImageType {
+    IMAQ_IMAGE_U8              = 0,
+    IMAQ_IMAGE_U16             = 7,
+    IMAQ_IMAGE_I16             = 1,
+    IMAQ_IMAGE_SGL             = 2,
+    IMAQ_IMAGE_COMPLEX         = 3,
+    IMAQ_IMAGE_RGB             = 4,
+    IMAQ_IMAGE_HSL             = 5,
+    IMAQ_IMAGE_RGB_U64         = 6,
+    IMAQ_IMAGE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRCellSampleSize {
-    IMAQ_QR_CELL_SAMPLE_SIZE_AUTO_DETECT = -2,
-    IMAQ_QR_CELL_SAMPLE_SIZE1X1          = 1,
-    IMAQ_QR_CELL_SAMPLE_SIZE2X2          = 2,
-    IMAQ_QR_CELL_SAMPLE_SIZE3X3          = 3,
-    IMAQ_QR_CELL_SAMPLE_SIZE4X4          = 4,
-    IMAQ_QR_CELL_SAMPLE_SIZE5X5          = 5,
-    IMAQ_QR_CELL_SAMPLE_SIZE6X6          = 6,
-    IMAQ_QR_CELL_SAMPLE_SIZE7X7          = 7,
-    IMAQ_QR_CELL_SAMPLE_TYPE_SIZE_GUARD  = 0xFFFFFFFF   
+enum InterpolationMethod {
+    IMAQ_ZERO_ORDER                      = 0,
+    IMAQ_BILINEAR                        = 1,
+    IMAQ_QUADRATIC                       = 2,
+    IMAQ_CUBIC_SPLINE                    = 3,
+    IMAQ_BILINEAR_FIXED                  = 4,
+    IMAQ_INTERPOLATION_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRStreamMode {
-    IMAQ_QR_MODE_NUMERIC      = 0,
-    IMAQ_QR_MODE_ALPHANUMERIC = 1,
-    IMAQ_QR_MODE_RAW_BYTE     = 2,
-    IMAQ_QR_MODE_EAN128_TOKEN = 3,
-    IMAQ_QR_MODE_EAN128_DATA  = 4,
-    IMAQ_QR_MODE_ECI          = 5,
-    IMAQ_QR_MODE_KANJI        = 6,
-    IMAQ_QR_MODE_SIZE_GUARD   = 0xFFFFFFFF   
+enum KernelFamily {
+    IMAQ_GRADIENT_FAMILY          = 0,
+    IMAQ_LAPLACIAN_FAMILY         = 1,
+    IMAQ_SMOOTHING_FAMILY         = 2,
+    IMAQ_GAUSSIAN_FAMILY          = 3,
+    IMAQ_KERNEL_FAMILY_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRMirrorMode {
-    IMAQ_QR_MIRROR_MODE_AUTO_DETECT = -2,
-    IMAQ_QR_MIRROR_MODE_MIRRORED    = 1,
-    IMAQ_QR_MIRROR_MODE_NORMAL      = 0,
-    IMAQ_QR_MIRROR_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+enum LearningMode {
+    IMAQ_LEARN_ALL                  = 0,
+    IMAQ_LEARN_SHIFT_INFORMATION    = 1,
+    IMAQ_LEARN_ROTATION_INFORMATION = 2,
+    IMAQ_LEARNING_MODE_SIZE_GUARD   = 0xFFFFFFFF   
 };
 
-enum QRPolarities {
-    IMAQ_QR_POLARITY_AUTO_DETECT     = -2,
-    IMAQ_QR_POLARITY_BLACK_ON_WHITE  = 0,
-    IMAQ_QR_POLARITY_WHITE_ON_BLACK  = 1,
-    IMAQ_QR_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum LevelType {
+    IMAQ_ABSOLUTE              = 0,
+    IMAQ_RELATIVE              = 1,
+    IMAQ_LEVEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRRotationMode {
-    IMAQ_QR_ROTATION_MODE_UNLIMITED   = 0,
-    IMAQ_QR_ROTATION_MODE_0_DEGREES   = 1,
-    IMAQ_QR_ROTATION_MODE_90_DEGREES  = 2,
-    IMAQ_QR_ROTATION_MODE_180_DEGREES = 3,
-    IMAQ_QR_ROTATION_MODE_270_DEGREES = 4,
-    IMAQ_QR_ROTATION_MODE_SIZE_GUARD  = 0xFFFFFFFF   
-};
-
-enum QRGradingMode {
-    IMAQ_QR_NO_GRADING              = 0,
-    IMAQ_QR_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum StraightEdgeSearchMode {
-    IMAQ_USE_FIRST_RAKE_EDGES            = 0,
-    IMAQ_USE_BEST_RAKE_EDGES             = 1,
-    IMAQ_USE_BEST_HOUGH_LINE             = 2,
-    IMAQ_USE_FIRST_PROJECTION_EDGE       = 3,
-    IMAQ_USE_BEST_PROJECTION_EDGE        = 4,
-    IMAQ_STRAIGHT_EDGE_SEARCH_SIZE_GUARD = 0xFFFFFFFF   
+enum LineGaugeMethod {
+    IMAQ_EDGE_TO_EDGE                 = 0,
+    IMAQ_EDGE_TO_POINT                = 1,
+    IMAQ_POINT_TO_EDGE                = 2,
+    IMAQ_POINT_TO_POINT               = 3,
+    IMAQ_LINE_GAUGE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum LinearAveragesMode {
@@ -899,100 +647,50 @@ enum LinearAveragesMode {
     IMAQ_LINEAR_AVERAGES_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum QRCellFilterMode {
-    IMAQ_QR_CELL_FILTER_MODE_AUTO_DETECT       = -2,
-    IMAQ_QR_CELL_FILTER_MODE_AVERAGE           = 0,
-    IMAQ_QR_CELL_FILTER_MODE_MEDIAN            = 1,
-    IMAQ_QR_CELL_FILTER_MODE_CENTRAL_AVERAGE   = 2,
-    IMAQ_QR_CELL_FILTER_MODE_HIGH_AVERAGE      = 3,
-    IMAQ_QR_CELL_FILTER_MODE_LOW_AVERAGE       = 4,
-    IMAQ_QR_CELL_FILTER_MODE_VERY_HIGH_AVERAGE = 5,
-    IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE  = 6,
-    IMAQ_QR_CELL_FILTER_MODE_ALL               = 8,
-    IMAQ_QR_CELL_FILTER_MODE_SIZE_GUARD        = 0xFFFFFFFF   
+enum LocalThresholdMethod {
+    IMAQ_NIBLACK                           = 0,
+    IMAQ_BACKGROUND_CORRECTION             = 1,
+    IMAQ_LOCAL_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ParticleClassifierType {
-    IMAQ_PARTICLE_LARGEST                    = 0,
-    IMAQ_PARTICLE_ALL                        = 1,
-    IMAQ_PARTICLE_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum MappingMethod {
+    IMAQ_FULL_DYNAMIC              = 0,
+    IMAQ_DOWNSHIFT                 = 1,
+    IMAQ_RANGE                     = 2,
+    IMAQ_90_PCT_DYNAMIC            = 3,
+    IMAQ_PERCENT_RANGE             = 4,
+    IMAQ_DEFAULT_MAPPING           = 10,
+    IMAQ_MOST_SIGNIFICANT          = 11,
+    IMAQ_FULL_DYNAMIC_ALWAYS       = 12,
+    IMAQ_DOWNSHIFT_ALWAYS          = 13,
+    IMAQ_RANGE_ALWAYS              = 14,
+    IMAQ_90_PCT_DYNAMIC_ALWAYS     = 15,
+    IMAQ_PERCENT_RANGE_ALWAYS      = 16,
+    IMAQ_MAPPING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum NormalizationMethod {
-    IMAQ_NORMALIZATION_NONE               = 0,
-    IMAQ_NORMALIZATION_HISTOGRAM_MATCHING = 1,
-    IMAQ_NORMALIZATION_AVERAGE_MATCHING   = 2,
-    IMAQ_NORMALIZATION_SIZE_GUARD         = 0xFFFFFFFF   
+enum MatchingMode {
+    IMAQ_MATCH_SHIFT_INVARIANT    = 1,
+    IMAQ_MATCH_ROTATION_INVARIANT = 2,
+    IMAQ_MATCHING_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ParticleType {
-    IMAQ_PARTICLE_BRIGHT          = 0,
-    IMAQ_PARTICLE_DARK            = 1,
-    IMAQ_PARTICLE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum MathTransformMethod {
+    IMAQ_TRANSFORM_LINEAR                 = 0,
+    IMAQ_TRANSFORM_LOG                    = 1,
+    IMAQ_TRANSFORM_EXP                    = 2,
+    IMAQ_TRANSFORM_SQR                    = 3,
+    IMAQ_TRANSFORM_SQRT                   = 4,
+    IMAQ_TRANSFORM_POWX                   = 5,
+    IMAQ_TRANSFORM_POW1X                  = 6,
+    IMAQ_MATH_TRANSFORM_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum VisionInfoType2 {
-    IMAQ_VISIONINFO_CALIBRATION       = 0x01,
-    IMAQ_VISIONINFO_OVERLAY           = 0x02,
-    IMAQ_VISIONINFO_GRAYTEMPLATE      = 0x04,
-    IMAQ_VISIONINFO_COLORTEMPLATE     = 0x08,
-    IMAQ_VISIONINFO_GEOMETRICTEMPLATE = 0x10,
-    IMAQ_VISIONINFO_CUSTOMDATA        = 0x20,
-    IMAQ_VISIONINFO_GOLDENTEMPLATE    = 0x40,
-    IMAQ_VISIONINFO_ALL               = 0xFFFFFFFF,
-};
-
-enum ReadClassifierFileMode {
-    IMAQ_CLASSIFIER_READ_ALL                   = 0,
-    IMAQ_CLASSIFIER_READ_SAMPLES               = 1,
-    IMAQ_CLASSIFIER_READ_PROPERTIES            = 2,
-    IMAQ_READ_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum WriteClassifierFileMode {
-    IMAQ_CLASSIFIER_WRITE_ALL                   = 0,
-    IMAQ_CLASSIFIER_WRITE_CLASSIFY_ONLY         = 1,
-    IMAQ_WRITE_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ClassifierEngineType {
-    IMAQ_ENGINE_NONE                       = 0,
-    IMAQ_ENGINE_NEAREST_NEIGHBOR           = 1,
-    IMAQ_CLASSIFIER_ENGINE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum NearestNeighborMethod {
-    IMAQ_MINIMUM_MEAN_DISTANCE              = 0,
-    IMAQ_K_NEAREST_NEIGHBOR                 = 1,
-    IMAQ_NEAREST_PROTOTYPE                  = 2,
-    IMAQ_NEAREST_NEIGHBOR_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Barcode2DType {
-    IMAQ_PDF417                     = 0,
-    IMAQ_DATA_MATRIX_ECC_000        = 1,
-    IMAQ_DATA_MATRIX_ECC_050        = 2,
-    IMAQ_DATA_MATRIX_ECC_080        = 3,
-    IMAQ_DATA_MATRIX_ECC_100        = 4,
-    IMAQ_DATA_MATRIX_ECC_140        = 5,
-    IMAQ_DATA_MATRIX_ECC_200        = 6,
-    IMAQ_BARCODE_2D_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum ButtonLabel {
-    IMAQ_BUTTON_OK               = 0,
-    IMAQ_BUTTON_SAVE             = 1,
-    IMAQ_BUTTON_SELECT           = 2,
-    IMAQ_BUTTON_LOAD             = 3,
-    IMAQ_BUTTON_LABEL_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum GeometricMatchingMode {
-    IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT     = 0,
-    IMAQ_GEOMETRIC_MATCH_ROTATION_INVARIANT  = 1,
-    IMAQ_GEOMETRIC_MATCH_SCALE_INVARIANT     = 2,
-    IMAQ_GEOMETRIC_MATCH_OCCLUSION_INVARIANT = 4,
-    IMAQ_GEOMETRIC_MATCHING_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+enum MeasureParticlesCalibrationMode {
+    IMAQ_CALIBRATION_MODE_PIXEL                        = 0,
+    IMAQ_CALIBRATION_MODE_CALIBRATED                   = 1,
+    IMAQ_CALIBRATION_MODE_BOTH                         = 2,
+    IMAQ_MEASURE_PARTICLES_CALIBRATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum MeasurementType {
@@ -1080,10 +778,481 @@ enum MeasurementType {
     IMAQ_MEASUREMENT_TYPE_SIZE_GUARD            = 0xFFFFFFFF   
 };
 
+enum MeasurementValue {
+    IMAQ_AREA                         = 0,
+    IMAQ_AREA_CALIBRATED              = 1,
+    IMAQ_NUM_HOLES                    = 2,
+    IMAQ_AREA_OF_HOLES                = 3,
+    IMAQ_TOTAL_AREA                   = 4,
+    IMAQ_IMAGE_AREA                   = 5,
+    IMAQ_PARTICLE_TO_IMAGE            = 6,
+    IMAQ_PARTICLE_TO_TOTAL            = 7,
+    IMAQ_CENTER_MASS_X                = 8,
+    IMAQ_CENTER_MASS_Y                = 9,
+    IMAQ_LEFT_COLUMN                  = 10,
+    IMAQ_TOP_ROW                      = 11,
+    IMAQ_RIGHT_COLUMN                 = 12,
+    IMAQ_BOTTOM_ROW                   = 13,
+    IMAQ_WIDTH                        = 14,
+    IMAQ_HEIGHT                       = 15,
+    IMAQ_MAX_SEGMENT_LENGTH           = 16,
+    IMAQ_MAX_SEGMENT_LEFT_COLUMN      = 17,
+    IMAQ_MAX_SEGMENT_TOP_ROW          = 18,
+    IMAQ_PERIMETER                    = 19,
+    IMAQ_PERIMETER_OF_HOLES           = 20,
+    IMAQ_SIGMA_X                      = 21,
+    IMAQ_SIGMA_Y                      = 22,
+    IMAQ_SIGMA_XX                     = 23,
+    IMAQ_SIGMA_YY                     = 24,
+    IMAQ_SIGMA_XY                     = 25,
+    IMAQ_PROJ_X                       = 26,
+    IMAQ_PROJ_Y                       = 27,
+    IMAQ_INERTIA_XX                   = 28,
+    IMAQ_INERTIA_YY                   = 29,
+    IMAQ_INERTIA_XY                   = 30,
+    IMAQ_MEAN_H                       = 31,
+    IMAQ_MEAN_V                       = 32,
+    IMAQ_MAX_INTERCEPT                = 33,
+    IMAQ_MEAN_INTERCEPT               = 34,
+    IMAQ_ORIENTATION                  = 35,
+    IMAQ_EQUIV_ELLIPSE_MINOR          = 36,
+    IMAQ_ELLIPSE_MAJOR                = 37,
+    IMAQ_ELLIPSE_MINOR                = 38,
+    IMAQ_ELLIPSE_RATIO                = 39,
+    IMAQ_RECT_LONG_SIDE               = 40,
+    IMAQ_RECT_SHORT_SIDE              = 41,
+    IMAQ_RECT_RATIO                   = 42,
+    IMAQ_ELONGATION                   = 43,
+    IMAQ_COMPACTNESS                  = 44,
+    IMAQ_HEYWOOD                      = 45,
+    IMAQ_TYPE_FACTOR                  = 46,
+    IMAQ_HYDRAULIC                    = 47,
+    IMAQ_WADDLE_DISK                  = 48,
+    IMAQ_DIAGONAL                     = 49,
+    IMAQ_MEASUREMENT_VALUE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum MeterArcMode {
+    IMAQ_METER_ARC_ROI             = 0,
+    IMAQ_METER_ARC_POINTS          = 1,
+    IMAQ_METER_ARC_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum MorphologyMethod {
+    IMAQ_AUTOM                        = 0,
+    IMAQ_CLOSE                        = 1,
+    IMAQ_DILATE                       = 2,
+    IMAQ_ERODE                        = 3,
+    IMAQ_GRADIENT                     = 4,
+    IMAQ_GRADIENTOUT                  = 5,
+    IMAQ_GRADIENTIN                   = 6,
+    IMAQ_HITMISS                      = 7,
+    IMAQ_OPEN                         = 8,
+    IMAQ_PCLOSE                       = 9,
+    IMAQ_POPEN                        = 10,
+    IMAQ_THICK                        = 11,
+    IMAQ_THIN                         = 12,
+    IMAQ_MORPHOLOGY_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum MorphologyReconstructOperation {
+    IMAQ_DILATE_RECONSTRUCT                          = 0,
+    IMAQ_ERODE_RECONSTRUCT                           = 1,
+    IMAQ_MORPHOLOGY_RECONSTRUCT_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum MulticoreOperation {
+    IMAQ_GET_CORES                      = 0,
+    IMAQ_SET_CORES                      = 1,
+    IMAQ_USE_MAX_AVAILABLE              = 2,
+    IMAQ_MULTICORE_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum NearestNeighborMethod {
+    IMAQ_MINIMUM_MEAN_DISTANCE              = 0,
+    IMAQ_K_NEAREST_NEIGHBOR                 = 1,
+    IMAQ_NEAREST_PROTOTYPE                  = 2,
+    IMAQ_NEAREST_NEIGHBOR_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum NearestNeighborMetric {
+    IMAQ_METRIC_MAXIMUM                     = 0,
+    IMAQ_METRIC_SUM                         = 1,
+    IMAQ_METRIC_EUCLIDEAN                   = 2,
+    IMAQ_NEAREST_NEIGHBOR_METRIC_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum NormalizationMethod {
+    IMAQ_NORMALIZATION_NONE               = 0,
+    IMAQ_NORMALIZATION_HISTOGRAM_MATCHING = 1,
+    IMAQ_NORMALIZATION_AVERAGE_MATCHING   = 2,
+    IMAQ_NORMALIZATION_SIZE_GUARD         = 0xFFFFFFFF   
+};
+
+enum ObjectType {
+    IMAQ_BRIGHT_OBJECTS         = 0,
+    IMAQ_DARK_OBJECTS           = 1,
+    IMAQ_OBJECT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum OutlineMethod {
+    IMAQ_EDGE_DIFFERENCE           = 0,
+    IMAQ_EDGE_GRADIENT             = 1,
+    IMAQ_EDGE_PREWITT              = 2,
+    IMAQ_EDGE_ROBERTS              = 3,
+    IMAQ_EDGE_SIGMA                = 4,
+    IMAQ_EDGE_SOBEL                = 5,
+    IMAQ_OUTLINE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum PaletteType {
+    IMAQ_PALETTE_GRAY            = 0,
+    IMAQ_PALETTE_BINARY          = 1,
+    IMAQ_PALETTE_GRADIENT        = 2,
+    IMAQ_PALETTE_RAINBOW         = 3,
+    IMAQ_PALETTE_TEMPERATURE     = 4,
+    IMAQ_PALETTE_USER            = 5,
+    IMAQ_PALETTE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ParticleClassifierThresholdType {
+    IMAQ_THRESHOLD_MANUAL = 0,
+    IMAQ_THRESHOLD_AUTO   = 1,
+    IMAQ_THRESHOLD_LOCAL  = 2
+};
+
+enum ParticleClassifierType {
+    IMAQ_PARTICLE_LARGEST                    = 0,
+    IMAQ_PARTICLE_ALL                        = 1,
+    IMAQ_PARTICLE_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ParticleInfoMode {
+    IMAQ_BASIC_INFO                    = 0,
+    IMAQ_ALL_INFO                      = 1,
+    IMAQ_PARTICLE_INFO_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ParticleType {
+    IMAQ_PARTICLE_BRIGHT          = 0,
+    IMAQ_PARTICLE_DARK            = 1,
+    IMAQ_PARTICLE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum PhotometricMode {
+    IMAQ_WHITE_IS_ZERO               = 0,
+    IMAQ_BLACK_IS_ZERO               = 1,
+    IMAQ_PHOTOMETRIC_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum Plane3D {
+    IMAQ_3D_REAL             = 0,
+    IMAQ_3D_IMAGINARY        = 1,
+    IMAQ_3D_MAGNITUDE        = 2,
+    IMAQ_3D_PHASE            = 3,
+    IMAQ_PLANE_3D_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum PointSymbol {
+    IMAQ_POINT_AS_PIXEL          = 0,
+    IMAQ_POINT_AS_CROSS          = 1,
+    IMAQ_POINT_USER_DEFINED      = 2,
+    IMAQ_POINT_SYMBOL_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum PolarityType {
+    IMAQ_EDGE_RISING              = 1,
+    IMAQ_EDGE_FALLING             = -1,
+    IMAQ_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum QRCellFilterMode {
+    IMAQ_QR_CELL_FILTER_MODE_AUTO_DETECT       = -2,
+    IMAQ_QR_CELL_FILTER_MODE_AVERAGE           = 0,
+    IMAQ_QR_CELL_FILTER_MODE_MEDIAN            = 1,
+    IMAQ_QR_CELL_FILTER_MODE_CENTRAL_AVERAGE   = 2,
+    IMAQ_QR_CELL_FILTER_MODE_HIGH_AVERAGE      = 3,
+    IMAQ_QR_CELL_FILTER_MODE_LOW_AVERAGE       = 4,
+    IMAQ_QR_CELL_FILTER_MODE_VERY_HIGH_AVERAGE = 5,
+    IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE  = 6,
+    IMAQ_QR_CELL_FILTER_MODE_ALL               = 8,
+    IMAQ_QR_CELL_FILTER_MODE_SIZE_GUARD        = 0xFFFFFFFF   
+};
+
+enum QRCellSampleSize {
+    IMAQ_QR_CELL_SAMPLE_SIZE_AUTO_DETECT = -2,
+    IMAQ_QR_CELL_SAMPLE_SIZE1X1          = 1,
+    IMAQ_QR_CELL_SAMPLE_SIZE2X2          = 2,
+    IMAQ_QR_CELL_SAMPLE_SIZE3X3          = 3,
+    IMAQ_QR_CELL_SAMPLE_SIZE4X4          = 4,
+    IMAQ_QR_CELL_SAMPLE_SIZE5X5          = 5,
+    IMAQ_QR_CELL_SAMPLE_SIZE6X6          = 6,
+    IMAQ_QR_CELL_SAMPLE_SIZE7X7          = 7,
+    IMAQ_QR_CELL_SAMPLE_TYPE_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum QRDemodulationMode {
+    IMAQ_QR_DEMODULATION_MODE_AUTO_DETECT    = -2,
+    IMAQ_QR_DEMODULATION_MODE_HISTOGRAM      = 0,
+    IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST = 1,
+    IMAQ_QR_DEMODULATION_MODE_COMBINED       = 2,
+    IMAQ_QR_DEMODULATION_MODE_ALL            = 3,
+    IMAQ_QR_DEMODULATION_MODE_SIZE_GUARD     = 0xFFFFFFFF   
+};
+
+enum QRDimensions {
+    IMAQ_QR_DIMENSIONS_AUTO_DETECT = 0,
+    IMAQ_QR_DIMENSIONS_11x11       = 11,
+    IMAQ_QR_DIMENSIONS_13x13       = 13,
+    IMAQ_QR_DIMENSIONS_15x15       = 15,
+    IMAQ_QR_DIMENSIONS_17x17       = 17,
+    IMAQ_QR_DIMENSIONS_21x21       = 21,
+    IMAQ_QR_DIMENSIONS_25x25       = 25,
+    IMAQ_QR_DIMENSIONS_29x29       = 29,
+    IMAQ_QR_DIMENSIONS_33x33       = 33,
+    IMAQ_QR_DIMENSIONS_37x37       = 37,
+    IMAQ_QR_DIMENSIONS_41x41       = 41,
+    IMAQ_QR_DIMENSIONS_45x45       = 45,
+    IMAQ_QR_DIMENSIONS_49x49       = 49,
+    IMAQ_QR_DIMENSIONS_53x53       = 53,
+    IMAQ_QR_DIMENSIONS_57x57       = 57,
+    IMAQ_QR_DIMENSIONS_61x61       = 61,
+    IMAQ_QR_DIMENSIONS_65x65       = 65,
+    IMAQ_QR_DIMENSIONS_69x69       = 69,
+    IMAQ_QR_DIMENSIONS_73x73       = 73,
+    IMAQ_QR_DIMENSIONS_77x77       = 77,
+    IMAQ_QR_DIMENSIONS_81x81       = 81,
+    IMAQ_QR_DIMENSIONS_85x85       = 85,
+    IMAQ_QR_DIMENSIONS_89x89       = 89,
+    IMAQ_QR_DIMENSIONS_93x93       = 93,
+    IMAQ_QR_DIMENSIONS_97x97       = 97,
+    IMAQ_QR_DIMENSIONS_101x101     = 101,
+    IMAQ_QR_DIMENSIONS_105x105     = 105,
+    IMAQ_QR_DIMENSIONS_109x109     = 109,
+    IMAQ_QR_DIMENSIONS_113x113     = 113,
+    IMAQ_QR_DIMENSIONS_117x117     = 117,
+    IMAQ_QR_DIMENSIONS_121x121     = 121,
+    IMAQ_QR_DIMENSIONS_125x125     = 125,
+    IMAQ_QR_DIMENSIONS_129x129     = 129,
+    IMAQ_QR_DIMENSIONS_133x133     = 133,
+    IMAQ_QR_DIMENSIONS_137x137     = 137,
+    IMAQ_QR_DIMENSIONS_141x141     = 141,
+    IMAQ_QR_DIMENSIONS_145x145     = 145,
+    IMAQ_QR_DIMENSIONS_149x149     = 149,
+    IMAQ_QR_DIMENSIONS_153x153     = 153,
+    IMAQ_QR_DIMENSIONS_157x157     = 157,
+    IMAQ_QR_DIMENSIONS_161x161     = 161,
+    IMAQ_QR_DIMENSIONS_165x165     = 165,
+    IMAQ_QR_DIMENSIONS_169x169     = 169,
+    IMAQ_QR_DIMENSIONS_173x173     = 173,
+    IMAQ_QR_DIMENSIONS_177x177     = 177,
+    IMAQ_QR_DIMENSIONS_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum QRGradingMode {
+    IMAQ_QR_NO_GRADING              = 0,
+    IMAQ_QR_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum QRMirrorMode {
+    IMAQ_QR_MIRROR_MODE_AUTO_DETECT = -2,
+    IMAQ_QR_MIRROR_MODE_MIRRORED    = 1,
+    IMAQ_QR_MIRROR_MODE_NORMAL      = 0,
+    IMAQ_QR_MIRROR_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum QRModelType {
+    IMAQ_QR_MODELTYPE_AUTO_DETECT = 0,
+    IMAQ_QR_MODELTYPE_MICRO       = 1,
+    IMAQ_QR_MODELTYPE_MODEL1      = 2,
+    IMAQ_QR_MODELTYPE_MODEL2      = 3,
+    IMAQ_QR_MODEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum QRPolarities {
+    IMAQ_QR_POLARITY_AUTO_DETECT     = -2,
+    IMAQ_QR_POLARITY_BLACK_ON_WHITE  = 0,
+    IMAQ_QR_POLARITY_WHITE_ON_BLACK  = 1,
+    IMAQ_QR_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum QRRotationMode {
+    IMAQ_QR_ROTATION_MODE_UNLIMITED   = 0,
+    IMAQ_QR_ROTATION_MODE_0_DEGREES   = 1,
+    IMAQ_QR_ROTATION_MODE_90_DEGREES  = 2,
+    IMAQ_QR_ROTATION_MODE_180_DEGREES = 3,
+    IMAQ_QR_ROTATION_MODE_270_DEGREES = 4,
+    IMAQ_QR_ROTATION_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum QRStreamMode {
+    IMAQ_QR_MODE_NUMERIC      = 0,
+    IMAQ_QR_MODE_ALPHANUMERIC = 1,
+    IMAQ_QR_MODE_RAW_BYTE     = 2,
+    IMAQ_QR_MODE_EAN128_TOKEN = 3,
+    IMAQ_QR_MODE_EAN128_DATA  = 4,
+    IMAQ_QR_MODE_ECI          = 5,
+    IMAQ_QR_MODE_KANJI        = 6,
+    IMAQ_QR_MODE_SIZE_GUARD   = 0xFFFFFFFF   
+};
+
+enum RakeDirection {
+    IMAQ_LEFT_TO_RIGHT             = 0,
+    IMAQ_RIGHT_TO_LEFT             = 1,
+    IMAQ_TOP_TO_BOTTOM             = 2,
+    IMAQ_BOTTOM_TO_TOP             = 3,
+    IMAQ_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum RakeProcessType {
+    IMAQ_GET_FIRST_EDGES              = 0,           
+    IMAQ_GET_FIRST_AND_LAST_EDGES     = 1,           
+    IMAQ_GET_ALL_EDGES                = 2,           
+    IMAQ_GET_BEST_EDGES               = 3,           
+    IMAQ_RAKE_PROCESS_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ReadClassifierFileMode {
+    IMAQ_CLASSIFIER_READ_ALL                   = 0,
+    IMAQ_CLASSIFIER_READ_SAMPLES               = 1,
+    IMAQ_CLASSIFIER_READ_PROPERTIES            = 2,
+    IMAQ_READ_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ReadResolution {
+    IMAQ_LOW_RESOLUTION             = 0,
+    IMAQ_MEDIUM_RESOLUTION          = 1,
+    IMAQ_HIGH_RESOLUTION            = 2,
+    IMAQ_READ_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
 enum ReadStrategy {
     IMAQ_READ_AGGRESSIVE          = 0,
     IMAQ_READ_CONSERVATIVE        = 1,
     IMAQ_READ_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum RectOrientation {
+    IMAQ_BASE_INSIDE                 = 0,
+    IMAQ_BASE_OUTSIDE                = 1,
+    IMAQ_TEXT_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ReferenceMode {
+    IMAQ_COORD_X_Y                 = 0,
+    IMAQ_COORD_ORIGIN_X            = 1,
+    IMAQ_REFERENCE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum RegistrationMethod {
+    IMAQ_REGISTRATION_NONE        = 0,
+    IMAQ_REGISTRATION_PERSPECTIVE = 1,
+    IMAQ_REGISTRATION_SIZE_GUARD  = 0xFFFFFFFF   
+};
+
+enum RoundingMode {
+    IMAQ_ROUNDING_MODE_OPTIMIZE   = 0,
+    IMAQ_ROUNDING_MODE_TRUNCATE   = 1,
+    IMAQ_ROUNDING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ScalingMethod {
+    IMAQ_SCALE_TO_PRESERVE_AREA    = 0,
+    IMAQ_SCALE_TO_FIT              = 1,
+    IMAQ_SCALING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ScalingMode {
+    IMAQ_SCALE_LARGER            = 0,
+    IMAQ_SCALE_SMALLER           = 1,
+    IMAQ_SCALING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum SearchDirection {
+    IMAQ_SEARCH_DIRECTION_LEFT_TO_RIGHT = 0,
+    IMAQ_SEARCH_DIRECTION_RIGHT_TO_LEFT = 1,
+    IMAQ_SEARCH_DIRECTION_TOP_TO_BOTTOM = 2,
+    IMAQ_SEARCH_DIRECTION_BOTTOM_TO_TOP = 3,
+    IMAQ_SEARCH_DIRECTION_SIZE_GUARD    = 0xFFFFFFFF   
+};
+
+enum SearchStrategy {
+    IMAQ_CONSERVATIVE               = 1,
+    IMAQ_BALANCED                   = 2,
+    IMAQ_AGGRESSIVE                 = 3,
+    IMAQ_VERY_AGGRESSIVE            = 4,
+    IMAQ_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum SegmentationDistanceLevel {
+    IMAQ_SEGMENTATION_LEVEL_CONSERVATIVE = 0,
+    IMAQ_SEGMENTATION_LEVEL_AGGRESSIVE   = 1,
+    IMAQ_SEGMENTATION_LEVEL_SIZE_GUARD   = 0xFFFFFFFF   
+};
+
+enum SettingType {
+    IMAQ_ROTATION_ANGLE_RANGE    = 0,
+    IMAQ_SCALE_RANGE             = 1,
+    IMAQ_OCCLUSION_RANGE         = 2,
+    IMAQ_SETTING_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ShapeMode {
+    IMAQ_SHAPE_RECT            = 1,
+    IMAQ_SHAPE_OVAL            = 2,
+    IMAQ_SHAPE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum SizeType {
+    IMAQ_KEEP_LARGE           = 0,
+    IMAQ_KEEP_SMALL           = 1,
+    IMAQ_SIZE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum SkeletonMethod {
+    IMAQ_SKELETON_L                 = 0,
+    IMAQ_SKELETON_M                 = 1,
+    IMAQ_SKELETON_INVERSE           = 2,
+    IMAQ_SKELETON_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum SpokeDirection {
+    IMAQ_OUTSIDE_TO_INSIDE          = 0,
+    IMAQ_INSIDE_TO_OUTSIDE          = 1,
+    IMAQ_SPOKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum StraightEdgeSearchMode {
+    IMAQ_USE_FIRST_RAKE_EDGES            = 0,
+    IMAQ_USE_BEST_RAKE_EDGES             = 1,
+    IMAQ_USE_BEST_HOUGH_LINE             = 2,
+    IMAQ_USE_FIRST_PROJECTION_EDGE       = 3,
+    IMAQ_USE_BEST_PROJECTION_EDGE        = 4,
+    IMAQ_STRAIGHT_EDGE_SEARCH_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum TIFFCompressionType {
+    IMAQ_NO_COMPRESSION                   = 0,
+    IMAQ_JPEG                             = 1,
+    IMAQ_RUN_LENGTH                       = 2,
+    IMAQ_ZIP                              = 3,
+    IMAQ_TIFF_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum TextAlignment {
+    IMAQ_LEFT                      = 0,
+    IMAQ_CENTER                    = 1,
+    IMAQ_RIGHT                     = 2,
+    IMAQ_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum ThresholdMethod {
+    IMAQ_THRESH_CLUSTERING           = 0,
+    IMAQ_THRESH_ENTROPY              = 1,
+    IMAQ_THRESH_METRIC               = 2,
+    IMAQ_THRESH_MOMENTS              = 3,
+    IMAQ_THRESH_INTERCLASS           = 4,
+    IMAQ_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum ThresholdMode {
@@ -1094,70 +1263,115 @@ enum ThresholdMode {
     IMAQ_THRESHOLD_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ReadResolution {
-    IMAQ_LOW_RESOLUTION             = 0,
-    IMAQ_MEDIUM_RESOLUTION          = 1,
-    IMAQ_HIGH_RESOLUTION            = 2,
-    IMAQ_READ_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
+enum Tool {
+    IMAQ_NO_TOOL              = -1,
+    IMAQ_SELECTION_TOOL       = 0,
+    IMAQ_POINT_TOOL           = 1,
+    IMAQ_LINE_TOOL            = 2,
+    IMAQ_RECTANGLE_TOOL       = 3,
+    IMAQ_OVAL_TOOL            = 4,
+    IMAQ_POLYGON_TOOL         = 5,
+    IMAQ_CLOSED_FREEHAND_TOOL = 6,
+    IMAQ_ANNULUS_TOOL         = 7,
+    IMAQ_ZOOM_TOOL            = 8,
+    IMAQ_PAN_TOOL             = 9,
+    IMAQ_POLYLINE_TOOL        = 10,
+    IMAQ_FREEHAND_TOOL        = 11,
+    IMAQ_ROTATED_RECT_TOOL    = 12,
+    IMAQ_ZOOM_OUT_TOOL        = 13,
+    IMAQ_TOOL_SIZE_GUARD      = 0xFFFFFFFF   
 };
 
-enum NearestNeighborMetric {
-    IMAQ_METRIC_MAXIMUM                     = 0,
-    IMAQ_METRIC_SUM                         = 1,
-    IMAQ_METRIC_EUCLIDEAN                   = 2,
-    IMAQ_NEAREST_NEIGHBOR_METRIC_SIZE_GUARD = 0xFFFFFFFF   
+enum TruncateMode {
+    IMAQ_TRUNCATE_LOW             = 0,
+    IMAQ_TRUNCATE_HIGH            = 1,
+    IMAQ_TRUNCATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum ExtractionMode {
-    IMAQ_NORMAL_IMAGE               = 0,
-    IMAQ_UNIFORM_REGIONS            = 1,
-    IMAQ_EXTRACTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum TwoEdgePolarityType {
+    IMAQ_NONE                              = 0,
+    IMAQ_RISING_FALLING                    = 1,
+    IMAQ_FALLING_RISING                    = 2,
+    IMAQ_RISING_RISING                     = 3,
+    IMAQ_FALLING_FALLING                   = 4,
+    IMAQ_TWO_EDGE_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum RoundingMode {
-    IMAQ_ROUNDING_MODE_OPTIMIZE   = 0,
-    IMAQ_ROUNDING_MODE_TRUNCATE   = 1,
-    IMAQ_ROUNDING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+enum VerticalTextAlignment {
+    IMAQ_BOTTOM                             = 0,
+    IMAQ_TOP                                = 1,
+    IMAQ_BASELINE                           = 2,
+    IMAQ_VERTICAL_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum CompressionType {
-    IMAQ_COMPRESSION_NONE            = 0,
-    IMAQ_COMPRESSION_JPEG            = 1,
-    IMAQ_COMPRESSION_PACKED_BINARY   = 2,
-    IMAQ_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum VisionInfoType {
+    IMAQ_ANY_VISION_INFO             = 0,
+    IMAQ_PATTERN_MATCHING_INFO       = 1,
+    IMAQ_CALIBRATION_INFO            = 2,
+    IMAQ_OVERLAY_INFO                = 3,
+    IMAQ_VISION_INFO_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum FlattenType {
-    IMAQ_FLATTEN_IMAGE                 = 0,
-    IMAQ_FLATTEN_IMAGE_AND_VISION_INFO = 1,
-    IMAQ_FLATTEN_TYPE_SIZE_GUARD       = 0xFFFFFFFF   
+enum VisionInfoType2 {
+    IMAQ_VISIONINFO_CALIBRATION        = 0x01,
+    IMAQ_VISIONINFO_OVERLAY            = 0x02,
+    IMAQ_VISIONINFO_GRAYTEMPLATE       = 0x04,
+    IMAQ_VISIONINFO_COLORTEMPLATE      = 0x08,
+    IMAQ_VISIONINFO_GEOMETRICTEMPLATE  = 0x10,
+    IMAQ_VISIONINFO_CUSTOMDATA         = 0x20,
+    IMAQ_VISIONINFO_GOLDENTEMPLATE     = 0x40,
+    IMAQ_VISIONINFO_GEOMETRICTEMPLATE2 = 0x80,
+    IMAQ_VISIONINFO_ALL                = 0xFFFFFFFF
 };
 
-enum LocalThresholdMethod {
-    IMAQ_NIBLACK                           = 0,
-    IMAQ_BACKGROUND_CORRECTION             = 1,
-    IMAQ_LOCAL_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+enum WaveletTransformMode {
+    IMAQ_WAVELET_TRANSFORM_INTEGER         = 0,
+    IMAQ_WAVELET_TRANSFORM_FLOATING_POINT  = 1,
+    IMAQ_WAVELET_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
-enum FeatureType {
-    IMAQ_NOT_FOUND_FEATURE                   = 0,
-    IMAQ_CIRCLE_FEATURE                      = 1,
-    IMAQ_ELLIPSE_FEATURE                     = 2,
-    IMAQ_CONST_CURVE_FEATURE                 = 3,
-    IMAQ_RECTANGLE_FEATURE                   = 4,
-    IMAQ_LEG_FEATURE                         = 5,
-    IMAQ_CORNER_FEATURE                      = 6,
-    IMAQ_PARALLEL_LINE_PAIR_FEATURE          = 7,
-    IMAQ_PAIR_OF_PARALLEL_LINE_PAIRS_FEATURE = 8,
-    IMAQ_LINE_FEATURE                        = 9,
-    IMAQ_CLOSED_CURVE_FEATURE                = 10,
-    IMAQ_FEATURE_TYPE_SIZE_GUARD             = 0xFFFFFFFF   
-};
-
-enum ClassifierType {
-    IMAQ_CLASSIFIER_CUSTOM          = 0,
-    IMAQ_CLASSIFIER_PARTICLE        = 1,
-    IMAQ_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+enum WaveletType {
+    IMAQ_DB02                 = 0,           
+    IMAQ_DB03                 = 1,           
+    IMAQ_DB04                 = 2,
+    IMAQ_DB05                 = 3,           
+    IMAQ_DB06                 = 4,           
+    IMAQ_DB07                 = 5,           
+    IMAQ_DB08                 = 6,           
+    IMAQ_DB09                 = 7,           
+    IMAQ_DB10                 = 8,           
+    IMAQ_DB11                 = 9,           
+    IMAQ_DB12                 = 10,          
+    IMAQ_DB13                 = 11,          
+    IMAQ_DB14                 = 12,          
+    IMAQ_HAAR                 = 13,          
+    IMAQ_BIOR1_3              = 14,          
+    IMAQ_BIOR1_5              = 15,          
+    IMAQ_BIOR2_2              = 16,          
+    IMAQ_BIOR2_4              = 17,          
+    IMAQ_BIOR2_6              = 18,          
+    IMAQ_BIOR2_8              = 19,          
+    IMAQ_BIOR3_1              = 20,          
+    IMAQ_BIOR3_3              = 21,          
+    IMAQ_BIOR3_5              = 22,          
+    IMAQ_BIOR3_7              = 23,          
+    IMAQ_BIOR3_9              = 24,          
+    IMAQ_BIOR4_4              = 25,          
+    IMAQ_COIF1                = 26,          
+    IMAQ_COIF2                = 27,          
+    IMAQ_COIF3                = 28,          
+    IMAQ_COIF4                = 29,          
+    IMAQ_COIF5                = 30,          
+    IMAQ_SYM2                 = 31,          
+    IMAQ_SYM3                 = 32,          
+    IMAQ_SYM4                 = 33,          
+    IMAQ_SYM5                 = 34,          
+    IMAQ_SYM6                 = 35,          
+    IMAQ_SYM7                 = 36,          
+    IMAQ_SYM8                 = 37,          
+    IMAQ_BIOR5_5              = 38,          
+    IMAQ_BIOR6_8              = 39,          
+    IMAQ_WAVE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum WindowBackgroundFillStyle {
@@ -1165,51 +1379,6 @@ enum WindowBackgroundFillStyle {
     IMAQ_FILL_STYLE_HATCH      = 2,
     IMAQ_FILL_STYLE_DEFAULT    = 3,
     IMAQ_FILL_STYLE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum RegistrationMethod {
-    IMAQ_REGISTRATION_NONE        = 0,
-    IMAQ_REGISTRATION_PERSPECTIVE = 1,
-    IMAQ_REGISTRATION_SIZE_GUARD  = 0xFFFFFFFF   
-};
-
-enum EdgeFilterSize {
-    IMAQ_FINE                        = 0,
-    IMAQ_NORMAL                      = 1,
-    IMAQ_EDGE_FILTER_SIZE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Barcode2DSearchMode {
-    IMAQ_SEARCH_MULTIPLE                   = 0,
-    IMAQ_SEARCH_SINGLE_CONSERVATIVE        = 1,
-    IMAQ_SEARCH_SINGLE_AGGRESSIVE          = 2,
-    IMAQ_BARCODE_2D_SEARCH_MODE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum DataMatrixSubtype {
-    IMAQ_ALL_DATA_MATRIX_SUBTYPES             = 0,
-    IMAQ_DATA_MATRIX_SUBTYPES_ECC_000_ECC_140 = 1,
-    IMAQ_DATA_MATRIX_SUBTYPE_ECC_200          = 2,
-    IMAQ_DATA_MATRIX_SUBTYPE_SIZE_GUARD       = 0xFFFFFFFF   
-};
-
-enum Barcode2DShape {
-    IMAQ_SQUARE_BARCODE_2D           = 0,
-    IMAQ_RECTANGULAR_BARCODE_2D      = 1,
-    IMAQ_BARCODE_2D_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Barcode2DCellShape {
-    IMAQ_SQUARE_CELLS                     = 0,
-    IMAQ_ROUND_CELLS                      = 1,
-    IMAQ_BARCODE_2D_CELL_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
-};
-
-enum Barcode2DContrast {
-    IMAQ_ALL_BARCODE_2D_CONTRASTS       = 0,
-    IMAQ_BLACK_ON_WHITE_BARCODE_2D      = 1,
-    IMAQ_WHITE_ON_BLACK_BARCODE_2D      = 2,
-    IMAQ_BARCODE_2D_CONTRAST_SIZE_GUARD = 0xFFFFFFFF   
 };
 
 enum WindowBackgroundHatchStyle {
@@ -1222,6 +1391,38 @@ enum WindowBackgroundHatchStyle {
     IMAQ_HATCH_STYLE_SIZE_GUARD        = 0xFFFFFFFF   
 };
 
+enum WindowEventType {
+    IMAQ_NO_EVENT                     = 0,
+    IMAQ_CLICK_EVENT                  = 1,
+    IMAQ_DRAW_EVENT                   = 2,
+    IMAQ_MOVE_EVENT                   = 3,
+    IMAQ_SIZE_EVENT                   = 4,
+    IMAQ_SCROLL_EVENT                 = 5,
+    IMAQ_ACTIVATE_EVENT               = 6,
+    IMAQ_CLOSE_EVENT                  = 7,
+    IMAQ_DOUBLE_CLICK_EVENT           = 8,
+    IMAQ_WINDOW_EVENT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum WindowOptions {
+    IMAQ_WIND_RESIZABLE            = 1,
+    IMAQ_WIND_TITLEBAR             = 2,
+    IMAQ_WIND_CLOSEABLE            = 4,
+    IMAQ_WIND_TOPMOST              = 8,
+    IMAQ_WINDOW_OPTIONS_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum WindowThreadPolicy {
+    IMAQ_CALLING_THREAD                  = 0,
+    IMAQ_SEPARATE_THREAD                 = 1,
+    IMAQ_WINDOW_THREAD_POLICY_SIZE_GUARD = 0xFFFFFFFF   
+};
+
+enum WriteClassifierFileMode {
+    IMAQ_CLASSIFIER_WRITE_ALL                   = 0,
+    IMAQ_CLASSIFIER_WRITE_CLASSIFY_ONLY         = 1,
+    IMAQ_WRITE_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
+};
 
 //============================================================================
 //  Forward Declare Data Structures
@@ -1369,426 +1570,6 @@ typedef const void* Kernel;
 // Data Structures
 //============================================================================
 
-struct ParticleFilterOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int rejectMatches;
-    int rejectBorder;
-    int fillHoles;
-    int connectivity8;
-};
-
-struct RGBValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    RGBValue();
-    RGBValue(unsigned char B /PyInt/, unsigned char G /PyInt/, unsigned char R /PyInt/, unsigned char alpha /PyInt/ = 0);
-    %MethodCode
-        sipCpp = new RGBValue;
-        sipCpp->B = a0;
-        sipCpp->G = a1;
-        sipCpp->R = a2;
-        sipCpp->alpha = a3;
-    %End
-    unsigned char B /PyInt/;
-    unsigned char G /PyInt/;
-    unsigned char R /PyInt/;
-    unsigned char alpha /PyInt/;
-};
-
-struct EdgeOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    EdgePolaritySearchMode polarity;
-    int                    kernelSize;
-    int                    width;
-    float                  minThreshold;
-    InterpolationMethod    interpolationType;
-    ColumnProcessingMode   columnProcessingMode;
-};
-
-struct FindEdgeOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    RakeDirection direction;
-    int           showSearchArea;
-    int           showSearchLines;
-    int           showEdgesFound;
-    int           showResult;
-    RGBValue      searchAreaColor;
-    RGBValue      searchLinesColor;
-    RGBValue      searchEdgesColor;
-    RGBValue      resultColor;
-    char*         overlayGroupName;
-    EdgeOptions2  edgeOptions;
-};
-/*
-struct FindEdgeReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    StraightEdge* straightEdges;
-    unsigned int  numStraightEdges;
-};
-*/
-struct FindTransformRectOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    FindReferenceDirection direction;
-    int                    showSearchArea;
-    int                    showSearchLines;
-    int                    showEdgesFound;
-    int                    showResult;
-    RGBValue               searchAreaColor;
-    RGBValue               searchLinesColor;
-    RGBValue               searchEdgesColor;
-    RGBValue               resultColor;
-    char*                  overlayGroupName;
-    EdgeOptions2           edgeOptions;
-};
-
-struct FindTransformRectsOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    FindReferenceDirection direction;
-    int                    showSearchArea;
-    int                    showSearchLines;
-    int                    showEdgesFound;
-    int                    showResult;
-    RGBValue               searchAreaColor;
-    RGBValue               searchLinesColor;
-    RGBValue               searchEdgesColor;
-    RGBValue               resultColor;
-    char*                  overlayGroupName;
-    EdgeOptions2           primaryEdgeOptions;
-    EdgeOptions2           secondaryEdgeOptions;
-};
-/*
-struct ReadTextReport3 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*  readString;
-    CharReport3* characterReport;
-    int          numCharacterReports;
-    ROI*         roiBoundingCharacters;
-};
-
-struct CharacterStatistics {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int left;
-    int top;
-    int width;
-    int height;
-    int characterSize;
-};
-
-struct CharReport3 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*         character;
-    int                 classificationScore;
-    int                 verificationScore;
-    int                 verified;
-    int                 lowThreshold;
-    int                 highThreshold;
-    CharacterStatistics characterStats;
-};
-*/
-struct PointFloat {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat();
-    PointFloat(float x, float y);
-    %MethodCode
-        sipCpp = new PointFloat;
-        sipCpp->x = a0;
-        sipCpp->y = a1;
-    %End
-    float x;
-    float y;
-};
-
-struct ArcInfo2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat center;
-    double     radius;
-    double     startAngle;
-    double     endAngle;
-};
-
-struct EdgeReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~EdgeReport2();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //EdgeInfo*    edges;
-    unsigned int numEdges;
-    //TODO double*      gradientInfo;
-    unsigned int numGradientInfo;
-    int          calibrationValid;
-private:
-    EdgeReport2();
-    EdgeReport2(const EdgeReport2&);
-};
-/*
-struct SearchArcInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ArcInfo2    arcCoordinates;
-    EdgeReport2 edgeReport;
-};
-*/
-struct ConcentricRakeReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~ConcentricRakeReport2();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //EdgeInfo*      firstEdges;
-    unsigned int   numFirstEdges;
-    //EdgeInfo*      lastEdges;
-    unsigned int   numLastEdges;
-    //SearchArcInfo* searchArcs;
-    unsigned int   numSearchArcs;
-private:
-    ConcentricRakeReport2();
-    ConcentricRakeReport2(const ConcentricRakeReport2&);
-};
-
-struct SpokeReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~SpokeReport2();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //EdgeInfo*       firstEdges;
-    unsigned int    numFirstEdges;
-    //EdgeInfo*       lastEdges;
-    unsigned int    numLastEdges;
-    //SearchLineInfo* searchLines;
-    unsigned int    numSearchLines;
-private:
-    SpokeReport2();
-    SpokeReport2(const SpokeReport2&);
-};
-/*
-struct EdgeInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    PointFloat calibratedPosition;
-    double     distance;
-    double     calibratedDistance;
-    double     magnitude;
-    double     noisePeak;
-    int        rising;
-};
-
-struct LineFloat {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat start;
-    PointFloat end;
-};
-
-struct SearchLineInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    LineFloat   lineCoordinates;
-    EdgeReport2 edgeReport;
-};
-*/
-struct RakeReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~RakeReport2();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //EdgeInfo*       firstEdges;
-    unsigned int    numFirstEdges;
-    //EdgeInfo*       lastEdges;
-    unsigned int    numLastEdges;
-    //SearchLineInfo* searchLines;
-    unsigned int    numSearchLines;
-private:
-    RakeReport2();
-    RakeReport2(const RakeReport2&);
-};
-/*
-struct TransformBehaviors {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    GroupBehavior ShiftBehavior;
-    GroupBehavior ScaleBehavior;
-    GroupBehavior RotateBehavior;
-    GroupBehavior SymmetryBehavior;
-};
-
-struct QRCodeDataToken {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    QRStreamMode   mode;
-    unsigned int   modeData;
-    unsigned char* data;
-    unsigned int   dataLength;
-};
-*/
-struct ParticleFilterOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int rejectMatches;
-    int rejectBorder;
-    int connectivity8;
-};
-
-struct StraightEdgeReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~StraightEdgeReport2();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //StraightEdge*   straightEdges;
-    unsigned int    numStraightEdges;
-    //SearchLineInfo* searchLines;
-    unsigned int    numSearchLines;
-private:
-    StraightEdgeReport2();
-    StraightEdgeReport2(const StraightEdgeReport2&);
-};
-
-struct StraightEdgeOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int           numLines;
-    StraightEdgeSearchMode searchMode;
-    double                 minScore;
-    double                 maxScore;
-    double                 orientation;
-    double                 angleRange;
-    double                 angleTolerance;
-    unsigned int           stepSize;
-    double                 minSignalToNoiseRatio;
-    double                 minCoverage;
-    unsigned int           houghIterations;
-};
-/*
-struct StraightEdge {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    LineFloat    straightEdgeCoordinates;
-    LineFloat    calibratedStraightEdgeCoordinates;
-    double       angle;
-    double       calibratedAngle;
-    double       score;
-    double       straightness;
-    double       averageSignalToNoiseRatio;
-    int          calibrationValid;
-    EdgeInfo*    usedEdges;
-    unsigned int numUsedEdges;
-};
-
-struct QRCodeSearchOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    QRRotationMode     rotationMode;
-    unsigned int       skipLocation;
-    unsigned int       edgeThreshold;
-    QRDemodulationMode demodulationMode;
-    QRCellSampleSize   cellSampleSize;
-    QRCellFilterMode   cellFilterMode;
-    unsigned int       skewDegreesAllowed;
-};
-
-struct QRCodeSizeOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int minSize;
-    unsigned int maxSize;
-};
-
-struct QRCodeDescriptionOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    QRDimensions dimensions;
-    QRPolarities polarity;
-    QRMirrorMode mirror;
-    QRModelType  modelType;
-};
-
-struct QRCodeReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int       found;
-    unsigned char*     data;
-    unsigned int       dataLength;
-    //TODO: PointFloat         boundingBox[4];
-    QRCodeDataToken*   tokenizedData;
-    unsigned int       sizeOfTokenizedData;
-    unsigned int       numErrorsCorrected;
-    unsigned int       dimensions;
-    unsigned int       version;
-    QRModelType        modelType;
-    QRStreamMode       streamMode;
-    QRPolarities       matrixPolarity;
-    unsigned int       mirrored;
-    unsigned int       positionInAppendStream;
-    unsigned int       sizeOfAppendStream;
-    int                firstEAN128ApplicationID;
-    int                firstECIDesignator;
-    unsigned int       appendStreamIdentifier;
-    unsigned int       minimumEdgeStrength;
-    QRDemodulationMode demodulationMode;
-    QRCellSampleSize   cellSampleSize;
-    QRCellFilterMode   cellFilterMode;
-};
-
 struct AIMGradeReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1805,730 +1586,6 @@ struct AIMGradeReport {
     float    unusedErrorCorrection;
 };
 
-struct DataMatrixSizeOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int minSize;
-    unsigned int maxSize;
-    unsigned int quietZoneWidth;
-};
-
-struct DataMatrixDescriptionOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float                  aspectRatio;
-    unsigned int           rows;
-    unsigned int           columns;
-    int                    rectangle;
-    DataMatrixECC          ecc;
-    DataMatrixPolarity     polarity;
-    DataMatrixCellFillMode cellFill;
-    float                  minBorderIntegrity;
-    DataMatrixMirrorMode   mirrorMode;
-};
-
-struct DataMatrixSearchOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    DataMatrixRotationMode     rotationMode;
-    int                        skipLocation;
-    unsigned int               edgeThreshold;
-    DataMatrixDemodulationMode demodulationMode;
-    DataMatrixCellSampleSize   cellSampleSize;
-    DataMatrixCellFilterMode   cellFilterMode;
-    unsigned int               skewDegreesAllowed;
-    unsigned int               maxIterations;
-    unsigned int               initialSearchVectorWidth;
-};
-
-struct DataMatrixReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int                        found;
-    int                        binary;
-    unsigned char*             data;
-    unsigned int               dataLength;
-    //TODO: PointFloat                 boundingBox[4];
-    unsigned int               numErrorsCorrected;
-    unsigned int               numErasuresCorrected;
-    float                      aspectRatio;
-    unsigned int               rows;
-    unsigned int               columns;
-    DataMatrixECC              ecc;
-    DataMatrixPolarity         polarity;
-    DataMatrixCellFillMode     cellFill;
-    float                      borderIntegrity;
-    int                        mirrored;
-    unsigned int               minimumEdgeStrength;
-    DataMatrixDemodulationMode demodulationMode;
-    DataMatrixCellSampleSize   cellSampleSize;
-    DataMatrixCellFilterMode   cellFilterMode;
-    unsigned int               iterations;
-};
-
-struct JPEG2000FileAdvancedOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    WaveletTransformMode waveletMode;
-    int                  useMultiComponentTransform;
-    unsigned int         maxWaveletTransformLevel;
-    float                quantizationStepSize;
-};
-
-struct MatchGeometricPatternAdvancedOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    minFeaturesUsed;
-    int    maxFeaturesUsed;
-    int    subpixelIterations;
-    double subpixelTolerance;
-    int    initialMatchListLength;
-    float  matchTemplateCurveScore;
-    int    correlationScore;
-    double minMatchSeparationDistance;
-    double minMatchSeparationAngle;
-    double minMatchSeparationScale;
-    double maxMatchOverlap;
-    int    coarseResult;
-    int    smoothContours;
-    int    enableCalibrationSupport;
-};
-
-struct InspectionAlignment {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    float      rotation;
-    float      scale;
-};
-
-struct InspectionOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    RegistrationMethod  registrationMethod;
-    NormalizationMethod normalizationMethod;
-    int                 edgeThicknessToIgnore;
-    float               brightThreshold;
-    float               darkThreshold;
-    int                 binary;
-};
-
-struct CharReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char* character;
-    //TODO: PointFloat  corner[4];
-    int         lowThreshold;
-    int         highThreshold;
-    int         classificationScore;
-    int         verificationScore;
-    int         verified;
-};
-
-struct CharInfo2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*  charValue;
-    const Image* charImage;
-    const Image* internalImage;
-    int          isReferenceChar;
-};
-
-struct ReadTextReport2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*  readString;
-    CharReport2* characterReport;
-    int          numCharacterReports;
-};
-
-struct EllipseFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     rotation;
-    double     minorRadius;
-    double     majorRadius;
-};
-
-struct CircleFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     radius;
-};
-
-struct ConstCurveFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     radius;
-    double     startAngle;
-    double     endAngle;
-};
-
-struct RectangleFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    //TODO: PointFloat corner[4];
-    double     rotation;
-    double     width;
-    double     height;
-};
-
-struct LegFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    //TODO: PointFloat corner[4];
-    double     rotation;
-    double     width;
-    double     height;
-};
-
-struct CornerFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     rotation;
-    double     enclosedAngle;
-    int        isVirtual;
-};
-
-struct LineFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat startPoint;
-    PointFloat endPoint;
-    double     length;
-    double     rotation;
-};
-
-struct ParallelLinePairFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat firstStartPoint;
-    PointFloat firstEndPoint;
-    PointFloat secondStartPoint;
-    PointFloat secondEndPoint;
-    double     rotation;
-    double     distance;
-};
-
-struct PairOfParallelLinePairsFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ParallelLinePairFeature firstParallelLinePair;
-    ParallelLinePairFeature secondParallelLinePair;
-    double                  rotation;
-    double                  distance;
-};
-
-// TODO
-//typedef union GeometricFeature_union {
-//    CircleFeature*                  circle;
-//    EllipseFeature*                 ellipse;
-//    ConstCurveFeature*              constCurve;
-//    RectangleFeature*               rectangle;
-//    LegFeature*                     leg;
-//    CornerFeature*                  corner;
-//    ParallelLinePairFeature*        parallelLinePair;
-//    PairOfParallelLinePairsFeature* pairOfParallelLinePairs;
-//    LineFeature*                    line;
-//    ClosedCurveFeature*             closedCurve;
-//};
-
-struct FeatureData {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    FeatureType      type;
-    PointFloat*      contourPoints;
-    int              numContourPoints;
-    //TODO GeometricFeature feature;
-};
-
-struct GeometricPatternMatch2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat   position;
-    float        rotation;
-    float        scale;
-    float        score;
-    //TODO PointFloat   corner[4];
-    int          inverse;
-    float        occlusion;
-    float        templateMatchCurveScore;
-    float        matchTemplateCurveScore;
-    float        correlationScore;
-    String255    label;
-    //TODO FeatureData* featureData;
-    int          numFeatureData;
-    PointFloat   calibratedPosition;
-    float        calibratedRotation;
-    //TODO PointFloat   calibratedCorner[4];
-};
-
-struct ClosedCurveFeature {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     arcLength;
-};
-
-struct LineMatch {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat startPoint;
-    PointFloat endPoint;
-    double     length;
-    double     rotation;
-    double     score;
-};
-
-struct LineDescriptor {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double minLength;
-    double maxLength;
-};
-
-struct RectangleDescriptor {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double minWidth;
-    double maxWidth;
-    double minHeight;
-    double maxHeight;
-};
-
-struct RectangleMatch {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    //TODO PointFloat corner[4];
-    double     rotation;
-    double     width;
-    double     height;
-    double     score;
-};
-*/
-struct EllipseDescriptor {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double minMajorRadius;
-    double maxMajorRadius;
-    double minMinorRadius;
-    double maxMinorRadius;
-};
-
-struct EllipseMatch {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     rotation;
-    double     majorRadius;
-    double     minorRadius;
-    double     score;
-};
-
-struct CircleMatch {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    double     radius;
-    double     score;
-};
-
-struct CircleDescriptor {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double minRadius;
-    double maxRadius;
-};
-
-struct RangeFloat {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float minValue;
-    float maxValue;
-};
-
-struct ShapeDetectionOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int mode;
-    //TODO:RangeFloat*  angleRanges;
-    int          numAngleRanges;
-    RangeFloat   scaleRange;
-    double       minMatchScore;
-};
-
-struct Curve {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    //TODO:PointFloat*  points;
-    unsigned int numPoints;
-    int          closed;
-    double       curveLength;
-    double       minEdgeStrength;
-    double       maxEdgeStrength;
-    double       averageEdgeStrength;
-};
-
-struct CurveOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ExtractionMode extractionMode;
-    int            threshold;
-    EdgeFilterSize filterSize;
-    int            minLength;
-    int            rowStepSize;
-    int            columnStepSize;
-    int            maxEndPointGap;
-    int            onlyClosed;
-    int            subpixelAccuracy;
-};
-/*
-struct Barcode2DInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    Barcode2DType  type;
-    int            binary;
-    unsigned char* data;
-    unsigned int   dataLength;
-    //TODO PointFloat     boundingBox[4];
-    unsigned int   numErrorsCorrected;
-    unsigned int   numErasuresCorrected;
-    unsigned int   rows;
-    unsigned int   columns;
-};
-
-struct DataMatrixOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    Barcode2DSearchMode searchMode;
-    Barcode2DContrast   contrast;
-    Barcode2DCellShape  cellShape;
-    Barcode2DShape      barcodeShape;
-    DataMatrixSubtype   subtype;
-};
-
-struct ClassifierAccuracyReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int     size;
-    float   accuracy;
-    //TODO char**  classNames;
-    //TODO double* classAccuracy;
-    //TODO double* classPredictiveValue;
-    //TODO int**   classificationDistribution;
-};
-
-struct NearestNeighborClassResult {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    char* className;
-    float standardDeviation;
-    int   count;
-};
-
-struct NearestNeighborTrainingReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    //TODO float**                     classDistancesTable;
-    //TODO NearestNeighborClassResult* allScores;
-    int                         allScoresSize;
-};
-
-struct ParticleClassifierPreprocessingOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int             manualThreshold;
-    RangeFloat      manualThresholdRange;
-    ThresholdMethod autoThresholdMethod;
-    RangeFloat      limits;
-    ParticleType    particleType;
-    int             rejectBorder;
-    int             numErosions;
-};
-
-struct ClassifierSampleInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    char*   className;
-    //TODO double* featureVector;
-    int     featureVectorSize;
-    Image*  thumbnail;
-};
-
-struct ClassScore {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    char* className;
-    float distance;
-};
-
-struct ClassifierReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    char*       bestClassName;
-    float       classificationScore;
-    float       identificationScore;
-    ClassScore* allScores;
-    int         allScoresSize;
-};
-
-struct NearestNeighborOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    NearestNeighborMethod method;
-    NearestNeighborMetric metric;
-    int                   k;
-};
-
-struct ParticleClassifierOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float scaleDependence;
-    float mirrorDependence;
-};
-
-struct RGBU64Value {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned short B;
-    unsigned short G;
-    unsigned short R;
-    unsigned short alpha;
-};
-
-struct GeometricPatternMatch {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat position;
-    float      rotation;
-    float      scale;
-    float      score;
-    //TODO PointFloat corner[4];
-    int        inverse;
-    float      occlusion;
-    float      templateMatchCurveScore;
-    float      matchTemplateCurveScore;
-    float      correlationScore;
-};
-
-struct MatchGeometricPatternAdvancedOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    minFeaturesUsed;
-    int    maxFeaturesUsed;
-    int    subpixelIterations;
-    double subpixelTolerance;
-    int    initialMatchListLength;
-    int    matchTemplateCurveScore;
-    int    correlationScore;
-    double minMatchSeparationDistance;
-    double minMatchSeparationAngle;
-    double minMatchSeparationScale;
-    double maxMatchOverlap;
-    int    coarseResult;
-};
-
-struct MatchGeometricPatternOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned int mode;
-    int          subpixelAccuracy;
-    RangeFloat*  angleRanges;
-    int          numAngleRanges;
-    RangeFloat   scaleRange;
-    RangeFloat   occlusionRange;
-    int          numMatchesRequested;
-    float        minMatchScore;
-};
-
-struct LearnGeometricPatternAdvancedOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    minRectLength;
-    double minRectAspectRatio;
-    int    minRadius;
-    int    minLineLength;
-    double minFeatureStrength;
-    int    maxFeaturesUsed;
-    int    maxPixelDistanceFromLine;
-};
-
-struct FitEllipseOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    rejectOutliers;
-    double minScore;
-    double pixelRadius;
-    int    maxIterations;
-};
-
-struct FitCircleOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    rejectOutliers;
-    double minScore;
-    double pixelRadius;
-    int    maxIterations;
-};
-
-struct ConstructROIOptions2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int          windowNumber;
-    const char*  windowTitle;
-    PaletteType  type;
-    RGBValue*    palette;
-    int          numColors;
-    unsigned int maxContours;
-};
-*/
-struct HSLValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned char L;
-    unsigned char S;
-    unsigned char H;
-    unsigned char alpha;
-};
-
-struct HSVValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned char V;
-    unsigned char S;
-    unsigned char H;
-    unsigned char alpha;
-};
-
-struct HSIValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned char I;
-    unsigned char S;
-    unsigned char H;
-    unsigned char alpha;
-};
-
-struct CIELabValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double        b;
-    double        a;
-    double        L;
-    unsigned char alpha;
-};
-
-struct CIEXYZValue {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double        Z;
-    double        Y;
-    double        X;
-    unsigned char alpha;
-};
-/*
-// TODO
-//typedef union Color2_union {
-//    RGBValue    rgb;
-//    HSLValue    hsl;
-//    HSVValue    hsv;
-//    HSIValue    hsi;
-//    CIELabValue cieLab;
-//    CIEXYZValue cieXYZ;
-//    int         rawValue;
-//};
-typedef RGBValue Color2;
-
-struct BestEllipse2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat center;
-    PointFloat majorAxisStart;
-    PointFloat majorAxisEnd;
-    PointFloat minorAxisStart;
-    PointFloat minorAxisEnd;
-    double     area;
-    double     perimeter;
-    double     error;
-    int        valid;
-    //TODO int*       pointsUsed;
-    int        numPointsUsed;
-};
-
-struct LearnPatternAdvancedOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    LearnPatternAdvancedShiftOptions*    shiftOptions;
-    LearnPatternAdvancedRotationOptions* rotationOptions;
-};
-
 struct AVIInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2543,171 +1600,6 @@ struct AVIInfo {
     unsigned int maxDataSize;
 };
 
-struct LearnPatternAdvancedShiftOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int    initialStepSize;
-    int    initialSampleSize;
-    double initialSampleSizeFactor;
-    int    finalSampleSize;
-    double finalSampleSizeFactor;
-    int    subpixelSampleSize;
-    double subpixelSampleSizeFactor;
-};
-
-struct LearnPatternAdvancedRotationOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    SearchStrategy searchStrategySupport;
-    int            initialStepSize;
-    int            initialSampleSize;
-    double         initialSampleSizeFactor;
-    int            initialAngularAccuracy;
-    int            finalSampleSize;
-    double         finalSampleSizeFactor;
-    int            finalAngularAccuracy;
-    int            subpixelSampleSize;
-    double         subpixelSampleSizeFactor;
-};
-
-struct MatchPatternAdvancedOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int            subpixelIterations;
-    double         subpixelTolerance;
-    int            initialMatchListLength;
-    int            matchListReductionFactor;
-    int            initialStepSize;
-    SearchStrategy searchStrategy;
-    int            intermediateAngularAccuracy;
-};
-*/
-struct ParticleFilterCriteria2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    MeasurementType parameter;
-    float           lower;
-    float           upper;
-    int             calibrated;
-    int             exclude;
-};
-
-struct BestCircle2 {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat center;
-    double     radius;
-    double     area;
-    double     perimeter;
-    double     error;
-    int        valid;
-    //TODO int*       pointsUsed;
-    int        numPointsUsed;
-};
-
-struct OCRSpacingOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int minCharSpacing;
-    int minCharSize;
-    int maxCharSize;
-    int maxHorizontalElementSpacing;
-    int maxVerticalElementSpacing;
-    int minBoundingRectWidth;
-    int maxBoundingRectWidth;
-    int minBoundingRectHeight;
-    int maxBoundingRectHeight;
-    int autoSplit;
-};
-
-struct OCRProcessingOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ThresholdMode mode;
-    int           lowThreshold;
-    int           highThreshold;
-    int           blockCount;
-    int           fastThreshold;
-    int           biModalCalculation;
-    int           darkCharacters;
-    int           removeParticlesTouchingROI;
-    int           erosionCount;
-};
-
-struct ReadTextOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    //TODO String255      validChars[255];
-    int            numValidChars;
-    char           substitutionChar;
-    ReadStrategy   readStrategy;
-    int            acceptanceLevel;
-    int            aspectRatio;
-    ReadResolution readResolution;
-};
-/*
-struct CharInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*  charValue;
-    const Image* charImage;
-    const Image* internalImage;
-};
-*/
-struct Rect {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int top;
-    int left;
-    int height;
-    int width;
-};
-/*
-struct CharReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char* character;
-    //TODO PointFloat  corner[4];
-    int         reserved;
-    int         lowThreshold;
-    int         highThreshold;
-};
-
-struct ReadTextReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    const char*       readString;
-    const CharReport* characterReport;
-    int               numCharacterReports;
-};
-*/
-struct Point {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    Point();
-    Point(int x, int y);
-    %MethodCode
-        sipCpp = new Point;
-        sipCpp->x = a0;
-        sipCpp->y = a1;
-    %End
-    int x;
-    int y;
-};
-
 struct Annulus {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -2718,264 +1610,15 @@ struct Annulus {
     double startAngle;
     double endAngle;
 };
-/*
-struct EdgeLocationReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    PointFloat* edges;
-    int         numEdges;
-};
-*/
-struct EdgeOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned            threshold;
-    unsigned            width;
-    unsigned            steepness;
-    InterpolationMethod subpixelType;
-    unsigned            subpixelDivisions;
-};
-/*
-struct EdgeReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float        location;
-    float        contrast;
-    PolarityType polarity;
-    float        reserved;
-    PointFloat   coordinate;
-};
 
-struct ExtremeReport {
+struct ArcInfo2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    double location;
-    double amplitude;
-    double secondDerivative;
-};
-
-struct FitLineOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float minScore;
-    float pixelRadius;
-    int   numRefinements;
-};
-
-struct GridDescriptor {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float           xStep;
-    float           yStep;
-    CalibrationUnit unit;
-};
-
-struct DisplayMapping {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    MappingMethod method;
-    int           minimumValue;
-    int           maximumValue;
-    int           shiftCount;
-};
-
-struct DetectExtremesOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double threshold;
-    int    width;
-};
-*/
-struct ImageInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    CalibrationUnit imageUnit;
-    float           stepX;
-    float           stepY;
-    ImageType       imageType;
-    int             xRes;
-    int             yRes;
-    int             xOffset;
-    int             yOffset;
-    int             border;
-    int             pixelsPerLine;
-    //void*           reserved0;
-    //void*           reserved1;
-    //void*           imageStart;
-};
-
-struct LCDOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int   litSegments;
-    float threshold;
-    int   sign;
-    int   decimalPoint;
-};
-
-struct LCDReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~LCDReport();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    const char*  text;
-    //LCDSegments* segmentInfo;
-    int          numCharacters;
-    int          reserved;
-};
-
-struct LCDSegments {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    unsigned a;
-    unsigned b;
-    unsigned c;
-    unsigned d;
-    unsigned e;
-    unsigned f;
-    unsigned g;
-};
-/*
-struct LearnCalibrationOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    CalibrationMode mode;
-    ScalingMethod   method;
-    CalibrationROI  roi;
-    int             learnMap;
-    int             learnTable;
-};
-
-struct LearnColorPatternOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    LearningMode      learnMode;
-    ImageFeatureMode  featureMode;
-    int               threshold;
-    ColorIgnoreMode   ignoreMode;
-    ColorInformation* colorsToIgnore;
-    int               numColorsToIgnore;
-};
-*/
-struct Line {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    Point start;
-    Point end;
-};
-
-struct LinearAverages {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~LinearAverages();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //TODO float* columnAverages;
-    int    columnCount;
-    //TODO float* rowAverages;
-    int    rowCount;
-    //TODO float* risingDiagAverages;
-    int    risingDiagCount;
-    //TODO float* fallingDiagAverages;
-    int    fallingDiagCount;
-private:
-    LinearAverages();
-    LinearAverages(const LinearAverages&);
-};
-
-struct LineEquation {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    double a;
-    double b;
-    double c;
-};
-
-struct LineProfile {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~LineProfile();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //TODO float* profileData;
-    Rect   boundingBox;
-    float  min;
-    float  max;
-    float  mean;
-    float  stdDev;
-    int    dataCount;
-private:
-    LineProfile();
-    LineProfile(const LineProfile&);
-};
-
-struct MatchColorPatternOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    MatchingMode        matchMode;
-    ImageFeatureMode    featureMode;
-    int                 minContrast;
-    int                 subpixelAccuracy;
-    //TODO RotationAngleRange* angleRanges;
-    int                 numRanges;
-    double              colorWeight;
-    ColorSensitivity    sensitivity;
-    SearchStrategy      strategy;
-    int                 numMatchesRequested;
-    float               minMatchScore;
-};
-
-struct HistogramReport {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~HistogramReport();
-    %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-        imaqDispose(sipCpp); sipCppV = 0;
-        Py_END_ALLOW_THREADS
-    %End
-    //TODO int*  histogram;
-    int   histogramCount;
-    float min;
-    float max;
-    float start;
-    float width;
-    float mean;
-    float stdDev;
-    int   numPixels;
-private:
-    HistogramReport();
-    HistogramReport(const HistogramReport&);
+    PointFloat center;
+    double     radius;
+    double     startAngle;
+    double     endAngle;
 };
 
 struct ArcInfo {
@@ -2996,6 +1639,32 @@ struct AxisReport {
     PointFloat secondaryAxisEnd;
 };
 
+struct BCGOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float brightness;
+    float contrast;
+    float gamma;
+};
+
+/*
+struct Barcode2DInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    Barcode2DType  type;
+    int            binary;
+    unsigned char* data;
+    unsigned int   dataLength;
+    //TODO PointFloat     boundingBox[4];
+    unsigned int   numErrorsCorrected;
+    unsigned int   numErasuresCorrected;
+    unsigned int   rows;
+    unsigned int   columns;
+};
+*/
+
 struct BarcodeInfo {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3008,13 +1677,18 @@ struct BarcodeInfo {
     BarcodeType type;
 };
 
-struct BCGOptions {
+struct BestCircle2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    float brightness;
-    float contrast;
-    float gamma;
+    PointFloat center;
+    double     radius;
+    double     area;
+    double     perimeter;
+    double     error;
+    int        valid;
+    //TODO int*       pointsUsed;
+    int        numPointsUsed;
 };
 
 struct BestCircle {
@@ -3027,6 +1701,25 @@ struct BestCircle {
     double     perimeter;
     double     error;
 };
+
+/*
+struct BestEllipse2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat center;
+    PointFloat majorAxisStart;
+    PointFloat majorAxisEnd;
+    PointFloat minorAxisStart;
+    PointFloat minorAxisEnd;
+    double     area;
+    double     perimeter;
+    double     error;
+    int        valid;
+    //TODO int*       pointsUsed;
+    int        numPointsUsed;
+};
+*/
 
 struct BestEllipse {
 %TypeHeaderCode
@@ -3068,14 +1761,35 @@ struct BrowserOptions {
     RGBValue          focusColor;
 };
 
-struct CoordinateSystem {
+struct CIELabValue {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    PointFloat      origin;
-    float           angle;
-    AxisOrientation axisOrientation;
+    double        b;
+    double        a;
+    double        L;
+    unsigned char alpha;
 };
+
+struct CIEXYZValue {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double        Z;
+    double        Y;
+    double        X;
+    unsigned char alpha;
+};
+
+struct CalibrationAxisInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat      center;
+    float           rotationAngle;
+    AxisOrientation axisDirection;
+};
+
 /*
 struct CalibrationInfo {
 %TypeHeaderCode
@@ -3092,7 +1806,20 @@ struct CalibrationInfo {
     RangeFloat              range;
     float                   quality;
 };
+*/
 
+struct CalibrationLearnSetupInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    CalibrationMode2 calibrationMethod;
+    DistortionModel  distortionModel;
+    ScalingMethod    scaleMode;
+    CalibrationROI   roiMode;
+    char             learnCorrectionTable;
+};
+
+/*
 struct CalibrationPoints {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3102,6 +1829,21 @@ struct CalibrationPoints {
     int         numCoordinates;
 };
 */
+
+/*
+struct CalibrationReferencePoints {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble*    pixelCoords;
+    unsigned int    numPixelCoords;
+    PointDouble*    realCoords;
+    unsigned int    numRealCoords;
+    CalibrationUnit units;
+    ImageSize       imageSize;
+};
+*/
+
 struct CaliperOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3110,7 +1852,7 @@ struct CaliperOptions {
     float               separation;
     float               separationDeviation;
 };
-/*
+
 struct CaliperReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3122,21 +1864,126 @@ struct CaliperReport {
     float      separation;
     float      reserved;
 };
-*/
-struct DrawTextOptions {
+
+struct CannyOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    //TODO char          fontName[32];
-    int           fontSize;
-    int           bold;
-    int           italic;
-    int           underline;
-    int           strikeout;
-    TextAlignment textAlignment;
-    FontColor     fontColor;
+    float sigma;
+    float upperThreshold;
+    float lowerThreshold;
+    int   windowSize;
 };
+
 /*
+struct CharInfo2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*  charValue;
+    const Image* charImage;
+    const Image* internalImage;
+    int          isReferenceChar;
+};
+*/
+
+/*
+struct CharInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*  charValue;
+    const Image* charImage;
+    const Image* internalImage;
+};
+*/
+
+/*
+struct CharReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char* character;
+    //TODO: PointFloat  corner[4];
+    int         lowThreshold;
+    int         highThreshold;
+    int         classificationScore;
+    int         verificationScore;
+    int         verified;
+};
+*/
+
+struct CharReport3 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*         character;
+    int                 classificationScore;
+    int                 verificationScore;
+    int                 verified;
+    int                 lowThreshold;
+    int                 highThreshold;
+    CharacterStatistics characterStats;
+};
+
+/*
+struct CharReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char* character;
+    //TODO PointFloat  corner[4];
+    int         reserved;
+    int         lowThreshold;
+    int         highThreshold;
+};
+*/
+
+struct CharacterStatistics {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int left;
+    int top;
+    int width;
+    int height;
+    int characterSize;
+};
+
+struct CircleDescriptor {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double minRadius;
+    double maxRadius;
+};
+
+struct CircleFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     radius;
+};
+
+struct CircleFitOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int             maxRadius;
+    double          stepSize;
+    RakeProcessType processType;
+};
+
+struct CircleMatch {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     radius;
+    double     score;
+};
+
 struct CircleReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3146,6 +1993,163 @@ struct CircleReport {
     int   area;
 };
 
+/*
+struct ClampMax2Report {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ClampResults clampResults;
+    ClampPoints  clampPoints;
+    unsigned int calibrationValid;
+};
+*/
+
+struct ClampOverlaySettings {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int      showSearchArea;
+    int      showCurves;
+    int      showClampLocation;
+    int      showResult;
+    RGBValue searchAreaColor;
+    RGBValue curvesColor;
+    RGBValue clampLocationsColor;
+    RGBValue resultColor;
+    char*    overlayGroupName;
+};
+
+struct ClampPoints {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDoublePair pixel;
+    PointDoublePair realWorld;
+};
+
+struct ClampResults {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double distancePix;
+    double distanceRealWorld;
+    double angleAbs;
+    double angleRelative;
+};
+
+struct ClampSettings {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double       angleRange;
+    EdgePolarity edgePolarity;
+};
+
+struct ClassScore {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char* className;
+    float distance;
+};
+
+/*
+struct ClassifiedCurve {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double       length;
+    double       lengthReal;
+    double       maxCurvature;
+    double       maxCurvatureReal;
+    unsigned int label;
+    PointDouble* curvePoints;
+    unsigned int numCurvePoints;
+};
+*/
+
+/*
+struct ClassifiedDisparity {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double       length;
+    double       lengthReal;
+    double       maxDistance;
+    double       maxDistanceReal;
+    unsigned int label;
+    PointDouble* templateSubsection;
+    unsigned int numTemplateSubsection;
+    PointDouble* targetSubsection;
+    unsigned int numTargetSubsection;
+};
+*/
+
+/*
+struct ClassifierAccuracyReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int     size;
+    float   accuracy;
+    //TODO char**  classNames;
+    //TODO double* classAccuracy;
+    //TODO double* classPredictiveValue;
+    //TODO int**   classificationDistribution;
+};
+*/
+
+/*
+struct ClassifierReportAdvanced {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char*        bestClassName;
+    float        classificationScore;
+    float        identificationScore;
+    ClassScore*  allScores;
+    int          allScoresSize;
+    SampleScore* sampleScores;
+    int          sampleScoresSize;
+};
+*/
+
+/*
+struct ClassifierReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char*       bestClassName;
+    float       classificationScore;
+    float       identificationScore;
+    ClassScore* allScores;
+    int         allScoresSize;
+};
+*/
+
+/*
+struct ClassifierSampleInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char*   className;
+    //TODO double* featureVector;
+    int     featureVectorSize;
+    Image*  thumbnail;
+};
+*/
+
+/*
+struct ClassifyDistancesReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ClassifiedDisparity* classifiedDistances;
+    unsigned int         numClassifiedDistances;
+};
+*/
+
+/*
 struct ClosedContour {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3154,6 +2158,15 @@ struct ClosedContour {
     int    numPoints;
 };
 */
+
+struct ClosedCurveFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     arcLength;
+};
+
 struct ColorHistogramReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3190,6 +2203,27 @@ private:
     ColorInformation(const ColorInformation&);
 };
 
+struct ColorOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ColorClassificationResolution colorClassificationResolution;
+    unsigned int                  useLuminance;
+    ColorMode                     colorMode;
+};
+
+struct ColorSegmenationOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int windowX;
+    unsigned int windowY;
+    unsigned int stepSize;
+    unsigned int minParticleArea;
+    unsigned int maxParticleArea;
+    short        isFineSegment;
+};
+
 struct Complex {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3197,6 +2231,49 @@ struct Complex {
     float r;
     float i;
 };
+
+/*
+struct ComputeDistancesReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    Disparity*   distances;
+    unsigned int numDistances;
+    Disparity*   distancesReal;
+    unsigned int numDistancesReal;
+};
+*/
+
+struct ConcentricEdgeFitOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int             maxRadius;
+    double          stepSize;
+    RakeProcessType processType;
+};
+
+struct ConcentricRakeReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~ConcentricRakeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*      firstEdges;
+    unsigned int   numFirstEdges;
+    //EdgeInfo*      lastEdges;
+    unsigned int   numLastEdges;
+    //SearchArcInfo* searchArcs;
+    unsigned int   numSearchArcs;
+private:
+    ConcentricRakeReport2();
+    ConcentricRakeReport2(const ConcentricRakeReport2&);
+};
+
 /*
 struct ConcentricRakeReport {
 %TypeHeaderCode
@@ -3212,7 +2289,41 @@ struct ConcentricRakeReport {
     //TODO int*                linesWithEdges;
     int                 numLinesWithEdges;
 };
+*/
 
+struct ConnectionConstraint {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ConnectionConstraintType constraintType;
+    RangeDouble              range;
+};
+
+struct ConstCurveFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     radius;
+    double     startAngle;
+    double     endAngle;
+};
+
+/*
+struct ConstructROIOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int          windowNumber;
+    const char*  windowTitle;
+    PaletteType  type;
+    RGBValue*    palette;
+    int          numColors;
+    unsigned int maxContours;
+};
+*/
+
+/*
 struct ConstructROIOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3223,29 +2334,53 @@ struct ConstructROIOptions {
     //TODO RGBValue*   palette;
     int         numColors;
 };
+*/
 
-struct ContourInfo {
+/*
+struct ContourComputeCurvatureReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    ContourType type;
-    unsigned    numPoints;
-    //TODO Point*      points;
-    RGBValue    contourColor;
+    double*      curvaturePixel;
+    unsigned int numCurvaturePixel;
+    double*      curvatureReal;
+    unsigned int numCurvatureReal;
 };
+*/
 
-// TODO
-//typedef union ContourUnion_union {
-//    Point*         point;
-//    Line*          line;
-//    Rect*          rect;
-//    Rect*          ovalBoundingBox;
-//    ClosedContour* closedContour;
-//    OpenContour*   openContour;
-//    Annulus*       annulus;
-//    RotatedRect*   rotatedRect;
-//};
+/*
+struct ContourFitLineReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LineFloat    lineSegment;
+    LineEquation lineEquation;
+};
+*/
 
+/*
+struct ContourFitPolynomialReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble* bestFit;
+    int          numberOfPoints;
+    double*      polynomialCoefficients;
+    int          numberOfCoefficients;
+};
+*/
+
+/*
+struct ContourFitSplineReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble* points;         //It returns the points of the best-fit B-spline curve.
+    int          numberOfPoints; //Number of Best fit points returned.
+};
+*/
+
+/*
 struct ContourInfo2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3258,6 +2393,48 @@ struct ContourInfo2 {
 %End
 };
 */
+
+/*
+struct ContourInfoReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble* pointsPixel;
+    unsigned int numPointsPixel;
+    PointDouble* pointsReal;
+    unsigned int numPointsReal;
+    double*      curvaturePixel;
+    unsigned int numCurvaturePixel;
+    double*      curvatureReal;
+    unsigned int numCurvatureReal;
+    double       length;
+    double       lengthReal;
+    unsigned int hasEquation;
+};
+*/
+
+/*
+struct ContourInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ContourType type;
+    unsigned    numPoints;
+    //TODO Point*      points;
+    RGBValue    contourColor;
+};
+*/
+
+struct ContourOverlaySettings {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int overlay;
+    RGBValue     color;
+    unsigned int width;
+    unsigned int maintainWidth;
+};
+
 struct ContourPoint {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3267,6 +2444,31 @@ struct ContourPoint {
     double curvature;
     double xDisplacement;
     double yDisplacement;
+};
+
+struct CooccurrenceOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int                level;
+    DisplacementVector displacement;
+};
+
+struct CoordinateSystem {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat      origin;
+    float           angle;
+    AxisOrientation axisOrientation;
+};
+
+struct CoordinateTransform2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    CoordinateSystem referenceSystem;
+    CoordinateSystem measurementSystem;
 };
 
 struct CoordinateTransform {
@@ -3279,54 +2481,1165 @@ struct CoordinateTransform {
     float finalAngle;
 };
 
-struct CoordinateTransform2 {
+struct CornerFeature {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    CoordinateSystem referenceSystem;
-    CoordinateSystem measurementSystem;
+    PointFloat position;
+    double     rotation;
+    double     enclosedAngle;
+    int        isVirtual;
 };
 
-struct CannyOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float sigma;
-    float upperThreshold;
-    float lowerThreshold;
-    int   windowSize;
-};
-
-struct Range {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int minValue;
-    int maxValue;
-};
 /*
-struct UserPointSymbol {
+struct CurvatureAnalysisReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    int  cols;
-    int  rows;
-    //TODO int* pixels;
+    ClassifiedCurve* curves;    
+    unsigned int     numCurves; 
 };
 */
-struct View3DOptions {
+
+struct CurveOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    int         sizeReduction;
-    int         maxHeight;
-    Direction3D direction;
-    float       alpha;
-    float       beta;
-    int         border;
-    int         background;
-    Plane3D     plane;
+    ExtractionMode extractionMode;
+    int            threshold;
+    EdgeFilterSize filterSize;
+    int            minLength;
+    int            rowStepSize;
+    int            columnStepSize;
+    int            maxEndPointGap;
+    int            onlyClosed;
+    int            subpixelAccuracy;
 };
+
+struct CurveParameters {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ExtractionMode extractionMode;
+    int            threshold;
+    EdgeFilterSize filterSize;
+    int            minLength;
+    int            searchStep;
+    int            maxEndPointGap;
+    int            subpixel;
+};
+
+struct Curve {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO:PointFloat*  points;
+    unsigned int numPoints;
+    int          closed;
+    double       curveLength;
+    double       minEdgeStrength;
+    double       maxEdgeStrength;
+    double       averageEdgeStrength;
+};
+
+/*
+struct DataMatrixDescriptionOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float                  aspectRatio;
+    unsigned int           rows;
+    unsigned int           columns;
+    int                    rectangle;
+    DataMatrixECC          ecc;
+    DataMatrixPolarity     polarity;
+    DataMatrixCellFillMode cellFill;
+    float                  minBorderIntegrity;
+    DataMatrixMirrorMode   mirrorMode;
+};
+*/
+
+/*
+struct DataMatrixOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    Barcode2DSearchMode searchMode;
+    Barcode2DContrast   contrast;
+    Barcode2DCellShape  cellShape;
+    Barcode2DShape      barcodeShape;
+    DataMatrixSubtype   subtype;
+};
+*/
+
+/*
+struct DataMatrixReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int                        found;
+    int                        binary;
+    unsigned char*             data;
+    unsigned int               dataLength;
+    //TODO: PointFloat                 boundingBox[4];
+    unsigned int               numErrorsCorrected;
+    unsigned int               numErasuresCorrected;
+    float                      aspectRatio;
+    unsigned int               rows;
+    unsigned int               columns;
+    DataMatrixECC              ecc;
+    DataMatrixPolarity         polarity;
+    DataMatrixCellFillMode     cellFill;
+    float                      borderIntegrity;
+    int                        mirrored;
+    unsigned int               minimumEdgeStrength;
+    DataMatrixDemodulationMode demodulationMode;
+    DataMatrixCellSampleSize   cellSampleSize;
+    DataMatrixCellFilterMode   cellFilterMode;
+    unsigned int               iterations;
+};
+*/
+
+/*
+struct DataMatrixSearchOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    DataMatrixRotationMode     rotationMode;
+    int                        skipLocation;
+    unsigned int               edgeThreshold;
+    DataMatrixDemodulationMode demodulationMode;
+    DataMatrixCellSampleSize   cellSampleSize;
+    DataMatrixCellFilterMode   cellFilterMode;
+    unsigned int               skewDegreesAllowed;
+    unsigned int               maxIterations;
+    unsigned int               initialSearchVectorWidth;
+};
+*/
+
+/*
+struct DataMatrixSizeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int minSize;
+    unsigned int maxSize;
+    unsigned int quietZoneWidth;
+};
+*/
+
+/*
+struct DetectExtremesOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double threshold;
+    int    width;
+};
+*/
+
+struct Disparity {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble current;
+    PointDouble reference;
+    double      distance;
+};
+
+struct DisplacementVector {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int x;
+    int y;
+};
+
+/*
+struct DisplayMapping {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    MappingMethod method;
+    int           minimumValue;
+    int           maximumValue;
+    int           shiftCount;
+};
+*/
+
+/*
+struct DistortionModelParams {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    DistortionModel distortionModel;
+    PolyModel       polyModel;
+    DivisionModel   divisionModel;
+};
+*/
+
+struct DivisionModel {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float kappa;
+};
+
+struct DrawTextOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO char          fontName[32];
+    int           fontSize;
+    int           bold;
+    int           italic;
+    int           underline;
+    int           strikeout;
+    TextAlignment textAlignment;
+    FontColor     fontColor;
+};
+
+/*
+struct EdgeInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    PointFloat calibratedPosition;
+    double     distance;
+    double     calibratedDistance;
+    double     magnitude;
+    double     noisePeak;
+    int        rising;
+};
+*/
+
+/*
+struct EdgeLocationReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat* edges;
+    int         numEdges;
+};
+*/
+
+struct EdgeOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    EdgePolaritySearchMode polarity;
+    unsigned int           kernelSize;
+    unsigned int           width;
+    float                  minThreshold;
+    InterpolationMethod    interpolationType;
+    ColumnProcessingMode   columnProcessingMode;
+};
+
+struct EdgeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned            threshold;
+    unsigned            width;
+    unsigned            steepness;
+    InterpolationMethod subpixelType;
+    unsigned            subpixelDivisions;
+};
+
+struct EdgePolarity {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    EdgePolaritySearchMode start; 
+    EdgePolaritySearchMode end;   
+};
+
+struct EdgeReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~EdgeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*    edges;
+    unsigned int numEdges;
+    //TODO double*      gradientInfo;
+    unsigned int numGradientInfo;
+    int          calibrationValid;
+private:
+    EdgeReport2();
+    EdgeReport2(const EdgeReport2&);
+};
+
+/*
+struct EdgeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float        location;
+    float        contrast;
+    PolarityType polarity;
+    float        reserved;
+    PointFloat   coordinate;
+};
+*/
+
+struct EllipseDescriptor {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double minMajorRadius;
+    double maxMajorRadius;
+    double minMinorRadius;
+    double maxMinorRadius;
+};
+
+/*
+struct EllipseFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     rotation;
+    double     minorRadius;
+    double     majorRadius;
+};
+*/
+
+struct EllipseMatch {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    double     rotation;
+    double     majorRadius;
+    double     minorRadius;
+    double     score;
+};
+
+struct ErrorStatistics {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double mean;
+    double maximum;
+    double standardDeviation;
+    double distortion;
+};
+
+/*
+struct ExtractContourReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble* contourPoints;
+    int          numContourPoints;
+    PointDouble* sourcePoints;
+    int          numSourcePoints;
+};
+*/
+
+/*
+struct ExtractTextureFeaturesReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int*     waveletBands;
+    int      numWaveletBands;
+    double** textureFeatures;
+    int      textureFeaturesRows;
+    int      textureFeaturesCols;
+};
+*/
+
+/*
+struct ExtremeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double location;
+    double amplitude;
+    double secondDerivative;
+};
+*/
+
+/*
+struct FeatureData {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    FeatureType      type;
+    PointFloat*      contourPoints;
+    int              numContourPoints;
+    //TODO GeometricFeature feature;
+};
+*/
+
+struct FindCircularEdgeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    SpokeDirection direction;
+    int            showSearchArea;
+    int            showSearchLines;
+    int            showEdgesFound;
+    int            showResult;
+    RGBValue       searchAreaColor;
+    RGBValue       searchLinesColor;
+    RGBValue       searchEdgesColor;
+    RGBValue       resultColor;
+    char*          overlayGroupName;
+    EdgeOptions2   edgeOptions;
+};
+
+struct FindCircularEdgeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat centerCalibrated;
+    double     radiusCalibrated;
+    PointFloat center;
+    double     radius;
+    double     roundness;
+    double     avgStrength;
+    double     avgSNR;
+    int        circleFound;
+};
+
+struct FindConcentricEdgeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ConcentricRakeDirection direction;
+    int                     showSearchArea;
+    int                     showSearchLines;
+    int                     showEdgesFound;
+    int                     showResult;
+    RGBValue                searchAreaColor;
+    RGBValue                searchLinesColor;
+    RGBValue                searchEdgesColor;
+    RGBValue                resultColor;
+    char*                   overlayGroupName;
+    EdgeOptions2            edgeOptions;
+};
+
+struct FindConcentricEdgeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat startPt;
+    PointFloat endPt;
+    PointFloat startPtCalibrated;
+    PointFloat endPtCalibrated;
+    double     angle;
+    double     angleCalibrated;
+    double     straightness;
+    double     avgStrength;
+    double     avgSNR;
+    int        lineFound;
+};
+
+struct FindEdgeOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    RakeDirection direction;
+    int           showSearchArea;
+    int           showSearchLines;
+    int           showEdgesFound;
+    int           showResult;
+    RGBValue      searchAreaColor;
+    RGBValue      searchLinesColor;
+    RGBValue      searchEdgesColor;
+    RGBValue      resultColor;
+    char*         overlayGroupName;
+    EdgeOptions2  edgeOptions;
+};
+
+/*
+struct FindEdgeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    StraightEdge* straightEdges;
+    unsigned int  numStraightEdges;
+};
+*/
+
+struct FindTransformRectOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    FindReferenceDirection direction;
+    int                    showSearchArea;
+    int                    showSearchLines;
+    int                    showEdgesFound;
+    int                    showResult;
+    RGBValue               searchAreaColor;
+    RGBValue               searchLinesColor;
+    RGBValue               searchEdgesColor;
+    RGBValue               resultColor;
+    char*                  overlayGroupName;
+    EdgeOptions2           edgeOptions;
+};
+
+struct FindTransformRectsOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    FindReferenceDirection direction;
+    int                    showSearchArea;
+    int                    showSearchLines;
+    int                    showEdgesFound;
+    int                    showResult;
+    RGBValue               searchAreaColor;
+    RGBValue               searchLinesColor;
+    RGBValue               searchEdgesColor;
+    RGBValue               resultColor;
+    char*                  overlayGroupName;
+    EdgeOptions2           primaryEdgeOptions;
+    EdgeOptions2           secondaryEdgeOptions;
+};
+
+struct FitCircleOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    rejectOutliers;
+    double minScore;
+    double pixelRadius;
+    int    maxIterations;
+};
+
+struct FitEllipseOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    rejectOutliers;
+    double minScore;
+    double pixelRadius;
+    int    maxIterations;
+};
+
+struct FitLineOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float minScore;
+    float pixelRadius;
+    int   numRefinements;
+};
+
+struct FocalLength {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float fx;
+    float fy;
+};
+
+struct GeometricAdvancedSetupDataOption {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    GeometricSetupDataItem type;
+    double                 value;
+};
+
+/*
+struct GeometricPatternMatch2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat   position;
+    float        rotation;
+    float        scale;
+    float        score;
+    //TODO PointFloat   corner[4];
+    int          inverse;
+    float        occlusion;
+    float        templateMatchCurveScore;
+    float        matchTemplateCurveScore;
+    float        correlationScore;
+    String255    label;
+    //TODO FeatureData* featureData;
+    int          numFeatureData;
+    PointFloat   calibratedPosition;
+    float        calibratedRotation;
+    //TODO PointFloat   calibratedCorner[4];
+};
+*/
+
+/*
+struct GeometricPatternMatch3 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    float      rotation;
+    float      scale;
+    float      score;
+    PointFloat corner[4];
+    int        inverse;
+    float      occlusion;
+    float      templateMatchCurveScore;
+    float      matchTemplateCurveScore;
+    float      correlationScore;
+    PointFloat calibratedPosition;
+    float      calibratedRotation;
+    PointFloat calibratedCorner[4];
+};
+*/
+
+/*
+struct GeometricPatternMatch {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    float      rotation;
+    float      scale;
+    float      score;
+    //TODO PointFloat corner[4];
+    int        inverse;
+    float      occlusion;
+    float      templateMatchCurveScore;
+    float      matchTemplateCurveScore;
+    float      correlationScore;
+};
+*/
+
+/*
+struct GetCalibrationInfoReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ROI*                      userRoi;
+    ROI*                      calibrationRoi;
+    CalibrationAxisInfo       axisInfo;
+    CalibrationLearnSetupInfo learnSetupInfo;
+    GridDescriptor            gridDescriptor;
+    float*                    errorMap;
+    unsigned int              errorMapRows;
+    unsigned int              errorMapCols;
+    ErrorStatistics           errorStatistics;
+};
+*/
+
+/*
+struct GetCameraParametersReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double*               projectionMatrix;
+    unsigned int          projectionMatrixRows;
+    unsigned int          projectionMatrixCols;
+    DistortionModelParams distortion;
+    InternalParameters    internalParams;
+};
+*/
+
+struct GridDescriptor {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float           xStep;
+    float           yStep;
+    CalibrationUnit unit;
+};
+
+struct HSIValue {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned char I;
+    unsigned char S;
+    unsigned char H;
+    unsigned char alpha;
+};
+
+struct HSLValue {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned char L;
+    unsigned char S;
+    unsigned char H;
+    unsigned char alpha;
+};
+
+struct HSVValue {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned char V;
+    unsigned char S;
+    unsigned char H;
+    unsigned char alpha;
+};
+
+struct HistogramReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~HistogramReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //TODO int*  histogram;
+    int   histogramCount;
+    float min;
+    float max;
+    float start;
+    float width;
+    float mean;
+    float stdDev;
+    int   numPixels;
+private:
+    HistogramReport();
+    HistogramReport(const HistogramReport&);
+};
+
+struct ImageInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    CalibrationUnit imageUnit;
+    float           stepX;
+    float           stepY;
+    ImageType       imageType;
+    int             xRes;
+    int             yRes;
+    int             xOffset;
+    int             yOffset;
+    int             border;
+    int             pixelsPerLine;
+    //void*           reserved0;
+    //void*           reserved1;
+    //void*           imageStart;
+};
+
+struct ImageSize {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int xRes;
+    unsigned int yRes;
+};
+
+struct InspectionAlignment {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    float      rotation;
+    float      scale;
+};
+
+struct InspectionOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    RegistrationMethod  registrationMethod;
+    NormalizationMethod normalizationMethod;
+    int                 edgeThicknessToIgnore;
+    float               brightThreshold;
+    float               darkThreshold;
+    int                 binary;
+};
+
+struct InternalParameters {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char        isInsufficientData; 
+    FocalLength focalLength;        
+    PointFloat  opticalCenter;      
+};
+
+struct JPEG2000FileAdvancedOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    WaveletTransformMode waveletMode;
+    int                  useMultiComponentTransform;
+    unsigned int         maxWaveletTransformLevel;
+    float                quantizationStepSize;
+};
+
+struct LCDOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int   litSegments;
+    float threshold;
+    int   sign;
+    int   decimalPoint;
+};
+
+struct LCDReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~LCDReport();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    const char*  text;
+    //LCDSegments* segmentInfo;
+    int          numCharacters;
+    int          reserved;
+};
+
+struct LCDSegments {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned a;
+    unsigned b;
+    unsigned c;
+    unsigned d;
+    unsigned e;
+    unsigned f;
+    unsigned g;
+};
+
+/*
+struct LabelToROIReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ROI**         roiArray;
+    unsigned int  numOfROIs;
+    unsigned int* labelsOutArray;
+    unsigned int  numOfLabels;
+    int*          isTooManyVectorsArray;
+    unsigned int  isTooManyVectorsArraySize;
+};
+*/
+
+struct LearnCalibrationOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    CalibrationMode mode;
+    ScalingMethod   method;
+    CalibrationROI  roi;
+    int             learnMap;
+    int             learnTable;
+};
+
+/*
+struct LearnColorPatternOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LearningMode      learnMode;
+    ImageFeatureMode  featureMode;
+    int               threshold;
+    ColorIgnoreMode   ignoreMode;
+    ColorInformation* colorsToIgnore;
+    int               numColorsToIgnore;
+};
+*/
+
+struct LearnGeometricPatternAdvancedOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double       minScaleFactor;
+    double       maxScaleFactor;
+    double       minRotationAngleValue;
+    double       maxRotationAngleValue;
+    unsigned int imageSamplingFactor;
+};
+
+struct LearnGeometricPatternAdvancedOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    minRectLength;
+    double minRectAspectRatio;
+    int    minRadius;
+    int    minLineLength;
+    double minFeatureStrength;
+    int    maxFeaturesUsed;
+    int    maxPixelDistanceFromLine;
+};
+
+/*
+struct LearnPatternAdvancedOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LearnPatternAdvancedShiftOptions*    shiftOptions;
+    LearnPatternAdvancedRotationOptions* rotationOptions;
+};
+*/
+
+struct LearnPatternAdvancedRotationOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    SearchStrategy searchStrategySupport;
+    int            initialStepSize;
+    int            initialSampleSize;
+    double         initialSampleSizeFactor;
+    int            initialAngularAccuracy;
+    int            finalSampleSize;
+    double         finalSampleSizeFactor;
+    int            finalAngularAccuracy;
+    int            subpixelSampleSize;
+    double         subpixelSampleSizeFactor;
+};
+
+struct LearnPatternAdvancedShiftOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    initialStepSize;
+    int    initialSampleSize;
+    double initialSampleSizeFactor;
+    int    finalSampleSize;
+    double finalSampleSizeFactor;
+    int    subpixelSampleSize;
+    double subpixelSampleSizeFactor;
+};
+
+/*
+struct LegFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    //TODO: PointFloat corner[4];
+    double     rotation;
+    double     width;
+    double     height;
+};
+*/
+
+struct LineDescriptor {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double minLength;
+    double maxLength;
+};
+
+struct LineEquation {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double a;
+    double b;
+    double c;
+};
+
+struct LineFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat startPoint;
+    PointFloat endPoint;
+    double     length;
+    double     rotation;
+};
+
+struct LineFloat {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat start;
+    PointFloat end;
+};
+
+struct LineMatch {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat startPoint;
+    PointFloat endPoint;
+    double     length;
+    double     rotation;
+    double     score;
+};
+
+struct LineProfile {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~LineProfile();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //TODO float* profileData;
+    Rect   boundingBox;
+    float  min;
+    float  max;
+    float  mean;
+    float  stdDev;
+    int    dataCount;
+private:
+    LineProfile();
+    LineProfile(const LineProfile&);
+};
+
+struct Line {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    Point start;
+    Point end;
+};
+
+struct LinearAverages {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~LinearAverages();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //TODO float* columnAverages;
+    int    columnCount;
+    //TODO float* rowAverages;
+    int    rowCount;
+    //TODO float* risingDiagAverages;
+    int    risingDiagCount;
+    //TODO float* fallingDiagAverages;
+    int    fallingDiagCount;
+private:
+    LinearAverages();
+    LinearAverages(const LinearAverages&);
+};
+
+struct MatchColorPatternOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    MatchingMode        matchMode;
+    ImageFeatureMode    featureMode;
+    int                 minContrast;
+    int                 subpixelAccuracy;
+    //TODO RotationAngleRange* angleRanges;
+    int                 numRanges;
+    double              colorWeight;
+    ColorSensitivity    sensitivity;
+    SearchStrategy      strategy;
+    int                 numMatchesRequested;
+    float               minMatchScore;
+};
+
+struct MatchGeometricPatternAdvancedOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    minFeaturesUsed;
+    int    maxFeaturesUsed;
+    int    subpixelIterations;
+    double subpixelTolerance;
+    int    initialMatchListLength;
+    float  matchTemplateCurveScore;
+    int    correlationScore;
+    double minMatchSeparationDistance;
+    double minMatchSeparationAngle;
+    double minMatchSeparationScale;
+    double maxMatchOverlap;
+    int    coarseResult;
+    int    smoothContours;
+    int    enableCalibrationSupport;
+};
+
+struct MatchGeometricPatternAdvancedOptions3 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int                    subpixelIterations;
+    double                          subpixelTolerance;
+    unsigned int                    initialMatchListLength;
+    int                             targetTemplateCurveScore;
+    int                             correlationScore;
+    double                          minMatchSeparationDistance;
+    double                          minMatchSeparationAngle;
+    double                          minMatchSeparationScale;
+    double                          maxMatchOverlap;
+    int                             coarseResult;
+    int                             enableCalibrationSupport;
+    ContrastMode                    enableContrastReversal;
+    GeometricMatchingSearchStrategy matchStrategy;
+    unsigned int                    refineMatchFactor;
+    unsigned int                    subpixelMatchFactor;
+};
+
+struct MatchGeometricPatternAdvancedOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    minFeaturesUsed;
+    int    maxFeaturesUsed;
+    int    subpixelIterations;
+    double subpixelTolerance;
+    int    initialMatchListLength;
+    int    matchTemplateCurveScore;
+    int    correlationScore;
+    double minMatchSeparationDistance;
+    double minMatchSeparationAngle;
+    double minMatchSeparationScale;
+    double maxMatchOverlap;
+    int    coarseResult;
+};
+
+/*
+struct MatchGeometricPatternOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int mode;
+    int          subpixelAccuracy;
+    RangeFloat*  angleRanges;
+    int          numAngleRanges;
+    RangeFloat   scaleRange;
+    RangeFloat   occlusionRange;
+    int          numMatchesRequested;
+    float        minMatchScore;
+};
+*/
+
+struct MatchMode {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int rotation;
+    unsigned int scale;
+    unsigned int occlusion;
+};
+
+struct MatchPatternAdvancedOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int            subpixelIterations;
+    double         subpixelTolerance;
+    int            initialMatchListLength;
+    int            matchListReductionFactor;
+    int            initialStepSize;
+    SearchStrategy searchStrategy;
+    int            intermediateAngularAccuracy;
+};
+
 /*
 struct MatchPatternOptions {
 %TypeHeaderCode
@@ -3341,34 +3654,107 @@ struct MatchPatternOptions {
     int                 matchFactor;
     float               minMatchScore;
 };
+*/
 
-struct TIFFFileOptions {
+struct MaxGridSize {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    int                 rowsPerStrip;
-    PhotometricMode     photoInterp;
-    TIFFCompressionType compressionType;
+    unsigned int xMax;
+    unsigned int yMax;
+};
+
+/*
+struct MeasureParticlesReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double** pixelMeasurements;
+    double** calibratedMeasurements;
+    size_t   numParticles;
+    size_t   numMeasurements;
 };
 */
-// TODO
-//typedef union Color_union {
-//    RGBValue rgb;
-//    HSLValue hsl;
-//    HSVValue hsv;
-//    HSIValue hsi;
-//    int      rawValue;
-//};
-//
-//typedef union PixelValue_union {
-//    float       grayscale;
-//    RGBValue    rgb;
-//    HSLValue    hsl;
-//    Complex     complex;
-//    RGBU64Value rgbu64;
-//};
-typedef RGBValue Color;
-typedef RGBValue PixelValue;
+
+struct MeterArc {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~MeterArc();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    PointFloat  needleBase;
+    //TODO PointFloat* arcCoordPoints;
+    int         numOfArcCoordPoints;
+    int         needleColor;
+private:
+    MeterArc();
+    MeterArc(const MeterArc&);
+};
+
+struct NearestNeighborClassResult {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char* className;
+    float standardDeviation;
+    int   count;
+};
+
+struct NearestNeighborOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    NearestNeighborMethod method;
+    NearestNeighborMetric metric;
+    int                   k;
+};
+
+/*
+struct NearestNeighborTrainingReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO float**                     classDistancesTable;
+    //TODO NearestNeighborClassResult* allScores;
+    int                         allScoresSize;
+};
+*/
+
+struct OCRProcessingOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ThresholdMode mode;
+    int           lowThreshold;
+    int           highThreshold;
+    int           blockCount;
+    int           fastThreshold;
+    int           biModalCalculation;
+    int           darkCharacters;
+    int           removeParticlesTouchingROI;
+    int           erosionCount;
+};
+
+struct OCRSpacingOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int minCharSpacing;
+    int minCharSize;
+    int maxCharSize;
+    int maxHorizontalElementSpacing;
+    int maxVerticalElementSpacing;
+    int minBoundingRectWidth;
+    int maxBoundingRectWidth;
+    int minBoundingRectHeight;
+    int maxBoundingRectHeight;
+    int autoSplit;
+};
+
 /*
 struct OpenContour {
 %TypeHeaderCode
@@ -3377,6 +3763,7 @@ struct OpenContour {
     Point* points;
     int    numPoints;
 };
+*/
 
 struct OverlayTextOptions {
 %TypeHeaderCode
@@ -3394,6 +3781,114 @@ struct OverlayTextOptions {
     double                angle;
 };
 
+struct PairOfParallelLinePairsFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ParallelLinePairFeature firstParallelLinePair;
+    ParallelLinePairFeature secondParallelLinePair;
+    double                  rotation;
+    double                  distance;
+};
+
+struct ParallelLinePairFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat firstStartPoint;
+    PointFloat firstEndPoint;
+    PointFloat secondStartPoint;
+    PointFloat secondEndPoint;
+    double     rotation;
+    double     distance;
+};
+
+struct PartialCircle {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat center;
+    double     radius;
+    double     startAngle;
+    double     endAngle;
+};
+
+struct PartialEllipse {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat center;
+    double     angle;
+    double     majorRadius;
+    double     minorRadius;
+    double     startAngle;
+    double     endAngle;
+};
+
+struct ParticleClassifierAutoThresholdOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ThresholdMethod method;
+    ParticleType    particleType;
+    RangeFloat      limits;
+};
+
+struct ParticleClassifierLocalThresholdOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LocalThresholdMethod method;
+    ParticleType         particleType;
+    unsigned int         windowWidth;
+    unsigned int         windowHeight;
+    double               deviationWeight;
+};
+
+struct ParticleClassifierOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float scaleDependence;
+    float mirrorDependence;
+};
+
+struct ParticleClassifierPreprocessingOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ParticleClassifierThresholdType         thresholdType;
+    RangeFloat                              manualThresholdRange;
+    ParticleClassifierAutoThresholdOptions  autoThresholdOptions;
+    ParticleClassifierLocalThresholdOptions localThresholdOptions;
+    int                                     rejectBorder;
+    int                                     numErosions;
+};
+
+struct ParticleClassifierPreprocessingOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int             manualThreshold;
+    RangeFloat      manualThresholdRange;
+    ThresholdMethod autoThresholdMethod;
+    RangeFloat      limits;
+    ParticleType    particleType;
+    int             rejectBorder;
+    int             numErosions;
+};
+
+struct ParticleFilterCriteria2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    MeasurementType parameter;
+    float           lower;
+    float           upper;
+    int             calibrated;
+    int             exclude;
+};
+
 struct ParticleFilterCriteria {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3402,6 +3897,25 @@ struct ParticleFilterCriteria {
     float            lower;
     float            upper;
     int              exclude;
+};
+
+struct ParticleFilterOptions2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int rejectMatches;
+    int rejectBorder;
+    int fillHoles;
+    int connectivity8;
+};
+
+struct ParticleFilterOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int rejectMatches;
+    int rejectBorder;
+    int connectivity8;
 };
 
 struct ParticleReport {
@@ -3427,6 +3941,7 @@ struct ParticleReport {
     int   connect8;
 };
 
+/*
 struct PatternMatch {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3438,6 +3953,138 @@ struct PatternMatch {
     //TODO PointFloat corner[4];
 };
 */
+
+struct PointDoublePair {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointDouble start;
+    PointDouble end;
+};
+
+struct PointDouble {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double x;
+    double y;
+};
+
+struct PointFloat {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat();
+    PointFloat(float x, float y);
+    %MethodCode
+        sipCpp = new PointFloat;
+        sipCpp->x = a0;
+        sipCpp->y = a1;
+    %End
+    float x;
+    float y;
+};
+
+struct Point {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    Point();
+    Point(int x, int y);
+    %MethodCode
+        sipCpp = new Point;
+        sipCpp->x = a0;
+        sipCpp->y = a1;
+    %End
+    int x;
+    int y;
+};
+
+/*
+struct PolyModel {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float*       kCoeffs;
+    unsigned int numKCoeffs;
+    float        p1;
+    float        p2;
+};
+*/
+
+/*
+struct QRCodeDataToken {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    QRStreamMode   mode;
+    unsigned int   modeData;
+    unsigned char* data;
+    unsigned int   dataLength;
+};
+*/
+
+struct QRCodeDescriptionOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    QRDimensions dimensions;
+    QRPolarities polarity;
+    QRMirrorMode mirror;
+    QRModelType  modelType;
+};
+
+/*
+struct QRCodeReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int       found;
+    unsigned char*     data;
+    unsigned int       dataLength;
+    //TODO: PointFloat         boundingBox[4];
+    QRCodeDataToken*   tokenizedData;
+    unsigned int       sizeOfTokenizedData;
+    unsigned int       numErrorsCorrected;
+    unsigned int       dimensions;
+    unsigned int       version;
+    QRModelType        modelType;
+    QRStreamMode       streamMode;
+    QRPolarities       matrixPolarity;
+    unsigned int       mirrored;
+    unsigned int       positionInAppendStream;
+    unsigned int       sizeOfAppendStream;
+    int                firstEAN128ApplicationID;
+    int                firstECIDesignator;
+    unsigned int       appendStreamIdentifier;
+    unsigned int       minimumEdgeStrength;
+    QRDemodulationMode demodulationMode;
+    QRCellSampleSize   cellSampleSize;
+    QRCellFilterMode   cellFilterMode;
+};
+*/
+
+struct QRCodeSearchOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    QRRotationMode     rotationMode;
+    unsigned int       skipLocation;
+    unsigned int       edgeThreshold;
+    QRDemodulationMode demodulationMode;
+    QRCellSampleSize   cellSampleSize;
+    QRCellFilterMode   cellFilterMode;
+    unsigned int       skewDegreesAllowed;
+};
+
+struct QRCodeSizeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int minSize;
+    unsigned int maxSize;
+};
+
 struct QuantifyData {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3468,7 +4115,61 @@ private:
     QuantifyReport();
     QuantifyReport(const QuantifyReport&);
 };
-/*
+
+struct RGBU64Value {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned short B;
+    unsigned short G;
+    unsigned short R;
+    unsigned short alpha;
+};
+
+struct RGBValue {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    RGBValue();
+    RGBValue(unsigned char B /PyInt/, unsigned char G /PyInt/, unsigned char R /PyInt/, unsigned char alpha /PyInt/ = 0);
+    %MethodCode
+        sipCpp = new RGBValue;
+        sipCpp->B = a0;
+        sipCpp->G = a1;
+        sipCpp->R = a2;
+        sipCpp->alpha = a3;
+    %End
+    unsigned char B /PyInt/;
+    unsigned char G /PyInt/;
+    unsigned char R /PyInt/;
+    unsigned char alpha /PyInt/;
+};
+
+struct ROILabel {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char*        className;
+    unsigned int label;
+};
+
+struct ROIProfile {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~ROIProfile();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    LineProfile report;
+    //TODO Point*      pixels;
+private:
+    ROIProfile();
+    ROIProfile(const ROIProfile&);
+};
+
 struct RakeOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3481,6 +4182,28 @@ struct RakeOptions {
     int                 subpixelDivisions;
 };
 
+struct RakeReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~RakeReport2();
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        imaqDispose(sipCpp); sipCppV = 0;
+        Py_END_ALLOW_THREADS
+    %End
+    //EdgeInfo*       firstEdges;
+    unsigned int    numFirstEdges;
+    //EdgeInfo*       lastEdges;
+    unsigned int    numLastEdges;
+    //SearchLineInfo* searchLines;
+    unsigned int    numSearchLines;
+private:
+    RakeReport2();
+    RakeReport2(const RakeReport2&);
+};
+
+/*
 struct RakeReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3495,16 +4218,232 @@ struct RakeReport {
     //TODO int*                linesWithEdges;
     int                 numLinesWithEdges;
 };
+*/
 
-struct TransformReport {
+struct RangeDouble {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    //TODO PointFloat* points;
-    //TODO int*        validPoints;
-    int         numPoints;
+    double minValue;
+    double maxValue;
+};
+
+struct RangeFloat {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float minValue;
+    float maxValue;
+};
+
+struct RangeLabel {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    RangeDouble  range;
+    unsigned int label;
+};
+
+struct RangeSettingDouble {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    SettingType settingType;
+    double      min;
+    double      max;
+};
+
+struct Range {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int minValue;
+    int maxValue;
+};
+
+struct ReadTextOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO String255      validChars[255];
+    int            numValidChars;
+    char           substitutionChar;
+    ReadStrategy   readStrategy;
+    int            acceptanceLevel;
+    int            aspectRatio;
+    ReadResolution readResolution;
+};
+
+/*
+struct ReadTextReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*  readString;
+    CharReport2* characterReport;
+    int          numCharacterReports;
 };
 */
+
+/*
+struct ReadTextReport3 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*  readString;
+    CharReport3* characterReport;
+    int          numCharacterReports;
+    ROI*         roiBoundingCharacters;
+};
+*/
+
+/*
+struct ReadTextReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    const char*       readString;
+    const CharReport* characterReport;
+    int               numCharacterReports;
+};
+*/
+
+struct Rect {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int top;
+    int left;
+    int height;
+    int width;
+};
+
+struct RectangleDescriptor {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    double minWidth;
+    double maxWidth;
+    double minHeight;
+    double maxHeight;
+};
+
+/*
+struct RectangleFeature {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    PointFloat position;
+    //TODO: PointFloat corner[4];
+    double     rotation;
+    double     width;
+    double     height;
+};
+*/
+
+/*
+struct RectangleMatch {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO PointFloat corner[4];
+    double     rotation;
+    double     width;
+    double     height;
+    double     score;
+};
+*/
+
+struct RotatedRect {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int    top;
+    int    left;
+    int    height;
+    int    width;
+    double angle;
+};
+
+struct RotationAngleRange {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float lower;
+    float upper;
+};
+
+struct SampleScore {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    char*        className;
+    float        distance;
+    unsigned int index;
+};
+
+/*
+struct SearchArcInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ArcInfo2    arcCoordinates;
+    EdgeReport2 edgeReport;
+};
+*/
+
+/*
+struct SearchLineInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LineFloat   lineCoordinates;
+    EdgeReport2 edgeReport;
+};
+*/
+
+/*
+struct SegmentInfo {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int           numberOfPoints;
+    int           isOpen;
+    double        weight;
+    //TODO ContourPoint* points;
+};
+*/
+
+struct SelectParticleCriteria {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    MeasurementValue parameter;
+    float            lower;
+    float            upper;
+};
+
+/*
+struct SetupMatchPatternData {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned char* matchSetupData;
+    int            numMatchSetupData;
+};
+*/
+
+struct ShapeDetectionOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    unsigned int mode;
+    //TODO:RangeFloat*  angleRanges;
+    int          numAngleRanges;
+    RangeFloat   scaleRange;
+    double       minMatchScore;
+};
+
 struct ShapeReport {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -3524,44 +4463,50 @@ private:
     ShapeReport(const ShapeReport&);
 };
 
-struct MeterArc {
+struct SimpleEdgeOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    ~MeterArc();
+    LevelType   type;
+    int         threshold;
+    int         hysteresis;
+    EdgeProcess process;
+    int         subpixel;
+};
+
+struct SpokeOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int                 threshold;
+    int                 width;
+    int                 steepness;
+    double              subsamplingRatio;
+    InterpolationMethod subpixelType;
+    int                 subpixelDivisions;
+};
+
+struct SpokeReport2 {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ~SpokeReport2();
     %MethodCode
         Py_BEGIN_ALLOW_THREADS
         imaqDispose(sipCpp); sipCppV = 0;
         Py_END_ALLOW_THREADS
     %End
-    PointFloat  needleBase;
-    //TODO PointFloat* arcCoordPoints;
-    int         numOfArcCoordPoints;
-    int         needleColor;
+    //EdgeInfo*       firstEdges;
+    unsigned int    numFirstEdges;
+    //EdgeInfo*       lastEdges;
+    unsigned int    numLastEdges;
+    //SearchLineInfo* searchLines;
+    unsigned int    numSearchLines;
 private:
-    MeterArc();
-    MeterArc(const MeterArc&);
+    SpokeReport2();
+    SpokeReport2(const SpokeReport2&);
 };
 
-struct ThresholdData {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    float rangeMin;
-    float rangeMax;
-    float newValue;
-    int   useNewValue;
-};
-
-struct StructuringElement {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int  matrixCols;
-    int  matrixRows;
-    int  hexa;
-    //TODO int* kernel;
-};
 /*
 struct SpokeReport {
 %TypeHeaderCode
@@ -3577,72 +4522,101 @@ struct SpokeReport {
     //TODO int*                linesWithEdges;
     int                 numLinesWithEdges;
 };
-
-struct SimpleEdgeOptions {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    LevelType   type;
-    int         threshold;
-    int         hysteresis;
-    EdgeProcess process;
-    int         subpixel;
-};
-
-struct SelectParticleCriteria {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    MeasurementValue parameter;
-    float            lower;
-    float            upper;
-};
-
-struct SegmentInfo {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    int           numberOfPoints;
-    int           isOpen;
-    double        weight;
-    //TODO ContourPoint* points;
-};
 */
-struct RotationAngleRange {
+
+struct StraightEdgeOptions {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    float lower;
-    float upper;
+    unsigned int           numLines;
+    StraightEdgeSearchMode searchMode;
+    double                 minScore;
+    double                 maxScore;
+    double                 orientation;
+    double                 angleRange;
+    double                 angleTolerance;
+    unsigned int           stepSize;
+    double                 minSignalToNoiseRatio;
+    double                 minCoverage;
+    unsigned int           houghIterations;
 };
 
-struct RotatedRect {
+struct StraightEdgeReport2 {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    int    top;
-    int    left;
-    int    height;
-    int    width;
-    double angle;
-};
-
-struct ROIProfile {
-%TypeHeaderCode
-#include <WPILib/nivision.h>
-%End
-    ~ROIProfile();
+    ~StraightEdgeReport2();
     %MethodCode
         Py_BEGIN_ALLOW_THREADS
         imaqDispose(sipCpp); sipCppV = 0;
         Py_END_ALLOW_THREADS
     %End
-    LineProfile report;
-    //TODO Point*      pixels;
+    //StraightEdge*   straightEdges;
+    unsigned int    numStraightEdges;
+    //SearchLineInfo* searchLines;
+    unsigned int    numSearchLines;
 private:
-    ROIProfile();
-    ROIProfile(const ROIProfile&);
+    StraightEdgeReport2();
+    StraightEdgeReport2(const StraightEdgeReport2&);
 };
+
+/*
+struct StraightEdge {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    LineFloat    straightEdgeCoordinates;
+    LineFloat    calibratedStraightEdgeCoordinates;
+    double       angle;
+    double       calibratedAngle;
+    double       score;
+    double       straightness;
+    double       averageSignalToNoiseRatio;
+    int          calibrationValid;
+    EdgeInfo*    usedEdges;
+    unsigned int numUsedEdges;
+};
+*/
+
+struct StructuringElement {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int  matrixCols;
+    int  matrixRows;
+    int  hexa;
+    //TODO int* kernel;
+};
+
+/*
+struct SupervisedColorSegmentationReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    ROILabel*    labelOut;
+    unsigned int numLabelOut;
+};
+*/
+
+struct TIFFFileOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int                 rowsPerStrip;
+    PhotometricMode     photoInterp;
+    TIFFCompressionType compressionType;
+};
+
+struct ThresholdData {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float rangeMin;
+    float rangeMax;
+    float newValue;
+    int   useNewValue;
+};
+
 /*
 struct ToolWindowOptions {
 %TypeHeaderCode
@@ -3661,24 +4635,158 @@ struct ToolWindowOptions {
     int showAnnulusTool;
     int showRotatedRectangleTool;
     int showPanTool;
-    int reserved1;
+    int showZoomOutTool;
     int reserved2;
     int reserved3;
     int reserved4;
 };
+*/
 
-struct SpokeOptions {
+struct TransformBehaviors {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
 %End
-    int                 threshold;
-    int                 width;
-    int                 steepness;
-    double              subsamplingRatio;
-    InterpolationMethod subpixelType;
-    int                 subpixelDivisions;
+    GroupBehavior ShiftBehavior;
+    GroupBehavior ScaleBehavior;
+    GroupBehavior RotateBehavior;
+    GroupBehavior SymmetryBehavior;
 };
 
+/*
+struct TransformReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    //TODO PointFloat* points;
+    //TODO int*        validPoints;
+    int         numPoints;
+};
+*/
+
+/*
+struct UserPointSymbol {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int  cols;
+    int  rows;
+    //TODO int* pixels;
+};
+*/
+
+struct View3DOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int         sizeReduction;
+    int         maxHeight;
+    Direction3D direction;
+    float       alpha;
+    float       beta;
+    int         border;
+    int         background;
+    Plane3D     plane;
+};
+
+/*
+struct WaveletBandsReport {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    float** LLBand;
+    float** LHBand;
+    float** HLBand;
+    float** HHBand;
+    float** LLLBand;
+    float** LLHBand;
+    float   LHLBand;
+    float** LHHBand;
+    int     rows;
+    int     cols;
+};
+*/
+
+struct WaveletOptions {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    WaveletType typeOfWavelet;
+    float       minEnergy;
+};
+
+struct WindowSize {
+%TypeHeaderCode
+#include <WPILib/nivision.h>
+%End
+    int x;
+    int y;
+    int stepSize;
+};
+
+/*
+typedef union Color2_union {
+    RGBValue    rgb;
+    HSLValue    hsl;
+    HSVValue    hsv;
+    HSIValue    hsi;
+    CIELabValue cieLab;
+    CIEXYZValue cieXYZ;
+    int         rawValue;
+};
+typedef RGBValue Color2;
+*/
+
+/*
+typedef union Color_union {
+    RGBValue rgb;
+    HSLValue hsl;
+    HSVValue hsv;
+    HSIValue hsi;
+    int      rawValue;
+};
+typedef RGBValue Color;
+*/
+
+/*
+typedef union ContourUnion_union {
+    Point*         point;
+    Line*          line;
+    Rect*          rect;
+    Rect*          ovalBoundingBox;
+    ClosedContour* closedContour;
+    OpenContour*   openContour;
+    Annulus*       annulus;
+    RotatedRect*   rotatedRect;
+};
+*/
+
+/*
+typedef union GeometricFeature_union {
+    CircleFeature*                  circle;
+    EllipseFeature*                 ellipse;
+    ConstCurveFeature*              constCurve;
+    RectangleFeature*               rectangle;
+    LegFeature*                     leg;
+    CornerFeature*                  corner;
+    ParallelLinePairFeature*        parallelLinePair;
+    PairOfParallelLinePairsFeature* pairOfParallelLinePairs;
+    LineFeature*                    line;
+    ClosedCurveFeature*             closedCurve;
+};
+*/
+
+/*
+typedef union PixelValue_union {
+    float       grayscale;
+    RGBValue    rgb;
+    HSLValue    hsl;
+    Complex     complex;
+    RGBU64Value rgbu64;
+};
+*/
+typedef RGBValue PixelValue;
+
+/*
 //============================================================================
 //  Display functions
 //============================================================================
@@ -3748,6 +4856,7 @@ RakeReport2*           imaqRake2(Image* image, ROI* roi, RakeDirection direction
 //PointFloat*            imaqSimpleEdge(const Image* image, const Point* points, int numPoints, const SimpleEdgeOptions* options, int* numEdges);
 SpokeReport2*          imaqSpoke2(Image* image, ROI* roi, SpokeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions) /Factory/;
 StraightEdgeReport2*   imaqStraightEdge(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions) /Factory/;
+StraightEdgeReport2*   imaqStraightEdge2(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions, unsigned int optimizedMode);
 
 //============================================================================
 //  Spatial Filters functions
@@ -3858,6 +4967,7 @@ int imaqXorConstant(Image* dest, const Image* source, PixelValue value);
 //============================================================================
 int imaqCountParticles(Image* image, int connectivity8, int* numParticles);
 int imaqMeasureParticle(Image* image, int particleNumber, int calibrated, MeasurementType measurement, double* value);
+MeasureParticlesReport* imaqMeasureParticles(Image* image, MeasureParticlesCalibrationMode calibrationMode, const MeasurementType* measurements, size_t numMeasurements);
 int imaqParticleFilter4(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, const ParticleFilterOptions2* options, const ROI* roi, int* numParticles);
 
 //============================================================================
@@ -3909,6 +5019,8 @@ int                   imaqColorEqualize(Image* dest, const Image* source, int co
 ColorHistogramReport* imaqColorHistogram2(Image* image, int numClasses, ColorMode mode, const CIEXYZValue* whiteReference, Image* mask);
 int                   imaqColorLookup(Image* dest, const Image* source, ColorMode mode, const Image* mask, const short* plane1, const short* plane2, const short* plane3);
 int                   imaqColorThreshold(Image* dest, const Image* source, int replaceValue, ColorMode mode, const Range* plane1Range, const Range* plane2Range, const Range* plane3Range);
+SupervisedColorSegmentationReport* imaqSupervisedColorSegmentation(ClassifierSession* session, Image* labelImage, const Image* srcImage, const ROI* roi, const ROILabel* labelIn, unsigned int numLabelIn, int maxDistance, int minIdentificationScore, const ColorSegmenationOptions* segmentOptions);
+int                                imaqGetColorSegmentationMaxDistance(ClassifierSession* session, const ColorSegmenationOptions* segmentOptions, SegmentationDistanceLevel distLevel, int* maxDistance);
 
 //============================================================================
 //  Transform functions
@@ -3916,9 +5028,9 @@ int                   imaqColorThreshold(Image* dest, const Image* source, int r
 int imaqBCGTransform(Image* dest, const Image* source, const BCGOptions* options, const Image* mask);
 int imaqEqualize(Image* dest, const Image* source, float min, float max, const Image* mask);
 int imaqInverse(Image* dest, const Image* source, const Image* mask);
-int imaqLookup(Image* dest, const Image* source, const short* table, const Image* mask);
 int imaqMathTransform(Image* dest, const Image* source, MathTransformMethod method, float rangeMin, float rangeMax, float power, const Image* mask);
 int imaqWatershedTransform(Image* dest, const Image* source, int connectivity8, int* zoneCount);
+int imaqLookup2(Image* dest, const Image* source, const int* table, const Image* mask);
 
 
 //============================================================================
@@ -4005,11 +5117,13 @@ int                       imaqLearnPattern3(Image* image, LearningMode learningM
 PatternMatch*             imaqMatchColorPattern(const Image* image, Image* pattern, const MatchColorPatternOptions* options, Rect searchRect, int* numMatches);
 GeometricPatternMatch2*   imaqMatchGeometricPattern2(const Image* image, const Image* pattern, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions, const ROI* roi, int* numMatches);
 GeometricPatternMatch2*   imaqMatchMultipleGeometricPatterns(const Image* image, const MultipleGeometricPattern* multiplePattern, const ROI* roi, int* numMatches);
-PatternMatch*             imaqMatchPattern2(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternOptions* advancedOptions, Rect searchRect, int* numMatches);
 MultipleGeometricPattern* imaqReadMultipleGeometricPatternFile(const char* fileName, String255 description);
 PatternMatch*             imaqRefineMatches(const Image* image, const Image* pattern, const PatternMatch* candidatesIn, int numCandidatesIn, MatchPatternOptions* options, MatchPatternAdvancedOptions* advancedOptions, int* numCandidatesOut);
 int                       imaqSetMultipleGeometricPatternsOptions(MultipleGeometricPattern* multiplePattern, const char* label, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions);
 int                       imaqWriteMultipleGeometricPatternFile(const MultipleGeometricPattern* multiplePattern, const char* fileName, const char* description);
+GeometricPatternMatch3*   imaqMatchGeometricPattern3(const Image* image, const Image* pattern, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions3* advancedMatchOptions, const ROI* roi, size_t* numMatches);
+int                       imaqLearnGeometricPattern2(Image* image, PointFloat originOffset, double angleOffset, const CurveOptions* curveOptions, const LearnGeometricPatternAdvancedOptions2* advancedLearnOptions, const Image* mask);
+PatternMatch*             imaqMatchPattern3(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternAdvancedOptions* advancedOptions, const ROI* roi, int* numMatches);
 
 //============================================================================
 //  Calibration functions
@@ -4017,19 +5131,26 @@ int                       imaqWriteMultipleGeometricPatternFile(const MultipleGe
 int              imaqCopyCalibrationInfo2(Image* dest, Image* source, Point offset);
 int              imaqCorrectCalibratedImage(Image* dest, const Image* source, PixelValue fill, InterpolationMethod method, const ROI* roi);
 CalibrationInfo* imaqGetCalibrationInfo2(const Image* image);
+CalibrationInfo* imaqGetCalibrationInfo3(Image* image, unsigned int isGetErrorMap);
 int              imaqLearnCalibrationGrid(Image* image, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, const RangeFloat* range, float* quality);
 int              imaqLearnCalibrationPoints(Image* image, const CalibrationPoints* points, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, float* quality);
 int              imaqSetCoordinateSystem(Image* image, const CoordinateSystem* system);
 int              imaqSetSimpleCalibration(Image* image, ScalingMethod method, int learnTable, const GridDescriptor* grid, const CoordinateSystem* system);
 TransformReport* imaqTransformPixelToRealWorld(const Image* image, const PointFloat* pixelCoordinates, int numCoordinates);
 TransformReport* imaqTransformRealWorldToPixel(const Image* image, const PointFloat* realWorldCoordinates, int numCoordinates);
+int                        imaqSetSimpleCalibration2(Image* image, const GridDescriptor* gridDescriptor);
+int                        imaqCalibrationSetAxisInfo(Image* image, CoordinateSystem* axisInfo);
+int                        imaqCalibrationGetThumbnailImage(Image* templateImage, Image* image, CalibrationThumbnailType type, unsigned int index);
+GetCalibrationInfoReport*  imaqCalibrationGetCalibrationInfo(Image* image, unsigned int isGetErrorMap);
+GetCameraParametersReport* imaqCalibrationGetCameraParameters(Image* templateImage);
+int                        imaqCalibrationCompactInformation(Image* image);
 
 //============================================================================
 //  Overlay functions
 //============================================================================
 int imaqClearOverlay(Image* image, const char* group);
 int imaqCopyOverlay(Image* dest, const Image* source, const char* group);
-int imaqGetOverlayProperties(Image* image, const char* group, TransformBehaviors* transformBehaviors);
+int imaqGetOverlayProperties(const Image* image, const char* group, TransformBehaviors* transformBehaviors);
 int imaqMergeOverlay(Image* dest, const Image* source, const RGBValue* palette, unsigned int numColors, const char* group);
 int imaqOverlayArc(Image* image, const ArcInfo* arc, const RGBValue* color, DrawMode drawMode, const char* group);
 int imaqOverlayBitmap(Image* image, Point destLoc, const RGBValue* bitmap, unsigned int numCols, unsigned int numRows, const char* group);
@@ -4175,7 +5296,7 @@ int imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float r
 //  Pixel Manipulation functions
 //============================================================================
 //int    imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
-//TODO float* imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* columns, int* rows);
+//TODO float* imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* rows, int* columns);
 int    imaqExtractColorPlanes(const Image* image, ColorMode mode, Image* plane1, Image* plane2, Image* plane3);
 int    imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
 int    imaqFillImage(Image* image, PixelValue value, const Image* mask);
@@ -4199,6 +5320,7 @@ ROI*        imaqMaskToROI(const Image* mask, int* withinLimit) /Factory/;
 ROIProfile* imaqROIProfile(const Image* image, const ROI* roi) /Factory/;
 int         imaqROIToMask(Image* mask, const ROI* roi, int fillValue, const Image* imageModel, int* inSpace /Out/ = NULL);
 int         imaqTransformROI2(ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem);
+//LabelToROIReport* imaqLabelToROI(const Image* image, const unsigned int* labelsIn, unsigned int numLabelsIn, int maxNumVectors, int isExternelEdges);
 
 //============================================================================
 //  OCR functions
@@ -4221,29 +5343,77 @@ int              imaqWriteOCRFile(const char* fileName, const CharSet* set, cons
 //  Classification functions
 //============================================================================
 int                            imaqAddClassifierSample(Image* image, ClassifierSession* session, const ROI* roi, const char* sampleClass, double* featureVector, unsigned int vectorSize);
+ClassifierReportAdvanced*      imaqAdvanceClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
 ClassifierReport*              imaqClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
 ClassifierSession*             imaqCreateClassifier(ClassifierType type);
 int                            imaqDeleteClassifierSample(ClassifierSession* session, int index);
 ClassifierAccuracyReport*      imaqGetClassifierAccuracy(const ClassifierSession* session);
 ClassifierSampleInfo*          imaqGetClassifierSampleInfo(const ClassifierSession* session, int index, int* numSamples);
+int                            imaqGetColorClassifierOptions(const ClassifierSession* session, ColorOptions* options);
 int                            imaqGetNearestNeighborOptions(const ClassifierSession* session, NearestNeighborOptions* options);
-int                            imaqGetParticleClassifierOptions(const ClassifierSession* session, ParticleClassifierPreprocessingOptions* preprocessingOptions, ParticleClassifierOptions* options);
+int                            imaqGetParticleClassifierOptions2(const ClassifierSession* session, ParticleClassifierPreprocessingOptions2* preprocessingOptions, ParticleClassifierOptions* options);
 ClassifierSession*             imaqReadClassifierFile(ClassifierSession* session, const char* fileName, ReadClassifierFileMode mode, ClassifierType* type, ClassifierEngineType* engine, String255 description);
 int                            imaqRelabelClassifierSample(ClassifierSession* session, int index, const char* newClass);
-int                            imaqSetParticleClassifierOptions(ClassifierSession* session, const ParticleClassifierPreprocessingOptions* preprocessingOptions, const ParticleClassifierOptions* options);
+int                            imaqSetParticleClassifierOptions2(ClassifierSession* session, const ParticleClassifierPreprocessingOptions2* preprocessingOptions, const ParticleClassifierOptions* options);
+int                            imaqSetColorClassifierOptions(ClassifierSession* session, const ColorOptions* options);
 NearestNeighborTrainingReport* imaqTrainNearestNeighborClassifier(ClassifierSession* session, const NearestNeighborOptions* options);
 int                            imaqWriteClassifierFile(const ClassifierSession* session, const char* fileName, WriteClassifierFileMode mode, const String255 description);
 
 //============================================================================
+//  Measure Distances functions
+//============================================================================
+ClampMax2Report* imaqClampMax2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const CurveOptions* curveSettings, const ClampSettings* clampSettings, const ClampOverlaySettings* clampOverlaySettings);
+
+//============================================================================
 //  Inspection functions
 //============================================================================
-int imaqCompareGoldenTemplate(const Image* image, Image* goldenTemplate, Image* brightDefects, Image* darkDefects, const InspectionAlignment* alignment, const InspectionOptions* options);
+int imaqCompareGoldenTemplate(const Image* image, const Image* goldenTemplate, Image* brightDefects, Image* darkDefects, const InspectionAlignment* alignment, const InspectionOptions* options);
 int imaqLearnGoldenTemplate(Image* goldenTemplate, PointFloat originOffset, const Image* mask);
 
 //============================================================================
 //  Morphology functions
 //============================================================================
 int imaqGrayMorphology(Image* dest, Image* source, MorphologyMethod method, const StructuringElement* structuringElement);
+
+//============================================================================
+//  Geometric Matching functions
+//============================================================================
+ExtractContourReport*          imaqExtractContour(Image* image, const ROI* roi, ExtractContourDirection direction, CurveParameters* curveParams, const ConnectionConstraint* connectionConstraintParams, unsigned int numOfConstraints, ExtractContourSelection selection, Image* contourImage);
+int                            imaqContourOverlay(Image* image, const Image* contourImage, const ContourOverlaySettings* pointsSettings, const ContourOverlaySettings* eqnSettings, const char* groupName);
+ContourComputeCurvatureReport* imaqContourComputeCurvature(const Image* contourImage, unsigned int kernel);
+CurvatureAnalysisReport*       imaqContourClassifyCurvature(const Image* contourImage, unsigned int kernel, RangeLabel* curvatureClasses, unsigned int numCurvatureClasses);
+ComputeDistancesReport*        imaqContourComputeDistances(const Image* targetImage, const Image* templateImage, const SetupMatchPatternData* matchSetupData, unsigned int smoothingKernel);
+ClassifyDistancesReport*       imaqContourClassifyDistances(const Image* targetImage, const Image* templateImage, const SetupMatchPatternData* matchSetupData, unsigned int smoothingKernel, const RangeLabel* distanceRanges, unsigned int numDistanceRanges);
+ContourInfoReport*             imaqContourInfo(const Image* contourImage);
+SetupMatchPatternData*         imaqContourSetupMatchPattern(MatchMode* matchMode, unsigned int enableSubPixelAccuracy, CurveParameters* curveParams, unsigned int useLearnCurveParameters, const RangeSettingDouble* rangeSettings, unsigned int numRangeSettings);
+int                            imaqContourAdvancedSetupMatchPattern(SetupMatchPatternData* matchSetupData, GeometricAdvancedSetupDataOption* geometricOptions, unsigned int numGeometricOptions);
+ContourFitLineReport*          imaqContourFitLine(Image* image, double pixelRadius);
+PartialCircle*                 imaqContourFitCircle(Image* image, double pixelRadius, int rejectOutliers);
+PartialEllipse*                imaqContourFitEllipse(Image* image, double pixelRadius, int rejectOutliers);
+ContourFitSplineReport*        imaqContourFitSpline(Image* image, int degree, int numberOfControlPoints);
+ContourFitPolynomialReport*    imaqContourFitPolynomial(Image* image, int order);
+
+//============================================================================
+//  Edge Detection functions
+//============================================================================
+FindCircularEdgeReport*   imaqFindCircularEdge2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const FindCircularEdgeOptions* edgeOptions, const CircleFitOptions* circleFitOptions);
+FindConcentricEdgeReport* imaqFindConcentricEdge2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const FindConcentricEdgeOptions* edgeOptions, const ConcentricEdgeFitOptions* concentricEdgeFitOptions);
+
+//============================================================================
+//  Morphology Reconstruction functions
+//============================================================================
+int imaqGrayMorphologyReconstruct(Image* dstImage, Image* srcImage, const Image* markerImage, PointFloat* points, int numOfPoints, MorphologyReconstructOperation operation, const StructuringElement* structuringElement, const ROI* roi);
+int imaqMorphologyReconstruct(Image* dstImage, Image* srcImage, const Image* markerImage, PointFloat* points, int numOfPoints, MorphologyReconstructOperation operation, Connectivity connectivity, const ROI* roi);
+
+//============================================================================
+//  Texture functions
+//============================================================================
+int                           imaqDetectTextureDefect(ClassifierSession* session, Image* destImage, const Image* srcImage, const ROI* roi, int initialStepSize, int finalStepSize, unsigned char defectPixelValue, double minClassificationScore);
+int                           imaqClassificationTextureDefectOptions(ClassifierSession* session, WindowSize* windowOptions, WaveletOptions* waveletOptions, void** bandsUsed, int* numBandsUsed, CooccurrenceOptions* cooccurrenceOptions, unsigned char setOperation);
+int                           imaqCooccurrenceMatrix(const Image* srcImage, const ROI* roi, int levelPixel, const DisplacementVector* displacementVec, void* featureOptionArray, unsigned int featureOptionArraySize, void** cooccurrenceMatrixArray, int* coocurrenceMatrixRows, int* coocurrenceMatrixCols, void** featureVectorArray, int* featureVectorArraySize);
+ExtractTextureFeaturesReport* imaqExtractTextureFeatures(const Image* srcImage, const ROI* roi, const WindowSize* windowOptions, const WaveletOptions* waveletOptions, void* waveletBands, unsigned int numWaveletBands, const CooccurrenceOptions* cooccurrenceOptions, unsigned char useWindow);
+WaveletBandsReport*           imaqExtractWaveletBands(const Image* srcImage, const WaveletOptions* waveletOptions, void* waveletBands, unsigned int numWaveletBands);
+
 //============================================================================
 //  Obsolete functions
 //============================================================================
@@ -4306,5 +5476,9 @@ ColorHistogramReport*  imaqColorHistogram(Image* image, int numClasses, ColorMod
 int                    imaqIsVisionInfoPresent(const Image* image, VisionInfoType type, int* present);
 PatternMatch*          imaqMatchPattern(const Image* image, Image* pattern, const MatchPatternOptions* options, Rect searchRect, int* numMatches);
 RakeReport*            imaqRake(const Image* image, const ROI* roi, RakeDirection direction, EdgeProcess process, const RakeOptions* options);
+int                    imaqGetParticleClassifierOptions(const ClassifierSession* session, ParticleClassifierPreprocessingOptions* preprocessingOptions, ParticleClassifierOptions* options);
+int                    imaqLookup(Image* dest, const Image* source, const short* table, const Image* mask);
+PatternMatch*          imaqMatchPattern2(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternAdvancedOptions* advancedOptions, Rect searchRect, int* numMatches);
+int                    imaqSetParticleClassifierOptions(ClassifierSession* session, const ParticleClassifierPreprocessingOptions* preprocessingOptions, const ParticleClassifierOptions* options);
 */
 

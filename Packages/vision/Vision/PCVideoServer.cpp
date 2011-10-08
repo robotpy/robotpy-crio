@@ -6,20 +6,17 @@
 
 #include <vxWorks.h>
 
+#include "PCVideoServer.h"
+
 #include <errnoLib.h>
 #include <hostLib.h>
 #include <inetLib.h>
 #include <sockLib.h>
 
-#include "AxisCamera.h"
-#include "Vision2009/BaeUtilities.h"
-#include "Vision2009/FrcError.h"
-#include "ChipObject/NiRioStatus.h"
+#include "Vision/AxisCamera.h"
 #include "Task.h"
 #include "Timer.h"
-#include "Utility.h"
-
-#include "PCVideoServer.h"
+#include "WPIErrors.h"
 
 /**
  * @brief Implements an object that automatically does a close on a
@@ -27,18 +24,9 @@
  */
 class ScopedSocket {
 public:
-	ScopedSocket(int camSock, const ErrorBase* errorBase)
+	ScopedSocket(int camSock)
 		: m_camSock(camSock)
 	{
-		if (errorBase->StatusIsFatal())
-		{
-			return;
-		}
-		if (m_camSock == ERROR)
-		{
-			wpi_setError(*errorBase, ERR_CAMERA_SOCKET_CREATE_FAILED);
-			return;
-		}
 	}
 
 	~ScopedSocket() {
@@ -63,13 +51,21 @@ private:
 /**
  * @brief Constructor.
  */
-PCVideoServer::PCVideoServer(void)
+PCVideoServer::PCVideoServer()
 	: m_serverTask("PCVideoServer", (FUNCPTR)s_ServerTask)
 	, m_newImageSem (NULL)
 	, m_stopServer (false)
 {
-	m_newImageSem = AxisCamera::GetInstance().GetNewImageSem();
-	StartServerTask();
+	AxisCamera &cam = AxisCamera::GetInstance();
+	m_newImageSem = cam.GetNewImageSem();
+	if (!cam.StatusIsFatal())
+	{
+		StartServerTask();
+	}
+	else
+	{
+		CloneError(&cam);
+	}
 }
 
 /**
@@ -85,7 +81,13 @@ PCVideoServer::~PCVideoServer()
 	// accept connections from a PC.
 	ClearError();
 	// Open a socket.
-	ScopedSocket camSock(socket (AF_INET, SOCK_STREAM, 0), this);
+	int camSock = socket(AF_INET, SOCK_STREAM, 0);
+	if (camSock == ERROR)
+	{
+		wpi_setErrnoError();
+		return;
+	}
+	ScopedSocket scopedCamSock(camSock);
 	// If successful
 	if (!StatusIsFatal())
 	{
@@ -100,7 +102,10 @@ PCVideoServer::~PCVideoServer()
 		if (( (int)(selfAddr.sin_addr.s_addr = inet_addr (const_cast<char*>("localhost")) ) != ERROR) ||
 			( (int)(selfAddr.sin_addr.s_addr = hostGetByName (const_cast<char*>("localhost")) ) != ERROR))
 		{
-			connect(camSock, (struct sockaddr *) &selfAddr, sockAddrSize);
+			struct timeval connectTimeout;
+			connectTimeout.tv_sec = 1;
+			connectTimeout.tv_usec = 0;
+			connectWithTimeout(camSock, (struct sockaddr *) &selfAddr, sockAddrSize, &connectTimeout);
 		}
 	}
 }
@@ -133,7 +138,7 @@ int PCVideoServer::StartServerTask()
 
 	if (!started)
 	{
-		wpi_setError(*this, ERR_CAMERA_TASK_SPAWN_FAILED);
+		wpi_setWPIError(TaskError);
 		return id;
 	}
 	taskDelay(1);
@@ -188,7 +193,7 @@ int PCVideoServer::ServerTask()
 		// Create the socket.
 		if ((pcSock = socket (AF_INET, SOCK_STREAM, 0)) == ERROR)
 		{
-			perror ("socket");
+			wpi_setErrnoErrorWithContext("Failed to create the PCVideoServer socket");
 			continue;
 		}
 		// Set the TCP socket so that it can be reused if it is in the wait state.
@@ -197,14 +202,14 @@ int PCVideoServer::ServerTask()
 		// Bind socket to local address.
 		if (bind (pcSock, (struct sockaddr *) &serverAddr, sockAddrSize) == ERROR)
 		{
-			perror ("bind");
+			wpi_setErrnoErrorWithContext("Failed to bind the PCVideoServer port");
 			close (pcSock);
 			continue;
 		}
 		// Create queue for client connection requests.
 		if (listen (pcSock, 1) == ERROR)
 		{
-			perror ("listen");
+			wpi_setErrnoErrorWithContext("Failed to listen on the PCVideoServer port");
 			close (pcSock);
 			continue;
 		}

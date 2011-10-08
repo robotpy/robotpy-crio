@@ -4,10 +4,10 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "../Jaguar.h"
-#include "CJaguar.h"
-#include "CWrappers.h"
-#include "CPWM.h"
+#include "Jaguar.h"
+#include "CInterfaces/CJaguar.h"
+#include "CInterfaces/CWrappers.h"
+#include "CInterfaces/CPWM.h"
 
 /**
  * Create a Jaguar speed controller object.

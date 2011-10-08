@@ -7,6 +7,9 @@
 #ifndef __ChipObject_h__
 #define __ChipObject_h__
 
+#include <vxWorks.h>
+#include "ChipObject/NiRio.h"
+
 #include "ChipObject/tAccumulator.h"
 #include "ChipObject/tAI.h"
 #include "ChipObject/tAlarm.h"
@@ -14,7 +17,7 @@
 #include "ChipObject/tCounter.h"
 #include "ChipObject/tDIO.h"
 #include "ChipObject/tDMA.h"
-#include "ChipObject/tDMAManager.h"
+//#include "ChipObject/tDMAManager.h"
 #include "ChipObject/tEncoder.h"
 #include "ChipObject/tGlobal.h"
 #include "ChipObject/tInterrupt.h"
@@ -24,6 +27,6 @@
 #include "ChipObject/tWatchdog.h"
 
 using namespace nFPGA;
-using namespace n2EAA5E59CAF1A8A966853A011B61CC91;
+using namespace nFRC_2012_1_6_4;
 
 #endif

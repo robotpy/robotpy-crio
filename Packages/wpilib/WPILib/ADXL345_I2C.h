@@ -40,7 +40,7 @@ public:
 	};
 
 public:
-	explicit ADXL345_I2C(UINT32 slot, DataFormat_Range range=kRange_2G);
+	explicit ADXL345_I2C(UINT8 moduleNumber, DataFormat_Range range=kRange_2G);
 	virtual ~ADXL345_I2C();
 	virtual double GetAcceleration(Axes axis);
 	virtual AllAxes GetAccelerations();

@@ -1,5 +1,6 @@
 PROJECT_TARGET = _wpilib.pyd
 PROJECT_OBJECTS = sip_wpilibcmodule.o
+PROJECT_OBJECTS += sip_wpilibstdstring.o
 PROJECT_OBJECTS += sip_wpilibAccelerometer.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2C.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2CAllAxes.o
@@ -34,9 +35,14 @@ PROJECT_OBJECTS += sip_wpilibI2C.o
 PROJECT_OBJECTS += sip_wpilibInterruptableSensorBase.o
 PROJECT_OBJECTS += sip_wpilibJaguar.o
 PROJECT_OBJECTS += sip_wpilibJoystick.o
+PROJECT_OBJECTS += sip_wpilibKinect.o
+PROJECT_OBJECTS += sip_wpilibKinectPoint4.o
+PROJECT_OBJECTS += sip_wpilibKinectStick.o
 PROJECT_OBJECTS += sip_wpilibModule.o
 PROJECT_OBJECTS += sip_wpilibMotorSafety.o
 PROJECT_OBJECTS += sip_wpilibMotorSafetyHelper.o
+PROJECT_OBJECTS += sip_wpilibnLoadOut.o
+PROJECT_OBJECTS += sip_wpilibnUsageReporting.o
 PROJECT_OBJECTS += sip_wpilibPIDController.o
 PROJECT_OBJECTS += sip_wpilibPIDOutput.o
 PROJECT_OBJECTS += sip_wpilibPIDSource.o
@@ -47,9 +53,8 @@ PROJECT_OBJECTS += sip_wpilibSafePWM.o
 PROJECT_OBJECTS += sip_wpilibSensorBase.o
 PROJECT_OBJECTS += sip_wpilibSerialPort.o
 PROJECT_OBJECTS += sip_wpilibServo.o
-PROJECT_OBJECTS += sip_wpilibSmartDashboard.o
-PROJECT_OBJECTS += sip_wpilibSmartDashboardBuffer.o
-PROJECT_OBJECTS += sip_wpilibSmartDashboardPacketFactory.o
+PROJECT_OBJECTS += sip_wpilibSkeleton.o
+PROJECT_OBJECTS += sip_wpilibSkeletonJoint.o
 PROJECT_OBJECTS += sip_wpilibSolenoid.o
 PROJECT_OBJECTS += sip_wpilibSolenoidBase.o
 PROJECT_OBJECTS += sip_wpilibSPI.o
@@ -90,6 +95,8 @@ PROJECT_OBJECTS += WPILib/InterruptableSensorBase.o
 PROJECT_OBJECTS += WPILib/IterativeRobot.o
 PROJECT_OBJECTS += WPILib/Jaguar.o
 PROJECT_OBJECTS += WPILib/Joystick.o
+PROJECT_OBJECTS += WPILib/Kinect.o
+PROJECT_OBJECTS += WPILib/KinectStick.o
 PROJECT_OBJECTS += WPILib/Module.o
 PROJECT_OBJECTS += WPILib/MotorSafetyHelper.o
 PROJECT_OBJECTS += WPILib/Notifier.o
@@ -104,8 +111,6 @@ PROJECT_OBJECTS += WPILib/SensorBase.o
 PROJECT_OBJECTS += WPILib/SerialPort.o
 PROJECT_OBJECTS += WPILib/Servo.o
 PROJECT_OBJECTS += WPILib/SimpleRobot.o
-PROJECT_OBJECTS += WPILib/SmartDashboard.o
-PROJECT_OBJECTS += WPILib/SmartDashboardPacketFactory.o
 PROJECT_OBJECTS += WPILib/Solenoid.o
 PROJECT_OBJECTS += WPILib/SolenoidBase.o
 PROJECT_OBJECTS += WPILib/SPI.o
@@ -118,13 +123,11 @@ PROJECT_OBJECTS += WPILib/Victor.o
 PROJECT_OBJECTS += WPILib/Watchdog.o
 
 ADDED_INCLUDES = -I../sip -I./WPILib -I./WPILib/CInterfaces
-ADDED_CFLAGS = -D'SVN_REV="2259"'
-ADDED_C++FLAGS = -D'SVN_REV="2259"'
-
-dist ::
-	cp *.py $(DISTDIR)/
+ADDED_CFLAGS = -D'SVN_REV="2993"'
+ADDED_C++FLAGS = -D'SVN_REV="2993"'
 
 include ../../mk/module.mk
 
 dist ::
-	cp *.py $(DISTDIR)/
+	mkdir $(DISTDIR)/wpilib
+	cp package_wpilib/*.py $(DISTDIR)/wpilib/

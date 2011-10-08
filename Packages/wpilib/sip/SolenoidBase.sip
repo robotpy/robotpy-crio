@@ -32,11 +32,10 @@ public:
 	UINT8 GetAll();
 
 protected:
-	explicit SolenoidBase(UINT32 slot);
-	UINT32 SlotToIndex(UINT32 slot);
+	explicit SolenoidBase(UINT8 moduleNumber);
 	void Set(UINT8 value, UINT8 mask);
 	virtual void InitSolenoid() = 0;
 
-	//UINT32 m_chassisSlot; ///< Slot number where the module is plugged into the chassis.
+	//UINT32 m_moduleNumber; ///< Slot number where the module is plugged into the chassis.
 	//static Resource *m_allocated;
 };

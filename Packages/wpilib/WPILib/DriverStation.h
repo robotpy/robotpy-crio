@@ -26,7 +26,7 @@ public:
 	virtual ~DriverStation();
 	static DriverStation *GetInstance();
 
-	static const UINT32 kBatterySlot = 1;
+	static const UINT32 kBatteryModuleNumber = 1;
 	static const UINT32 kBatteryChannel = 8;
 	static const UINT32 kJoystickPorts = 4;
 	static const UINT32 kJoystickAxes = 6;
@@ -49,8 +49,10 @@ public:
 	UINT32 GetPacketNumber();
 	Alliance GetAlliance();
 	UINT32 GetLocation();
-
+	void WaitForData();
+	double GetMatchTime();
 	float GetBatteryVoltage();
+	UINT16 GetTeamNumber();
 
 	// Get the default dashboard packers. These instances stay around even after
 	// a call to SetHigh|LowPriorityDashboardPackerToUse() changes which packer
@@ -74,6 +76,19 @@ public:
 	void IncrementUpdateNumber() { m_updateNumber++; }
 	SEM_ID GetUserStatusDataSem() { return m_statusDataSemaphore; }
 
+	/** Only to be used to tell the Driver Station what code you claim to be executing
+	 *   for diagnostic purposes only
+	 * @param entering If true, starting disabled code; if false, leaving disabled code */
+	void InDisabled(bool entering) {m_userInDisabled=entering;}
+	/** Only to be used to tell the Driver Station what code you claim to be executing
+	 *   for diagnostic purposes only
+	 * @param entering If true, starting autonomous code; if false, leaving autonomous code */
+	void InAutonomous(bool entering) {m_userInAutonomous=entering;}
+	/** Only to be used to tell the Driver Station what code you claim to be executing
+	 *   for diagnostic purposes only
+	 * @param entering If true, starting teleop code; if false, leaving teleop code */
+	void InOperatorControl(bool entering) {m_userInTeleop=entering;}
+
 protected:
 	DriverStation();
 
@@ -83,6 +98,7 @@ protected:
 private:
 	static void InitTask(DriverStation *ds);
 	static DriverStation *m_instance;
+	static UINT8 m_updateNumber;
 	///< TODO: Get rid of this and use the semaphore signaling
 	static const float kUpdatePeriod = 0.02;
 
@@ -100,7 +116,11 @@ private:
 	bool m_newControlData;
 	SEM_ID m_packetDataAvailableSem;
 	DriverStationEnhancedIO m_enhancedIO;
-	static UINT8 m_updateNumber;
+	SEM_ID m_waitForDataSem;
+	double m_approxMatchTimeOffset;
+	bool m_userInDisabled;
+	bool m_userInAutonomous;
+	bool m_userInTeleop;
 };
 
 #endif

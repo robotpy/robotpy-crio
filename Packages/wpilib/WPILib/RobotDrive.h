@@ -7,7 +7,7 @@
 #ifndef ROBOTDRIVE_H_
 #define ROBOTDRIVE_H_
 
-#include "Base.h"
+#include "ErrorBase.h"
 #include <stdlib.h>
 #include <vxWorks.h>
 #include "MotorSafety.h"
@@ -24,7 +24,7 @@ class GenericHID;
  * used for either the Drive function (intended for hand created drive code, such as autonomous)
  * or with the Tank/Arcade functions intended to be used for Operator Control driving.
  */
-class RobotDrive: public MotorSafety
+class RobotDrive: public MotorSafety, public ErrorBase
 {
 public:
 	typedef enum
@@ -71,6 +71,7 @@ public:
 	void StopMotor();
 	bool IsSafetyEnabled();
 	void SetSafetyEnabled(bool enabled);
+	void GetDescription(char *desc);
 
 protected:
 	void InitRobotDrive();

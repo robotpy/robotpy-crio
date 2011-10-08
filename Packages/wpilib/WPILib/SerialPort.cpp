@@ -6,7 +6,6 @@
 
 #include "SerialPort.h"
 
-#include "Utility.h"
 #include "visa/visa.h"
 
 //static ViStatus _VI_FUNCH ioCompleteHandler (ViSession vi, ViEventType eventType, ViEvent event, ViAddr userHandle);
@@ -24,26 +23,26 @@ SerialPort::SerialPort(UINT32 baudRate, UINT8 dataBits, SerialPort::Parity parit
 	, m_portHandle (0)
 	, m_consoleModeEnabled (false)
 {
-	ViStatus status = VI_SUCCESS;
-	status = viOpenDefaultRM((ViSession*)&m_resourceManagerHandle);
-	wpi_assertCleanStatus(status);
+	ViStatus localStatus = VI_SUCCESS;
+	localStatus = viOpenDefaultRM((ViSession*)&m_resourceManagerHandle);
+	wpi_setError(localStatus);
 
-	status = viOpen(m_resourceManagerHandle, "ASRL1::INSTR", VI_NULL, VI_NULL, (ViSession*)&m_portHandle);
-	wpi_assertCleanStatus(status);
-	if (status != 0)
+	localStatus = viOpen(m_resourceManagerHandle, "ASRL1::INSTR", VI_NULL, VI_NULL, (ViSession*)&m_portHandle);
+	wpi_setError(localStatus);
+	if (localStatus != 0)
 	{
 		m_consoleModeEnabled = true;
 		return;
 	}
 
-	status = viSetAttribute(m_portHandle, VI_ATTR_ASRL_BAUD, baudRate);
-	wpi_assertCleanStatus(status);
-	status = viSetAttribute(m_portHandle, VI_ATTR_ASRL_DATA_BITS, dataBits);
-	wpi_assertCleanStatus(status);
-	status = viSetAttribute(m_portHandle, VI_ATTR_ASRL_PARITY, parity);
-	wpi_assertCleanStatus(status);
-	status = viSetAttribute(m_portHandle, VI_ATTR_ASRL_STOP_BITS, stopBits);
-	wpi_assertCleanStatus(status);
+	localStatus = viSetAttribute(m_portHandle, VI_ATTR_ASRL_BAUD, baudRate);
+	wpi_setError(localStatus);
+	localStatus = viSetAttribute(m_portHandle, VI_ATTR_ASRL_DATA_BITS, dataBits);
+	wpi_setError(localStatus);
+	localStatus = viSetAttribute(m_portHandle, VI_ATTR_ASRL_PARITY, parity);
+	wpi_setError(localStatus);
+	localStatus = viSetAttribute(m_portHandle, VI_ATTR_ASRL_STOP_BITS, stopBits);
+	wpi_setError(localStatus);
 
 	// Set the default timeout to 5 seconds.
 	SetTimeout(5.0f);
@@ -79,8 +78,8 @@ void SerialPort::SetFlowControl(SerialPort::FlowControl flowControl)
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viSetAttribute (m_portHandle, VI_ATTR_ASRL_FLOW_CNTRL, flowControl);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viSetAttribute (m_portHandle, VI_ATTR_ASRL_FLOW_CNTRL, flowControl);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -125,8 +124,8 @@ INT32 SerialPort::GetBytesReceived()
 	INT32 bytes = 0;
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viGetAttribute(m_portHandle, VI_ATTR_ASRL_AVAIL_NUM, &bytes);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viGetAttribute(m_portHandle, VI_ATTR_ASRL_AVAIL_NUM, &bytes);
+		wpi_setError(localStatus);
 	}
 	return bytes;
 }
@@ -144,9 +143,9 @@ void SerialPort::Printf(const char *writeFmt, ...)
 	{
 		va_list args;
 		va_start (args, writeFmt);
-		ViStatus status = viVPrintf(m_portHandle, (ViString)writeFmt, args);
+		ViStatus localStatus = viVPrintf(m_portHandle, (ViString)writeFmt, args);
 		va_end (args);
-		wpi_assertCleanStatus(status);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -163,9 +162,9 @@ void SerialPort::Scanf(const char *readFmt, ...)
 	{
 		va_list args;
 		va_start (args, readFmt);
-		ViStatus status = viVScanf(m_portHandle, (ViString)readFmt, args);
+		ViStatus localStatus = viVScanf(m_portHandle, (ViString)readFmt, args);
 		va_end (args);
-		wpi_assertCleanStatus(status);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -181,15 +180,15 @@ UINT32 SerialPort::Read(char *buffer, INT32 count)
 	UINT32 retCount = 0;
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viBufRead(m_portHandle, (ViPBuf)buffer, count, (ViPUInt32)&retCount);
-		switch (status)
+		ViStatus localStatus = viBufRead(m_portHandle, (ViPBuf)buffer, count, (ViPUInt32)&retCount);
+		switch (localStatus)
 		{
 		case VI_SUCCESS_TERM_CHAR:
 		case VI_SUCCESS_MAX_CNT:
 		case VI_ERROR_TMO: // Timeout
 			break;
 		default:
-			wpi_assertCleanStatus(status);
+			wpi_setError(localStatus);
 		}
 	}
 	return retCount;
@@ -207,8 +206,8 @@ UINT32 SerialPort::Write(const char *buffer, INT32 count)
 	UINT32 retCount = 0;
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viBufWrite(m_portHandle, (ViPBuf)buffer, count, (ViPUInt32)&retCount);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viBufWrite(m_portHandle, (ViPBuf)buffer, count, (ViPUInt32)&retCount);
+		wpi_setError(localStatus);
 	}
 	return retCount;
 }
@@ -225,8 +224,8 @@ void SerialPort::SetTimeout(float timeout)
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viSetAttribute(m_portHandle, VI_ATTR_TMO_VALUE, (UINT32)(timeout * 1e3));
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viSetAttribute(m_portHandle, VI_ATTR_TMO_VALUE, (UINT32)(timeout * 1e3));
+		wpi_setError(localStatus);
 	}
 }
 
@@ -246,8 +245,8 @@ void SerialPort::SetReadBufferSize(UINT32 size)
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viSetBuf(m_portHandle, VI_READ_BUF, size);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viSetBuf(m_portHandle, VI_READ_BUF, size);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -263,8 +262,8 @@ void SerialPort::SetWriteBufferSize(UINT32 size)
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viSetBuf(m_portHandle, VI_WRITE_BUF, size);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viSetBuf(m_portHandle, VI_WRITE_BUF, size);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -283,8 +282,8 @@ void SerialPort::SetWriteBufferMode(SerialPort::WriteBufferMode mode)
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viSetAttribute(m_portHandle, VI_ATTR_WR_BUF_OPER_MODE, mode);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viSetAttribute(m_portHandle, VI_ATTR_WR_BUF_OPER_MODE, mode);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -298,8 +297,8 @@ void SerialPort::Flush()
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viFlush(m_portHandle, VI_WRITE_BUF);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viFlush(m_portHandle, VI_WRITE_BUF);
+		wpi_setError(localStatus);
 	}
 }
 
@@ -312,8 +311,8 @@ void SerialPort::Reset()
 {
 	if (!m_consoleModeEnabled)
 	{
-		ViStatus status = viClear(m_portHandle);
-		wpi_assertCleanStatus(status);
+		ViStatus localStatus = viClear(m_portHandle);
+		wpi_setError(localStatus);
 	}
 }
 

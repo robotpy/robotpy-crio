@@ -7,8 +7,7 @@
 #include "Dashboard.h"
 #include "DriverStation.h"
 #include "Synchronized.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include <strLib.h>
 
 const INT32 Dashboard::kMaxDashboardDataSize;
@@ -193,7 +192,7 @@ void Dashboard::AddString(char* value, INT32 length)
  * You can also nest arrays inside of other arrays.
  * Every call to AddArray() must have a matching call to FinalizeArray().
  */
-void Dashboard::AddArray(void)
+void Dashboard::AddArray()
 {
 	if (!ValidateAdd(sizeof(INT32))) return;
 	m_complexTypeStack.push(kArray);
@@ -208,11 +207,11 @@ void Dashboard::AddArray(void)
  * After packing data into the array, call FinalizeArray().
  * Every call to AddArray() must have a matching call to FinalizeArray().
  */
-void Dashboard::FinalizeArray(void)
+void Dashboard::FinalizeArray()
 {
 	if (m_complexTypeStack.top() != kArray)
 	{
-		wpi_fatal(MismatchedComplexTypeClose);
+		wpi_setWPIError(MismatchedComplexTypeClose);
 		return;
 	}
 	m_complexTypeStack.pop();
@@ -233,7 +232,7 @@ void Dashboard::FinalizeArray(void)
  * You can use clusters inside of arrays to make each element of the array contain a structure of values.
  * Every call to AddCluster() must have a matching call to FinalizeCluster().
  */
-void Dashboard::AddCluster(void)
+void Dashboard::AddCluster()
 {
 	m_complexTypeStack.push(kCluster);
 }
@@ -244,11 +243,11 @@ void Dashboard::AddCluster(void)
  * After packing data into the cluster, call FinalizeCluster().
  * Every call to AddCluster() must have a matching call to FinalizeCluster().
  */
-void Dashboard::FinalizeCluster(void)
+void Dashboard::FinalizeCluster()
 {
 	if (m_complexTypeStack.top() != kCluster)
 	{
-		wpi_fatal(MismatchedComplexTypeClose);
+		wpi_setWPIError(MismatchedComplexTypeClose);
 		return;
 	}
 	m_complexTypeStack.pop();
@@ -269,7 +268,7 @@ void Dashboard::Printf(const char *writeFmt, ...)
 	// Check if the buffer has already been used for packing.
 	if (m_packPtr != m_localBuffer)
 	{
-		wpi_fatal(DashboardDataCollision);
+		wpi_setWPIError(DashboardDataCollision);
 		return;
 	}
 	va_start (args, writeFmt);
@@ -280,7 +279,7 @@ void Dashboard::Printf(const char *writeFmt, ...)
 	}
 	if (size > kMaxDashboardDataSize)
 	{
-		wpi_fatal(DashboardDataOverflow);
+		wpi_setWPIError(DashboardDataOverflow);
 	}
 
 	va_end (args);
@@ -295,11 +294,11 @@ void Dashboard::Printf(const char *writeFmt, ...)
  * Prepares a packet to go to the dashboard...
  * @return The total size of the data packed into the userData field of the status packet.
  */
-INT32 Dashboard::Finalize(void)
+INT32 Dashboard::Finalize()
 {
 	if (!m_complexTypeStack.empty())
 	{
-		wpi_fatal(MismatchedComplexTypeClose);
+		wpi_setWPIError(MismatchedComplexTypeClose);
 		return 0;
 	}
 
@@ -348,13 +347,13 @@ bool Dashboard::ValidateAdd(INT32 size)
 {
 	if ((m_packPtr - m_localBuffer) + size > kMaxDashboardDataSize)
 	{
-		wpi_fatal(DashboardDataOverflow);
+		wpi_setWPIError(DashboardDataOverflow);
 		return false;
 	}
 	// Make sure printf is not being used at the same time.
 	if (m_localPrintBuffer[0] != 0)
 	{
-		wpi_fatal(DashboardDataCollision);
+		wpi_setWPIError(DashboardDataCollision);
 		return false;
 	}
 	return true;
@@ -375,7 +374,7 @@ void Dashboard::AddedElement(Type type)
 		{
 			if (type != m_expectedArrayElementType.back())
 			{
-				wpi_fatal(InconsistentArrayValueAdded);
+				wpi_setWPIError(InconsistentArrayValueAdded);
 			}
 		}
 		m_arrayElementCount.back() = m_arrayElementCount.back() + 1;
@@ -385,7 +384,7 @@ void Dashboard::AddedElement(Type type)
 /**
  * If the top of the type stack an array?
  */
-bool Dashboard::IsArrayRoot(void)
+bool Dashboard::IsArrayRoot()
 {
 	return !m_complexTypeStack.empty() && m_complexTypeStack.top() == kArray;
 }

@@ -24,7 +24,7 @@ public:
 
 	Counter();
 	explicit Counter(UINT32 channel);
-	Counter(UINT32 slot, UINT32 channel);
+	Counter(UINT8 moduleNumber, UINT32 channel);
 	explicit Counter(DigitalSource *source);
 	explicit Counter(DigitalSource &source);
 	explicit Counter(AnalogTrigger *trigger);
@@ -33,7 +33,7 @@ public:
 	virtual ~Counter();
 
 	void SetUpSource(UINT32 channel);
-	void SetUpSource(UINT32 slot, UINT32 channel);
+	void SetUpSource(UINT8 moduleNumber, UINT32 channel);
 	void SetUpSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetUpSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetUpSource(DigitalSource *source);
@@ -42,7 +42,7 @@ public:
 	void ClearUpSource();
 
 	void SetDownSource(UINT32 channel);
-	void SetDownSource(UINT32 slot, UINT32 channel);
+	void SetDownSource(UINT8 moduleNumber, UINT32 channel);
 	void SetDownSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetDownSource(AnalogTrigger &analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetDownSource(DigitalSource *source);

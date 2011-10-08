@@ -25,6 +25,7 @@
  */
 void Victor::InitVictor()
 {
+	// TODO: compute the appropriate values based on digital loop timing
 	SetBounds(210, 138, 132, 126, 56);
 	SetPeriodMultiplier(kPeriodMultiplier_2X);
 	SetRaw(m_centerPwm);
@@ -43,10 +44,10 @@ Victor::Victor(UINT32 channel) : SafePWM(channel)
 /**
  * Constructor that specifies the digital module.
  * 
- * @param slot The slot in the chassis that the digital module is plugged into.
- * @param channel The PWM channel on the digital module that the Victor is attached to.
+ * @param moduleNumber The digital module (1 or 2).
+ * @param channel The PWM channel on the digital module that the Victor is attached to (1..10).
  */
-Victor::Victor(UINT32 slot, UINT32 channel) : SafePWM(slot, channel)
+Victor::Victor(UINT8 moduleNumber, UINT32 channel) : SafePWM(moduleNumber, channel)
 {
 	InitVictor();
 }

@@ -4,17 +4,17 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#ifndef TASK_H
-#define TASK_H
+#ifndef __TASK_H__
+#define __TASK_H__
 
-#include "Base.h"
+#include "ErrorBase.h"
 #include <vxWorks.h>
 
 /**
  * WPI task is a wrapper for the native Task object.
  * All WPILib tasks are managed by a static task manager for simplified cleanup.
  **/
-class Task
+class Task : public ErrorBase
 {
 public:
 	static const UINT32 kDefaultPriority = 101;
@@ -25,21 +25,21 @@ public:
 
 	bool Start(UINT32 arg0 = 0, UINT32 arg1 = 0, UINT32 arg2 = 0, UINT32 arg3 = 0, UINT32 arg4 = 0, 
 			UINT32 arg5 = 0, UINT32 arg6 = 0, UINT32 arg7 = 0, UINT32 arg8 = 0, UINT32 arg9 = 0);
-	bool Restart(void);
-	bool Stop(void);
+	bool Restart();
+	bool Stop();
 
-	bool IsReady(void);
-	bool IsSuspended(void);
+	bool IsReady();
+	bool IsSuspended();
 
-	bool Suspend(void);
-	bool Resume(void);
+	bool Suspend();
+	bool Resume();
 
-	bool Verify(void);
+	bool Verify();
 
-	INT32 GetPriority(void);
+	INT32 GetPriority();
 	bool SetPriority(INT32 priority);
-	const char* GetName(void);
-	INT32 GetID(void);
+	const char* GetName();
+	INT32 GetID();
 
 private:
 	FUNCPTR m_function;
@@ -51,4 +51,4 @@ private:
 	DISALLOW_COPY_AND_ASSIGN(Task);
 };
 
-#endif
+#endif // __TASK_H__

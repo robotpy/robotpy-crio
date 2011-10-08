@@ -21,26 +21,38 @@ class ErrorBase;
 class Error
 {
 public:
-    typedef tRioStatusCode Code;
+	typedef tRioStatusCode Code;
 
 	Error();
 	~Error();
+	void Clone(Error &error);
 	Code GetCode() const;
 	const char *GetMessage() const;
 	const char *GetFilename() const;
+	const char *GetFunction() const;
 	UINT32 GetLineNumber() const;
-    const ErrorBase* GetOriginatingObject() const;
+	const ErrorBase* GetOriginatingObject() const;
+	double GetTime() const;
 	void Clear();
-	void Set(Code code, const char* filename, UINT32 lineNumber, const ErrorBase* originatingObject);
+	void Set(Code code, const char* contextMessage, const char* filename,
+		const char *function, UINT32 lineNumber, const ErrorBase* originatingObject);
+	static void EnableStackTrace(bool enable) { m_stackTraceEnabled=enable; }
+	static void EnableSuspendOnError(bool enable) { m_suspendOnErrorEnabled=enable; }
 
 private:
+	void Error::Report();
+
 	Code m_code;
 	std::string m_message;
-    std::string m_filename;
+	std::string m_filename;
+	std::string m_function;
 	UINT32 m_lineNumber;
-    const ErrorBase* m_originatingObject;
-//TODO: Consider putting this back
-//	DISALLOW_COPY_AND_ASSIGN(Error);
+	const ErrorBase* m_originatingObject;
+	double m_timestamp;
+
+	static bool m_stackTraceEnabled;
+	static bool m_suspendOnErrorEnabled;
+	DISALLOW_COPY_AND_ASSIGN(Error);
 };
 
 #endif

@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "DriverStation.h"
-#include "CDriverStation.h"
+#include "CInterfaces/CDriverStation.h"
 
 static DriverStation *ds = NULL;
 

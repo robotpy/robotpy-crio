@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "SimpleCRobot.h"
+#include "CInterfaces/SimpleCRobot.h"
 
 #include "Timer.h"
 #include "Utility.h"

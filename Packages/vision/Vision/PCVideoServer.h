@@ -19,7 +19,7 @@
 class PCVideoServer : public ErrorBase {
 
 public:
-	PCVideoServer(void);
+	PCVideoServer();
 	~PCVideoServer();
 	unsigned int Release();
 	void Start();

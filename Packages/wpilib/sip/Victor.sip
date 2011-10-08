@@ -29,7 +29,7 @@ class Victor : SafePWM, SpeedController, PIDOutput
 
 public:
 	explicit Victor(UINT32 channel);
-	Victor(UINT32 slot, UINT32 channel);
+	Victor(UINT8 moduleNumber, UINT32 channel);
 	virtual ~Victor();
 	virtual void Set(float value, UINT8 syncGroup=0);
 	virtual float Get();

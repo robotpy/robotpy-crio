@@ -41,6 +41,10 @@ typedef unsigned long long UINT64;
 
 typedef struct semaphore * SEM_ID;
 
+%Include nLoadOut.sip
+%Include FRCComm.sip
+%Include stdstring.sip
+
 %ModuleCode
 #include <WPILib/RobotBase.h>
 
@@ -136,6 +140,8 @@ Watchdog *GetWatchdog();
 %Include InterruptableSensorBase.sip
 %Include Jaguar.sip
 %Include Joystick.sip
+%Include Kinect.sip
+%Include KinectStick.sip
 %Include Module.sip
 %Include MotorSafety.sip
 %Include MotorSafetyHelper.sip
@@ -149,14 +155,14 @@ Watchdog *GetWatchdog();
 %Include SensorBase.sip
 %Include SerialPort.sip
 %Include Servo.sip
-%Include SmartDashboard.sip
-%Include SmartDashboardPacketFactory.sip
+%Include Skeleton.sip
 %Include Solenoid.sip
 %Include SolenoidBase.sip
 %Include SPI.sip
 %Include SpeedController.sip
 %Include Timer.sip
 %Include Ultrasonic.sip
+%Include UsageReporting.sip
 %Include Utility.sip
 %Include Victor.sip
 %Include Watchdog.sip

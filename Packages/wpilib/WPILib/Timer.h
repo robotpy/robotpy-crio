@@ -13,8 +13,8 @@
 typedef void (*TimerInterruptHandler)(void *param);
 
 void Wait(double seconds);
-double GetClock(void);
-double GetTime(void);
+double GetClock();
+double GetTime();
 
 
 /**
@@ -35,8 +35,8 @@ public:
 	void Stop();
 	bool HasPeriodPassed(double period);
 
-	static double GetFPGATimestamp(void);
-	static double GetPPCTimestamp(void);
+	static double GetFPGATimestamp();
+	static double GetPPCTimestamp();
 
 private:
 	double m_startTime;

@@ -31,7 +31,7 @@ public:
 	enum PeriodMultiplier {kPeriodMultiplier_1X = 1, kPeriodMultiplier_2X = 2, kPeriodMultiplier_4X = 4};
 
 	explicit PWM(UINT32 channel);
-	PWM(UINT32 slot, UINT32 channel);
+	PWM(UINT8 moduleNumber, UINT32 channel);
 	virtual ~PWM();
 	virtual void SetRaw(UINT8 value);
 	virtual UINT8 GetRaw();

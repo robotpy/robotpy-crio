@@ -7,7 +7,7 @@
 #include "Encoder.h"
 #include "SensorBase.h"
 #include "DigitalModule.h"
-#include "CEncoder.h"
+#include "CInterfaces/CEncoder.h"
 
 static Encoder* encoders[SensorBase::kDigitalModules][SensorBase::kDigitalChannels];
 static bool initialized = false;
@@ -22,7 +22,7 @@ static bool initialized = false;
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-static Encoder *AllocateEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+static Encoder *AllocateEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
 	Encoder *encoder;
 	if (!initialized)
@@ -33,23 +33,23 @@ static Encoder *AllocateEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UIN
 		initialized = true;
 	}
 	// check if the channel and slots are valid values
-	if (!SensorBase::CheckDigitalModule(aSlot)
+	if (!SensorBase::CheckDigitalModule(amoduleNumber)
 			|| !SensorBase::CheckDigitalChannel(aChannel)
-			|| !SensorBase::CheckDigitalModule(bSlot)
+			|| !SensorBase::CheckDigitalModule(bmoduleNumber)
 			|| !SensorBase::CheckDigitalChannel(bChannel)) return NULL;
 	// check if nothing has been allocated to that pair of channels
-	if (encoders[DigitalModule::SlotToIndex(aSlot)][aChannel - 1] == NULL
-				&& encoders[DigitalModule::SlotToIndex(bSlot)][bChannel - 1] == NULL)
+	if (encoders[amoduleNumber - 1][aChannel - 1] == NULL
+				&& encoders[bmoduleNumber - 1][bChannel - 1] == NULL)
 	{
 		// allocate an encoder and put it into both slots
-		encoder = new Encoder(aSlot, aChannel, bSlot, bChannel);
-		encoders[DigitalModule::SlotToIndex(aSlot)][aChannel - 1] = encoder;
-		encoders[DigitalModule::SlotToIndex(bSlot)][bChannel - 1] = encoder;
+		encoder = new Encoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
+		encoders[amoduleNumber - 1][aChannel - 1] = encoder;
+		encoders[bmoduleNumber - 1][bChannel - 1] = encoder;
 		return encoder;
 	}
 	// if there was the same encoder object allocated to both channels, return it
-	if ((encoder = encoders[DigitalModule::SlotToIndex(aSlot)][aChannel - 1]) ==
-				 encoders[DigitalModule::SlotToIndex(bSlot)][bChannel - 1])
+	if ((encoder = encoders[amoduleNumber - 1][aChannel - 1]) ==
+				 encoders[bmoduleNumber - 1][bChannel - 1])
 		return encoder;
 	// Otherwise, one of the channels is allocated and the other isn't, so this is a
 	// resource allocation error.
@@ -93,9 +93,9 @@ void StartEncoder(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void StartEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+void StartEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 	{
 		encoder->Start();
@@ -137,9 +137,9 @@ INT32 GetEncoder(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-INT32 GetEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+INT32 GetEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, amoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->Get();
 	else
@@ -169,9 +169,9 @@ void ResetEncoder(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void ResetEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+void ResetEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->Reset();
 }
@@ -201,9 +201,9 @@ void StopEncoder(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void StopEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+void StopEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->Stop();
 }
@@ -243,9 +243,9 @@ double GetEncoderPeriod(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-double GetEncoderPeriod(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+double GetEncoderPeriod(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->GetPeriod();
 	else
@@ -292,9 +292,9 @@ void SetMaxEncoderPeriod(UINT32 aChannel, UINT32 bChannel, double maxPeriod)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void SetMaxEncoderPeriod(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel, double maxPeriod)
+void SetMaxEncoderPeriod(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel, double maxPeriod)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->SetMaxPeriod(maxPeriod);
 }
@@ -330,9 +330,9 @@ bool GetEncoderStopped(UINT32 aChannel, UINT32 bChannel)
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  * @return True if the encoder is considered stopped.
  */
-bool GetEncoderStopped(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+bool GetEncoderStopped(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->GetStopped();
 	else
@@ -364,9 +364,9 @@ bool GetEncoderDirection(UINT32 aChannel, UINT32 bChannel)
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  * @return The last direction the encoder value changed.
  */
-bool GetEncoderDirection(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+bool GetEncoderDirection(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->GetDirection();
 	else
@@ -400,9 +400,9 @@ double GetEncoderDistance(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
   */
-double GetEncoderDistance(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+double GetEncoderDistance(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->GetDistance();
 	else
@@ -438,9 +438,9 @@ double GetEncoderRate(UINT32 aChannel, UINT32 bChannel)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
   */
-double GetEncoderRate(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+double GetEncoderRate(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		return encoder->GetRate();
 	else
@@ -472,9 +472,9 @@ void SetMinEncoderRate(UINT32 aChannel, UINT32 bChannel, double minRate)
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void SetMinEncoderRate(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel, double minRate)
+void SetMinEncoderRate(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel, double minRate)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->SetMinRate(minRate);
 }
@@ -516,9 +516,9 @@ void SetEncoderDistancePerPulse(UINT32 aChannel, UINT32 bChannel, double distanc
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void SetEncoderDistancePerPulse(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel, double distancePerPulse)
+void SetEncoderDistancePerPulse(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel, double distancePerPulse)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->SetDistancePerPulse(distancePerPulse);
 }
@@ -550,9 +550,9 @@ void SetEncoderReverseDirection(UINT32 aChannel, UINT32 bChannel, bool reverseDi
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  * @param reverseDirection true if the encoder direction should be reversed
  */
-void SetEncoderReverseDirection(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel, bool reverseDirection)
+void SetEncoderReverseDirection(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel, bool reverseDirection)
 {
-	Encoder *encoder = AllocateEncoder(aSlot, aChannel, bSlot, bChannel);
+	Encoder *encoder = AllocateEncoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 	if (encoder != NULL)
 		encoder->SetReverseDirection(reverseDirection);
 }
@@ -566,12 +566,14 @@ void SetEncoderReverseDirection(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UIN
  * @param bSlot The digital module slot for the B Channel on the encoder
  * @param bChannel The channel on the digital module for the B Channel of the encoder
  */
-void DeleteEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+void DeleteEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	if (SensorBase::CheckDigitalModule(aSlot) && SensorBase::CheckDigitalChannel(aChannel))
+	if (SensorBase::CheckDigitalModule(amoduleNumber) && SensorBase::CheckDigitalChannel(aChannel) &&
+	        SensorBase::CheckDigitalModule(bmoduleNumber) && SensorBase::CheckDigitalChannel(bChannel))
 	{
-		delete encoders[DigitalModule::SlotToIndex(aSlot)][aChannel - 1];
-		encoders[DigitalModule::SlotToIndex(aSlot)][aChannel - 1] = NULL;
+		delete encoders[amoduleNumber - 1][aChannel - 1];
+        encoders[amoduleNumber - 1][aChannel - 1] = NULL;
+        encoders[bmoduleNumber - 1][bChannel - 1] = NULL;
 	}
 }
 
@@ -596,9 +598,9 @@ EncoderObject CreateEncoder(UINT32 aChannel, UINT32 bChannel)
 	return (EncoderObject) new Encoder(aChannel, bChannel);
 }
 
-EncoderObject CreateEncoder(UINT32 aSlot, UINT32 aChannel, UINT32 bSlot, UINT32 bChannel)
+EncoderObject CreateEncoder(UINT8 amoduleNumber, UINT32 aChannel, UINT8 bmoduleNumber, UINT32 bChannel)
 {
-	return (EncoderObject) new Encoder(aSlot, aChannel, bSlot, bChannel);
+	return (EncoderObject) new Encoder(amoduleNumber, aChannel, bmoduleNumber, bChannel);
 }
 
 void StartEncoder(EncoderObject o)

@@ -6,8 +6,8 @@
 
 #include "SensorBase.h"
 
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "NetworkCommunication/LoadOut.h"
+#include "WPIErrors.h"
 
 const UINT32 SensorBase::kSystemClockTicksPerMicrosecond;
 const UINT32 SensorBase::kDigitalChannels;
@@ -19,13 +19,7 @@ const UINT32 SensorBase::kSolenoidModules;
 const UINT32 SensorBase::kPwmChannels;
 const UINT32 SensorBase::kRelayChannels;
 const UINT32 SensorBase::kChassisSlots;
-UINT32 SensorBase::m_defaultAnalogModule = 1;
-UINT32 SensorBase::m_defaultDigitalModule = 4;
-UINT32 SensorBase::m_defaultSolenoidModule = 8;
 SensorBase *SensorBase::m_singletonList = NULL;
-
-// Slots are one based index, so ignore element 0.
-static const UINT32 modulePopulation[] = {0,  9201, 9201, 0, 9403, 0, 9403, 9472, 9472};
 
 /**
  * Creates an instance of the sensor base and gets an FPGA handle
@@ -73,90 +67,58 @@ void SensorBase::DeleteSingletons()
 }
 
 /**
- * Sets the default Digital Module.
- * This sets the default digital module to use for objects that are created without
- * specifying the digital module in the constructor. The default module is initialized
- * to the first module in the chassis.
- */
-void SensorBase::SetDefaultDigitalModule(UINT32 slot)
-{
-	wpi_assert(slot <= kChassisSlots && modulePopulation[slot] == 9403);
-	m_defaultDigitalModule = slot;
-}
-
-/**
- * Sets the default Analog module.
- * This sets the default analog module to use for objects that are created without
- * specifying the analog module in the constructor. The default module is initialized
- * to the first module in the chassis.
- */
-void SensorBase::SetDefaultAnalogModule(UINT32 slot)
-{
-	wpi_assert(slot <= kChassisSlots && modulePopulation[slot] == 9201);
-	m_defaultAnalogModule = slot;
-}
-
-/**
- * Set the default location for the Solenoid (9472) module.
- * Currently the module must be in slot 8, but it might change in the future.
- */
-void SensorBase::SetDefaultSolenoidModule(UINT32 slot)
-{
-	wpi_assert(slot <= kChassisSlots && modulePopulation[slot] == 9472);
-	m_defaultSolenoidModule = slot;
-}
-
-/**
- * Check that the digital module number is valid.
- * Module numbers are the slot number that they are inserted in.
- */
-bool SensorBase::CheckDigitalModule(UINT32 slot)
-{
-	if (slot <= kChassisSlots && modulePopulation[slot] == 9403)
-		return true;
-	wpi_fatal(IndexOutOfRange);
-	return false;
-}
-
-/**
- * Check that the digital module number is valid.
- * Module numbers are the slot number that they are inserted in.
- */
-bool SensorBase::CheckRelayModule(UINT32 slot)
-{
-	return CheckDigitalModule(slot);
-}
-
-/**
- * Check that the digital module number is valid.
- * Module numbers are the slot number that they are inserted in.
- */
-bool SensorBase::CheckPWMModule(UINT32 slot)
-{
-	return CheckDigitalModule(slot);
-}
-
-/**
  * Check that the analog module number is valid.
- * Module numbers are the slot numbers that they are inserted in.
+ * 
+ * @return Analog module is valid and present
  */
-bool SensorBase::CheckAnalogModule(UINT32 slot)
+bool SensorBase::CheckAnalogModule(UINT8 moduleNumber)
 {
-	if (slot <= kChassisSlots && modulePopulation[slot] == 9201)
+	if (nLoadOut::getModulePresence(nLoadOut::kModuleType_Analog, moduleNumber - 1))
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 
 /**
- * Verify that the solenoid module is correct.
- * Verify that the solenoid module is slot 8 or 7.
+ * Check that the digital module number is valid.
+ * 
+ * @return Digital module is valid and present
  */
-bool SensorBase::CheckSolenoidModule(UINT32 slot)
+bool SensorBase::CheckDigitalModule(UINT8 moduleNumber)
 {
-	if (slot <= kChassisSlots && modulePopulation[slot] == 9472)
+	if (nLoadOut::getModulePresence(nLoadOut::kModuleType_Digital, moduleNumber - 1))
 		return true;
-	wpi_fatal(IndexOutOfRange);
+	return false;
+}
+
+/**
+ * Check that the digital module number is valid.
+ * 
+ * @return Digital module is valid and present
+ */
+bool SensorBase::CheckPWMModule(UINT8 moduleNumber)
+{
+	return CheckDigitalModule(moduleNumber);
+}
+
+/**
+ * Check that the digital module number is valid.
+ * 
+ * @return Digital module is valid and present
+ */
+bool SensorBase::CheckRelayModule(UINT8 moduleNumber)
+{
+	return CheckDigitalModule(moduleNumber);
+}
+
+/**
+ * Check that the solenoid module number is valid.
+ * 
+ * @return Solenoid module is valid and present
+ */
+bool SensorBase::CheckSolenoidModule(UINT8 moduleNumber)
+{
+	if (nLoadOut::getModulePresence(nLoadOut::kModuleType_Solenoid, moduleNumber - 1))
+		return true;
 	return false;
 }
 
@@ -164,12 +126,13 @@ bool SensorBase::CheckSolenoidModule(UINT32 slot)
  * Check that the digital channel number is valid.
  * Verify that the channel number is one of the legal channel numbers. Channel numbers are
  * 1-based.
+ * 
+ * @return Digital channel is valid
  */
 bool SensorBase::CheckDigitalChannel(UINT32 channel)
 {
 	if (channel > 0 && channel <= kDigitalChannels)
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 
@@ -177,12 +140,13 @@ bool SensorBase::CheckDigitalChannel(UINT32 channel)
  * Check that the digital channel number is valid.
  * Verify that the channel number is one of the legal channel numbers. Channel numbers are
  * 1-based.
+ * 
+ * @return Relay channel is valid
  */
 bool SensorBase::CheckRelayChannel(UINT32 channel)
 {
 	if (channel > 0 && channel <= kRelayChannels)
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 
@@ -190,12 +154,13 @@ bool SensorBase::CheckRelayChannel(UINT32 channel)
  * Check that the digital channel number is valid.
  * Verify that the channel number is one of the legal channel numbers. Channel numbers are
  * 1-based.
+ * 
+ * @return PWM channel is valid
  */
 bool SensorBase::CheckPWMChannel(UINT32 channel)
 {
 	if (channel > 0 && channel <= kPwmChannels)
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 
@@ -203,23 +168,25 @@ bool SensorBase::CheckPWMChannel(UINT32 channel)
  * Check that the analog channel number is value.
  * Verify that the analog channel number is one of the legal channel numbers. Channel numbers
  * are 1-based.
+ * 
+ * @return Analog channel is valid
  */
 bool SensorBase::CheckAnalogChannel(UINT32 channel)
 {
 	if (channel > 0 && channel <= kAnalogChannels)
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 
 /**
  * Verify that the solenoid channel number is within limits.
+ * 
+ * @return Solenoid channel is valid
  */
 bool SensorBase::CheckSolenoidChannel(UINT32 channel)
 {
 	if (channel > 0 && channel <= kSolenoidChannels)
 		return true;
-	wpi_fatal(IndexOutOfRange);
 	return false;
 }
 

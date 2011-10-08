@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class SerialPort
+class SerialPort : ErrorBase
 {
 %TypeHeaderCode
 #include <WPILib/SerialPort.h>

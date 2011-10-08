@@ -6,24 +6,22 @@
 
 #include "Utility.h"
 
-#define WPI_STATUS_DEFINE_STRINGS
-#include "WPIStatus.h"
 #include "NetworkCommunication/FRCComm.h"
 #include "ChipObject.h"
 #include "Task.h"
 #include <dbgLib.h>
 #include <stdio.h>
 #include <sysSymTbl.h>
-#include <nivision.h>
+#include "nivision.h"
 
 #define DBG_DEMANGLE_PRINT_LEN 256  /* Num chars of demangled names to print */
 
 extern "C"
 {
-	extern char *	cplusDemangle (char *source, char *dest, INT32 n);
+	extern char * cplusDemangle (char *source, char *dest, INT32 n);
 }
 
-char *wpiGetLabel(UINT addr, INT32 *found = NULL)
+char *wpi_getLabel(UINT addr, INT32 *found)
 {
 	INT32 pVal;
 	SYM_TYPE pType;
@@ -58,8 +56,8 @@ static void wpiTracePrint(INSTR *caller, INT32 func, INT32 nargs, INT32 *args, I
 	char buf [MAX_SYS_SYM_LEN * 2];
 	INT32 ix;
 	INT32 len = 0;
-	len += sprintf (&buf [len], "%s <%#010x>: ", wpiGetLabel((UINT)caller), (INT32)caller);
-	len += sprintf (&buf [len], "%s <%#010x> (", wpiGetLabel((UINT)func), func);
+	len += sprintf (&buf [len], "%s <%#010x>: ", wpi_getLabel((UINT)caller), (INT32)caller);
+	len += sprintf (&buf [len], "%s <%#010x> (", wpi_getLabel((UINT)func), func);
 	for (ix = 0; ix < nargs; ix++)
 	{
 		if (ix != 0)
@@ -79,13 +77,17 @@ static void wpiCleanTracePrint(INSTR *caller, INT32 func, INT32 nargs, INT32 *ar
 	INT32 nameFound = 0;
 	INT32 params = 0;
 	INT32 totalnargs = nargs;
-	char *funcName = wpiGetLabel((UINT)func, &nameFound);
+	char *funcName = wpi_getLabel((UINT)func, &nameFound);
 	// Ignore names that are not exact symbol address matches.
 	if (nameFound != 1) return;
 
 	// Ignore internal function name matches.
 	if (strncmp(funcName, "wpi_assert", 10) == 0) return;
 	if (strncmp(funcName, "wpi_fatal", 9) == 0) return;
+	if (strncmp(funcName, "wpi_selfTrace", 13) == 0) return;
+	if (strncmp(funcName, "Error::Set", 10) == 0) return;
+	if (strncmp(funcName, "ErrorBase::SetError", 19) == 0) return;
+	if (strncmp(funcName, "Error::Report", 13) == 0) return;
 
 	// Find the number of arguments in the name string.
 	char *start = strchr(funcName, '(');
@@ -139,13 +141,14 @@ static INT32 wpiStackTask(INT32 taskId)
 	REG_SET regs;
 	taskRegsGet(taskId, &regs);
 	trcStack(&regs, (FUNCPTR) wpiCleanTracePrint, taskId);
+	printf("\n");
 
 	// The task should be resumed because it had to be suspended to get the stack trace.
 	taskResume(taskId);
 	return 0;
 }
 
-static void wpiSelfTrace()
+void wpi_selfTrace()
 {
 	INT32 priority=100;
 	taskPriorityGet(0, &priority);
@@ -163,7 +166,7 @@ static bool suspendOnAssertEnabled = false;
 /**
  * Enable Stack trace after asserts.
  */
-void wpi_stackTraceEnable(bool enabled)
+void wpi_stackTraceOnAssertEnable(bool enabled)
 {
 	stackTraceEnabled = enabled;
 }
@@ -184,7 +187,7 @@ static void wpi_handleTracing()
 	if (stackTraceEnabled)
 	{
 		printf("\n-----------<Stack Trace>----------------\n");
-		wpiSelfTrace();
+		wpi_selfTrace();
 	}
 	printf("\n");
 }
@@ -300,79 +303,19 @@ bool wpi_assertNotEqual_impl(int valueA,
 	return valueA != valueB;
 }
 
-/**
- * imaq assert implementation.
- */
-void wpi_imaqAssert_impl(int imaqStatus, const char *message,
-							const char *fileName,
-							UINT32 lineNumber,
-							const char *funcName)
-{
-	if (imaqStatus <= 0)
-	{
-		char err[64];
-		sprintf(err, "%s: %d", message, imaqGetLastError());
-		wpi_assertWithMessage(imaqStatus > 0, err);
-	}
-}
-
-/**
- * Assert status clean implementation.
- * This allows breakpoints to be set on an assert.
- * This allows the fatal status to be printed.
- * The users don't call this, but instead use the wpi_assertCleanStatus macro in Utility.h.
- */
-void wpi_assertCleanStatus_impl(INT32 status, const char *fileName, UINT32 lineNumber, const char *funcName)
-{
-	if (status != 0)
-	{
-		// Error string buffers
-		char error[256];
-		char error_with_code[256];
-		
-		// Build error strings
-		sprintf(error, "%s: status == %d (0x%08X) in %s() in %s at line %d\n",
-				status < 0 ? "ERROR" : "WARNING", status, (UINT32)status, funcName, fileName, lineNumber);
-		sprintf(error_with_code,"<Code>%d %s", status, error);
-		
-		// Print to console and send to remote dashboard
-		printf("\n\n>>>>%s", error);
-		setErrorData(error_with_code, strlen(error_with_code), 100);
-		
-		wpi_handleTracing();
-		if (suspendOnAssertEnabled) taskSuspend(0);
-	}
-}
-
-void wpi_fatal_impl(const INT32 statusCode, const char *statusString,
-					const char *fileName, UINT32 lineNumber, const char *funcName)
-{
-	// Error string buffer
-	char error[256];
-
-	// Build error strings
-	sprintf(error, "Fatal error \"%s\" in %s() in %s at line %d\n",
-			statusString, funcName, fileName, lineNumber);
-
-	// Print to console and send to remote dashboard
-	printf("\n\n>>>>%s", error);
-	setErrorData(error, strlen(error), 100);
-
-	wpi_handleTracing();
-}
-
 
 /**
  * Return the FPGA Version number.
- * For now, expect this to be 2009.
+ * For now, expect this to be competition year.
  * @return FPGA Version number.
  */
 UINT16 GetFPGAVersion()
 {
 	tRioStatusCode status = 0;
-	tGlobal global(&status);
-	UINT16 version = global.readVersion(&status); 
-	wpi_assertCleanStatus(status);
+	tGlobal *global = tGlobal::create(&status);
+	UINT16 version = global->readVersion(&status);
+	delete global;
+	wpi_setGlobalError(status);
 	return version;
 }
 
@@ -387,9 +330,10 @@ UINT16 GetFPGAVersion()
 UINT32 GetFPGARevision()
 {
 	tRioStatusCode status = 0;
-	tGlobal global(&status);
-	UINT32 revision = global.readRevision(&status);
-	wpi_assertCleanStatus(status);
+	tGlobal *global = tGlobal::create(&status);
+	UINT32 revision = global->readRevision(&status);
+	delete global;
+	wpi_setGlobalError(status);
 	return revision;
 }
 
@@ -401,9 +345,10 @@ UINT32 GetFPGARevision()
 UINT32 GetFPGATime()
 {
 	tRioStatusCode status = 0;
-	tGlobal global(&status);
-	UINT32 time = global.readLocalTime(&status);
-	wpi_assertCleanStatus(status);
+	tGlobal *global = tGlobal::create(&status);
+	UINT32 time = global->readLocalTime(&status);
+	delete global;
+	wpi_setGlobalError(status);
 	return time;
 }
 
@@ -459,8 +404,10 @@ INT32 ToggleRIOUserLED()
 void SetRIO_FPGA_LED(UINT32 state)
 {
 	tRioStatusCode status = 0;
-	tGlobal global(&status);
-	global.writeFPGA_LED(state, &status);
+	tGlobal *global = tGlobal::create(&status);
+	global->writeFPGA_LED(state, &status);
+	wpi_setGlobalError(status);
+	delete global;
 }
 
 /**
@@ -470,8 +417,11 @@ void SetRIO_FPGA_LED(UINT32 state)
 INT32 GetRIO_FPGA_LED()
 {
 	tRioStatusCode status = 0;
-	tGlobal global(&status);
-	return global.readFPGA_LED(&status);
+	tGlobal *global = tGlobal::create(&status);
+	bool ledValue = global->readFPGA_LED(&status);
+	wpi_setGlobalError(status);
+	delete global;
+	return ledValue;
 }
 
 /**

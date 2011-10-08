@@ -17,7 +17,7 @@ class AnalogTrigger: public SensorBase
 {
 	friend class AnalogTriggerOutput;
 public:
-	AnalogTrigger(UINT32 slot, UINT32 channel);
+	AnalogTrigger(UINT8 moduleNumber, UINT32 channel);
 	explicit AnalogTrigger(UINT32 channel);
 	explicit AnalogTrigger(AnalogChannel *channel);
 	virtual ~AnalogTrigger();
@@ -32,7 +32,7 @@ public:
 	AnalogTriggerOutput *CreateOutput(AnalogTriggerOutput::Type type);
 
 private:
-	void InitTrigger(UINT32 slot, UINT32 channel);
+	void InitTrigger(UINT8 moduleNumber, UINT32 channel);
 
 	UINT8 m_index;
 	tAnalogTrigger *m_trigger;

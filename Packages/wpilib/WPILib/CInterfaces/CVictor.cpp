@@ -4,8 +4,8 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "CVictor.h"
-#include "CPWM.h"
+#include "CInterfaces/CVictor.h"
+#include "CInterfaces/CPWM.h"
 #include "Victor.h"
 
 /**
@@ -171,7 +171,7 @@ UINT8 GetVictorRaw(VictorObject o)
 	return ((Victor *)o)->GetRaw();
 }
 
-void LoadVictor(void)
+void LoadVictor()
 {
 }
 

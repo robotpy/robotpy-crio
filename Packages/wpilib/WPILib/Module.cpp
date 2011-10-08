@@ -5,17 +5,23 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Module.h"
+#include "AnalogModule.h"
+#include "DigitalModule.h"
+//#include "SolenoidModule.h"
 
-Module* Module::m_modules[kChassisSlots + 1] = {NULL};
+Module* Module::m_modules[kMaxModules] = {NULL};
 
 /**
  * Constructor.
  * 
- * @param slot The slot in the chassis where the module is plugged in.
+ * @param type The type of module represented.
+ * @param number The module index within the module type.
  */
-Module::Module(UINT32 slot)
-	: m_slot (slot)
+Module::Module(nLoadOut::tModuleType type, UINT8 number)
+	: m_moduleType (type)
+	, m_moduleNumber (number)
 {
+	m_modules[ToIndex(type, number)] = this;
 }
 
 /**
@@ -23,4 +29,48 @@ Module::Module(UINT32 slot)
  */
 Module::~Module()
 {
+}
+
+/**
+ * Static module singleton factory.
+ * 
+ * @param type The type of module represented.
+ * @param number The module index within the module type.
+ */
+Module* Module::GetModule(nLoadOut::tModuleType type, UINT8 number)
+{
+	if (m_modules[ToIndex(type, number)] == NULL)
+	{
+		switch(type)
+		{
+		case nLoadOut::kModuleType_Analog:
+			new AnalogModule(number);
+			break;
+		case nLoadOut::kModuleType_Digital:
+			new DigitalModule(number);
+			break;
+/*
+		case nLoadOut::kModuleType_Solenoid:
+			new SolenoidModule(number);
+			break;
+*/
+		default:
+		    return NULL;
+		}
+	}
+	return m_modules[ToIndex(type, number)];
+}
+
+/**
+ * Create an index into the m_modules array based on type and number
+ * 
+ * @param type The type of module represented.
+ * @param number The module index within the module type.
+ * @return The index into m_modules.
+ */
+UINT8 Module::ToIndex(nLoadOut::tModuleType type, UINT8 number)
+{
+	if (number == 0 || number > kMaxModuleNumber) return 0;
+	if (type < nLoadOut::kModuleType_Analog || type > nLoadOut::kModuleType_Solenoid) return 0;
+	return (type * kMaxModuleNumber) + (number - 1);
 }

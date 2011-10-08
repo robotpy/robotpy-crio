@@ -34,13 +34,15 @@ public:
 	typedef enum {kPeriodMultiplier_1X = 1, kPeriodMultiplier_2X = 2, kPeriodMultiplier_4X = 4} PeriodMultiplier;
 
 	explicit PWM(UINT32 channel);
-	PWM(UINT32 slot, UINT32 channel);
+	PWM(UINT8 moduleNumber, UINT32 channel);
 	virtual ~PWM();
 	virtual void SetRaw(UINT8 value);
 	virtual UINT8 GetRaw();
 	void SetPeriodMultiplier(PeriodMultiplier mult);
 	void EnableDeadbandElimination(bool eliminateDeadband);
 	void SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMin, INT32 min);
+	UINT32 GetChannel() {return m_channel;}
+	UINT32 GetModuleNumber();
 
 protected:
 	/**
@@ -87,7 +89,7 @@ protected:
 	INT32 m_minPwm;
 
 private:
-	void InitPWM(UINT32 slot, UINT32 channel);
+	void InitPWM(UINT8 moduleNumber, UINT32 channel);
 	UINT32 m_channel;
 	DigitalModule *m_module;
 	INT32 GetMaxPositivePwm() { return m_maxPwm; };

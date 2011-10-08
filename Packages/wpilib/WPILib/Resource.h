@@ -7,6 +7,7 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
+#include "ErrorBase.h"
 #include <vxWorks.h>
 
 /**
@@ -22,13 +23,13 @@
  * Then when the program actually starts - in the Robot constructor, all resources are initialized.
  * This ensures that the program is restartable in memory without having to unload/reload.
  */
-class Resource
+class Resource : public ErrorBase
 {
 public:
 	virtual ~Resource();
 	static void CreateResourceObject(Resource **r, UINT32 elements);
-	UINT32 Allocate();
-	UINT32 Allocate(UINT32 index);
+	UINT32 Allocate(const char *resourceDesc);
+	UINT32 Allocate(UINT32 index, const char *resourceDesc);
 	void Free(UINT32 index);
 
 protected:

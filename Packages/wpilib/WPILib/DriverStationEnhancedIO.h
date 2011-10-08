@@ -87,7 +87,11 @@ class DriverStationEnhancedIO : public ErrorBase
 	} control_block_t;
 #pragma pack(pop)
 
-	enum tBlockID {kInputBlockID = 17, kOutputBlockID = 18};
+	enum tBlockID
+	{
+		kInputBlockID = kFRC_NetworkCommunication_DynamicType_DSEnhancedIO_Input,
+		kOutputBlockID = kFRC_NetworkCommunication_DynamicType_DSEnhancedIO_Output,
+	};
 	enum tStatusFlags {kStatusValid = 0x01, kStatusConfigChanged = 0x02, kForceEnhancedMode = 0x04};
 
 public:

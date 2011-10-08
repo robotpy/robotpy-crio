@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Joystick : GenericHID
+class Joystick : GenericHID, ErrorBase
 {
 %TypeHeaderCode
 #include <WPILib/Joystick.h>

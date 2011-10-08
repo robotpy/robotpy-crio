@@ -20,7 +20,7 @@ class DigitalOutput : public DigitalSource
 {
 public:
 	explicit DigitalOutput(UINT32 channel);
-	DigitalOutput(UINT32 slot, UINT32 channel);
+	DigitalOutput(UINT8 moduleNumber, UINT32 channel);
 	virtual ~DigitalOutput();
 	void Set(UINT32 value);
 	UINT32 GetChannel();
@@ -41,7 +41,7 @@ public:
 	void SetUpSourceEdge(bool risingEdge, bool fallingEdge);
 
 private:
-	void InitDigitalOutput(UINT32 slot, UINT32 channel);
+	void InitDigitalOutput(UINT8 moduleNumber, UINT32 channel);
 
 	UINT32 m_channel;
 	UINT32 m_pwmGenerator;

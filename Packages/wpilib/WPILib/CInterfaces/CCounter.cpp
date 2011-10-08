@@ -1,5 +1,5 @@
 #include "VxWorks.h"
-#include "CCounter.h"
+#include "CInterfaces/CCounter.h"
 #include "Counter.h"
 #include "DigitalModule.h"
 
@@ -14,7 +14,7 @@ static bool initialized = false;
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-static Counter *AllocateCounter(UINT32 slot, UINT32 channel)
+static Counter *AllocateCounter(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -23,11 +23,11 @@ static Counter *AllocateCounter(UINT32 slot, UINT32 channel)
 				counters[i][j] = NULL;
 		initialized = true;
 	}
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotOffset = DigitalModule::SlotToIndex(slot);
+		UINT32 slotOffset = moduleNumber - 1;
 		if (counters[slotOffset][channel - 1] == NULL)
-			counters[slotOffset][channel - 1] = new Counter(slot, channel);
+			counters[slotOffset][channel - 1] = new Counter(moduleNumber, channel);
 		return counters[slotOffset][channel - 1];
 	}
 	else
@@ -54,9 +54,9 @@ static Counter *AllocateCounter(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-void StartCounter(UINT32 slot, UINT32 channel)
+void StartCounter(UINT8 moduleNumber, UINT32 channel)
 {
-	Counter *counter = AllocateCounter(slot, channel);
+	Counter *counter = AllocateCounter(moduleNumber, channel);
 	if (counter != NULL)
 		counter->Start();
 }
@@ -99,9 +99,9 @@ INT32 GetCounter(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-INT32 GetCounter(UINT32 slot, UINT32 channel)
+INT32 GetCounter(UINT8 moduleNumber, UINT32 channel)
 {
-	Counter *counter = AllocateCounter(slot, channel);
+	Counter *counter = AllocateCounter(moduleNumber, channel);
 	if (counter != NULL)
 		return counter->Get();
 	else
@@ -128,9 +128,9 @@ void ResetCounter(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-void ResetCounter(UINT32 slot, UINT32 channel)
+void ResetCounter(UINT8 moduleNumber, UINT32 channel)
 {
-	Counter *counter = AllocateCounter(slot, channel);
+	Counter *counter = AllocateCounter(moduleNumber, channel);
 	if (counter != NULL)
 		counter->Reset();
 }
@@ -141,9 +141,9 @@ void ResetCounter(UINT32 slot, UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-void StopCounter(UINT32 slot, UINT32 channel)
+void StopCounter(UINT8 moduleNumber, UINT32 channel)
 {
-	Counter *counter = AllocateCounter(slot, channel);
+	Counter *counter = AllocateCounter(moduleNumber, channel);
 	if (counter != NULL)
 		counter->Stop();
 }
@@ -168,9 +168,9 @@ void StopCounter(UINT32 channel)
  * @param channel The channel of the digital input used with this counter
  * @returns The period of the last two pulses in units of seconds.
  */
-double GetCounterPeriod(UINT32 slot, UINT32 channel)
+double GetCounterPeriod(UINT8 moduleNumber, UINT32 channel)
 {
-	Counter *counter = AllocateCounter(slot, channel);
+	Counter *counter = AllocateCounter(moduleNumber, channel);
 	if (counter != NULL)
 		return counter->GetPeriod();
 	else
@@ -199,11 +199,11 @@ double GetCounterPeriod(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The channel of the digital input used with this counter
  */
-void DeleteCounter(UINT32 slot, UINT32 channel)
+void DeleteCounter(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotOffset = DigitalModule::SlotToIndex(slot);
+		UINT32 slotOffset = moduleNumber - 1;
 		delete counters[slotOffset][channel - 1];
 		counters[slotOffset][channel - 1] = NULL;
 	}
@@ -228,9 +228,9 @@ CounterObject CreateCounter(UINT32 channel)
 	return (CounterObject) new Counter(channel);
 }
 
-CounterObject CreateCounter(UINT32 slot, UINT32 channel) 
+CounterObject CreateCounter(UINT8 moduleNumber, UINT32 channel) 
 {
-	return (CounterObject) new Counter(slot,channel);	
+	return (CounterObject) new Counter(moduleNumber,channel);	
 }
 
 void StartCounter(CounterObject o)

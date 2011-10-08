@@ -6,6 +6,8 @@
 
 #include "ColorImage.h"
 
+#include "WPIErrors.h"
+
 ColorImage::ColorImage(ImageType type) : ImageBase(type)
 {
 }
@@ -21,7 +23,7 @@ ColorImage::~ColorImage()
  * @param colorMode The type of colorspace this operation should be performed in
  * @returns a pointer to a binary image
  */
-BinaryImage * ColorImage::ComputeThreshold(ColorMode colorMode,
+BinaryImage *ColorImage::ComputeThreshold(ColorMode colorMode,
 		int low1, int high1,
 		int low2, int high2,
 		int low3, int high3)
@@ -32,7 +34,7 @@ BinaryImage * ColorImage::ComputeThreshold(ColorMode colorMode,
 		range3 = {low3, high3};
 	
 	int success = imaqColorThreshold(result->GetImaqImage(), m_imaqImage, 1, colorMode, &range1, &range2, &range3);
-	wpi_imaqAssert(success, "ImaqThreshold error");
+	wpi_setImaqErrorWithContext(success, "ImaqThreshold error");
 	return result;
 }
 
@@ -46,7 +48,7 @@ BinaryImage * ColorImage::ComputeThreshold(ColorMode colorMode,
  * @param blueHigh Blue high value
  * @returns A pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdRGB(int redLow, int redHigh, int greenLow, int greenHigh, int blueLow, int blueHigh)
+BinaryImage *ColorImage::ThresholdRGB(int redLow, int redHigh, int greenLow, int greenHigh, int blueLow, int blueHigh)
 {
 	return ComputeThreshold(IMAQ_RGB, redLow, redHigh, greenLow, greenHigh, blueLow, blueHigh);
 }
@@ -56,7 +58,7 @@ BinaryImage * ColorImage::ThresholdRGB(int redLow, int redHigh, int greenLow, in
  * @param threshold a reference to the Threshold object to use.
  * @returns A pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdRGB(Threshold &t)
+BinaryImage *ColorImage::ThresholdRGB(Threshold &t)
 {
 	return ComputeThreshold(IMAQ_RGB, t.plane1Low, t.plane1High,
 								t.plane2Low, t.plane2High,
@@ -73,7 +75,7 @@ BinaryImage * ColorImage::ThresholdRGB(Threshold &t)
  * @param luminenceHigh High value for luminence
  * @returns a pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSL(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int luminenceLow, int luminenceHigh)
+BinaryImage *ColorImage::ThresholdHSL(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int luminenceLow, int luminenceHigh)
 {
 	return ComputeThreshold(IMAQ_HSL, hueLow, hueHigh, saturationLow, saturationHigh, luminenceLow, luminenceHigh);
 }
@@ -83,7 +85,7 @@ BinaryImage * ColorImage::ThresholdHSL(int hueLow, int hueHigh, int saturationLo
  * @param threshold a reference to the Threshold object to use.
  * @returns A pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSL(Threshold &t)
+BinaryImage *ColorImage::ThresholdHSL(Threshold &t)
 {
 	return ComputeThreshold(IMAQ_HSL, t.plane1Low, t.plane1High,
 								t.plane2Low, t.plane2High,
@@ -100,7 +102,7 @@ BinaryImage * ColorImage::ThresholdHSL(Threshold &t)
  * @param valueHigh High value
  * @returns a pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSV(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int valueLow, int valueHigh)
+BinaryImage *ColorImage::ThresholdHSV(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int valueLow, int valueHigh)
 {
 	return ComputeThreshold(IMAQ_HSV, hueLow, hueHigh, saturationLow, saturationHigh, valueLow, valueHigh);
 }
@@ -110,7 +112,7 @@ BinaryImage * ColorImage::ThresholdHSV(int hueLow, int hueHigh, int saturationLo
  * @param threshold a reference to the Threshold object to use.
  * @returns A pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSV(Threshold &t)
+BinaryImage *ColorImage::ThresholdHSV(Threshold &t)
 {
 	return ComputeThreshold(IMAQ_HSV, t.plane1Low, t.plane1High,
 								t.plane2Low, t.plane2High,
@@ -127,7 +129,7 @@ BinaryImage * ColorImage::ThresholdHSV(Threshold &t)
  * @param valueHigh High intensity
  * @returns a pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSI(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int intensityLow, int intensityHigh)
+BinaryImage *ColorImage::ThresholdHSI(int hueLow, int hueHigh, int saturationLow, int saturationHigh, int intensityLow, int intensityHigh)
 {
 	return ComputeThreshold(IMAQ_HSI, hueLow, hueHigh, saturationLow, saturationHigh, intensityLow, intensityHigh);
 }
@@ -137,7 +139,7 @@ BinaryImage * ColorImage::ThresholdHSI(int hueLow, int hueHigh, int saturationLo
  * @param threshold a reference to the Threshold object to use.
  * @returns A pointer to a BinaryImage that represents the result of the threshold operation.
  */
-BinaryImage * ColorImage::ThresholdHSI(Threshold &t)
+BinaryImage *ColorImage::ThresholdHSI(Threshold &t)
 {
 	return ComputeThreshold(IMAQ_HSI, t.plane1Low, t.plane1High,
 								t.plane2Low, t.plane2High,
@@ -150,15 +152,17 @@ BinaryImage * ColorImage::ThresholdHSI(Threshold &t)
  * @param planeNumber Which plane is to be extracted
  * @returns A pointer to a MonoImage that represents the extracted plane.
  */
-MonoImage * ColorImage::ExtractColorPlane(ColorMode mode, int planeNumber) {
+MonoImage *ColorImage::ExtractColorPlane(ColorMode mode, int planeNumber)
+{
 	MonoImage *result = new MonoImage();
-	wpi_assert(m_imaqImage != NULL);
+	if (m_imaqImage == NULL)
+		wpi_setWPIError(NullParameter);
 	int success = imaqExtractColorPlanes(m_imaqImage, 
 										 mode, 
 										 (planeNumber == 1) ? result->GetImaqImage() : NULL, 
 										 (planeNumber == 2) ? result->GetImaqImage() : NULL, 
 										 (planeNumber == 3) ? result->GetImaqImage() : NULL);
-	wpi_imaqAssert(success, "Imaq ExtractColorPlanes failed");
+	wpi_setImaqErrorWithContext(success, "Imaq ExtractColorPlanes failed");
 	return result;
 }
 
@@ -167,7 +171,7 @@ MonoImage * ColorImage::ExtractColorPlane(ColorMode mode, int planeNumber) {
  * @param mode The color mode in which to operate
  * @returns a pointer to a MonoImage that is the extracted plane.
  */
-MonoImage * ColorImage::ExtractFirstColorPlane(ColorMode mode)
+MonoImage *ColorImage::ExtractFirstColorPlane(ColorMode mode)
 {
 	return ExtractColorPlane(mode, 1);
 }
@@ -177,7 +181,7 @@ MonoImage * ColorImage::ExtractFirstColorPlane(ColorMode mode)
  * @param mode The color mode in which to operate
  * @returns a pointer to a MonoImage that is the extracted plane.
  */
-MonoImage * ColorImage::ExtractSecondColorPlane(ColorMode mode)
+MonoImage *ColorImage::ExtractSecondColorPlane(ColorMode mode)
 {
 	return ExtractColorPlane(mode, 2);
 }
@@ -187,7 +191,7 @@ MonoImage * ColorImage::ExtractSecondColorPlane(ColorMode mode)
  * @param mode The color mode in which to operate
  * @returns a pointer to a MonoImage that is the extracted plane.
  */
-MonoImage * ColorImage::ExtractThirdColorPlane(ColorMode mode)
+MonoImage *ColorImage::ExtractThirdColorPlane(ColorMode mode)
 {
 	return ExtractColorPlane(mode, 3);
 }
@@ -196,7 +200,7 @@ MonoImage * ColorImage::ExtractThirdColorPlane(ColorMode mode)
  * Extract the red plane from an RGB image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetRedPlane()
+MonoImage *ColorImage::GetRedPlane()
 {
 	return ExtractFirstColorPlane(IMAQ_RGB);
 }
@@ -205,7 +209,7 @@ MonoImage * ColorImage::GetRedPlane()
  * Extract the green plane from an RGB image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetGreenPlane()
+MonoImage *ColorImage::GetGreenPlane()
 {
     return ExtractSecondColorPlane(IMAQ_RGB);
 }
@@ -214,7 +218,7 @@ MonoImage * ColorImage::GetGreenPlane()
  * Extract the blue plane from an RGB image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetBluePlane()
+MonoImage *ColorImage::GetBluePlane()
 {
     return ExtractThirdColorPlane(IMAQ_RGB);
 }
@@ -223,7 +227,7 @@ MonoImage * ColorImage::GetBluePlane()
  * Extract the Hue plane from an HSL image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetHSLHuePlane()
+MonoImage *ColorImage::GetHSLHuePlane()
 {
 	return ExtractFirstColorPlane(IMAQ_HSL);
 }
@@ -232,7 +236,7 @@ MonoImage * ColorImage::GetHSLHuePlane()
  * Extract the Hue plane from an HSV image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetHSVHuePlane()
+MonoImage *ColorImage::GetHSVHuePlane()
 {
 	return ExtractFirstColorPlane(IMAQ_HSV);
 }
@@ -241,7 +245,7 @@ MonoImage * ColorImage::GetHSVHuePlane()
  * Extract the Hue plane from an HSI image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetHSIHuePlane()
+MonoImage *ColorImage::GetHSIHuePlane()
 {
 	return ExtractFirstColorPlane(IMAQ_HSI);
 }
@@ -250,7 +254,7 @@ MonoImage * ColorImage::GetHSIHuePlane()
  * Extract the Luminance plane from an HSL image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetLuminancePlane()
+MonoImage *ColorImage::GetLuminancePlane()
 {
 	return ExtractThirdColorPlane(IMAQ_HSL);
 }
@@ -259,7 +263,7 @@ MonoImage * ColorImage::GetLuminancePlane()
  * Extract the Value plane from an HSV image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetValuePlane()
+MonoImage *ColorImage::GetValuePlane()
 {
 	return ExtractThirdColorPlane(IMAQ_HSV);
 }
@@ -268,7 +272,7 @@ MonoImage * ColorImage::GetValuePlane()
  * Extract the Intensity plane from an HSI image.
  * @returns a pointer to a MonoImage that is the extraced plane.
  */
-MonoImage * ColorImage::GetIntensityPlane()
+MonoImage *ColorImage::GetIntensityPlane()
 {
 	return ExtractThirdColorPlane(IMAQ_HSI);
 }
@@ -287,7 +291,7 @@ void ColorImage::ReplacePlane(ColorMode mode, MonoImage *plane, int planeNumber)
 									     (planeNumber == 1) ? plane->GetImaqImage() : NULL, 
 									     (planeNumber == 2) ? plane->GetImaqImage() : NULL, 
 									     (planeNumber == 3) ? plane->GetImaqImage() : NULL);
-	wpi_imaqAssert(success, "Imaq ReplaceColorPlanes failed");
+	wpi_setImaqErrorWithContext(success, "Imaq ReplaceColorPlanes failed");
 }
 
 /**
@@ -447,7 +451,7 @@ void ColorImage::Equalize(bool allPlanes)
 {
 	// Note that this call uses NI-defined TRUE and FALSE
 	int success = imaqColorEqualize(m_imaqImage, (const Image*) m_imaqImage, (allPlanes) ? TRUE : FALSE);
-	wpi_imaqAssert(success, "Imaq ColorEqualize error");
+	wpi_setImaqErrorWithContext(success, "Imaq ColorEqualize error");
 }
 
 void ColorImage::ColorEqualize()

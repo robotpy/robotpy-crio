@@ -11,7 +11,7 @@
 #include "Joystick.h"
 #include "Jaguar.h"
 #include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include <math.h>
 
 #define max(x, y) (((x) > (y)) ? (x) : (y))
@@ -100,7 +100,7 @@ RobotDrive::RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor)
 	InitRobotDrive();
 	if (leftMotor == NULL || rightMotor == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		m_rearLeftMotor = m_rearRightMotor = NULL;
 		return;
 	}
@@ -139,7 +139,7 @@ RobotDrive::RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLef
 	InitRobotDrive();
 	if (frontLeftMotor == NULL || rearLeftMotor == NULL || frontRightMotor == NULL || rearRightMotor == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 	m_frontLeftMotor = frontLeftMotor;
@@ -235,7 +235,7 @@ void RobotDrive::TankDrive(GenericHID *leftStick, GenericHID *rightStick)
 {
 	if (leftStick == NULL || rightStick == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 	TankDrive(leftStick->GetY(), rightStick->GetY());
@@ -260,7 +260,7 @@ void RobotDrive::TankDrive(GenericHID *leftStick, UINT32 leftAxis,
 {
 	if (leftStick == NULL || rightStick == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 	TankDrive(leftStick->GetRawAxis(leftAxis), rightStick->GetRawAxis(rightAxis));
@@ -632,7 +632,7 @@ void RobotDrive::SetInvertedMotor(MotorType motor, bool isInverted)
 {
 	if (motor < 0 || motor > 3)
 	{
-		wpi_fatal(InvalidMotorIndex);
+		wpi_setWPIError(InvalidMotorIndex);
 		return;
 	}
 	m_invertedMotors[motor] = isInverted ? -1 : 1;
@@ -683,6 +683,11 @@ bool RobotDrive::IsSafetyEnabled()
 void RobotDrive::SetSafetyEnabled(bool enabled)
 {
 	m_safetyHelper->SetSafetyEnabled(enabled);
+}
+
+void RobotDrive::GetDescription(char *desc)
+{
+	sprintf(desc, "RobotDrive");
 }
 
 void RobotDrive::StopMotor()

@@ -12,14 +12,15 @@
 
 class I2C;
 
-const UINT32 kExpectedLoopTiming = 261;
+const UINT32 kExpectedLoopTiming = 260;
 
 class DigitalModule: public Module
 {
 	friend class I2C;
+	friend class Module;
 
 protected:
-	explicit DigitalModule(UINT32 slot);
+	explicit DigitalModule(UINT8 moduleNumber);
 	virtual ~DigitalModule();
 
 public:
@@ -29,16 +30,16 @@ public:
 	void SetRelayForward(UINT32 channel, bool on);
 	void SetRelayReverse(UINT32 channel, bool on);
 	bool GetRelayForward(UINT32 channel);
-	UINT8 GetRelayForward(void);
+	UINT8 GetRelayForward();
 	bool GetRelayReverse(UINT32 channel);
-	UINT8 GetRelayReverse(void);
+	UINT8 GetRelayReverse();
 	bool AllocateDIO(UINT32 channel, bool input);
 	void FreeDIO(UINT32 channel);
 	void SetDIO(UINT32 channel, short value);
 	bool GetDIO(UINT32 channel);
-	UINT16 GetDIO(void);
+	UINT16 GetDIO();
 	bool GetDIODirection(UINT32 channel);
-	UINT16 GetDIODirection(void);
+	UINT16 GetDIODirection();
 	void Pulse(UINT32 channel, float pulseLength);
 	bool IsPulsing(UINT32 channel);
 	bool IsPulsing();
@@ -50,13 +51,14 @@ public:
 
 	I2C* GetI2C(UINT32 address);
 
-	static UINT32 SlotToIndex(UINT32 slot);
-	static DigitalModule* GetInstance(UINT32 slot);
+	static DigitalModule* GetInstance(UINT8 moduleNumber);
 	static UINT8 RemapDigitalChannel(UINT32 channel) { return 15 - channel; }; // TODO: Need channel validation
 	static UINT8 UnmapDigitalChannel(UINT32 channel) { return 15 - channel; }; // TODO: Need channel validation
 
 private:
+	SEM_ID m_digitalSemaphore;
 	SEM_ID m_relaySemaphore;
+	SEM_ID m_doPwmSemaphore;
 	tDIO *m_fpgaDIO;
 };
 

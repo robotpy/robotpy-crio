@@ -57,14 +57,14 @@ ADXL345_SPI::ADXL345_SPI(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *
 /**
  * Constructor.
  * 
- * @param slot The slot that the digital module with the sensor attached is plugged into.
+ * @param moduleNumber The digital module with the sensor attached.
  * @param clk The GPIO the clock signal is wired to.
  * @param mosi The GPIO the MOSI (Master Out Slave In) signal is wired to.
  * @param miso The GPIO the MISO (Master In Slave Out) signal is wired to.
  * @param cs The GPIO the CS (Chip Select) signal is wired to.
  * @param range The range (+ or -) that the accelerometer will measure.
  */
-ADXL345_SPI::ADXL345_SPI(UINT32 slot, UINT32 clk, UINT32 mosi, UINT32 miso,
+ADXL345_SPI::ADXL345_SPI(UINT8 moduleNumber, UINT32 clk, UINT32 mosi, UINT32 miso,
 		UINT32 cs, ADXL345_SPI::DataFormat_Range range)
 	: m_clk (NULL)
 	, m_mosi (NULL)
@@ -72,10 +72,10 @@ ADXL345_SPI::ADXL345_SPI(UINT32 slot, UINT32 clk, UINT32 mosi, UINT32 miso,
 	, m_cs (NULL)
 	, m_spi (NULL)
 {
-	m_clk = new DigitalOutput(slot, clk);
-	m_mosi = new DigitalOutput(slot, mosi);
-	m_miso = new DigitalInput(slot, miso);
-	m_cs = new DigitalOutput(slot, cs);
+	m_clk = new DigitalOutput(moduleNumber, clk);
+	m_mosi = new DigitalOutput(moduleNumber, mosi);
+	m_miso = new DigitalInput(moduleNumber, miso);
+	m_cs = new DigitalOutput(moduleNumber, cs);
 	Init(m_clk, m_mosi, m_miso, m_cs, range);
 }
 

@@ -1,10 +1,15 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2009. All Rights Reserved.							  */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
+/*----------------------------------------------------------------------------*/
 
 #include "CANJaguar.h"
 #define tNIRIO_i32 int
-#include "ChipObject/NiRioStatus.h"
+#include "ChipObject/NiFpga.h"
 #include "CAN/JaguarCANDriver.h"
 #include "CAN/can_proto.h"
-#include "Utility.h"
+#include "WPIErrors.h"
 #include <stdio.h>
 
 #define swap16(x) ( (((x)>>8) &0x00FF) \
@@ -27,24 +32,27 @@ void CANJaguar::InitCANJaguar()
 	m_transactionSemaphore = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 	if (m_deviceNumber < 1 || m_deviceNumber > 63)
 	{
-		// Error
-		printf("ERROR: Invalid CAN device number \"%d\" - must be between 1 and 63.\n", m_deviceNumber);
+		char buf[256];
+		snprintf(buf, 256, "device number \"%d\" must be between 1 and 63", m_deviceNumber);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, buf);
 		return;
 	}
 	UINT32 fwVer = GetFirmwareVersion();
+	if (StatusIsFatal())
+		return;
 	// 3330 was the first shipping RDK firmware version for the Jaguar
 	if (fwVer >= 3330 || fwVer < 92)
 	{
-		printf("fwVersion[%d]: %d\n", m_deviceNumber, fwVer);
+		char buf[256];
 		if (fwVer < 3330)
 		{
-			printf("ERROR: Jaguar %d firmware is too old.  It must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
+			snprintf(buf, 256, "Jag #%d firmware (%d) is too old (must be at least version 92 of the FIRST approved firmware)", m_deviceNumber, fwVer);
 		}
 		else
 		{
-			printf("ERROR: Jaguar %d firmware is not FIRST approved.  It must be updated to at least version 92 of the FIRST approved firmware!\n", m_deviceNumber);
+			snprintf(buf, 256, "Jag #%d firmware (%d) is not FIRST approved (must be at least version 92 of the FIRST approved firmware)", m_deviceNumber, fwVer);
 		}
-		wpi_assertCleanStatus(kRIOStatusVersionMismatch);
+		wpi_setWPIErrorWithContext(JaguarVersionError, buf);
 		return;
 	}
 	switch (m_controlMode)
@@ -236,7 +244,7 @@ void CANJaguar::PIDWrite(float output)
 	}
 	else
 	{
-		// TODO: Error... only percent vbus mode supported for PID API
+		wpi_setWPIErrorWithContext(IncompatibleMode, "PID only supported in PercentVbus mode");
 	}
 }
 
@@ -335,7 +343,8 @@ INT32 CANJaguar::sendMessage(UINT32 messageID, const UINT8 *data, UINT8 dataSize
 			// Make sure the data will still fit after adjusting for the token.
 			if (dataSize > 6)
 			{
-				// TODO: Error
+				// TODO: I would rather this not have to set the global error
+				wpi_setGlobalWPIErrorWithContext(ParameterOutOfRange, "dataSize > 6");
 				return 0;
 			}
 			for (UINT8 j=0; j < dataSize; j++)
@@ -380,7 +389,12 @@ INT32 CANJaguar::receiveMessage(UINT32 *messageID, UINT8 *data, UINT8 *dataSize,
 void CANJaguar::setTransaction(UINT32 messageID, const UINT8 *data, UINT8 dataSize)
 {
 	UINT32 ackMessageID = LM_API_ACK | m_deviceNumber;
-	INT32 status = 0;
+	INT32 localStatus = 0;
+
+	// If there was an error on this object and it wasn't a timeout, refuse to talk to the device
+	// Call ClearError() on the object to try again
+	if (StatusIsFatal() && GetError().GetCode() != -44087)
+		return;
 
 	// Make sure we don't have more than one transaction with the same Jaguar outstanding.
 	semTake(m_transactionSemaphore, WAIT_FOREVER);
@@ -388,11 +402,11 @@ void CANJaguar::setTransaction(UINT32 messageID, const UINT8 *data, UINT8 dataSi
 	// Throw away any stale acks.
 	receiveMessage(&ackMessageID, NULL, 0, 0.0f);
 	// Send the message with the data.
-	status = sendMessage(messageID | m_deviceNumber, data, dataSize);
-	wpi_assertCleanStatus(status);
+	localStatus = sendMessage(messageID | m_deviceNumber, data, dataSize);
+	wpi_setErrorWithContext(localStatus, "sendMessage");
 	// Wait for an ack.
-	status = receiveMessage(&ackMessageID, NULL, 0);
-	wpi_assertCleanStatus(status);
+	localStatus = receiveMessage(&ackMessageID, NULL, 0);
+	wpi_setErrorWithContext(localStatus, "receiveMessage");
 
 	// Transaction complete.
 	semGive(m_transactionSemaphore);
@@ -410,19 +424,30 @@ void CANJaguar::setTransaction(UINT32 messageID, const UINT8 *data, UINT8 dataSi
 void CANJaguar::getTransaction(UINT32 messageID, UINT8 *data, UINT8 *dataSize)
 {
 	UINT32 targetedMessageID = messageID | m_deviceNumber;
-	INT32 status = 0;
+	INT32 localStatus = 0;
+
+	// If there was an error on this object and it wasn't a timeout, refuse to talk to the device
+	// Call ClearError() on the object to try again
+	if (StatusIsFatal() && GetError().GetCode() != -44087)
+	{
+		if (dataSize != NULL)
+			*dataSize = 0;
+		return;
+	}
 
 	// Make sure we don't have more than one transaction with the same Jaguar outstanding.
 	semTake(m_transactionSemaphore, WAIT_FOREVER);
 
+	// Throw away any stale responses.
+	receiveMessage(&targetedMessageID, NULL, 0, 0.0f);
 	// Send the message requesting data.
-	status = sendMessage(targetedMessageID, NULL, 0);
-	wpi_assertCleanStatus(status);
+	localStatus = sendMessage(targetedMessageID, NULL, 0);
+	wpi_setErrorWithContext(localStatus, "sendMessage");
 	// Caller may have set bit31 for remote frame transmission so clear invalid bits[31-29]
 	targetedMessageID &= 0x1FFFFFFF;
 	// Wait for the data.
-	status = receiveMessage(&targetedMessageID, data, dataSize);
-	wpi_assertCleanStatus(status);
+	localStatus = receiveMessage(&targetedMessageID, data, dataSize);
+	wpi_setErrorWithContext(localStatus, "receiveMessage");
 
 	// Transaction complete.
 	semGive(m_transactionSemaphore);
@@ -448,7 +473,7 @@ void CANJaguar::SetSpeedReference(SpeedReference reference)
  * 
  * @return A SpeedReference indicating the currently selected reference device for speed controller mode.
  */
-CANJaguar::SpeedReference CANJaguar::GetSpeedReference(void)
+CANJaguar::SpeedReference CANJaguar::GetSpeedReference()
 {
 	UINT8 dataBuffer[8];
 	UINT8 dataSize;
@@ -482,7 +507,7 @@ void CANJaguar::SetPositionReference(PositionReference reference)
  * 
  * @return A PositionReference indicating the currently selected reference device for position controller mode.
  */
-CANJaguar::PositionReference CANJaguar::GetPositionReference(void)
+CANJaguar::PositionReference CANJaguar::GetPositionReference()
 {
 	UINT8 dataBuffer[8];
 	UINT8 dataSize;
@@ -511,7 +536,7 @@ void CANJaguar::SetPID(double p, double i, double d)
 	{
 	case kPercentVbus:
 	case kVoltage:
-		// TODO: Error, Not Valid
+		wpi_setWPIErrorWithContext(IncompatibleMode, "PID constants only apply in Speed, Position, and Current mode");
 		break;
 	case kSpeed:
 		dataSize = packFXP16_16(dataBuffer, p);
@@ -554,7 +579,7 @@ double CANJaguar::GetP()
 	{
 	case kPercentVbus:
 	case kVoltage:
-		// TODO: Error, Not Valid
+		wpi_setWPIErrorWithContext(IncompatibleMode, "PID constants only apply in Speed, Position, and Current mode");
 		break;
 	case kSpeed:
 		getTransaction(LM_API_SPD_PC, dataBuffer, &dataSize);
@@ -595,7 +620,7 @@ double CANJaguar::GetI()
 	{
 	case kPercentVbus:
 	case kVoltage:
-		// TODO: Error, Not Valid
+		wpi_setWPIErrorWithContext(IncompatibleMode, "PID constants only apply in Speed, Position, and Current mode");
 		break;
 	case kSpeed:
 		getTransaction(LM_API_SPD_IC, dataBuffer, &dataSize);
@@ -636,7 +661,7 @@ double CANJaguar::GetD()
 	{
 	case kPercentVbus:
 	case kVoltage:
-		// TODO: Error, Not Valid
+		wpi_setWPIErrorWithContext(IncompatibleMode, "PID constants only apply in Speed, Position, and Current mode");
 		break;
 	case kSpeed:
 		getTransaction(LM_API_SPD_DC, dataBuffer, &dataSize);
@@ -1187,6 +1212,11 @@ bool CANJaguar::IsSafetyEnabled()
 void CANJaguar::SetSafetyEnabled(bool enabled)
 {
 	if (m_safetyHelper) m_safetyHelper->SetSafetyEnabled(enabled);
+}
+
+void CANJaguar::GetDescription(char *desc)
+{
+	sprintf(desc, "CANJaguar ID %d", m_deviceNumber);
 }
 
 /**

@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class CANJaguar : MotorSafety, PIDOutput, SpeedController
+class CANJaguar : MotorSafety, PIDOutput, SpeedController, ErrorBase
 {
 %TypeHeaderCode
 #include <WPILib/CANJaguar.h>
@@ -87,4 +87,14 @@ public:
 	void StopMotor();
 	bool IsSafetyEnabled();
 	void SetSafetyEnabled(bool enabled);
+	const char* GetDescription() [void (char *)];
+%MethodCode
+	char result[100];
+	result[0] = '\0';
+	sipCpp->GetDescription(result);
+	sipRes = result;
+%End
+
+private:
+	CANJaguar(const CANJaguar&);
 };

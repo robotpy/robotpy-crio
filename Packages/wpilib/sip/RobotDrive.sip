@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class RobotDrive : MotorSafety
+class RobotDrive : MotorSafety, ErrorBase
 {
 %TypeHeaderCode
 #include <WPILib/RobotDrive.h>
@@ -65,6 +65,13 @@ public:
 	void StopMotor();
 	bool IsSafetyEnabled();
 	void SetSafetyEnabled(bool enabled);
+	const char* GetDescription() [void (char *)];
+%MethodCode
+	char result[100];
+	result[0] = '\0';
+	sipCpp->GetDescription(result);
+	sipRes = result;
+%End
 
 protected:
 	void InitRobotDrive();

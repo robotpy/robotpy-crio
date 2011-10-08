@@ -1,55 +1,57 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Alarm_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Alarm_h__
+#ifndef __nFRC_2012_1_6_4_Alarm_h__
+#define __nFRC_2012_1_6_4_Alarm_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tAlarm : public tScopedSystem
+class tAlarm
 {
 public:
-   tAlarm(tRioStatusCode *status);
-   ~tAlarm();
+   tAlarm(){}
+   virtual ~tAlarm(){}
+
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tAlarm* create(tRioStatusCode *status);
 
    typedef enum
    {
       kNumSystems = 1,
-   } tConstants;
+   } tIfaceConstants;
 
 
 
 
    typedef enum
    {
-      kAlarm_TriggerTimeAddress = 0x8128,
-   } tTriggerTime_Constants;
+   } tTriggerTime_IfaceConstants;
 
-   void writeTriggerTime(unsigned int value, tRioStatusCode *status);
-   unsigned int readTriggerTime(tRioStatusCode *status);
+   virtual void writeTriggerTime(unsigned int value, tRioStatusCode *status) = 0;
+   virtual unsigned int readTriggerTime(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAlarm_EnableAddress = 0x8124,
-   } tEnable_Constants;
+   } tEnable_IfaceConstants;
 
-   void writeEnable(bool value, tRioStatusCode *status);
-   bool readEnable(tRioStatusCode *status);
+   virtual void writeEnable(bool value, tRioStatusCode *status) = 0;
+   virtual bool readEnable(tRioStatusCode *status) = 0;
 
 
 
 
 private:
-
+   tAlarm(const tAlarm&);
+   void operator=(const tAlarm&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Alarm_h__
+#endif // __nFRC_2012_1_6_4_Alarm_h__

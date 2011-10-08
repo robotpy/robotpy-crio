@@ -30,8 +30,16 @@ __pycache__
 /Packages/wpilib/CANJaguar/*.o
 /Packages/wpilib/WPILib/*.d
 /Packages/wpilib/WPILib/*.o
+/Packages/wpilib/WPILib/Buttons/*.d
+/Packages/wpilib/WPILib/Buttons/*.o
 /Packages/wpilib/WPILib/CInterfaces/*.d
 /Packages/wpilib/WPILib/CInterfaces/*.o
+/Packages/wpilib/WPILib/Commands/*.d
+/Packages/wpilib/WPILib/Commands/*.o
+/Packages/wpilib/WPILib/NetworkTables/*.d
+/Packages/wpilib/WPILib/NetworkTables/*.o
+/Packages/wpilib/WPILib/SmartDashboard/*.d
+/Packages/wpilib/WPILib/SmartDashboard/*.o
 /Packages/nivision/*.cpp
 /Packages/nivision/*.h
 /Packages/vision/*.cpp

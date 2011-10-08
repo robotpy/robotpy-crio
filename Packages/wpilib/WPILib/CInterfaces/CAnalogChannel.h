@@ -10,18 +10,18 @@
 #include "AnalogChannel.h"
 #include "CWrappers.h"
 
-AnalogChannel *AllocateAnalogChannel(UINT32 module, UINT32 channel /*,SensorCreator createObject*/);
+AnalogChannel *AllocateAnalogChannel(UINT8 moduleNumber, UINT32 channel /*,SensorCreator createObject*/);
 
-INT16 GetAnalogValue(UINT32 slot, UINT32 channel);
-INT32 GetAnalogAverageValue(UINT32 slot, UINT32 channel);
+INT16 GetAnalogValue(UINT8 moduleNumber, UINT32 channel);
+INT32 GetAnalogAverageValue(UINT8 moduleNumber, UINT32 channel);
 
-float GetAnalogVoltage(UINT32 slot, UINT32 channel);
-float GetAnalogAverageVoltage(UINT32 slot, UINT32 channel);
+float GetAnalogVoltage(UINT8 moduleNumber, UINT32 channel);
+float GetAnalogAverageVoltage(UINT8 moduleNumber, UINT32 channel);
 
-void SetAnalogAverageBits(UINT32 slot, UINT32 channel, UINT32 bits);
-UINT32 GetAnalogAverageBits(UINT32 slot, UINT32 channel);
-void SetAnalogOversampleBits(UINT32 slot, UINT32 slot, UINT32 channel, UINT32 bits);
-UINT32 GetAnalogOversampleBits(UINT32 channel);
+void SetAnalogAverageBits(UINT8 moduleNumber, UINT32 channel, UINT32 bits);
+UINT32 GetAnalogAverageBits(UINT8 moduleNumber, UINT32 channel);
+void SetAnalogOversampleBits(UINT8 moduleNumber, UINT32 channel, UINT32 bits);
+UINT32 GetAnalogOversampleBits(UINT8 moduleNumber, UINT32 channel);
 
 INT16 GetAnalogValue(UINT32 channel);
 INT32 GetAnalogAverageValue(UINT32 channel);
@@ -37,12 +37,12 @@ UINT32 GetAnalogOversampleBits(UINT32 channel);
 UINT32 GetAnalogLSBWeight();
 INT32 GetAnalogOffset();
 
-void DeleteAnalogChannel(UINT32 slot, UINT32 channel);
+void DeleteAnalogChannel(UINT8 moduleNumber, UINT32 channel);
 void DeleteAnalogChannel(UINT32 channel);
 
 typedef void *AnalogChannelObject;
 
-AnalogChannelObject CreateAnalogChannel(UINT32 module, UINT32 channel);
+AnalogChannelObject CreateAnalogChannel(UINT8 moduleNumber, UINT32 channel);
 AnalogChannelObject CreateAnalogChannel(UINT32 channel);
 INT16 GetAnalogValue(AnalogChannelObject o);
 INT32 GetAnalogAverageValue(AnalogChannelObject o);

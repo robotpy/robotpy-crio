@@ -4,9 +4,10 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "DriverStation.h"
 #include "IterativeRobot.h"
-#include "Utility.h"
+
+#include "DriverStation.h"
+#include <taskLib.h>
 
 const double IterativeRobot::kDefaultPeriod;
 
@@ -39,7 +40,7 @@ IterativeRobot::~IterativeRobot()
  */
 void IterativeRobot::SetPeriod(double period)
 {
-	if (period != 0.0)
+	if (period > 0.0)
 	{
 		// Not syncing with the DS, so start the timer for the main loop
 		m_mainLoopTimer.Reset();
@@ -69,6 +70,10 @@ double IterativeRobot::GetPeriod()
  */
 double IterativeRobot::GetLoopsPerSec()
 {
+	// If syncing to the driver station, we don't know the rate,
+	//   so guess something close.
+	if (m_period <= 0.0)
+		return 50.0;
 	return 1.0 / m_period;
 }
 
@@ -84,9 +89,9 @@ void IterativeRobot::StartCompetition()
 {
 	// first and one-time initialization
 	RobotInit();
-	
+
 	// loop forever, calling the appropriate mode-dependent function
-	while (TRUE)
+	while (true)
 	{
 		// Call the appropriate function depending upon the current robot mode
 		if (IsDisabled())
@@ -103,6 +108,7 @@ void IterativeRobot::StartCompetition()
 			}
 			if (NextPeriodReady())
 			{
+				FRC_NetworkCommunication_observeUserProgramDisabled();
 				DisabledPeriodic();
 			}
 			DisabledContinuous();
@@ -121,6 +127,7 @@ void IterativeRobot::StartCompetition()
 			}
 			if (NextPeriodReady())
 			{
+				FRC_NetworkCommunication_observeUserProgramAutonomous();
 				AutonomousPeriodic();
 			}
 			AutonomousContinuous();
@@ -139,6 +146,7 @@ void IterativeRobot::StartCompetition()
 			}
 			if (NextPeriodReady())
 			{
+				FRC_NetworkCommunication_observeUserProgramTeleop();
 				TeleopPeriodic();
 			}
 			TeleopContinuous();
@@ -277,7 +285,7 @@ void IterativeRobot::DisabledContinuous()
 		printf("Default %s() method... Overload me!\n", __FUNCTION__);
 		firstRun = false;
 	}
-	taskDelay(1);
+	m_ds->WaitForData();
 }
 
 /**
@@ -294,7 +302,7 @@ void IterativeRobot::AutonomousContinuous()
 		printf("Default %s() method... Overload me!\n", __FUNCTION__);
 		firstRun = false;
 	}
-	taskDelay(1);
+	m_ds->WaitForData();
 }
 
 /**
@@ -311,5 +319,5 @@ void IterativeRobot::TeleopContinuous()
 		printf("Default %s() method... Overload me!\n", __FUNCTION__);
 		firstRun = false;
 	}
-	taskDelay(1);
+	m_ds->WaitForData();
 }

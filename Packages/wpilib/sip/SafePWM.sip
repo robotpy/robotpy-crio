@@ -29,7 +29,8 @@ class SafePWM : PWM, MotorSafety
 
 public:
 	explicit SafePWM(UINT32 channel);
-	SafePWM(UINT32 slot, UINT32 channel);
+	SafePWM(UINT8 moduleNumber, UINT32 channel);
+	~SafePWM();
 	
 	void SetExpiration(float timeout);
 	float GetExpiration();
@@ -37,6 +38,13 @@ public:
 	void StopMotor();
 	bool IsSafetyEnabled();
 	void SetSafetyEnabled(bool enabled);
+	const char* GetDescription() [void (char *)];
+%MethodCode
+	char result[100];
+	result[0] = '\0';
+	sipCpp->GetDescription(result);
+	sipRes = result;
+%End
 
 	virtual void SetSpeed(float speed);
 };

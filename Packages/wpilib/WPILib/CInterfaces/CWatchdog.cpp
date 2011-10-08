@@ -1,4 +1,4 @@
-#include "CWatchdog.h"
+#include "CInterfaces/CWatchdog.h"
 #include "Watchdog.h"
 
 WatchdogObject CreateWatchdog()

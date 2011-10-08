@@ -1,26 +1,29 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__
+#ifndef __nFRC_2012_1_6_4_SPI_h__
+#define __nFRC_2012_1_6_4_SPI_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tSPI : public tScopedSystem
+class tSPI
 {
 public:
-   tSPI(tRioStatusCode *status);
-   ~tSPI();
+   tSPI(){}
+   virtual ~tSPI(){}
+
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tSPI* create(tRioStatusCode *status);
 
    typedef enum
    {
       kNumSystems = 1,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -70,138 +73,128 @@ public:
 
    typedef enum
    {
-      kSPI_StatusAddress = 0x812C,
-   } tStatus_Constants;
+   } tStatus_IfaceConstants;
 
-   tStatus readStatus(tRioStatusCode *status);
-   bool readStatus_ReceivedDataOverflow(tRioStatusCode *status);
-   bool readStatus_Idle(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kSPI_ReadReceivedDataAddress = 0x813C,
-   } tReadReceivedData_Constants;
-
-   void strobeReadReceivedData(tRioStatusCode *status);
+   virtual tStatus readStatus(tRioStatusCode *status) = 0;
+   virtual bool readStatus_ReceivedDataOverflow(tRioStatusCode *status) = 0;
+   virtual bool readStatus_Idle(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kSPI_ConfigAddress = 0x8154,
-   } tConfig_Constants;
+   } tReadReceivedData_IfaceConstants;
 
-   void writeConfig(tConfig value, tRioStatusCode *status);
-   void writeConfig_BusBitWidth(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ClockHalfPeriodDelay(unsigned char value, tRioStatusCode *status);
-   void writeConfig_MSBfirst(bool value, tRioStatusCode *status);
-   void writeConfig_DataOnFalling(bool value, tRioStatusCode *status);
-   void writeConfig_LatchFirst(bool value, tRioStatusCode *status);
-   void writeConfig_LatchLast(bool value, tRioStatusCode *status);
-   void writeConfig_FramePolarity(bool value, tRioStatusCode *status);
-   void writeConfig_WriteOnly(bool value, tRioStatusCode *status);
-   void writeConfig_ClockPolarity(bool value, tRioStatusCode *status);
-   tConfig readConfig(tRioStatusCode *status);
-   unsigned char readConfig_BusBitWidth(tRioStatusCode *status);
-   unsigned char readConfig_ClockHalfPeriodDelay(tRioStatusCode *status);
-   bool readConfig_MSBfirst(tRioStatusCode *status);
-   bool readConfig_DataOnFalling(tRioStatusCode *status);
-   bool readConfig_LatchFirst(tRioStatusCode *status);
-   bool readConfig_LatchLast(tRioStatusCode *status);
-   bool readConfig_FramePolarity(tRioStatusCode *status);
-   bool readConfig_WriteOnly(tRioStatusCode *status);
-   bool readConfig_ClockPolarity(tRioStatusCode *status);
+   virtual void strobeReadReceivedData(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kSPI_ResetAddress = 0x814C,
-   } tReset_Constants;
+   } tConfig_IfaceConstants;
 
-   void strobeReset(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kSPI_DataToLoadAddress = 0x8144,
-   } tDataToLoad_Constants;
-
-   void writeDataToLoad(unsigned int value, tRioStatusCode *status);
-   unsigned int readDataToLoad(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kSPI_ReceivedDataAddress = 0x8138,
-   } tReceivedData_Constants;
-
-   unsigned int readReceivedData(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kSPI_ChannelsAddress = 0x8150,
-   } tChannels_Constants;
-
-   void writeChannels(tChannels value, tRioStatusCode *status);
-   void writeChannels_SCLK_Channel(unsigned char value, tRioStatusCode *status);
-   void writeChannels_SCLK_Module(unsigned char value, tRioStatusCode *status);
-   void writeChannels_MOSI_Channel(unsigned char value, tRioStatusCode *status);
-   void writeChannels_MOSI_Module(unsigned char value, tRioStatusCode *status);
-   void writeChannels_MISO_Channel(unsigned char value, tRioStatusCode *status);
-   void writeChannels_MISO_Module(unsigned char value, tRioStatusCode *status);
-   void writeChannels_SS_Channel(unsigned char value, tRioStatusCode *status);
-   void writeChannels_SS_Module(unsigned char value, tRioStatusCode *status);
-   tChannels readChannels(tRioStatusCode *status);
-   unsigned char readChannels_SCLK_Channel(tRioStatusCode *status);
-   unsigned char readChannels_SCLK_Module(tRioStatusCode *status);
-   unsigned char readChannels_MOSI_Channel(tRioStatusCode *status);
-   unsigned char readChannels_MOSI_Module(tRioStatusCode *status);
-   unsigned char readChannels_MISO_Channel(tRioStatusCode *status);
-   unsigned char readChannels_MISO_Module(tRioStatusCode *status);
-   unsigned char readChannels_SS_Channel(tRioStatusCode *status);
-   unsigned char readChannels_SS_Module(tRioStatusCode *status);
+   virtual void writeConfig(tConfig value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_BusBitWidth(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ClockHalfPeriodDelay(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_MSBfirst(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_DataOnFalling(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_LatchFirst(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_LatchLast(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_FramePolarity(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_WriteOnly(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ClockPolarity(bool value, tRioStatusCode *status) = 0;
+   virtual tConfig readConfig(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_BusBitWidth(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_ClockHalfPeriodDelay(tRioStatusCode *status) = 0;
+   virtual bool readConfig_MSBfirst(tRioStatusCode *status) = 0;
+   virtual bool readConfig_DataOnFalling(tRioStatusCode *status) = 0;
+   virtual bool readConfig_LatchFirst(tRioStatusCode *status) = 0;
+   virtual bool readConfig_LatchLast(tRioStatusCode *status) = 0;
+   virtual bool readConfig_FramePolarity(tRioStatusCode *status) = 0;
+   virtual bool readConfig_WriteOnly(tRioStatusCode *status) = 0;
+   virtual bool readConfig_ClockPolarity(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kSPI_LoadAddress = 0x8148,
-   } tLoad_Constants;
+   } tReceivedData_IfaceConstants;
 
-   void strobeLoad(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kSPI_ReceivedElementsAddress = 0x8134,
-   } tReceivedElements_Constants;
-
-   unsigned short readReceivedElements(tRioStatusCode *status);
+   virtual unsigned int readReceivedData(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kSPI_ClearReceivedDataAddress = 0x8130,
-   } tClearReceivedData_Constants;
+   } tDataToLoad_IfaceConstants;
 
-   void strobeClearReceivedData(tRioStatusCode *status);
+   virtual void writeDataToLoad(unsigned int value, tRioStatusCode *status) = 0;
+   virtual unsigned int readDataToLoad(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kSPI_AvailableToLoadAddress = 0x8140,
-   } tAvailableToLoad_Constants;
+   } tReset_IfaceConstants;
 
-   unsigned short readAvailableToLoad(tRioStatusCode *status);
+   virtual void strobeReset(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tChannels_IfaceConstants;
+
+   virtual void writeChannels(tChannels value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_SCLK_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_SCLK_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_MOSI_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_MOSI_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_MISO_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_MISO_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_SS_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeChannels_SS_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual tChannels readChannels(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_SCLK_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_SCLK_Module(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_MOSI_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_MOSI_Module(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_MISO_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_MISO_Module(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_SS_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readChannels_SS_Module(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tClearReceivedData_IfaceConstants;
+
+   virtual void strobeClearReceivedData(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tReceivedElements_IfaceConstants;
+
+   virtual unsigned short readReceivedElements(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tLoad_IfaceConstants;
+
+   virtual void strobeLoad(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tAvailableToLoad_IfaceConstants;
+
+   virtual unsigned short readAvailableToLoad(tRioStatusCode *status) = 0;
 
 
 
 
 private:
-
+   tSPI(const tSPI&);
+   void operator=(const tSPI&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_SPI_h__
+#endif // __nFRC_2012_1_6_4_SPI_h__

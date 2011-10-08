@@ -23,7 +23,7 @@
 
 enum { DEFAULT_BORDER_SIZE = 3 };
 
-class ImageBase
+class ImageBase : ErrorBase
 {
 %TypeHeaderCode
 #include <Vision/ImageBase.h>

@@ -35,7 +35,8 @@
  *   - TeleopPeriodic()
  * 
  * Continuous() functions -- each of these functions is called repeatedly as
- *                           fast as possible:
+ *                           fast as possible.  These functions are generally discouraged
+ *                           and if they are used, they should contain a Wait() of some type:
  *   - DisabledContinuous()
  *   - AutonomousContinuous()
  *   - TeleopContinuous()

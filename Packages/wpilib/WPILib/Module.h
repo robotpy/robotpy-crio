@@ -8,20 +8,27 @@
 #define MODULE_H_
 
 #include "SensorBase.h"
+#include "NetworkCommunication/LoadOut.h"
+
+#define kMaxModules	(nLoadOut::kModuleType_Solenoid * kMaxModuleNumber + (kMaxModuleNumber - 1))
 
 class Module: public SensorBase
 {
 public:
-	UINT32 GetSlot() {return m_slot;}
+	nLoadOut::tModuleType GetType() {return m_moduleType;}
+	UINT8 GetNumber() {return m_moduleNumber;}
+	static Module *GetModule(nLoadOut::tModuleType type, UINT8 number);
 
 protected:
-	explicit Module(UINT32 slot);
+	explicit Module(nLoadOut::tModuleType type, UINT8 number);
 	virtual ~Module();
 
-	UINT32 m_slot; ///< Slot number where the module is plugged into the chassis.
+	nLoadOut::tModuleType m_moduleType; ///< The type of module represented.
+	UINT8 m_moduleNumber; ///< The module index within the module type.
 
-	// Slots are 1 based, so ignore element 0.
-	static Module* m_modules[kChassisSlots + 1];
+private:
+	static UINT8 ToIndex(nLoadOut::tModuleType type, UINT8 number);
+	static Module* m_modules[kMaxModules];
 };
 
 #endif

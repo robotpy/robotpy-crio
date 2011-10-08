@@ -5,12 +5,12 @@
 #define __tDMAManager_h__
 
 #include "NiRio.h"
-#include "tDMAChannelDescriptor.h"
 #include "tSystem.h"
 
 namespace nFPGA
 {
-
+// TODO: Implement DMA Manager
+/*
 class tDMAManager : public tSystem
 {
 public:
@@ -39,7 +39,7 @@ private:
    tDMAChannelDescriptor const *_dmaChannelDescriptor;
 
 };
-
+*/
 }
 
 

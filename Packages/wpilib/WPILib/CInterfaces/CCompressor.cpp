@@ -5,9 +5,10 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Compressor.h"
-#include "CCompressor.h"
+#include "CInterfaces/CCompressor.h"
+#include "CInterfaces/CError.h"
 #include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 static Compressor *compressor = NULL;
 
 /**
@@ -23,7 +24,8 @@ void CreateCompressor(UINT32 pressureSwitchChannel, UINT32 relayChannel)
 		compressor = new Compressor(pressureSwitchChannel, relayChannel);
 		return;
 	}
-	wpi_fatal(CompressorAlreadyDefined);
+	CError *error = new CError();
+	wpi_setStaticWPIError(error, CompressorAlreadyDefined);
 }
 
 /**
@@ -43,7 +45,8 @@ void CreateCompressor(UINT32 pressureSwitchSlot, UINT32 pressureSwitchChannel,
 									relaySlot, relayChannel);
 		return;
 	}
-	wpi_fatal(CompressorAlreadyDefined);
+	CError *error = new CError();
+	wpi_setStaticWPIError(error, CompressorAlreadyDefined);
 }
 
 /**
@@ -54,7 +57,8 @@ void StartCompressor()
 {
 	if (compressor == NULL)
 	{
-		wpi_fatal(CompressorUndefined);
+		CError *error = new CError();
+		wpi_setStaticWPIError(error, CompressorUndefined);
 		return;
 	}
 	compressor->Start();
@@ -68,7 +72,8 @@ void StopCompressor()
 {
 	if (compressor == NULL)
 	{
-		wpi_fatal(CompressorUndefined);
+		CError *error = new CError();
+		wpi_setStaticWPIError(error, CompressorUndefined);
 		return;
 	}
 	compressor->Stop();
@@ -84,7 +89,8 @@ bool CompressorEnabled()
 {
 	if (compressor == NULL)
 	{
-		wpi_fatal(CompressorUndefined);
+		CError *error = new CError();
+		wpi_setStaticWPIError(error, CompressorUndefined);
 		return false;
 	}
 	return compressor->Enabled();

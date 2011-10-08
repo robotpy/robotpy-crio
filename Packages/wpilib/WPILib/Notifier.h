@@ -8,11 +8,11 @@
 #define NOTIFIER_H
 
 #include "ChipObject.h"
-#include "Base.h"
+#include "ErrorBase.h"
 
 typedef void (*TimerEventHandler)(void *param);
 
-class Notifier
+class Notifier : public ErrorBase
 {
 public:
 	Notifier(TimerEventHandler handler, void *param = NULL);
@@ -28,7 +28,7 @@ private:
 	static int refcount;
 
 	static const UINT32 kTimerInterruptNumber = 28;
-	static void ProcessQueue(tNIRIO_u32 mask, void *params); // process the timer queue on a timer event
+	static void ProcessQueue(uint32_t mask, void *params); // process the timer queue on a timer event
 	static void UpdateAlarm();			// update the FPGA alarm since the queue has changed
 	void InsertInQueue(bool reschedule);	// insert this Notifier in the timer queue
 	void DeleteFromQueue();				// delete this Notifier from the timer queue

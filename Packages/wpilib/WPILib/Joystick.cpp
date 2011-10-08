@@ -6,8 +6,7 @@
 
 #include "Joystick.h"
 #include "DriverStation.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include <math.h>
 
 const UINT32 Joystick::kDefaultXAxis;
@@ -170,7 +169,7 @@ float Joystick::GetAxis(AxisType axis)
 		case kTwistAxis: return this->GetTwist();
 		case kThrottleAxis: return this->GetThrottle();
 		default:
-			wpi_fatal(BadJoystickAxis);
+			wpi_setWPIError(BadJoystickAxis);
 			return 0.0;
 	}
 }
@@ -208,7 +207,6 @@ bool Joystick::GetTop(JoystickHand hand)
 bool Joystick::GetBumper(JoystickHand hand)
 {
 	// Joysticks don't have bumpers.
-	wpi_assert(false);
 	return false;
 }
 
@@ -241,7 +239,6 @@ bool Joystick::GetButton(ButtonType button)
 	case kTriggerButton: return GetTrigger();
 	case kTopButton: return GetTop();
 	default:
-		wpi_assert(false);
 		return false;
 	}
 }

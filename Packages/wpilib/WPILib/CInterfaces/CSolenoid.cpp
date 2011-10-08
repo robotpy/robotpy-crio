@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Solenoid.h"
-#include "CSolenoid.h"
+#include "CInterfaces/CSolenoid.h"
 
 static Solenoid *solenoids[SensorBase::kSolenoidChannels];
 static bool initialized = false;

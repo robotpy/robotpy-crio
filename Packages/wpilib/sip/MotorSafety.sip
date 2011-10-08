@@ -34,4 +34,20 @@ public:
 	virtual void StopMotor() = 0;
 	virtual void SetSafetyEnabled(bool enabled) = 0;
 	virtual bool IsSafetyEnabled() = 0;
+	virtual const char* GetDescription() = 0 [void (char *)];
+%MethodCode
+	char result[100];
+	result[0] = '\0';
+	sipCpp->GetDescription(result);
+	sipRes = result;
+%End
+%VirtualCatcherCode
+	PyObject *result = sipCallMethod(&sipIsErr, sipMethod, "");
+	if (result != NULL)
+	{
+		const char *s;
+		sipParseResult(&sipIsErr, sipMethod, result, "A8", &s);
+		strcpy(a0, s);
+	}
+%End
 };

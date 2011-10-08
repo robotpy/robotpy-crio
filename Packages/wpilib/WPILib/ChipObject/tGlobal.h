@@ -1,70 +1,70 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__
+#ifndef __nFRC_2012_1_6_4_Global_h__
+#define __nFRC_2012_1_6_4_Global_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tGlobal : public tScopedSystem
+class tGlobal
 {
 public:
-   tGlobal(tRioStatusCode *status);
-   ~tGlobal();
+   tGlobal(){}
+   virtual ~tGlobal(){}
+
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tGlobal* create(tRioStatusCode *status);
 
    typedef enum
    {
       kNumSystems = 1,
-   } tConstants;
+   } tIfaceConstants;
 
 
 
 
    typedef enum
    {
-      kGlobal_VersionAddress = 0x8118,
-   } tVersion_Constants;
+   } tVersion_IfaceConstants;
 
-   unsigned short readVersion(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kGlobal_FPGA_LEDAddress = 0x811C,
-   } tFPGA_LED_Constants;
-
-   void writeFPGA_LED(bool value, tRioStatusCode *status);
-   bool readFPGA_LED(tRioStatusCode *status);
+   virtual unsigned short readVersion(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kGlobal_LocalTimeAddress = 0x8110,
-   } tLocalTime_Constants;
+   } tFPGA_LED_IfaceConstants;
 
-   unsigned int readLocalTime(tRioStatusCode *status);
+   virtual void writeFPGA_LED(bool value, tRioStatusCode *status) = 0;
+   virtual bool readFPGA_LED(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kGlobal_RevisionAddress = 0x8114,
-   } tRevision_Constants;
+   } tLocalTime_IfaceConstants;
 
-   unsigned int readRevision(tRioStatusCode *status);
+   virtual unsigned int readLocalTime(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tRevision_IfaceConstants;
+
+   virtual unsigned int readRevision(tRioStatusCode *status) = 0;
 
 
 
 
 private:
-
+   tGlobal(const tGlobal&);
+   void operator=(const tGlobal&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Global_h__
+#endif // __nFRC_2012_1_6_4_Global_h__

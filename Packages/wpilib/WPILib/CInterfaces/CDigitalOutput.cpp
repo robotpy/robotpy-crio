@@ -6,7 +6,7 @@
 
 #include "DigitalModule.h"
 #include "DigitalOutput.h"
-#include "CDigitalOutput.h"
+#include "CInterfaces/CDigitalOutput.h"
 
 static DigitalOutput* digitalOutputs[SensorBase::kDigitalModules][SensorBase::kDigitalChannels];
 static bool initialized = false;
@@ -19,7 +19,7 @@ static bool initialized = false;
  * @param slot The slot this digital module is plugged into
  * @param channel The channel being used for this digital output
  */
-static DigitalOutput * AllocateDigitalOutput(UINT32 slot, UINT32 channel)
+static DigitalOutput * AllocateDigitalOutput(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -28,12 +28,12 @@ static DigitalOutput * AllocateDigitalOutput(UINT32 slot, UINT32 channel)
 				digitalOutputs[i][j] = NULL;
 		initialized = true;
 	}
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		unsigned slotOffset = DigitalModule::SlotToIndex(slot);
+		unsigned slotOffset = moduleNumber - 1;
 		if (digitalOutputs[slotOffset][channel - 1] == NULL)
 		{
-			digitalOutputs[slotOffset][channel - 1] = new DigitalOutput(slot, channel);
+			digitalOutputs[slotOffset][channel - 1] = new DigitalOutput(moduleNumber, channel);
 		}
 		return digitalOutputs[slotOffset][channel - 1];
 	}
@@ -48,9 +48,9 @@ static DigitalOutput * AllocateDigitalOutput(UINT32 slot, UINT32 channel)
  * @param channel The channel being used for this digital output
  * @param value The 0/1 value set to the port.
  */
-void SetDigitalOutput(UINT32 slot, UINT32 channel, UINT32 value)
+void SetDigitalOutput(UINT8 moduleNumber, UINT32 channel, UINT32 value)
 {
-	DigitalOutput *digOut = AllocateDigitalOutput(slot, channel);
+	DigitalOutput *digOut = AllocateDigitalOutput(moduleNumber, channel);
 	if (digOut)
 		digOut->Set(value);
 }
@@ -75,11 +75,11 @@ void SetDigitalOutput(UINT32 channel, UINT32 value)
  * @param slot The slot this digital module is plugged into
  * @param channel The channel being used for this digital output
  */
-void DeleteDigitalOutput(UINT32 slot, UINT32 channel)
+void DeleteDigitalOutput(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		unsigned slotOffset = DigitalModule::SlotToIndex(slot);
+		unsigned slotOffset = moduleNumber - 1;
 		delete digitalOutputs[slotOffset][channel - 1];
 		digitalOutputs[slotOffset][channel - 1] = NULL;
 	}
@@ -100,9 +100,9 @@ void DeleteDigitalOutput(UINT32 channel)
 /*******************************************************************************
  * Alternative interface to digital output
 *******************************************************************************/
-DigitalOutputObject CreateDigitalOutput(UINT32 module, UINT32 channel)
+DigitalOutputObject CreateDigitalOutput(UINT8 moduleNumber, UINT32 channel)
 {
-	return (DigitalOutputObject) new DigitalOutput(module, channel); 
+	return (DigitalOutputObject) new DigitalOutput(moduleNumber, channel); 
 }
 
 DigitalOutputObject CreateDigitalOutput(UINT32 channel)

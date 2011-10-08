@@ -20,7 +20,7 @@
  * for changes to parameters and updates the camera.
  * It is only separate from AxisCamera to isolate the parameter code from the image streaming code.
  */
-class AxisCameraParams: public ErrorBase
+class AxisCameraParams : public ErrorBase
 {
 public:
 	typedef enum Exposure_t {kExposure_Automatic, kExposure_Hold, kExposure_FlickerFree50Hz, kExposure_FlickerFree60Hz};
@@ -68,6 +68,7 @@ protected:
 	Task m_paramTask;
 	UINT32 m_ipAddress; // IPv4
 	SEM_ID m_paramChangedSem;
+	SEM_ID m_socketPossessionSem;
 
 	//Camera Properties
 	IntCameraParameter *m_brightnessParam;

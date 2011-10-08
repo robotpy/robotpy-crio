@@ -6,8 +6,7 @@
 
 #include "Task.h"
 
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include <errnoLib.h>
 #include <string.h>
 #include <taskLib.h>
@@ -65,7 +64,7 @@ bool Task::Start(UINT32 arg0, UINT32 arg1, UINT32 arg2, UINT32 arg3, UINT32 arg4
  * If the task isn't started, it starts it.
  * @return false if the task is running and we are unable to kill the previous instance
  */
-bool Task::Restart(void)
+bool Task::Restart()
 {
 	return HandleError(taskRestart(m_taskID));
 }
@@ -74,7 +73,7 @@ bool Task::Restart(void)
  * Kills the running task.
  * @returns true on success false if the task doesn't exist or we are unable to kill it.
  */
-bool Task::Stop(void)
+bool Task::Stop()
 {
 	bool ok = true;
 	if (Verify())
@@ -89,7 +88,7 @@ bool Task::Stop(void)
  * Returns true if the task is ready to execute (i.e. not suspended, delayed, or blocked).
  * @return true if ready, false if not ready.
  */
-bool Task::IsReady(void)
+bool Task::IsReady()
 {
 	return taskIsReady(m_taskID);
 }
@@ -98,7 +97,7 @@ bool Task::IsReady(void)
  * Returns true if the task was explicitly suspended by calling Suspend()
  * @return true if suspended, false if not suspended.
  */
-bool Task::IsSuspended(void)
+bool Task::IsSuspended()
 {
 	return taskIsSuspended(m_taskID);
 }
@@ -107,7 +106,7 @@ bool Task::IsSuspended(void)
  * Pauses a running task.
  * Returns true on success, false if unable to pause or the task isn't running.
  */
-bool Task::Suspend(void)
+bool Task::Suspend()
 {
 	return HandleError(taskSuspend(m_taskID));
 }
@@ -116,7 +115,7 @@ bool Task::Suspend(void)
  * Resumes a paused task.
  * Returns true on success, false if unable to resume or if the task isn't running/paused.
  */
-bool Task::Resume(void)
+bool Task::Resume()
 {
 	return HandleError(taskResume(m_taskID));
 }
@@ -125,7 +124,7 @@ bool Task::Resume(void)
  * Verifies a task still exists.
  * @returns true on success.
  */
-bool Task::Verify(void)
+bool Task::Verify()
 {
 	return taskIdVerify(m_taskID) == OK;
 }
@@ -134,7 +133,7 @@ bool Task::Verify(void)
  * Gets the priority of a task.
  * @returns task priority or 0 if an error occured
  */
-INT32 Task::GetPriority(void)
+INT32 Task::GetPriority()
 {
 	if (HandleError(taskPriorityGet(m_taskID, &m_priority)))
 		return m_priority;
@@ -159,7 +158,7 @@ bool Task::SetPriority(INT32 priority)
  * Returns the name of the task.
  * @returns Pointer to the name of the task or NULL if not allocated
  */
-const char* Task::GetName(void)
+const char* Task::GetName()
 {
 	return m_taskName;
 }
@@ -168,7 +167,7 @@ const char* Task::GetName(void)
  * Get the ID of a task
  * @returns Task ID of this task.  Task::kInvalidTaskID (-1) if the task has not been started or has already exited.
  */
-INT32 Task::GetID(void)
+INT32 Task::GetID()
 {
 	if (Verify())
 		return m_taskID;
@@ -184,28 +183,28 @@ bool Task::HandleError(STATUS results)
 	switch(errnoGet())
 	{
 	case S_objLib_OBJ_ID_ERROR:
-		wpi_fatal(TaskIDError);
+		wpi_setWPIErrorWithContext(TaskIDError, m_taskName);
 		break;
 		
 	case S_objLib_OBJ_DELETED:
-		wpi_fatal(TaskDeletedError);
+		wpi_setWPIErrorWithContext(TaskDeletedError, m_taskName);
 		break;
 		
 	case S_taskLib_ILLEGAL_OPTIONS:
-		wpi_fatal(TaskOptionsError);
+		wpi_setWPIErrorWithContext(TaskOptionsError, m_taskName);
 		break;
 		
 	case S_memLib_NOT_ENOUGH_MEMORY:
-		wpi_fatal(TaskMemoryError);
+		wpi_setWPIErrorWithContext(TaskMemoryError, m_taskName);
 		break;
 		
 	case S_taskLib_ILLEGAL_PRIORITY:
-		wpi_fatal(TaskPriorityError);
+		wpi_setWPIErrorWithContext(TaskPriorityError, m_taskName);
 		break;
 
 	default:
 		printErrno(errnoGet());
-		wpi_fatal(TaskError);
+		wpi_setWPIErrorWithContext(TaskError, m_taskName);
 	}
 	return false;
 }

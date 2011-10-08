@@ -4,8 +4,9 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "MotorSafetyHelper.h"
 #include "SafePWM.h"
+
+#include "MotorSafetyHelper.h"
 
 /**
  * Initialize a SafePWM object by setting defaults
@@ -27,12 +28,17 @@ SafePWM::SafePWM(UINT32 channel): PWM(channel)
 
 /**
  * Constructor for a SafePWM object taking channel and slot numbers.
- * @param slot The slot number of the digital module for this PWM object
- * @param channel The channel number in the module for this PWM object
+ * @param moduleNumber The digital module (1 or 2).
+ * @param channel The PWM channel number on the module (1..10).
  */
-SafePWM::SafePWM(UINT32 slot, UINT32 channel): PWM(slot, channel)
+SafePWM::SafePWM(UINT8 moduleNumber, UINT32 channel): PWM(moduleNumber, channel)
 {
 	InitSafePWM();
+}
+
+SafePWM::~SafePWM()
+{
+	delete m_safetyHelper;
 }
 
 /*
@@ -90,6 +96,11 @@ void SafePWM::SetSafetyEnabled(bool enabled)
 bool SafePWM::IsSafetyEnabled()
 {
 	return m_safetyHelper->IsSafetyEnabled();
+}
+
+void SafePWM::GetDescription(char *desc)
+{
+	sprintf(desc, "PWM %d on module %d", GetChannel(), GetModuleNumber());
 }
 
 /**

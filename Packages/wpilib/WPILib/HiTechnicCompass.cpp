@@ -7,8 +7,7 @@
 #include "HiTechnicCompass.h"
 #include "DigitalModule.h"
 #include "I2C.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 const UINT8 HiTechnicCompass::kAddress;
 const UINT8 HiTechnicCompass::kManufacturerBaseRegister;
@@ -20,12 +19,12 @@ const UINT8 HiTechnicCompass::kHeadingRegister;
 /**
  * Constructor.
  * 
- * @param slot The slot of the digital module that the sensor is plugged into.
+ * @param moduleNumber The digital module that the sensor is plugged into (1 or 2).
  */
-HiTechnicCompass::HiTechnicCompass(UINT32 slot)
+HiTechnicCompass::HiTechnicCompass(UINT8 moduleNumber)
 	: m_i2c (NULL)
 {
-	DigitalModule *module = DigitalModule::GetInstance(slot);
+	DigitalModule *module = DigitalModule::GetInstance(moduleNumber);
 	if (module)
 	{
 		m_i2c = module->GetI2C(kAddress);
@@ -35,12 +34,12 @@ HiTechnicCompass::HiTechnicCompass(UINT32 slot)
 		const UINT8 kExpectedSensorType[] = "Compass ";
 		if ( ! m_i2c->VerifySensor(kManufacturerBaseRegister, kManufacturerSize, kExpectedManufacturer) )
 		{
-			wpi_fatal(CompassManufacturerError);
+			wpi_setWPIError(CompassManufacturerError);
 			return;
 		}
 		if ( ! m_i2c->VerifySensor(kSensorTypeBaseRegister, kSensorTypeSize, kExpectedSensorType) )
 		{
-			wpi_fatal(CompassTypeError);
+			wpi_setWPIError(CompassTypeError);
 		}
 	}
 }

@@ -31,7 +31,7 @@ public:
 	enum Value {kOff, kForward, kReverse};
 
 	explicit DoubleSolenoid(UINT32 forwardChannel, UINT32 reverseChannel);
-	DoubleSolenoid(UINT32 slot, UINT32 forwardChannel, UINT32 reverseChannel);
+	DoubleSolenoid(UINT8 moduleNumber, UINT32 forwardChannel, UINT32 reverseChannel);
 	virtual ~DoubleSolenoid();
 	virtual void Set(Value value);
 	virtual Value Get();

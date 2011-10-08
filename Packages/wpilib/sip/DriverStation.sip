@@ -33,7 +33,7 @@ public:
 	virtual ~DriverStation();
 	static DriverStation *GetInstance();
 
-	enum { kBatterySlot = 1 };
+	enum { kBatteryModuleNumber = 1 };
 	enum { kBatteryChannel = 8 };
 	enum { kJoystickPorts = 4 };
 	enum { kJoystickAxes = 6 };
@@ -56,8 +56,10 @@ public:
 	UINT32 GetPacketNumber();
 	Alliance GetAlliance();
 	UINT32 GetLocation();
-
+	void WaitForData();
+	double GetMatchTime();
 	float GetBatteryVoltage();
+	UINT16 GetTeamNumber();
 
 	Dashboard& GetHighPriorityDashboardPacker();
 	Dashboard& GetLowPriorityDashboardPacker();
@@ -71,6 +73,10 @@ public:
 
 	void IncrementUpdateNumber();
 	SEM_ID GetUserStatusDataSem();
+
+	void InDisabled(bool entering);
+	void InAutonomous(bool entering);
+	void InOperatorControl(bool entering);
 
 protected:
 	DriverStation();

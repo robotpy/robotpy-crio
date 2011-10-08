@@ -5,9 +5,9 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Accelerometer.h"
-#include "CAccelerometer.h"
+#include "CInterfaces/CAccelerometer.h"
 #include "AnalogModule.h"
-#include "CWrappers.h"
+#include "CInterfaces/CWrappers.h"
 
 static Accelerometer* accelerometers[SensorBase::kAnalogModules][SensorBase::kAnalogChannels];
 static bool initialized = false;
@@ -17,7 +17,7 @@ static bool initialized = false;
  * @param slot The slot the analog module is plugged into
  * @param channel The analog module channel the accelerometer is plugged into
  */
-static Accelerometer *AllocateAccelerometer(UINT32 slot, UINT32 channel)
+static Accelerometer *AllocateAccelerometer(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -26,12 +26,12 @@ static Accelerometer *AllocateAccelerometer(UINT32 slot, UINT32 channel)
 			for (unsigned j = 1; j <= SensorBase::kAnalogChannels; j++)
 				accelerometers[i][j] = NULL;
 	}
-	if (!SensorBase::CheckAnalogModule(slot) || !SensorBase::CheckAnalogChannel(channel))
+	if (!SensorBase::CheckAnalogModule(moduleNumber) || !SensorBase::CheckAnalogChannel(channel))
 		return NULL;
-	unsigned index = AnalogModule::SlotToIndex(slot);
+	unsigned index = moduleNumber - 1;
 	if (accelerometers[index][channel - 1] == NULL)
 	{
-		accelerometers[index][channel - 1] = new Accelerometer(slot, channel);
+		accelerometers[index][channel - 1] = new Accelerometer(moduleNumber, channel);
 	}
 	return accelerometers[index][channel - 1];
 }
@@ -53,9 +53,9 @@ float GetAcceleration(UINT32 channel)
  * @param channel The channel the accelerometer is plugged into
  * @returns Returns the acceleration in Gs
  */
-float GetAcceleration(UINT32 slot, UINT32 channel)
+float GetAcceleration(UINT8 moduleNumber, UINT32 channel)
 {
-	Accelerometer *accel = AllocateAccelerometer(slot, channel);
+	Accelerometer *accel = AllocateAccelerometer(moduleNumber, channel);
 	return accel->GetAcceleration();
 }
 
@@ -84,9 +84,9 @@ void SetAccelerometerSensitivity(UINT32 channel, float sensitivity)
  * @param channel The channel the accelerometer is plugged into
  * @param sensitivity The sensitivity of accelerometer in Volts per G.
  */
-void SetAccelerometerSensitivity(UINT32 slot, UINT32 channel, float sensitivity)
+void SetAccelerometerSensitivity(UINT8 moduleNumber, UINT32 channel, float sensitivity)
 {
-	Accelerometer *accel = AllocateAccelerometer(slot, channel);
+	Accelerometer *accel = AllocateAccelerometer(moduleNumber, channel);
 	accel->SetSensitivity(sensitivity);
 }
 
@@ -113,9 +113,9 @@ void SetAccelerometerZero(UINT32 channel, float zero)
  * @param channel The channel the accelerometer is plugged into
  * @param zero The zero G voltage.
  */
-void SetAccelerometerZero(UINT32 slot, UINT32 channel, float zero)
+void SetAccelerometerZero(UINT8 moduleNumber, UINT32 channel, float zero)
 {
-	Accelerometer *accel = AllocateAccelerometer(slot, channel);
+	Accelerometer *accel = AllocateAccelerometer(moduleNumber, channel);
 	accel->SetZero(zero);
 }
 
@@ -127,11 +127,11 @@ void SetAccelerometerZero(UINT32 slot, UINT32 channel, float zero)
  * @param slot The slot the analog module is plugged into
  * @param channel The channel the accelerometer is plugged into
  */
-void DeleteAccelerometer(UINT32 slot, UINT32 channel)
+void DeleteAccelerometer(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckAnalogModule(slot) && SensorBase::CheckAnalogChannel(channel))
+	if (SensorBase::CheckAnalogModule(moduleNumber) && SensorBase::CheckAnalogChannel(channel))
 	{
-		unsigned index = AnalogModule::SlotToIndex(slot);
+		unsigned index = moduleNumber - 1;
 		delete accelerometers[index][channel - 1];
 		accelerometers[index][channel - 1] = NULL;
 	}
@@ -159,9 +159,9 @@ AccelerometerObject CreateAccelerometer(UINT32 channel)
 	return (AccelerometerObject) new Accelerometer(channel);
 }
 
-AccelerometerObject CreateAccelerometer(UINT32 slot, UINT32 channel)
+AccelerometerObject CreateAccelerometer(UINT8 moduleNumber, UINT32 channel)
 {
-	return (AccelerometerObject) new Accelerometer(slot, channel);
+	return (AccelerometerObject) new Accelerometer(moduleNumber, channel);
 }
 
 float GetAcceleration(AccelerometerObject o)

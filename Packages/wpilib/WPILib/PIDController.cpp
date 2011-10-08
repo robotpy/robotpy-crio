@@ -103,8 +103,8 @@ void PIDController::Calculate()
 		float result;
 		PIDOutput *pidOutput;
 
-		CRITICAL_REGION(m_semaphore)
 		{
+			Synchronized sync(m_semaphore);
 			m_error = m_setpoint - input;
 			if (m_continuous)
 			{
@@ -121,10 +121,17 @@ void PIDController::Calculate()
 				}
 			}
 
-			if (((m_totalError + m_error) * m_I < m_maximumOutput) &&
-					((m_totalError + m_error) * m_I > m_minimumOutput))
+			double potentialIGain = (m_totalError + m_error) * m_I;
+			if (potentialIGain < m_maximumOutput)
 			{
-				m_totalError += m_error;
+				if (potentialIGain > m_minimumOutput)
+					m_totalError += m_error;
+				else
+					m_totalError = m_minimumOutput / m_I;
+			}
+			else
+			{
+				m_totalError = m_maximumOutput / m_I;
 			}
 
 			m_result = m_P * m_error + m_I * m_totalError + m_D * (m_error - m_prevError);
@@ -136,7 +143,6 @@ void PIDController::Calculate()
 			pidOutput = m_pidOutput;
 			result = m_result;
 		}
-		END_REGION;
 
 		pidOutput->PIDWrite(result);
 	}

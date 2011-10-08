@@ -1,7 +1,7 @@
 #include "SensorBase.h"
 #include "DigitalModule.h"
 #include "Relay.h"
-#include "CRelay.h"
+#include "CInterfaces/CRelay.h"
 
 static Relay* relays[SensorBase::kDigitalModules][SensorBase::kRelayChannels];
 static bool initialized = false;
@@ -15,7 +15,7 @@ static Relay::Direction s_direction = Relay::kBothDirections;
  * @param slot The slot the digital module is plugged into
  * @param channel The relay channel for this device
  */
-static Relay *AllocateRelay(UINT32 slot, UINT32 channel)
+static Relay *AllocateRelay(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -24,12 +24,12 @@ static Relay *AllocateRelay(UINT32 slot, UINT32 channel)
 				relays[i][j] = NULL;
 		initialized = true;
 	}
-	if (SensorBase::CheckRelayModule(slot) && SensorBase::CheckRelayChannel(channel))
+	if (SensorBase::CheckRelayModule(moduleNumber) && SensorBase::CheckRelayChannel(channel))
 	{
-		unsigned slotOffset = DigitalModule::SlotToIndex(slot);
+		unsigned slotOffset = moduleNumber - 1;
 		if (relays[slotOffset][channel - 1] == NULL)
 		{
-			relays[slotOffset][channel - 1] = new Relay(slot, channel, s_direction);
+			relays[slotOffset][channel - 1] = new Relay(moduleNumber, channel, s_direction);
 		}
 		return relays[slotOffset][channel - 1];
 	}
@@ -43,7 +43,7 @@ static Relay *AllocateRelay(UINT32 slot, UINT32 channel)
  * @param channel The relay channel number for this object
  * @param direction The direction that the relay object will control
  */
-void InitRelay(UINT32 slot, UINT32 channel, RelayDirection direction)
+void InitRelay(UINT8 moduleNumber, UINT32 channel, RelayDirection direction)
 {
 	switch (direction)
 	{
@@ -59,7 +59,7 @@ void InitRelay(UINT32 slot, UINT32 channel, RelayDirection direction)
 	default:
 		s_direction = Relay::kBothDirections;
 	}
-	AllocateRelay(slot, channel);
+	AllocateRelay(moduleNumber, channel);
 }
 
 /**
@@ -80,11 +80,11 @@ void InitRelay(UINT32 channel, RelayDirection direction)
  * @param slot The slot that the digital module is plugged into
  * @param channel The relay channel number for this object
  */
-void DeleteRelay(UINT32 slot, UINT32 channel)
+void DeleteRelay(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckRelayModule(slot) && SensorBase::CheckRelayChannel(channel))
+	if (SensorBase::CheckRelayModule(moduleNumber) && SensorBase::CheckRelayChannel(channel))
 	{
-		unsigned slotOffset = DigitalModule::SlotToIndex(slot);
+		unsigned slotOffset = moduleNumber - 1;
 		delete relays[slotOffset][channel - 1];
 		relays[slotOffset][channel - 1] = NULL;
 	}
@@ -117,9 +117,9 @@ void DeleteRelay(UINT32 channel)
  * @param channel The relay channel number for this object
  * @param value The state to set the relay.
  */
-void SetRelay(UINT32 slot, UINT32 channel, RelayValue value)
+void SetRelay(UINT8 moduleNumber, UINT32 channel, RelayValue value)
 {
-	Relay *relay = AllocateRelay(slot, channel);
+	Relay *relay = AllocateRelay(moduleNumber, channel);
 	if (relay != NULL)
 	{
 		switch (value)
@@ -157,17 +157,17 @@ void SetRelay(UINT32 channel, RelayValue value)
  * Alternate C Interface
  */
 
-RelayObject CreateRelay(UINT32 slot, UINT32 channel, RelayDirection direction)
+RelayObject CreateRelay(UINT8 moduleNumber, UINT32 channel, RelayDirection direction)
 {
 	switch (direction)
 	{
 	case kForwardOnly:
-		return new Relay(slot, channel, Relay::kForwardOnly);
+		return new Relay(moduleNumber, channel, Relay::kForwardOnly);
 	case kReverseOnly:
-		return new Relay(slot, channel, Relay::kReverseOnly);
+		return new Relay(moduleNumber, channel, Relay::kReverseOnly);
 	case kBothDirections:
 	default:
-		return new Relay(slot, channel, Relay::kBothDirections);
+		return new Relay(moduleNumber, channel, Relay::kBothDirections);
 	}
 }
 

@@ -29,7 +29,7 @@ class Jaguar : SafePWM, SpeedController, PIDOutput
 
 public:
 	explicit Jaguar(UINT32 channel);
-	Jaguar(UINT32 slot, UINT32 channel);
+	Jaguar(UINT8 moduleNumber, UINT32 channel);
 	virtual ~Jaguar();
 	virtual void Set(float value, UINT8 syncGroup=0);
 	virtual float Get();

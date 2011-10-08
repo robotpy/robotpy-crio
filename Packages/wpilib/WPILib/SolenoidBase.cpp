@@ -7,7 +7,6 @@
 #include "SolenoidBase.h"
 
 #include "Synchronized.h"
-#include "Utility.h"
 
 SEM_ID SolenoidBase::m_semaphore = NULL;
 Resource *SolenoidBase::m_allocated = NULL;
@@ -19,19 +18,20 @@ UINT32 SolenoidBase::m_refCount = 0;
 /**
  * Constructor
  * 
- * @param slot The slot that this SolenoidBase accesses.
+ * @param moduleNumber The solenoid module (1 or 2).
  */
-SolenoidBase::SolenoidBase(UINT32 slot)
-	: m_chassisSlot (slot)
+SolenoidBase::SolenoidBase(UINT8 moduleNumber)
+	: m_moduleNumber (moduleNumber)
 {
 	m_refCount++;
 	if (m_refCount == 1)
 	{
 		// Needs to be global since the protected resource spans all Solenoid objects.
 		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
-		m_fpgaSolenoidModule = new tSolenoid(&status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		m_fpgaSolenoidModule = tSolenoid::create(&localStatus);
+		wpi_setError(localStatus);
 	}
-	wpi_assertCleanStatus(status);
 }
 
 /**
@@ -39,7 +39,7 @@ SolenoidBase::SolenoidBase(UINT32 slot)
  */
 SolenoidBase::~SolenoidBase()
 {
-	if (CheckSolenoidModule(m_chassisSlot))
+	if (CheckSolenoidModule(m_moduleNumber))
 	{
 		if (m_refCount == 1)
 		{
@@ -53,17 +53,6 @@ SolenoidBase::~SolenoidBase()
 }
 
 /**
- * Convert slot number to index.
- * 
- * @param slot The slot in the chassis where the module is plugged in.
- * @return An index to represent the module internally.
- */
-UINT32 SolenoidBase::SlotToIndex(UINT32 slot)
-{
-	return 8 - slot;
-}
-
-/**
  * Set the value of a solenoid.
  * 
  * @param value The value you want to set on the module.
@@ -71,17 +60,17 @@ UINT32 SolenoidBase::SlotToIndex(UINT32 slot)
  */
 void SolenoidBase::Set(UINT8 value, UINT8 mask)
 {
-	if (CheckSolenoidModule(m_chassisSlot))
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	if (CheckSolenoidModule(m_moduleNumber))
 	{
 		Synchronized sync(m_semaphore);
-		UINT8 currentValue = m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status);
+		UINT8 currentValue = m_fpgaSolenoidModule->readDO7_0(m_moduleNumber - 1, &localStatus);
 		// Zero out the values to change
 		currentValue = currentValue & ~mask;
 		currentValue = currentValue | (value & mask);
-		m_fpgaSolenoidModule->writeDO7_0(SlotToIndex(m_chassisSlot), currentValue, &status);
+		m_fpgaSolenoidModule->writeDO7_0(m_moduleNumber - 1, currentValue, &localStatus);
 	}
-
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -91,9 +80,12 @@ void SolenoidBase::Set(UINT8 value, UINT8 mask)
  */
 UINT8 SolenoidBase::GetAll()
 {
-	if (CheckSolenoidModule(m_chassisSlot))
+	if (CheckSolenoidModule(m_moduleNumber))
 	{
-		return m_fpgaSolenoidModule->readDO7_0(SlotToIndex(m_chassisSlot), &status);
+		tRioStatusCode localStatus = NiFpga_Status_Success;
+		UINT8 solenoids = m_fpgaSolenoidModule->readDO7_0(m_moduleNumber - 1, &localStatus);
+		wpi_setError(localStatus);
+		return solenoids;
 	}
 	return 0;
 }

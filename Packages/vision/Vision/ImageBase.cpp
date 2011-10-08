@@ -40,7 +40,7 @@ void ImageBase::Write(const char *fileName)
 {
 	Priv_SetWriteFileAllowed(1);
 	int success = imaqWriteFile(m_imaqImage, fileName, NULL);
-	wpi_imaqAssert(success, "Imaq Image writeFile error");
+	wpi_setImaqErrorWithContext(success, "Imaq Image writeFile error");
 }
 
 /**

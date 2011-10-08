@@ -4,11 +4,11 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "CRobotDrive.h"
+#include "CInterfaces/CRobotDrive.h"
 #include "Joystick.h"
 #include "RobotDrive.h"
 #include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 static RobotDrive *drive = NULL;
 
@@ -68,7 +68,7 @@ void CreateRobotDrive(UINT32 leftMotor, UINT32 rightMotor)
 void Drive(float speed, float curve)
 {
 	if (drive == NULL)
-		wpi_fatal(DriveUninitialized);
+		wpi_setGlobalWPIError(DriveUninitialized);
 	else
 		drive->Drive(speed, curve);
 }
@@ -85,7 +85,7 @@ void TankDrive(UINT32 leftStickPort, UINT32 rightStickPort)
 {
 	if (drive == NULL)
 	{
-		wpi_fatal(DriveUninitialized);
+		wpi_setGlobalWPIError(DriveUninitialized);
 	}
 	else
 	{
@@ -109,7 +109,7 @@ void ArcadeDrive(UINT32 stickPort, bool squaredInputs)
 {
 	if (drive == NULL)
 	{
-		wpi_fatal(DriveUninitialized);
+		wpi_setGlobalWPIError(DriveUninitialized);
 	}
 	else
 	{
@@ -128,7 +128,7 @@ void TankByValue(float leftSpeed, float rightSpeed)
 {
 	if (drive == NULL)
 	{
-		wpi_fatal(DriveUninitialized);
+		wpi_setGlobalWPIError(DriveUninitialized);
 	}
 	else
 	{
@@ -147,7 +147,7 @@ void TankByValue(float leftSpeed, float rightSpeed)
 void ArcadeByValue(float moveValue, float rotateValue, bool squaredInputs)
 {
 	if (drive == NULL)
-		wpi_fatal(DriveUninitialized);
+		wpi_setGlobalWPIError(DriveUninitialized);
 	else
 		drive->ArcadeDrive(moveValue, rotateValue, squaredInputs);
 }

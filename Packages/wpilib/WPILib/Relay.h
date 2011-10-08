@@ -26,14 +26,13 @@ public:
 	typedef enum {kBothDirections, kForwardOnly, kReverseOnly} Direction;
 
 	Relay(UINT32 channel, Direction direction = kBothDirections);
-	Relay(UINT32 slot, UINT32 channel, Direction direction = kBothDirections);
+	Relay(UINT8 moduleNumber, UINT32 channel, Direction direction = kBothDirections);
 	virtual ~Relay();
 
 	void Set(Value value);
-	void SetDirection(Direction direction);
 
 private:
-	void InitRelay(UINT32 slot);
+	void InitRelay(UINT8 moduleNumber);
 
 	UINT32 m_channel;
 	Direction m_direction;

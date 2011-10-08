@@ -34,6 +34,7 @@ public:
 	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
 private:
 	static SEM_ID m_semaphore;
+	static UINT32 m_objCount;
 
 	I2C(DigitalModule *module, UINT8 deviceAddress);
 

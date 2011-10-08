@@ -6,8 +6,7 @@
 
 #include "Accelerometer.h"
 #include "AnalogModule.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 /**
  * Common function for initializing the accelerometer.
@@ -36,10 +35,13 @@ Accelerometer::Accelerometer(UINT32 channel)
  * 
  * Make a new instance of the accelerometer given a module and channel. The constructor allocates
  * the desired analog channel from the specified module
+ *
+ * @param moduleNumber The analog module (1 or 2).
+ * @param channel The analog channel (1..8)
  */
-Accelerometer::Accelerometer(UINT32 slot, UINT32 channel)
+Accelerometer::Accelerometer(UINT8 moduleNumber, UINT32 channel)
 {
-	m_analogChannel = new AnalogChannel(slot, channel);
+	m_analogChannel = new AnalogChannel(moduleNumber, channel);
 	m_allocatedChannel = true;
 	InitAccelerometer();
 }
@@ -54,7 +56,7 @@ Accelerometer::Accelerometer(AnalogChannel *channel)
 {
 	if (channel == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 	}
 	else
 	{

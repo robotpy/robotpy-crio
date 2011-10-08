@@ -25,11 +25,12 @@ public:
 	virtual ~BinaryImage();
 	int GetNumberParticles();
 	ParticleAnalysisReport GetParticleAnalysisReport(int particleNumber);
+	void GetParticleAnalysisReport(int particleNumber, ParticleAnalysisReport *par);
 	vector<ParticleAnalysisReport>* GetOrderedParticleAnalysisReports();
 	virtual void Write(const char *fileName);
 private:
-	ParticleAnalysisReport* particleArray;
-	double ParticleMeasurement(int particleNumber, MeasurementType whatToMeasure);
+	bool ParticleMeasurement(int particleNumber, MeasurementType whatToMeasure, int *result);
+	bool ParticleMeasurement(int particleNumber, MeasurementType whatToMeasure, double *result);
 	static double NormalizeFromRange(double position, int range);
 	static bool CompareParticleSizes(ParticleAnalysisReport particle1, ParticleAnalysisReport particle2);
 };

@@ -7,6 +7,7 @@
 #ifndef ANALOG_CHANNEL_H_
 #define ANALOG_CHANNEL_H_
 
+#include "ChipObject.h"
 #include "SensorBase.h"
 #include "PIDSource.h"
 
@@ -27,11 +28,11 @@ class AnalogModule;
 class AnalogChannel : public SensorBase, public PIDSource
 {
 public:
-	static const UINT32 kAccumulatorSlot = 1;
+	static const UINT8 kAccumulatorModuleNumber = 1;
 	static const UINT32 kAccumulatorNumChannels = 2;
 	static const UINT32 kAccumulatorChannels[kAccumulatorNumChannels];
 
-	AnalogChannel(UINT32 slot, UINT32 channel);
+	AnalogChannel(UINT8 moduleNumber, UINT32 channel);
 	explicit AnalogChannel(UINT32 channel);
 	virtual ~AnalogChannel();
 
@@ -43,7 +44,7 @@ public:
 	float GetVoltage();
 	float GetAverageVoltage();
 
-	UINT32 GetSlot();
+	UINT8 GetModuleNumber();
 	UINT32 GetChannel();
 
 	void SetAverageBits(UINT32 bits);
@@ -67,7 +68,7 @@ public:
 	double PIDGet();
 
 private:
-	void InitChannel(UINT32 slot, UINT32 channel);
+	void InitChannel(UINT8 moduleNumber, UINT32 channel);
 	UINT32 m_channel;
 	AnalogModule *m_module;
 	tAccumulator *m_accumulator;

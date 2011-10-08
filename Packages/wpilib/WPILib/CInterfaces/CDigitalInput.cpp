@@ -6,7 +6,7 @@
 
 #include "DigitalModule.h"
 #include "DigitalInput.h"
-#include "CDigitalInput.h"
+#include "CInterfaces/CDigitalInput.h"
 
 static DigitalInput* digitalInputs[SensorBase::kDigitalModules][SensorBase::kDigitalChannels];
 static bool initialized = false;
@@ -19,7 +19,7 @@ static bool initialized = false;
  * @param slot The slot the digital input module is plugged into
  * @param channel The particular channel this digital input is using
  */
-static DigitalInput *AllocateDigitalInput(UINT32 slot, UINT32 channel)
+static DigitalInput *AllocateDigitalInput(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -28,12 +28,12 @@ static DigitalInput *AllocateDigitalInput(UINT32 slot, UINT32 channel)
 				digitalInputs[i][j] = NULL;
 		initialized = true;
 	}
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotOffset = DigitalModule::SlotToIndex(slot);
+		UINT32 slotOffset = moduleNumber - 1;
 		if (digitalInputs[slotOffset][channel - 1] == NULL)
 		{
-			digitalInputs[slotOffset][channel - 1] = new DigitalInput(slot, channel);
+			digitalInputs[slotOffset][channel - 1] = new DigitalInput(moduleNumber, channel);
 		}
 		return digitalInputs[slotOffset][channel - 1];
 	}
@@ -47,9 +47,9 @@ static DigitalInput *AllocateDigitalInput(UINT32 slot, UINT32 channel)
  * @param slot The slot the digital input module is plugged into
  * @param channel The particular channel this digital input is using
  */
-UINT32 GetDigitalInput(UINT32 slot, UINT32 channel)
+UINT32 GetDigitalInput(UINT8 moduleNumber, UINT32 channel)
 {
-	DigitalInput *digIn = AllocateDigitalInput(slot, channel);
+	DigitalInput *digIn = AllocateDigitalInput(moduleNumber, channel);
 	if (digIn)
 		return digIn->Get();
 	else
@@ -75,11 +75,11 @@ UINT32 GetDigitalInput(UINT32 channel)
  * @param slot The slot the digital input module is plugged into
  * @param channel The particular channel this digital input is using
  */
-void DeleteDigitalInput(UINT32 slot, UINT32 channel)
+void DeleteDigitalInput(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotOffset = DigitalModule::SlotToIndex(slot);
+		UINT32 slotOffset = moduleNumber - 1;
 		delete digitalInputs[slotOffset][channel - 1];
 		digitalInputs[slotOffset][channel - 1] = NULL;
 	}
@@ -100,9 +100,9 @@ void DeleteDigitalInput(UINT32 channel)
 /*******************************************************************************
  * Alternative interface to digital input
 *******************************************************************************/
-DigitalInputObject CreateDigitalInput(UINT32 module, UINT32 channel)
+DigitalInputObject CreateDigitalInput(UINT8 moduleNumber, UINT32 channel)
 {
-	return (DigitalInputObject) new DigitalInput(module, channel); 
+	return (DigitalInputObject) new DigitalInput(moduleNumber, channel); 
 }
 
 DigitalInputObject CreateDigitalInput(UINT32 channel)

@@ -9,6 +9,7 @@
 #include "DigitalModule.h"
 #include "Resource.h"
 #include "Utility.h"
+#include "WPIErrors.h"
 
 const UINT32 PWM::kDefaultPwmPeriod;
 const UINT32 PWM::kDefaultMinPwmHigh;
@@ -22,14 +23,31 @@ static Resource *allocated = NULL;
  * instances. Checks module and channel value ranges and allocates the appropriate channel.
  * The allocation is only done to help users ensure that they don't double assign channels.
  */
-void PWM::InitPWM(UINT32 slot, UINT32 channel)
+void PWM::InitPWM(UINT8 moduleNumber, UINT32 channel)
 {
+	char buf[64];
 	Resource::CreateResourceObject(&allocated, tDIO::kNumSystems * kPwmChannels);
-	CheckPWMModule(slot);
-	CheckPWMChannel(channel);
-	allocated->Allocate(DigitalModule::SlotToIndex(slot) * kPwmChannels + channel - 1);
+	if (!CheckPWMModule(moduleNumber))
+	{
+		snprintf(buf, 64, "Digital Module %d", moduleNumber);
+		wpi_setWPIErrorWithContext(ModuleIndexOutOfRange, buf);
+		return;
+	}
+	if (!CheckPWMChannel(channel))
+	{
+		snprintf(buf, 64, "PWM Channel %d", channel);
+		wpi_setWPIErrorWithContext(ChannelIndexOutOfRange, buf);
+		return;
+	}
+
+	snprintf(buf, 64, "PWM %d (Module: %d)", channel, moduleNumber);
+	if (allocated->Allocate((moduleNumber - 1) * kPwmChannels + channel - 1, buf) == ~0ul)
+	{
+		CloneError(allocated);
+		return;
+	}
 	m_channel = channel;
-	m_module = DigitalModule::GetInstance(slot);
+	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->SetPWM(m_channel, kPwmDisabled);
 	m_eliminateDeadband = false;
 }
@@ -38,12 +56,13 @@ void PWM::InitPWM(UINT32 slot, UINT32 channel)
  * Allocate a PWM given a module and channel.
  * Allocate a PWM using a module and channel number.
  * 
- * @param slot The slot the digital module is plugged into.
- * @param channel The PWM channel on the digital module.
+ * @param moduleNumber The digital module (1 or 2).
+ * @param channel The PWM channel on the digital module (1..10).
  */
-PWM::PWM(UINT32 slot, UINT32 channel)
+PWM::PWM(UINT8 moduleNumber, UINT32 channel)
+	: m_module(NULL)
 {
-	InitPWM(slot, channel);
+	InitPWM(moduleNumber, channel);
 }
 
 /**
@@ -55,6 +74,7 @@ PWM::PWM(UINT32 slot, UINT32 channel)
  * @param channel The PWM channel on the digital module.
  */
 PWM::PWM(UINT32 channel)
+	: m_module(NULL)
 {
 	InitPWM(GetDefaultDigitalModule(), channel);
 }
@@ -66,8 +86,11 @@ PWM::PWM(UINT32 channel)
  */
 PWM::~PWM()
 {
-	m_module->SetPWM(m_channel, kPwmDisabled);
-	allocated->Free(DigitalModule::SlotToIndex(m_module->GetSlot()) * kPwmChannels + m_channel - 1);
+	if (m_module)
+	{
+		m_module->SetPWM(m_channel, kPwmDisabled);
+		allocated->Free((m_module->GetNumber() - 1) * kPwmChannels + m_channel - 1);
+	}
 }
 
 /**
@@ -78,6 +101,7 @@ PWM::~PWM()
  */
 void PWM::EnableDeadbandElimination(bool eliminateDeadband)
 {
+	if (StatusIsFatal()) return;
 	m_eliminateDeadband = eliminateDeadband;
 }
 
@@ -93,6 +117,7 @@ void PWM::EnableDeadbandElimination(bool eliminateDeadband)
  */
 void PWM::SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMin, INT32 min)
 {
+	if (StatusIsFatal()) return;
 	m_maxPwm = max;
 	m_deadbandMaxPwm = deadbandMax;
 	m_centerPwm = center;
@@ -100,6 +125,10 @@ void PWM::SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMi
 	m_minPwm = min;
 }
 
+UINT32 PWM::GetModuleNumber()
+{
+	return m_module->GetNumber();
+}
 
 /**
  * Set the PWM value based on a position.
@@ -113,6 +142,7 @@ void PWM::SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMi
  */
 void PWM::SetPosition(float pos)
 {
+	if (StatusIsFatal()) return;
 	if (pos < 0.0)
 	{
 		pos = 0.0;
@@ -145,6 +175,7 @@ void PWM::SetPosition(float pos)
  */
 float PWM::GetPosition()
 {
+	if (StatusIsFatal()) return 0.0;
 	INT32 value = GetRaw();
 	if (value < GetMinNegativePwm())
 	{
@@ -175,6 +206,7 @@ float PWM::GetPosition()
  */
 void PWM::SetSpeed(float speed)
 {
+	if (StatusIsFatal()) return;
 	// clamp speed to be in the range 1.0 >= speed >= -1.0
 	if (speed < -1.0)
 	{
@@ -224,6 +256,7 @@ void PWM::SetSpeed(float speed)
  */
 float PWM::GetSpeed()
 {
+	if (StatusIsFatal()) return 0.0;
 	INT32 value = GetRaw();
 	if (value > GetMaxPositivePwm())
 	{
@@ -256,6 +289,7 @@ float PWM::GetSpeed()
  */
 void PWM::SetRaw(UINT8 value)
 {
+	if (StatusIsFatal()) return;
 	m_module->SetPWM(m_channel, value);
 }
 
@@ -268,6 +302,7 @@ void PWM::SetRaw(UINT8 value)
  */
 UINT8 PWM::GetRaw()
 {
+	if (StatusIsFatal()) return 0;
 	return m_module->GetPWM(m_channel);
 }
 
@@ -278,6 +313,7 @@ UINT8 PWM::GetRaw()
  */
 void PWM::SetPeriodMultiplier(PeriodMultiplier mult)
 {
+	if (StatusIsFatal()) return;
 	switch(mult)
 	{
 	case kPeriodMultiplier_4X:

@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "CGyro.h"
+#include "CInterfaces/CGyro.h"
 #include "Gyro.h"
 
 static Gyro* gyros[2] = {NULL, NULL};

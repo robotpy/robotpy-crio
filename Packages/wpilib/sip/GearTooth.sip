@@ -36,7 +36,7 @@ public:
 %End
 
 	GearTooth(UINT32 channel, bool directionSensitive = false);
-	GearTooth(UINT32 slot, UINT32 channel, bool directionSensitive = false);
+	GearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive = false);
 	GearTooth(DigitalSource *source, bool directionSensitive = false);
 	virtual ~GearTooth();
 	void EnableDirectionSensing(bool directionSensitive);

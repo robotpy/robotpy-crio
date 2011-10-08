@@ -20,7 +20,7 @@ class Servo : public SafePWM
 {
 public:
 	explicit Servo(UINT32 channel);
-	Servo(UINT32 slot, UINT32 channel);
+	Servo(UINT8 moduleNumber, UINT32 channel);
 	virtual ~Servo();
 	void Set(float value);
 	void SetOffline();

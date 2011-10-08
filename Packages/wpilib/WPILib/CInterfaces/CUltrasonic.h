@@ -9,18 +9,18 @@
 #include "Ultrasonic.h"
 
 void InitUltrasonic(UINT32 pingChannel, UINT32 echoChannel);
-void InitUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel);
+void InitUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel);
 double GetUltrasonicInches(UINT32 pingChannel, UINT32 echoChannel);
-double GetUltrasonicInches(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel);
+double GetUltrasonicInches(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel);
 double GetUltrasonicMM(UINT32 pingChannel, UINT32 echoChannel);
-double GetUltrasonicMM(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel);
+double GetUltrasonicMM(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel);
 void DeleteUltrasonic(UINT32 pingChannel, UINT32 echoChannel);
-void DeleteUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel);
+void DeleteUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel);
 
 typedef void *UltrasonicObject;
 
 UltrasonicObject CreateUltrasonic(UINT32 pingChannel, UINT32 echoChannel);
-UltrasonicObject CreateUltrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel);
+UltrasonicObject CreateUltrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel);
 double GetUltrasonicInches(UltrasonicObject o);
 double GetUltrasonicMM(UltrasonicObject o);
 void DeleteUltrasonic(UltrasonicObject o);

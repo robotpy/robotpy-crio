@@ -5,8 +5,17 @@
 /*----------------------------------------------------------------------------*/
 
 #include "MotorSafetyHelper.h"
+
+#include "DriverStation.h"
+#include "MotorSafety.h"
+#include "Synchronized.h"
 #include "Timer.h"
-#include "stdio.h"
+#include "WPIErrors.h"
+
+#include <stdio.h>
+
+MotorSafetyHelper *MotorSafetyHelper::m_headHelper = NULL;
+SEM_ID MotorSafetyHelper::m_listMutex = NULL;
 
 /**
  * The constructor for a MotorSafetyHelper object.
@@ -19,15 +28,45 @@
  */
 MotorSafetyHelper::MotorSafetyHelper(MotorSafety *safeObject)
 {
+	if (m_listMutex == NULL)
+		m_listMutex = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	m_safeObject = safeObject;
 	m_enabled = false;
 	m_expiration = DEFAULT_SAFETY_EXPIRATION;
 	m_stopTime = Timer::GetFPGATimestamp();
+
+	Synchronized sync(m_listMutex);
 	m_nextHelper = m_headHelper;
 	m_headHelper = this;
 }
 
-MotorSafetyHelper *MotorSafetyHelper::m_headHelper = 0;
+
+MotorSafetyHelper::~MotorSafetyHelper()
+{
+	semTake(m_listMutex, WAIT_FOREVER);
+	if (m_headHelper == this)
+	{
+		m_headHelper = m_nextHelper;
+	}
+	else
+	{
+		MotorSafetyHelper *prev = NULL;
+		MotorSafetyHelper *cur = m_headHelper;
+		while (cur != this && cur != NULL)
+			prev = cur, cur = cur->m_nextHelper;
+		if (cur == this)
+			prev->m_nextHelper = cur->m_nextHelper;
+	}
+	if (m_headHelper == NULL)
+	{
+		semDelete(m_listMutex);
+		m_listMutex = NULL;
+	}
+	else
+	{
+		semGive(m_listMutex);
+	}
+}
 
 /*
  * Feed the motor safety object.
@@ -74,9 +113,14 @@ bool MotorSafetyHelper::IsAlive()
 void MotorSafetyHelper::Check()
 {
 	if (!m_enabled) return;
+	if (DriverStation::GetInstance()->IsDisabled()) return;
 	if (m_stopTime < Timer::GetFPGATimestamp())
 	{
-		// TODO: Produce an error for the driver station in the case of a timeout.
+		char buf[128];
+		char desc[64];
+		m_safeObject->GetDescription(desc);
+		snprintf(buf, 128, "%s... Output not updated often enough.", desc);
+		wpi_setWPIErrorWithContext(Timeout, buf);
 		m_safeObject->StopMotor();
 	}
 }
@@ -109,6 +153,7 @@ bool MotorSafetyHelper::IsSafetyEnabled()
 //TODO: these should be synchronized with the setting methods in case it's called from a different thread
 void MotorSafetyHelper::CheckMotors()
 {
+	Synchronized sync(m_listMutex);
 	for (MotorSafetyHelper *msh = m_headHelper; msh != NULL; msh = msh->m_nextHelper)
 	{
 		msh->Check();

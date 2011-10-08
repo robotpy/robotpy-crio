@@ -4,10 +4,10 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "CPWM.h"
-#include "../PWM.h"
-#include "CWrappers.h"
-#include "../DigitalModule.h"
+#include "CInterfaces/CPWM.h"
+#include "PWM.h"
+#include "CInterfaces/CWrappers.h"
+#include "DigitalModule.h"
 
 static bool PWMsInitialized = false;
 static PWM *PWMs[SensorBase::kDigitalModules][SensorBase::kPwmChannels];
@@ -23,7 +23,7 @@ static PWM *PWMs[SensorBase::kDigitalModules][SensorBase::kPwmChannels];
  * @param createObject The function callback in the subclass object that actually creates an instance
  * of the appropriate class.
  */
-PWM *AllocatePWM(UINT32 module, UINT32 channel, SensorCreator createObject)
+PWM *AllocatePWM(UINT8 moduleNumber, UINT32 channel, SensorCreator createObject)
 {
 	if (!PWMsInitialized)
 	{
@@ -32,13 +32,13 @@ PWM *AllocatePWM(UINT32 module, UINT32 channel, SensorCreator createObject)
 				PWMs[i][j] = NULL;
 		PWMsInitialized = true;
 	}
-	if (!SensorBase::CheckPWMModule(module) || !SensorBase::CheckPWMChannel(channel))
+	if (!SensorBase::CheckPWMModule(moduleNumber) || !SensorBase::CheckPWMChannel(channel))
 		return NULL;
-	PWM *pwm = PWMs[DigitalModule::SlotToIndex(module)][channel - 1];
+	PWM *pwm = PWMs[moduleNumber - 1][channel - 1];
 	if (pwm == NULL)
 	{
-		pwm = (PWM *) createObject(module, channel);
-		PWMs[DigitalModule::SlotToIndex(module)][channel - 1] = pwm;
+		pwm = (PWM *) createObject(moduleNumber, channel);
+		PWMs[moduleNumber - 1][channel - 1] = pwm;
 	}
 	return pwm;
 }
@@ -65,11 +65,11 @@ PWM *AllocatePWM(UINT32 channel, SensorCreator createObject)
  * @param slot The slot the digital module is plugged into that corresponds to this serial port
  * @param channel The PWM channel for this PWM object
  */
-void DeletePWM(UINT32 slot, UINT32 channel)
+void DeletePWM(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckPWMModule(slot) && SensorBase::CheckPWMChannel(channel))
+	if (SensorBase::CheckPWMModule(moduleNumber) && SensorBase::CheckPWMChannel(channel))
 	{
-		PWMs[DigitalModule::SlotToIndex(slot)][channel - 1] = NULL;
+		PWMs[moduleNumber - 1][channel - 1] = NULL;
 	}
 }
 

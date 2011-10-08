@@ -4,14 +4,19 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#ifndef _MOTOR_SAFETY_HELPER_
-#define _MOTOR_SAFETY_HELPER_
+#ifndef __MOTOR_SAFETY_HELPER__
+#define __MOTOR_SAFETY_HELPER__
 
-#include "MotorSafety.h"
+#include "ErrorBase.h"
+#include <semLib.h>
 
-class MotorSafetyHelper {
+class MotorSafety;
+
+class MotorSafetyHelper : public ErrorBase
+{
 public:
 	MotorSafetyHelper(MotorSafety *safeObject);
+	~MotorSafetyHelper();
 	void Feed();
 	void SetExpiration(float expirationTime);
 	float GetExpiration();
@@ -21,12 +26,13 @@ public:
 	bool IsSafetyEnabled();
 	static void CheckMotors();
 private:
-	double m_expiration;				// the expiration time for this object
+	double m_expiration;			// the expiration time for this object
 	bool m_enabled;					// true if motor safety is enabled for this motor
 	double m_stopTime; 				// the FPGA clock value when this motor has expired
 	MotorSafety *m_safeObject;		// the object that is using the helper
 	MotorSafetyHelper *m_nextHelper; // next object in the list of MotorSafetyHelpers
 	static MotorSafetyHelper *m_headHelper; // the head of the list of MotorSafetyHelper objects
+	static SEM_ID m_listMutex;		// protect accesses to the list of helpers
 };
 
 #endif

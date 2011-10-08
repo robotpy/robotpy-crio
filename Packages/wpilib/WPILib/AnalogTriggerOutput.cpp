@@ -6,8 +6,7 @@
 
 #include "AnalogTriggerOutput.h"
 #include "AnalogTrigger.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 /**
  * Create an object that represents one of the four outputs from an analog trigger.
@@ -34,19 +33,21 @@ AnalogTriggerOutput::~AnalogTriggerOutput()
  */
 bool AnalogTriggerOutput::Get()
 {
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool result = false;
 	switch(m_outputType)
 	{
 	case kInWindow:
-		return m_trigger->m_trigger->readOutput_InHysteresis(m_trigger->m_index, &status);
+		result = m_trigger->m_trigger->readOutput_InHysteresis(m_trigger->m_index, &localStatus);
 	case kState:
-		return m_trigger->m_trigger->readOutput_OverLimit(m_trigger->m_index, &status);
+		result = m_trigger->m_trigger->readOutput_OverLimit(m_trigger->m_index, &localStatus);
 	case kRisingPulse:
 	case kFallingPulse:
-		wpi_fatal(AnalogTriggerPulseOutputError);
+		wpi_setWPIError(AnalogTriggerPulseOutputError);
+		return false;
 	}
-	// Should never get here.
-	wpi_assert(false);
-	return false;
+	wpi_setError(localStatus);
+	return result;
 }
 
 /**
@@ -73,15 +74,12 @@ bool AnalogTriggerOutput::GetAnalogTriggerForRouting()
 	return true;
 }
 
-
-
 /**
  * Request interrupts asynchronously on this analog trigger output.
  * TODO: Hardware supports interrupts on Analog Trigger outputs... WPILib should too
  */
 void AnalogTriggerOutput::RequestInterrupts(tInterruptHandler handler, void *param)
 {
-	wpi_assert(false);
 }
 
 /**
@@ -90,6 +88,5 @@ void AnalogTriggerOutput::RequestInterrupts(tInterruptHandler handler, void *par
  */
 void AnalogTriggerOutput::RequestInterrupts()
 {
-	wpi_assert(false);
 }
 

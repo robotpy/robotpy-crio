@@ -33,7 +33,6 @@
 #include "FrcError.h"
 #include "Task.h"
 #include "Timer.h"
-#include "Utility.h"
 #include "VisionAPI.h"
 
 /** packet size */
@@ -425,7 +424,7 @@ static int CameraOpenSocketAndIssueAuthorizedRequest(const char* serverName, con
         //DPRINTF (LOG_DEBUG, "creating camSock" ); 
         if ((camSock = socket (AF_INET, SOCK_STREAM, 0)) == ERROR) {
     		imaqSetError(ERR_CAMERA_SOCKET_CREATE_FAILED, funcName);
-    		perror ("Failed to create socket");
+    		perror("Failed to create socket");
     		return (ERROR);
         }
 
@@ -472,7 +471,7 @@ static int CameraOpenSocketAndIssueAuthorizedRequest(const char* serverName, con
     //  If none of the attempts were successful, then let the caller know.
     if (numAuthenticationStrings == i) {
 		imaqSetError(ERR_CAMERA_AUTHORIZATION_FAILED, funcName);
-        perror("Expected username/password combination not found on camera");
+        fprintf(stderr, "Expected username/password combination not found on camera");
         return ERROR;
     }
     return camSock;
@@ -594,7 +593,7 @@ int GetImageSetting(char *configString, char *cameraResponse){
  * @param rotation Camera image rotation 
  * @return error
  */
-int cameraJPEGServer(int frames, int compression, ImageSize resolution, ImageRotation rotation)
+int cameraJPEGServer(int frames, int compression, ImageResolution resolution, ImageRotation rotation)
 {
 	char funcName[]="cameraJPEGServer";
 	char *serverName = "192.168.0.90";		/* camera @ */ 
@@ -658,7 +657,7 @@ Authorization: Basic %s;\n\n";
 	    sprintf (tempBuffer, getStr, authenticationStrings[authorizeCount]);
 	  } else {
 		imaqSetError(ERR_CAMERA_AUTHORIZATION_FAILED, funcName);
-		perror ("Camera authorization failed ... Incorrect password on camera!!");
+		fprintf(stderr, "Camera authorization failed ... Incorrect password on camera!!");
 		return (ERROR);
 	  }
 	}
@@ -671,7 +670,7 @@ Authorization: Basic %s;\n\n";
 	  DPRINTF (LOG_DEBUG, "creating camSock" ); 
 	  if ((camSock = socket (AF_INET, SOCK_STREAM, 0)) == ERROR) {	
 		imaqSetError(ERR_CAMERA_SOCKET_CREATE_FAILED, funcName);
-		perror ("Failed to create socket");
+		perror("Failed to create socket");
 		cont = 0;
 		return (ERROR);
 	  }
@@ -825,7 +824,7 @@ Authorization: Basic %s;\n\n";
 			CameraCloseSocket("Failed to read image data", camSock);
 			goto RETRY;
 		} else if (bytesRead != globalCamera.data[writeIndex].cameraImageSize){
-			perror ("ERROR: Failed to read entire image: readLength does not match bytes read");
+			fprintf(stderr, "ERROR: Failed to read entire image: readLength does not match bytes read");
 			globalCamera.cameraMetrics[CAM_BAD_IMAGE_SIZE]++;
 		}
 		// if decoding the JPEG to an HSL Image, do it here
@@ -916,7 +915,7 @@ void StopImageAcquisition()
  * @param resolution Camera image size 
  * @param rotation Camera image rotation 
  */
-static int initCamera(int frames, int compression, ImageSize resolution, ImageRotation rotation) 
+static int initCamera(int frames, int compression, ImageResolution resolution, ImageRotation rotation) 
 {
 	//SetDebugFlag ( DEBUG_SCREEN_AND_FILE  ) ;
 	
@@ -957,7 +956,7 @@ int StartCameraTask()
 {
 	return StartCameraTask(10, 0, k160x120, ROT_0);
 }
-int StartCameraTask(int frames, int compression, ImageSize resolution, ImageRotation rotation)
+int StartCameraTask(int frames, int compression, ImageResolution resolution, ImageRotation rotation)
 {
 	char funcName[]="startCameraTask";
 	DPRINTF(LOG_DEBUG, "starting camera");

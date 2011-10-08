@@ -49,7 +49,7 @@ IMAQ_FUNC int Priv_SetWriteFileAllowed(UINT32 enable);
 /**
 @brief Possible image sizes that you can set on the camera.
 */
-enum ImageSize { k640x480, k320x240, k160x120 };
+enum ImageResolution { k640x480, k320x240, k160x120 };
 
 /**
 @brief Possible rotation values that you can set on the camera.
@@ -85,7 +85,7 @@ int GetImageSetting(char *configString, char *cameraResponse);
 
 /* camera task control */
 
-int StartCameraTask(int frames, int compression, ImageSize resolution, ImageRotation rotation);
+int StartCameraTask(int frames, int compression, ImageResolution resolution, ImageRotation rotation);
 int StopCameraTask();
 }
 #endif

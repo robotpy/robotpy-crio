@@ -1,7 +1,14 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2009. All Rights Reserved.							  */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
+/*----------------------------------------------------------------------------*/
+
 
 #ifndef CANJAGUAR_H
 #define CANJAGUAR_H
 
+#include "ErrorBase.h"
 #include "MotorSafety.h"
 #include "MotorSafetyHelper.h"
 #include "PIDOutput.h"
@@ -12,7 +19,7 @@
 /**
  * Luminary Micro Jaguar Speed Control
  */
-class CANJaguar : public MotorSafety, public PIDOutput, public SpeedController
+class CANJaguar : public MotorSafety, public PIDOutput, public SpeedController, public ErrorBase
 {
 public:
 	// The internal PID control loop in the Jaguar runs at 1kHz.
@@ -40,9 +47,9 @@ public:
 
 	// Other Accessors
 	void SetSpeedReference(SpeedReference reference);
-	SpeedReference GetSpeedReference(void);
+	SpeedReference GetSpeedReference();
 	void SetPositionReference(PositionReference reference);
-	PositionReference GetPositionReference(void);
+	PositionReference GetPositionReference();
 	void SetPID(double p, double i, double d);
 	double GetP();
 	double GetI();
@@ -80,6 +87,7 @@ public:
 	void StopMotor();
 	bool IsSafetyEnabled();
 	void SetSafetyEnabled(bool enabled);
+	void GetDescription(char *desc);
 
 protected:
 	UINT8 packPercentage(UINT8 *buffer, double value);
@@ -96,7 +104,7 @@ protected:
 	virtual void getTransaction(UINT32 messageID, UINT8 *data, UINT8 *dataSize);
 
 	static INT32 sendMessage(UINT32 messageID, const UINT8 *data, UINT8 dataSize);
-	static INT32 receiveMessage(UINT32 *messageID, UINT8 *data, UINT8 *dataSize, float timeout = 0.01);
+	static INT32 receiveMessage(UINT32 *messageID, UINT8 *data, UINT8 *dataSize, float timeout = 0.02);
 
 	UINT8 m_deviceNumber;
 	ControlMode m_controlMode;

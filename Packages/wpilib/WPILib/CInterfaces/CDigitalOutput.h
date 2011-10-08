@@ -7,14 +7,14 @@
 #ifndef _C_DIGITAL_OUTPUT_H
 #define _C_DIGITIL_OUTPUT_H
 
-void SetDigitalOutput(UINT32 slot, UINT32 channel, UINT32 value);
+void SetDigitalOutput(UINT8 moduleNumber, UINT32 channel, UINT32 value);
 void SetDigitalOutput(UINT32 channel, UINT32 value);
-void DeleteDigitalOutput(UINT32 slot, UINT32 channel);
+void DeleteDigitalOutput(UINT8 moduleNumber, UINT32 channel);
 void DeleteDigitalOutput(UINT32 channel);
 
 typedef void *DigitalOutputObject;
 
-DigitalOutputObject CreateDigitalOutput(UINT32 slot, UINT32 channel);
+DigitalOutputObject CreateDigitalOutput(UINT8 moduleNumber, UINT32 channel);
 DigitalOutputObject CreateDigitalOutput(UINT32 channel);
 void SetDigitalOutput(DigitalOutputObject o, bool val);
 void DeleteDigitalOutput(DigitalOutputObject o);

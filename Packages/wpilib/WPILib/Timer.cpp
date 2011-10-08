@@ -6,9 +6,9 @@
 
 #include "Timer.h"
 
-#include "sysLib.h" // for sysClkRateGet
-#include "time.h"
-#include "usrLib.h" // for taskDelay
+#include <sysLib.h> // for sysClkRateGet
+#include <time.h>
+#include <usrLib.h> // for taskDelay
 
 #include "Synchronized.h"
 #include "Utility.h"
@@ -33,7 +33,7 @@ void Wait(double seconds)
  * This is deprecated and just forwards to Timer::GetFPGATimestamp().
  * @returns Robot running time in seconds.
  */
-double GetClock(void)
+double GetClock()
 {
 	return Timer::GetFPGATimestamp();
 }
@@ -42,7 +42,7 @@ double GetClock(void)
  * @brief Gives real-time clock system time with nanosecond resolution
  * @return The time, just in case you want the robot to start autonomous at 8pm on Saturday.
 */
-double GetTime(void)  
+double GetTime()  
 {
 	struct timespec tp;
 	
@@ -176,7 +176,7 @@ bool Timer::HasPeriodPassed(double period)
  * Rolls over after 71 minutes.
  * @returns Robot running time in seconds.
  */
-double Timer::GetFPGATimestamp(void)
+double Timer::GetFPGATimestamp()
 {
 	// FPGA returns the timestamp in microseconds
 	// Call the helper GetFPGATime() in Utility.cpp
@@ -194,11 +194,10 @@ extern "C"
  * Return the PowerPC timestamp since boot in seconds.
  * 
  * This is lower overhead than GetFPGATimestamp() but not synchronized with other FPGA timestamps.
- * Rolls over after 130 seconds.
  * @returns Robot running time in seconds.
  */
-double Timer::GetPPCTimestamp(void)
+double Timer::GetPPCTimestamp()
 {
 	// PPC system clock is 33MHz
-	return niTimestamp32() / 33.0e6;
+	return niTimestamp64() / 33.0e6;
 }

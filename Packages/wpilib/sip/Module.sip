@@ -28,9 +28,11 @@ class Module: SensorBase
 %End
 
 public:
-	UINT32 GetSlot();
+	nLoadOut::tModuleType GetType();
+	UINT8 GetNumber();
+	static Module *GetModule(nLoadOut::tModuleType type, UINT8 number);
 
 protected:
-	explicit Module(UINT32 slot);
+	explicit Module(nLoadOut::tModuleType type, UINT8 number);
 	virtual ~Module();
 };

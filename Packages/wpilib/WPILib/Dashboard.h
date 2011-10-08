@@ -17,7 +17,8 @@
  * Pack data into the "user data" field that gets sent to the dashboard laptop
  * via the driver station.
  */
-class Dashboard : public DashboardBase {
+class Dashboard : public DashboardBase
+{
 public:
 	explicit Dashboard(SEM_ID statusDataSemaphore);
 	virtual ~Dashboard();
@@ -37,14 +38,14 @@ public:
 	void AddString(char* value);
 	void AddString(char* value, INT32 length);
 
-	void AddArray(void);
-	void FinalizeArray(void);
-	void AddCluster(void);
-	void FinalizeCluster(void);
+	void AddArray();
+	void FinalizeArray();
+	void AddCluster();
+	void FinalizeCluster();
 
 	void Printf(const char *writeFmt, ...);
 
-	INT32 Finalize(void);
+	INT32 Finalize();
 	void GetStatusBuffer(char** userStatusData, INT32* userStatusDataSize);
 	void Flush() {}
 private:
@@ -55,7 +56,7 @@ private:
 
 	bool ValidateAdd(INT32 size);
 	void AddedElement(Type type);
-	bool IsArrayRoot(void);
+	bool IsArrayRoot();
 
 	char *m_userStatusData;
 	INT32 m_userStatusDataSize;

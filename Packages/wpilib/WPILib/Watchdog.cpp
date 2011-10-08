@@ -6,8 +6,6 @@
 
 #include "Watchdog.h"
 
-#include "Utility.h"
-
 const double Watchdog::kDefaultWatchdogExpiration;
 
 /**
@@ -16,8 +14,9 @@ const double Watchdog::kDefaultWatchdogExpiration;
 Watchdog::Watchdog()
 	:	m_fpgaWatchDog(NULL)
 {
-	m_fpgaWatchDog = new tWatchdog(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_fpgaWatchDog = tWatchdog::create(&localStatus);
+	wpi_setError(localStatus);
 	SetExpiration(kDefaultWatchdogExpiration);
 	SetEnabled(true);
 }
@@ -47,8 +46,9 @@ Watchdog::~Watchdog()
 bool Watchdog::Feed()
 {
 	bool previous = GetEnabled();
-	m_fpgaWatchDog->strobeFeed(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_fpgaWatchDog->strobeFeed(&localStatus);
+	wpi_setError(localStatus);
 	return previous;
 }
 
@@ -60,8 +60,9 @@ bool Watchdog::Feed()
  */
 void Watchdog::Kill()
 {
-	m_fpgaWatchDog->strobeKill(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_fpgaWatchDog->strobeKill(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -71,8 +72,9 @@ void Watchdog::Kill()
  */
 double Watchdog::GetTimer()
 {
-	UINT32 timer = m_fpgaWatchDog->readTimer(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 timer = m_fpgaWatchDog->readTimer(&localStatus);
+	wpi_setError(localStatus);
 	return timer / (kSystemClockTicksPerMicrosecond * 1e6);
 }
 
@@ -83,8 +85,9 @@ double Watchdog::GetTimer()
  */
 double Watchdog::GetExpiration()
 {
-	UINT32 expiration = m_fpgaWatchDog->readExpiration(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 expiration = m_fpgaWatchDog->readExpiration(&localStatus);
+	wpi_setError(localStatus);
 	return expiration / (kSystemClockTicksPerMicrosecond * 1e6);
 }
 
@@ -95,8 +98,9 @@ double Watchdog::GetExpiration()
  */
 void Watchdog::SetExpiration(double expiration)
 {
-	m_fpgaWatchDog->writeExpiration((UINT32)(expiration * (kSystemClockTicksPerMicrosecond * 1e6)), &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_fpgaWatchDog->writeExpiration((UINT32)(expiration * (kSystemClockTicksPerMicrosecond * 1e6)), &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -106,8 +110,9 @@ void Watchdog::SetExpiration(double expiration)
  */
 bool Watchdog::GetEnabled()
 {
-	bool enabled = !m_fpgaWatchDog->readImmortal(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool enabled = !m_fpgaWatchDog->readImmortal(&localStatus);
+	wpi_setError(localStatus);
 	return enabled;
 }
 
@@ -125,8 +130,9 @@ bool Watchdog::GetEnabled()
  */
 void Watchdog::SetEnabled(bool enabled)
 {
-	m_fpgaWatchDog->writeImmortal(!enabled, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_fpgaWatchDog->writeImmortal(!enabled, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -143,8 +149,9 @@ void Watchdog::SetEnabled(bool enabled)
  */
 bool Watchdog::IsAlive()
 {
-	bool alive = m_fpgaWatchDog->readStatus_Alive(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool alive = m_fpgaWatchDog->readStatus_Alive(&localStatus);
+	wpi_setError(localStatus);
 	return alive;
 }
 
@@ -155,8 +162,9 @@ bool Watchdog::IsAlive()
  */
 bool Watchdog::IsSystemActive()
 {
-	bool alive = m_fpgaWatchDog->readStatus_SystemActive(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool alive = m_fpgaWatchDog->readStatus_SystemActive(&localStatus);
+	wpi_setError(localStatus);
 	return alive;
 }
 

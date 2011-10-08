@@ -18,7 +18,8 @@
 
 // Commandeer some bytes at the end for advanced I/O feedback.
 #define IO_CONFIG_DATA_SIZE 32
-#define USER_STATUS_DATA_SIZE (984 - IO_CONFIG_DATA_SIZE)
+#define SYS_STATUS_DATA_SIZE 44
+#define USER_STATUS_DATA_SIZE (984 - IO_CONFIG_DATA_SIZE - SYS_STATUS_DATA_SIZE)
 #define USER_DS_LCD_DATA_SIZE 128
 
 struct FRCCommonControlData{
@@ -109,9 +110,21 @@ struct FRCCommonControlData{
 	char versionData[8];
 };
 
+#define kFRC_NetworkCommunication_DynamicType_DSEnhancedIO_Input 17
+#define kFRC_NetworkCommunication_DynamicType_DSEnhancedIO_Output 18
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Header 19
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Extra1 20
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Vertices1 21
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Extra2 22
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Vertices2 23
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Joystick 24
+#define kFRC_NetworkCommunication_DynamicType_Kinect_Custom 25
+
 extern "C" {
 	void getFPGAHardwareVersion(UINT16 *fpgaVersion, UINT32 *fpgaRevision);
 	int getCommonControlData(FRCCommonControlData *data, int wait_ms);
+	int getRecentCommonControlData(FRCCommonControlData *commonData, int wait_ms);
+	int getRecentStatusData(UINT8 *batteryInt, UINT8 *batteryDec, UINT8 *dsDigitalOut, int wait_ms);
 	int getDynamicControlData(UINT8 type, char *dynamicData, INT32 maxLength, int wait_ms);
 	int setStatusData(float battery, UINT8 dsDigitalOut, UINT8 updateNumber,
 			const char *userDataHigh, int userDataHighLength,
@@ -133,6 +146,9 @@ extern "C" {
 
 	void FRC_NetworkCommunication_getVersionString(char *version);
 	void FRC_NetworkCommunication_observeUserProgramStarting(void);
+	void FRC_NetworkCommunication_observeUserProgramDisabled(void);
+	void FRC_NetworkCommunication_observeUserProgramAutonomous(void);
+	void FRC_NetworkCommunication_observeUserProgramTeleop(void);
 };
 
 #endif

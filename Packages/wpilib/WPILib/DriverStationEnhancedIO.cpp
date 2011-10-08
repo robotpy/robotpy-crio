@@ -6,8 +6,7 @@
 
 #include "DriverStationEnhancedIO.h"
 #include "Synchronized.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include <strLib.h>
 
 /**
@@ -165,10 +164,14 @@ bool DriverStationEnhancedIO::IsConfigEqual(const status_block_t &dsOutputBlock,
  */
 double DriverStationEnhancedIO::GetAcceleration(tAccelChannel channel)
 {
-	wpi_assert ((channel >= 0) && (channel <= 2));
+	if (channel < 1 || channel > 2)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 2");
+		return 0.0;
+	}
 	if (!m_inputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0.0;
 	}
 	Synchronized sync(m_inputDataSemaphore);
@@ -195,10 +198,14 @@ double DriverStationEnhancedIO::GetAnalogIn(UINT32 channel)
  */
 double DriverStationEnhancedIO::GetAnalogInRatio(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 8));
+	if (channel < 1 || channel > 8)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+		return 0.0;
+	}
 	if (!m_inputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0.0;
 	}
 	Synchronized sync(m_inputDataSemaphore);
@@ -216,10 +223,14 @@ double DriverStationEnhancedIO::GetAnalogInRatio(UINT32 channel)
  */
 double DriverStationEnhancedIO::GetAnalogOut(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 2));
+	if (channel < 1 || channel > 2)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 2");
+		return 0.0;
+	}
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0.0;
 	}
 
@@ -242,10 +253,14 @@ double DriverStationEnhancedIO::GetAnalogOut(UINT32 channel)
  */
 void DriverStationEnhancedIO::SetAnalogOut(UINT32 channel, double value)
 {
-	wpi_assert ((channel >= 1) && (channel <= 2));
+	if (channel < 1 || channel > 2)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 2");
+		return;
+	}
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return;
 	}
 	if (value < 0.0) value = 0.0;
@@ -272,7 +287,12 @@ void DriverStationEnhancedIO::SetAnalogOut(UINT32 channel, double value)
  */
 bool DriverStationEnhancedIO::GetButton(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 6));
+	if (channel < 1 || channel > 6)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 6");
+		return false;
+	}
+
 	return ((GetButtons() >> (channel-1)) & 1) != 0;
 }
 
@@ -285,7 +305,7 @@ UINT8 DriverStationEnhancedIO::GetButtons()
 {
 	if (!m_inputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0;
 	}
 	Synchronized sync(m_inputDataSemaphore);
@@ -300,10 +320,14 @@ UINT8 DriverStationEnhancedIO::GetButtons()
  */
 void DriverStationEnhancedIO::SetLED(UINT32 channel, bool value)
 {
-	wpi_assert ((channel >= 1) && (channel <= 8));
+	if (channel < 1 || channel > 8)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+		return;
+	}
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return;
 	}
 	UINT8 leds;
@@ -325,7 +349,7 @@ void DriverStationEnhancedIO::SetLEDs(UINT8 value)
 {
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return;
 	}
 	Synchronized sync(m_outputDataSemaphore);
@@ -340,7 +364,12 @@ void DriverStationEnhancedIO::SetLEDs(UINT8 value)
  */
 bool DriverStationEnhancedIO::GetDigital(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 16));
+	if (channel < 1 || channel > 16)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 16");
+		return false;
+	}
+
 	return ((GetDigitals() >> (channel-1)) & 1) != 0;
 }
 
@@ -353,7 +382,7 @@ UINT16 DriverStationEnhancedIO::GetDigitals()
 {
 	if (!m_inputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0;
 	}
 	Synchronized sync(m_inputDataSemaphore);
@@ -368,10 +397,14 @@ UINT16 DriverStationEnhancedIO::GetDigitals()
  */
 void DriverStationEnhancedIO::SetDigitalOutput(UINT32 channel, bool value)
 {
-	wpi_assert ((channel >= 1) && (channel <= 16));
+	if (channel < 1 || channel > 16)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 16");
+		return;
+	}
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return;
 	}
 	UINT16 digital;
@@ -388,7 +421,7 @@ void DriverStationEnhancedIO::SetDigitalOutput(UINT32 channel, bool value)
 	}
 	else
 	{
-		wpi_fatal(LineNotOutput);
+		wpi_setWPIError(LineNotOutput);
 	}
 }
 
@@ -403,11 +436,15 @@ void DriverStationEnhancedIO::SetDigitalOutput(UINT32 channel, bool value)
  */
 DriverStationEnhancedIO::tDigitalConfig DriverStationEnhancedIO::GetDigitalConfig(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 16));
+	if (channel < 1 || channel > 16)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 16");
+		return kUnknown;
+	}
 	if (!m_outputValid)
 	{
 		m_requestEnhancedEnable = true;
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return kUnknown;
 	}
 	Synchronized sync(m_outputDataSemaphore);
@@ -468,9 +505,21 @@ DriverStationEnhancedIO::tDigitalConfig DriverStationEnhancedIO::GetDigitalConfi
  */
 void DriverStationEnhancedIO::SetDigitalConfig(UINT32 channel, tDigitalConfig config)
 {
-	wpi_assert ((channel >= 1) && (channel <= 16));
-	wpi_assert (config != kPWM || ((channel >= 1) && (channel <= 4)));
-	wpi_assert (config != kAnalogComparator || ((channel >= 15) && (channel <= 16)));
+	if (channel < 1 || channel > 16)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 16");
+		return;
+	}
+	if (config == kPWM && (channel < 1 || channel > 4))
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel in PWM mode must be between 1 and 4");
+		return;
+	}
+	if (config == kAnalogComparator && (channel < 15 || channel > 16))
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel in Analog Comparator mode must be between 15 and 16");
+		return;
+	}
 
 	Synchronized sync(m_outputDataSemaphore);
 	m_configChanged = true;
@@ -545,13 +594,18 @@ void DriverStationEnhancedIO::SetDigitalConfig(UINT32 channel, tDigitalConfig co
  */
 double DriverStationEnhancedIO::GetPWMPeriod(tPWMPeriodChannels channels)
 {
-	wpi_assert ((channels >= kPWMChannels1and2) && (channels <= kPWMChannels3and4));
+	if (channels < kPWMChannels1and2 || channels > kPWMChannels3and4)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channels must be kPWMChannels1and2 or kPWMChannels3and4");
+		return 0.0;
+	}
 	if (!m_outputValid)
 	{
 		m_requestEnhancedEnable = true;
-		wpi_fatal(EnhancedIOMissing);
-		return 0;
+		wpi_setWPIError(EnhancedIOMissing);
+		return 0.0;
 	}
+
 	Synchronized sync(m_outputDataSemaphore);
 	return m_outputData.data.pwm_period[channels] / 24000000.0;
 }
@@ -568,13 +622,18 @@ double DriverStationEnhancedIO::GetPWMPeriod(tPWMPeriodChannels channels)
  */
 void DriverStationEnhancedIO::SetPWMPeriod(tPWMPeriodChannels channels, double period)
 {
-	wpi_assert ((channels >= kPWMChannels1and2) && (channels <= kPWMChannels3and4));
+	if (channels < kPWMChannels1and2 || channels > kPWMChannels3and4)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channels must be kPWMChannels1and2 or kPWMChannels3and4");
+		return;
+	}
+
 	// Convert to ticks based on the IO board's 24MHz clock
 	double ticks = period * 24000000.0;
 	// Limit the range of the ticks... warn if too big.
 	if (ticks > 65534.0) 
 	{
-		wpi_fatal(EnhancedIOPWMPeriodOutOfRange);
+		wpi_setWPIError(EnhancedIOPWMPeriodOutOfRange);
 		ticks = 65534.0;
 	}
 	else if (ticks < 0.0) ticks = 0.0;
@@ -601,12 +660,17 @@ void DriverStationEnhancedIO::SetPWMPeriod(tPWMPeriodChannels channels, double p
  */
 bool DriverStationEnhancedIO::GetFixedDigitalOutput(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 2));
-	if (!m_outputValid)
+	if (channel < 1 || channel > 2)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 2");
 		return 0;
 	}
+	if (!m_outputValid)
+	{
+		wpi_setWPIError(EnhancedIOMissing);
+		return 0;
+	}
+
 	Synchronized sync(m_outputDataSemaphore);
 	return ((m_outputData.data.fixed_digital_out >> (channel-1)) & 1) != 0;
 }
@@ -627,12 +691,17 @@ bool DriverStationEnhancedIO::GetFixedDigitalOutput(UINT32 channel)
  */
 void DriverStationEnhancedIO::SetFixedDigitalOutput(UINT32 channel, bool value)
 {
-	wpi_assert ((channel >= 1) && (channel <= 2));
-	if (!m_outputValid)
+	if (channel < 1 || channel > 2)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 2");
 		return;
 	}
+	if (!m_outputValid)
+	{
+		wpi_setWPIError(EnhancedIOMissing);
+		return;
+	}
+
 	UINT8 digital;
 	Synchronized sync(m_outputDataSemaphore);
 	digital = m_outputData.data.fixed_digital_out;
@@ -659,12 +728,17 @@ void DriverStationEnhancedIO::SetFixedDigitalOutput(UINT32 channel, bool value)
  */
 INT16 DriverStationEnhancedIO::GetEncoder(UINT32 encoderNumber)
 {
-	wpi_assert ((encoderNumber >= 1) && (encoderNumber <= 2));
-	if (!m_inputValid)
+	if (encoderNumber < 1 || encoderNumber > 2)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "encoderNumber must be between 1 and 2");
 		return 0;
 	}
+	if (!m_inputValid)
+	{
+		wpi_setWPIError(EnhancedIOMissing);
+		return 0;
+	}
+
 	Synchronized sync(m_inputDataSemaphore);
 	return m_inputData.data.quad[encoderNumber - 1] - m_encoderOffsets[encoderNumber - 1];
 }
@@ -679,12 +753,17 @@ INT16 DriverStationEnhancedIO::GetEncoder(UINT32 encoderNumber)
  */
 void DriverStationEnhancedIO::ResetEncoder(UINT32 encoderNumber)
 {
-	wpi_assert ((encoderNumber >= 1) && (encoderNumber <= 2));
-	if (!m_inputValid)
+	if (encoderNumber < 1 || encoderNumber > 2)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "encoderNumber must be between 1 and 2");
 		return;
 	}
+	if (!m_inputValid)
+	{
+		wpi_setWPIError(EnhancedIOMissing);
+		return;
+	}
+
 	Synchronized sync(m_inputDataSemaphore);
 	m_encoderOffsets[encoderNumber - 1] = m_inputData.data.quad[encoderNumber - 1];
 }
@@ -700,13 +779,18 @@ void DriverStationEnhancedIO::ResetEncoder(UINT32 encoderNumber)
  */
 bool DriverStationEnhancedIO::GetEncoderIndexEnable(UINT32 encoderNumber)
 {
-	wpi_assert ((encoderNumber >= 1) && (encoderNumber <= 2));
+	if (encoderNumber < 1 || encoderNumber > 2)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "encoderNumber must be between 1 and 2");
+		return false;
+	}
 	if (!m_outputValid)
 	{
 		m_requestEnhancedEnable = true;
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return false;
 	}
+
 	Synchronized sync(m_outputDataSemaphore);
 	return ((m_outputData.data.quad_index_enable >> (encoderNumber - 1)) & 1) != 0;
 }
@@ -726,7 +810,12 @@ bool DriverStationEnhancedIO::GetEncoderIndexEnable(UINT32 encoderNumber)
  */
 void DriverStationEnhancedIO::SetEncoderIndexEnable(UINT32 encoderNumber, bool enable)
 {
-	wpi_assert ((encoderNumber >= 1) && (encoderNumber <= 2));
+	if (encoderNumber < 1 || encoderNumber > 2)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "encoderNumber must be between 1 and 2");
+		return;
+	}
+
 	Synchronized sync(m_outputDataSemaphore);
 	m_outputData.data.quad_index_enable &= ~(1 << (encoderNumber - 1));
 	if (enable) m_outputData.data.quad_index_enable |= 1 << (encoderNumber - 1);
@@ -742,9 +831,10 @@ double DriverStationEnhancedIO::GetTouchSlider()
 {
 	if (!m_inputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
-		return 0;
+		wpi_setWPIError(EnhancedIOMissing);
+		return 0.0;
 	}
+
 	Synchronized sync(m_inputDataSemaphore);
 	UINT8 value = m_inputData.data.capsense_slider;
 	return value == 255 ? -1.0 : value / 254.0;
@@ -758,12 +848,17 @@ double DriverStationEnhancedIO::GetTouchSlider()
  */
 double DriverStationEnhancedIO::GetPWMOutput(UINT32 channel)
 {
-	wpi_assert ((channel >= 1) && (channel <= 4));
+	if (channel < 1 || channel > 4)
+	{
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 4");
+		return 0.0;
+	}
 	if (!m_outputValid)
 	{
-		wpi_fatal(EnhancedIOMissing);
-		return 0;
+		wpi_setWPIError(EnhancedIOMissing);
+		return 0.0;
 	}
+
 	Synchronized sync(m_outputDataSemaphore);
 	return (double)m_outputData.data.pwm_compare[channel - 1] / (double)m_outputData.data.pwm_period[(channel - 1) >> 1];
 }
@@ -779,12 +874,17 @@ double DriverStationEnhancedIO::GetPWMOutput(UINT32 channel)
  */
 void DriverStationEnhancedIO::SetPWMOutput(UINT32 channel, double value)
 {
-	wpi_assert ((channel >= 1) && (channel <= 4));
-	if (!m_outputValid)
+	if (channel < 1 || channel > 4)
 	{
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 4");
 		return;
 	}
+	if (!m_outputValid)
+	{
+		wpi_setWPIError(EnhancedIOMissing);
+		return;
+	}
+
 	if (value > 1.0) value = 1.0;
 	else if (value < 0.0) value = 0.0;
 	Synchronized sync(m_outputDataSemaphore);
@@ -805,9 +905,10 @@ UINT8 DriverStationEnhancedIO::GetFirmwareVersion()
 	if (!m_inputValid)
 	{
 		m_requestEnhancedEnable = true;
-		wpi_fatal(EnhancedIOMissing);
+		wpi_setWPIError(EnhancedIOMissing);
 		return 0;
 	}
+
 	Synchronized sync(m_inputDataSemaphore);
 	return m_inputData.data.fw_version;
 }

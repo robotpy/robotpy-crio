@@ -20,7 +20,7 @@
 class Accelerometer : public SensorBase, public PIDSource {
 public:
 	explicit Accelerometer(UINT32 channel);
-	Accelerometer(UINT32 slot, UINT32 channel);
+	Accelerometer(UINT8 moduleNumber, UINT32 channel);
 	explicit Accelerometer(AnalogChannel *channel);
 	virtual ~Accelerometer();
 

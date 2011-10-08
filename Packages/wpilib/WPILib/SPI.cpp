@@ -10,8 +10,7 @@
 #include "DigitalInput.h"
 #include "DigitalOutput.h"
 #include "Synchronized.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 #include <math.h>
 #include <usrLib.h>
@@ -118,8 +117,9 @@ void SPI::Init(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *miso)
 		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	}
 
-	m_spi = new tSPI(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_spi = tSPI::create(&localStatus);
+	wpi_setError(localStatus);
 
 	m_config.BusBitWidth = 8;
 	m_config.ClockHalfPeriodDelay = 0;
@@ -192,6 +192,7 @@ UINT32 SPI::GetBitsPerWord()
 void SPI::SetClockRate(double hz)
 {
 	int delay = 0;
+	// TODO: compute the appropriate values based on digital loop timing
 	if (hz <= 76628.4)
 	{
 		double v = (1.0/hz)/1.305e-5;
@@ -203,7 +204,7 @@ void SPI::SetClockRate(double hz)
 	}
 	if (delay > 255)
 	{
-		wpi_fatal(SPIClockRateTooLow);
+		wpi_setWPIError(SPIClockRateTooLow);
 		delay = 255;
 	}
 	m_config.ClockHalfPeriodDelay = delay;
@@ -358,10 +359,11 @@ void SPI::ApplyConfig()
 {
 	Synchronized sync(m_semaphore);
 
-	m_spi->writeConfig(m_config, &status);
-	m_spi->writeChannels(m_channels, &status);
-	m_spi->strobeReset(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_spi->writeConfig(m_config, &localStatus);
+	m_spi->writeChannels(m_channels, &localStatus);
+	m_spi->strobeReset(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -372,8 +374,9 @@ void SPI::ApplyConfig()
  */
 UINT16 SPI::GetOutputFIFOAvailable()
 {
-	UINT16 result = m_spi->readAvailableToLoad(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT16 result = m_spi->readAvailableToLoad(&localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -385,8 +388,9 @@ UINT16 SPI::GetOutputFIFOAvailable()
  */
 UINT16 SPI::GetNumReceived()
 {
-	UINT16 result = m_spi->readReceivedElements(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT16 result = m_spi->readReceivedElements(&localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -397,8 +401,9 @@ UINT16 SPI::GetNumReceived()
  */
 bool SPI::IsDone()
 {
-	bool result = m_spi->readStatus_Idle(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool result = m_spi->readStatus_Idle(&localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -410,8 +415,9 @@ bool SPI::IsDone()
  */
 bool SPI::HadReceiveOverflow()
 {
-	bool result = m_spi->readStatus_ReceivedDataOverflow(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	bool result = m_spi->readStatus_ReceivedDataOverflow(&localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -426,7 +432,7 @@ void SPI::Write(UINT32 data)
 {
 	if (m_channels.MOSI_Channel == 0 && m_channels.MOSI_Module == 0)
 	{
-		wpi_fatal(SPIWriteNoMOSI);
+		wpi_setWPIError(SPIWriteNoMOSI);
 		return;
 	}
 
@@ -435,9 +441,10 @@ void SPI::Write(UINT32 data)
 	while (GetOutputFIFOAvailable() == 0)
 		taskDelay(NO_WAIT);
 
-	m_spi->writeDataToLoad(data, &status);
-	m_spi->strobeLoad(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_spi->writeDataToLoad(data, &localStatus);
+	m_spi->strobeLoad(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -457,37 +464,40 @@ UINT32 SPI::Read(bool initiate)
 {
 	if (m_channels.MISO_Channel == 0 && m_channels.MISO_Module == 0)
 	{
-		wpi_fatal(SPIReadNoMISO);
+		wpi_setWPIError(SPIReadNoMISO);
 		return 0;
 	}
 
-	Synchronized sync(m_semaphore);
-
-	if (initiate)
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 data;
 	{
-		m_spi->writeDataToLoad(0, &status);
-		m_spi->strobeLoad(&status);
-		wpi_assertCleanStatus(status);
-	}
+		Synchronized sync(m_semaphore);
 
-	// Do we have anything ready to read?
-	if (GetNumReceived() == 0)
-	{
-		if (!initiate && IsDone() && GetOutputFIFOAvailable() == kTransmitFIFODepth)
+		if (initiate)
 		{
-			// Nothing to read: error out
-			wpi_fatal(SPIReadNoData);
-			return 0;
+			m_spi->writeDataToLoad(0, &localStatus);
+			m_spi->strobeLoad(&localStatus);
 		}
 
-		// Wait for the transaction to complete
-		while (GetNumReceived() == 0)
-			taskDelay(NO_WAIT);
-	}
+		// Do we have anything ready to read?
+		if (GetNumReceived() == 0)
+		{
+			if (!initiate && IsDone() && GetOutputFIFOAvailable() == kTransmitFIFODepth)
+			{
+				// Nothing to read: error out
+				wpi_setWPIError(SPIReadNoData);
+				return 0;
+			}
 
-	m_spi->strobeReadReceivedData(&status);
-	UINT32 data = m_spi->readReceivedData(&status);
-	wpi_assertCleanStatus(status);
+			// Wait for the transaction to complete
+			while (GetNumReceived() == 0)
+				taskDelay(NO_WAIT);
+		}
+
+		m_spi->strobeReadReceivedData(&localStatus);
+		data = m_spi->readReceivedData(&localStatus);
+	}
+	wpi_setError(localStatus);
 
 	return data;
 }
@@ -497,8 +507,9 @@ UINT32 SPI::Read(bool initiate)
  */
 void SPI::Reset()
 {
-	m_spi->strobeReset(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_spi->strobeReset(&localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -506,6 +517,7 @@ void SPI::Reset()
  */
 void SPI::ClearReceivedData()
 {
-	m_spi->strobeClearReceivedData(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_spi->strobeClearReceivedData(&localStatus);
+	wpi_setError(localStatus);
 }

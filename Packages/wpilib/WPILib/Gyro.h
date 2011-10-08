@@ -19,7 +19,9 @@ class AnalogModule;
  * rotates the new heading is computed by integrating the rate of rotation returned
  * by the sensor. When the class is instantiated, it does a short calibration routine
  * where it samples the gyro while at rest to determine the default offset. This is
- * subtracted from each sample to determine the heading.
+ * subtracted from each sample to determine the heading. This gyro class must be used 
+ * with a channel that is assigned one of the Analog accumulators from the FPGA. See
+ * AnalogChannel for the current accumulator assignments.
  */
 class Gyro : public SensorBase, public PIDSource
 {
@@ -30,15 +32,16 @@ public:
 	static const float kCalibrationSampleTime = 5.0;
 	static const float kDefaultVoltsPerDegreePerSecond = 0.007;
 
-	Gyro(UINT32 slot, UINT32 channel);
+	Gyro(UINT8 moduleNumber, UINT32 channel);
 	explicit Gyro(UINT32 channel);
 	explicit Gyro(AnalogChannel *channel);
 	explicit Gyro(AnalogChannel &channel);
 	virtual ~Gyro();
-	float GetAngle();
+	virtual float GetAngle();
 	void SetSensitivity(float voltsPerDegreePerSecond);
-	void Reset();
-	
+	virtual void Reset();
+
+	// PIDSource interface
 	double PIDGet();
 
 private:

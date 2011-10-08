@@ -3,7 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
-#include "CSerialPort.h"
+#include "CInterfaces/CSerialPort.h"
 #include <visa/visa.h>
 
 static SerialPort* serial_port = NULL;
@@ -52,7 +52,7 @@ void EnableSerialTermination(char terminator)
 /**
  * Disable termination behavior.
  */
-void DisableSerialTermination(void)
+void DisableSerialTermination()
 {
 	serial_port->DisableTermination();
 }
@@ -62,7 +62,7 @@ void DisableSerialTermination(void)
  *
  * @return The number of bytes available to read.
  */
-INT32 GetSerialBytesReceived(void)
+INT32 GetSerialBytesReceived()
 {
 	return serial_port->GetBytesReceived();
 }
@@ -158,7 +158,7 @@ void SetSerialWriteBufferMode(SerialPort::WriteBufferMode mode)
  * This is used when SetWriteBufferMode() is set to kFlushWhenFull to force a
  * flush before the buffer is full.
  */
-void FlushSerialPort(void)
+void FlushSerialPort()
 {
 	serial_port->Flush();
 }
@@ -168,7 +168,7 @@ void FlushSerialPort(void)
  *
  * Empty the transmit and receive buffers in the device and formatted I/O.
  */
-void ResetSerialPort(void)
+void ResetSerialPort()
 {
 	serial_port->Reset();
 }

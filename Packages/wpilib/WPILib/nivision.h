@@ -11,6 +11,12 @@
 #define NiVision_h
 
 //============================================================================
+//  Includes
+//============================================================================
+#include <stddef.h>
+
+
+//============================================================================
 //  Control Defines
 //============================================================================
 #if !defined(IMAQ_IMPORT)
@@ -39,6 +45,7 @@
 
 #ifdef _CVI_
 #pragma EnableLibraryRuntimeChecking
+#include <ansi_c.h>
 #endif
 
 #define IMAQ_CALLBACK __cdecl
@@ -183,7 +190,7 @@
 #define ERR_SATURATION_THRESHOLD_OUT_OF_RANGE                        -1074396121 // The value of the saturation threshold must be from 0 to 255.
 #define ERR_NOT_IMAGE                                                -1074396120 // Not an image.
 #define ERR_CUSTOMDATA_INVALID_KEY                                   -1074396119 // They custom data key you supplied is invalid. The only valid character values are decimal 32-126 and 161-255. There must also be no repeated, leading, or trailing spaces.
-#define ERR_INVALID_STEP_SIZE                                        -1074396118 // Step size must be greater than zero.
+#define ERR_INVALID_STEP_SIZE                                        -1074396118 // Step size must be greater than zero and less than Image size
 #define ERR_MATRIX_SIZE                                              -1074396117 // Invalid matrix size in the structuring element.
 #define ERR_CALIBRATION_INSF_POINTS                                  -1074396116 // Insufficient number of calibration feature points.
 #define ERR_CALIBRATION_IMAGE_CORRECTED                              -1074396115 // The operation is invalid in a corrected image.
@@ -269,6 +276,10 @@
 #define ERR_TEMPLATEIMAGE_EDGEINFO                                   -1074396034 // The template image does not contain enough edge information for the sample size(s) requested.
 #define ERR_TEMPLATEDESCRIPTOR_LEARNSETUPDATA                        -1074396033 // Invalid template descriptor.
 #define ERR_TEMPLATEDESCRIPTOR_ROTATION_SEARCHSTRATEGY               -1074396032 // The template descriptor does not contain data required for the requested search strategy in rotation-invariant matching.
+#define ERR_INVALID_TETRAGON                                         -1074396031 // The input tetragon must have four points. The points are specified clockwise starting with the top left point. 
+#define ERR_TOO_MANY_CLASSIFICATION_SESSIONS                         -1074396030 // There are too many classification sessions open.  You must close a session before you can open another one.
+#define ERR_TIME_BOUNDED_EXECUTION_NOT_SUPPORTED                     -1074396028 // NI Vision no longer supports time-bounded execution.
+#define ERR_INVALID_COLOR_RESOLUTION                                 -1074396027 // Invalid Color Resolution for the Color Classifier
 #define ERR_INVALID_PROCESS_TYPE_FOR_EDGE_DETECTION                  -1074396026 // Invalid process type for edge detection.
 #define ERR_INVALID_ANGLE_RANGE_FOR_STRAIGHT_EDGE                    -1074396025 // Angle range value should be equal to or greater than zero.
 #define ERR_INVALID_MIN_COVERAGE_FOR_STRAIGHT_EDGE                   -1074396024 // Minimum coverage value should be greater than zero.
@@ -333,7 +344,42 @@
 #define ERR_INVALID_MAX_WAVELET_TRANSFORM_LEVEL                      -1074395955 // Invalid maximum wavelet transform level.  Valid values range from 0 to 255.
 #define ERR_INVALID_QUANTIZATION_STEP_SIZE                           -1074395954 // The quantization step size must be greater than or equal to 0.
 #define ERR_INVALID_WAVELET_TRANSFORM_MODE                           -1074395953 // Invalid wavelet transform mode.
+#define ERR_ROI_NOT_POINT                                            -1074395952 // The ROI must only have a single Point contour.
+#define ERR_ROI_NOT_POINTS                                           -1074395951 // The ROI must only have Point contours.
+#define ERR_ROI_NOT_LINE                                             -1074395950 // The ROI must only have a single Line contour.
+#define ERR_ROI_NOT_ANNULUS                                          -1074395949 // The ROI must only have a single Annulus contour.
+#define ERR_INVALID_MEASURE_PARTICLES_CALIBRATION_MODE               -1074395948 // Invalid measure particles calibration mode.
+#define ERR_INVALID_PARTICLE_CLASSIFIER_THRESHOLD_TYPE               -1074395947 // Invalid particle classifier threshold type.
+#define ERR_INVALID_DISTANCE                                         -1074395946 // Invalid Color Segmentation Distance
+#define ERR_INVALID_PARTICLE_AREA                                    -1074395945 // Invalid Color Segmenation Particle Area
+#define ERR_CLASS_NAME_NOT_FOUND                                     -1074395944 // Required Class name is not found in trained labels/Class names
+#define ERR_NUMBER_LABEL_LIMIT_EXCEEDED                              -1074395943 // Number of Labels exceeded limit of label Image type
+#define ERR_INVALID_DISTANCE_LEVEL                                   -1074395942 // Invalid Color Segmentation distance level
+#define ERR_INVALID_SVM_TYPE                                         -1074395941 // Invalid SVM model type
+#define ERR_INVALID_SVM_KERNEL                                       -1074395940 // Invalid SVM kernel type
+#define ERR_NO_SUPPORT_VECTOR_FOUND                                  -1074395939 // No Support Vector is found at SVM training
+#define ERR_COST_LABEL_NOT_FOUND                                     -1074395938 // Label name is not found in added samples
+#define ERR_EXCEEDED_SVM_MAX_ITERATION                               -1074395937 // SVM training exceeded maximim Iteration limit
+#define ERR_INVALID_SVM_PARAMETER                                    -1074395936 // Invalid SVM Parameter
+#define ERR_INVALID_IDENTIFICATION_SCORE                             -1074395935 // Invalid Identification score. Must be between 0-1000.
+#define ERR_INVALID_TEXTURE_FEATURE                                  -1074395934 // Requested for invalid texture feature
+#define ERR_INVALID_COOCCURRENCE_LEVEL                               -1074395933 // The coOccurrence Level must lie between 1 and the maximum pixel value of an image (255 for U8 image)
+#define ERR_INVALID_WAVELET_SUBBAND                                  -1074395932 // Request for invalid wavelet subBand
+#define ERR_INVALID_FINAL_STEP_SIZE                                  -1074395931 // The final step size must be lesser than the initial step size
+#define ERR_INVALID_ENERGY                                           -1074395930 // Minimum Energy should lie between 0 and 100
+#define ERR_INVALID_TEXTURE_LABEL                                    -1074395929 // The classification label must be texture or defect for texture defect classifier
+#define ERR_INVALID_WAVELET_TYPE                                     -1074395928 // The wavelet type is invalid
+#define ERR_SAME_WAVELET_BANDS_SELECTED                              -1074395927 // Same Wavelet band is selected multiple times
+#define ERR_IMAGE_SIZE_MISMATCH                                      -1074395926 // The two input image sizes are different 
 #define ERR_NUMBER_CLASS                                             -1074395920 // Invalid number of classes.
+#define ERR_INVALID_LUCAS_KANADE_WINDOW_SIZE                         -1074395888 // Both dimensions of the window size should be odd, greater than 2 and less than 16.
+#define ERR_INVALID_MATRIX_TYPE                                      -1074395887 // The type of matrix supplied to the function is not supported.
+#define ERR_INVALID_OPTICAL_FLOW_TERMINATION_CRITERIA_TYPE           -1074395886 // An invalid termination criteria was specified for the optical flow computation.
+#define ERR_LKP_NULL_PYRAMID                                         -1074395885 // The pyramid levels where not properly allocated.
+#define ERR_INVALID_PYRAMID_LEVEL                                    -1074395884 // The pyramid level specified cannot be negative
+#define ERR_INVALID_LKP_KERNEL                                       -1074395883 // The kernel must be symmetric  with non-zero coefficients and of odd size
+#define ERR_INVALID_HORN_SCHUNCK_LAMBDA                              -1074395882 // Invalid smoothing parameter in Horn Schunck operation.
+#define ERR_INVALID_HORN_SCHUNCK_TYPE                                -1074395881 // Invalid stopping criteria type for Horn Schunck optical flow.
 #define ERR_PARTICLE                                                 -1074395880 // Invalid particle.
 #define ERR_BAD_MEASURE                                              -1074395879 // Invalid measure number.
 #define ERR_PROP_NODE_WRITE_NOT_SUPPORTED                            -1074395878 // The Image Display control does not support writing this property node.
@@ -385,6 +431,24 @@
 #define ERR_DLL_NOT_FOUND                                            -1074395757 // DLL not found.
 #define ERR_DLL_FUNCTION_NOT_FOUND                                   -1074395756 // DLL function not found.
 #define ERR_TRIG_TIMEOUT                                             -1074395754 // Trigger timeout.
+#define ERR_CONTOUR_INVALID_REFINEMENTS                              -1074395746 // Invalid number specified for maximum contour refinements.
+#define ERR_TOO_MANY_CURVES                                          -1074395745 // Too many curves extracted from image. Raise the edge threshold or reduce the ROI.
+#define ERR_CONTOUR_INVALID_KERNEL_FOR_SMOOTHING                     -1074395744 // Invalid kernel for contour smoothing. Zero indicates no smoothing, otherwise value must be odd. 
+#define ERR_CONTOUR_LINE_INVALID                                     -1074395743 // The contour line fit is invalid. Line segment start and stop must differ.
+#define ERR_CONTOUR_TEMPLATE_IMAGE_INVALID                           -1074395742 // The template image must be trained with IMAQ Learn Contour Pattern or be the same size as the target image.
+#define ERR_CONTOUR_GPM_FAIL                                         -1074395741 // Matching failed to align the template and target contours.
+#define ERR_CONTOUR_OPENING_NEWER_VERSION                            -1074395740 // The contour you tried to open was created with a newer version of NI Vision. Upgrade to the latest version of NI Vision to read this file. 
+#define ERR_CONTOUR_CONNECT_DUPLICATE                                -1074395739 // Only one range is allowed per curve connection constraint type. 
+#define ERR_CONTOUR_CONNECT_TYPE                                     -1074395738 // Invalid contour connection constraint type. 
+#define ERR_CONTOUR_MATCH_STR_NOT_APPLICABLE                         -1074395737 // In order to use contour matching, you must provide a template image that has been trained with IMAQ Learn Contour Pattern
+#define ERR_CONTOUR_CURVATURE_KERNEL                                 -1074395736 // Invalid kernel width for curvature calculation. Must be an odd value greater than 1. 
+#define ERR_CONTOUR_EXTRACT_SELECTION                                -1074395735 // Invalid Contour Selection method for contour extraction. 
+#define ERR_CONTOUR_EXTRACT_DIRECTION                                -1074395734 // Invalid Search Direction for contour extraction. 
+#define ERR_CONTOUR_EXTRACT_ROI                                      -1074395733 // Invalid ROI for contour extraction. The ROI must contain an annulus, rectangle or rotated rectangle. 
+#define ERR_CONTOUR_NO_CURVES                                        -1074395732 // No curves were found in the image.
+#define ERR_CONTOUR_COMPARE_KERNEL                                   -1074395731 // Invalid Smoothing Kernel width for contour comparison. Must be zero or an odd positive integer. 
+#define ERR_CONTOUR_COMPARE_SINGLE_IMAGE                             -1074395730 // If no template image is provided, the target image must contain both a contour with extracted points and a fitted equation.
+#define ERR_CONTOUR_INVALID                                          -1074395729 // Invalid contour image.
 #define ERR_INVALID_2D_BARCODE_SEARCH_MODE                           -1074395728 // NI Vision does not support the search mode you provided.
 #define ERR_UNSUPPORTED_2D_BARCODE_SEARCH_MODE                       -1074395727 // NI Vision does not support the search mode you provided for the type of 2D barcode for which you are searching.
 #define ERR_MATCHFACTOR_OBSOLETE                                     -1074395726 // matchFactor has been obsoleted. Instead, set the initialMatchListLength and matchListReductionFactor in the MatchPatternAdvancedOptions structure.
@@ -414,6 +478,12 @@
 #define ERR_INVALID_LENGTH                                           -1074395702 // The length of the edge detection line must be greater than zero.
 #define ERR_INVALID_MATRIX_SIZE_RANGE                                -1074395701 // The maximum Data Matrix barcode size must be equal to or greater than the minimum Data Matrix barcode size.
 #define ERR_REQUIRES_WIN2000_OR_NEWER                                -1074395700 // The function requires the operating system to be Microsoft Windows 2000 or newer.
+#define ERR_INVALID_CALIBRATION_METHOD                               -1074395662 // Invalid calibration method requested
+#define ERR_INVALID_OPERATION_ON_COMPACT_CALIBRATION_ATTEMPTED       -1074395661 // This calibration is compact. Re-Learning calibration and retrieving thumbnails are not possible with this calibration
+#define ERR_INVALID_POLYNOMIAL_MODEL_K_COUNT                         -1074395660 // Invalid number of K values 
+#define ERR_INVALID_DISTORTION_MODEL                                 -1074395659 // Invalid distortion model type
+#define ERR_CAMERA_MODEL_NOT_AVAILABLE                               -1074395658 // Camera Model is not learned
+#define ERR_INVALID_THUMBNAIL_INDEX                                  -1074395657 // Supplied thumbnail index is invalid
 #define ERR_SMOOTH_CONTOURS_MUST_BE_SAME                             -1074395656 // You must specify the same value for the smooth contours advanced match option for all templates you want to match.
 #define ERR_ENABLE_CALIBRATION_SUPPORT_MUST_BE_SAME                  -1074395655 // You must specify the same value for the enable calibration support advanced match option for all templates you want to match.
 #define ERR_GRADING_INFORMATION_NOT_FOUND                            -1074395654 // The source image does not contain grading information. You must prepare the source image for grading when reading the Data Matrix, and you cannot change the contents of the source image between reading and grading the Data Matrix.
@@ -486,7 +556,7 @@
 #define ERR_NIOCR_INVALID_LOWER_THRESHOLD_LIMIT                      -1074395586 // Invalid lower threshold limit. Valid lower threshold limits range from 0 to 255.
 #define ERR_NIOCR_INVALID_UPPER_THRESHOLD_LIMIT                      -1074395585 // Invalid upper threshold limit. Valid upper threshold limits range from 0 to 255.
 #define ERR_NIOCR_INVALID_THRESHOLD_LIMITS                           -1074395584 // The lower threshold limit must be less than the upper threshold limit.
-#define ERR_NIOCR_INVALID_MIN_CHAR_SPACING                           -1074395583 // Invalid minimum character spacing value. Character spacing must be >= 0 pixels.
+#define ERR_NIOCR_INVALID_MIN_CHAR_SPACING                           -1074395583 // Invalid minimum character spacing value. Character spacing must be >= 1 pixel.
 #define ERR_NIOCR_INVALID_MAX_HORIZ_ELEMENT_SPACING                  -1074395582 // Invalid maximum horizontal element spacing value. Maximum horizontal element spacing must be >= 0.
 #define ERR_NIOCR_INVALID_MAX_VERT_ELEMENT_SPACING                   -1074395581 // Invalid maximum vertical element spacing value. Maximum vertical element spacing must be >= 0.
 #define ERR_NIOCR_INVALID_MIN_BOUNDING_RECT_WIDTH                    -1074395580 // Invalid minimum bounding rectangle width. Minimum bounding rectangle width must be >= 1.
@@ -521,6 +591,17 @@
 #define ERR_NIOCR_RENAME_REFCHAR                                     -1074395551 // A trained OCR character cannot be renamed while it is a reference character.
 #define ERR_NIOCR_INVALID_CHARACTER_VALUE                            -1074395550 // A character cannot have an ASCII value of 255.
 #define ERR_NIOCR_INVALID_NUMBER_OF_OBJECTS_TO_VERIFY                -1074395549 // The number of objects found does not match the number of expected characters or patterns to verify.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_PREFILTER_CAP               -1074395421 // The specified value for the filter cap for block matching is invalid.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_PREFILTER_SIZE              -1074395420 // The specified prefilter size for block matching is invalid.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_PREFILTER_TYPE              -1074395419 // The specified prefilter type for block matching is invalid.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_NUMDISPARITIES              -1074395418 // The specifed value for number of disparities is invalid.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_WINDOW_SIZE                 -1074395417 // The specified window size for block matching is invalid.
+#define ERR_3DVISION_INVALID_SESSION_TYPE                            -1074395416 // This 3D vision function cannot be called on this type of 3d vision session.
+#define ERR_TOO_MANY_3DVISION_SESSIONS                               -1074395415 // There are too many 3D vision sessions open.  You must close a session before you can open another one.
+#define ERR_OPENING_NEWER_3DVISION_SESSION                           -1074395414 // The 3D vision session you tried to open was created with a newer version of NI Vision. Upgrade to the latest version of NI Vision to read this file.
+#define ERR_INVALID_STEREO_BLOCKMATCHING_FILTERTYPE                  -1074395413 // You have specified an invalid filter type for block matching.
+#define ERR_INVALID_STEREO_CAMERA_POSITION                           -1074395412 // You have requested results at an invalid camera position in the stereo setup.
+#define ERR_INVALID_3DVISION_SESSION                                 -1074395411 // Not a valid 3D Vision session.
 #define ERR_INVALID_ICONS_PER_LINE                                   -1074395410 // NI Vision does not support less than one icon per line.
 #define ERR_INVALID_SUBPIXEL_DIVISIONS                               -1074395409 // Invalid subpixel divisions.
 #define ERR_INVALID_DETECTION_MODE                                   -1074395408 // Invalid detection mode.
@@ -606,9 +687,10 @@
 #define ERR_INSF_POINTS                                              -1074395318 // You supplied an insufficient number of points to perform this operation.
 #define ERR_UNDEF_POINT                                              -1074395317 // You specified a point that lies outside the image.
 #define ERR_INVALID_KERNEL_CODE                                      -1074395316 // Invalid kernel code.
+#define ERR_INEFFICIENT_POINTS                                       -1074395315 // You supplied an inefficient set of points to match the minimum score.
 #define ERR_WRITE_FILE_NOT_SUPPORTED                                 -1074395313 // Writing files is not supported on this device.
 #define ERR_LCD_CALIBRATE                                            -1074395312 // The input image does not seem to be a valid LCD or LED calibration image.
-#define ERR_INVALID_COLOR_SPECTRUM                                   -1074395311 // The color spectrum array you provided does not contain enough elements or contains an element set to not-a-number (NaN).
+#define ERR_INVALID_COLOR_SPECTRUM                                   -1074395311 // The color spectrum array you provided has an invalid number of elements or contains an element set to not-a-number (NaN).
 #define ERR_INVALID_PALETTE_TYPE                                     -1074395310 // NI Vision does not support the PaletteType value you supplied.
 #define ERR_INVALID_WINDOW_THREAD_POLICY                             -1074395309 // NI Vision does not support the WindowThreadPolicy value you supplied.
 #define ERR_INVALID_COLORSENSITIVITY                                 -1074395308 // NI Vision does not support the ColorSensitivity value you supplied.
@@ -630,6 +712,8 @@
 #define ERR_POINTS_ARE_COLLINEAR                                     -1074395292 // Do not supply collinear points for this operation.
 #define ERR_SHAPEMATCH_BADIMAGEDATA                                  -1074395291 // Shape Match requires the image to contain only pixel values of 0 or 1.
 #define ERR_SHAPEMATCH_BADTEMPLATE                                   -1074395290 // The template you supplied for ShapeMatch contains no shape information.
+#define ERR_CONTAINER_CAPACITY_EXCEEDED_UINT_MAX                     -1074395289 // The operation would have exceeded the capacity of an internal container, which is limited to 4294967296 unique elements.
+#define ERR_CONTAINER_CAPACITY_EXCEEDED_INT_MAX                      -1074395288 // The operation would have exceeded the capacity of an internal container, which is limited to 2147483648 unique elements.
 #define ERR_INVALID_LINE                                             -1074395287 // The line you provided contains two identical points, or one of the coordinate locations for the line is not a number (NaN).
 #define ERR_INVALID_CONCENTRIC_RAKE_DIRECTION                        -1074395286 // Invalid concentric rake direction.
 #define ERR_INVALID_SPOKE_DIRECTION                                  -1074395285 // Invalid spoke direction.
@@ -654,7 +738,7 @@
 #define ERR_HEAP_TRASHED                                             -1074395260 // An internal memory error occurred.
 #define ERR_BAD_FILTER_WIDTH                                         -1074395258 // The filter width must be odd for the Canny operator.
 #define ERR_INVALID_EDGE_DIR                                         -1074395257 // You supplied an invalid edge direction in the Canny operator.
-#define ERR_EVEN_WINDOW_SIZE                                         -1074395256 // The window size must be odd for the Canny operator. 
+#define ERR_EVEN_WINDOW_SIZE                                         -1074395256 // The window size must be odd for the Canny operator.
 #define ERR_INVALID_LEARN_MODE                                       -1074395253 // Invalid learn mode.
 #define ERR_LEARN_SETUP_DATA                                         -1074395252 // Invalid learn setup data.
 #define ERR_INVALID_MATCH_MODE                                       -1074395251 // Invalid match mode.
@@ -672,15 +756,34 @@
 #define ERR_TEMPLATE_DESCRIPTOR_SHIFT                                -1074395239 // Invalid template descriptor.
 #define ERR_TEMPLATE_DESCRIPTOR_NOSHIFT                              -1074395238 // The template descriptor does not contain data required for shift-invariant matching.
 #define ERR_TEMPLATE_DESCRIPTOR_SHIFT_1                              -1074395237 // Invalid template descriptor.
+#define ERR_TEMPLATE_DESCRIPTOR_NOSCALE                              -1074395236 // The template descriptor does not contain data required for scale-invariant matching.
 #define ERR_TEMPLATE_IMAGE_CONTRAST_TOO_LOW                          -1074395235 // The template image does not contain enough contrast.
 #define ERR_TEMPLATE_IMAGE_TOO_SMALL                                 -1074395234 // The template image is too small.
 #define ERR_TEMPLATE_IMAGE_TOO_LARGE                                 -1074395233 // The template image is too large.
+#define ERR_TOO_MANY_OCR_SESSIONS                                    -1074395214 // There are too many OCR sessions open.  You must close a session before you can open another one.
 #define ERR_OCR_TEMPLATE_WRONG_SIZE                                  -1074395212 // The size of the template string must match the size of the string you are trying to correct.
 #define ERR_OCR_BAD_TEXT_TEMPLATE                                    -1074395211 // The supplied text template contains nonstandard characters that cannot be generated by OCR.
 #define ERR_OCR_CANNOT_MATCH_TEXT_TEMPLATE                           -1074395210 // At least one character in the text template was of a lexical class that did not match the supplied character reports.
 #define ERR_OCR_LIB_INIT                                             -1074395203 // The OCR library cannot be initialized correctly.
 #define ERR_OCR_LOAD_LIBRARY                                         -1074395201 // There was a failure when loading one of the internal OCR engine or LabView libraries.
 #define ERR_OCR_INVALID_PARAMETER                                    -1074395200 // One of the parameters supplied to the OCR function that generated this error is invalid.
+#define ERR_MARKER_INFORMATION_NOT_SUPPLIED                          -1074395199 // Marker image and points are not supplied
+#define ERR_INCOMPATIBLE_MARKER_IMAGE_SIZE                           -1074395198 // Source Image and Marker Image should be of same size.
+#define ERR_BOTH_MARKER_INPUTS_SUPPLIED                              -1074395197 // Both Marker Image and Points are supplied.
+#define ERR_INVALID_MORPHOLOGICAL_OPERATION                          -1074395196 // Invalid Morphological Operation.
+#define ERR_IMAGE_CONTAINS_NAN_VALUES                                -1074395195 // Float image contains NaN values
+#define ERR_OVERLAY_EXTRAINFO_OPENING_NEW_VERSION                    -1074395194 // The overlay information you tried to open was created with a newer version of NI Vision. Upgrade to the latest version of NI Vision to read this file.
+#define ERR_NO_CLAMP_FOUND                                           -1074395193 // No valid clamp was found with the current configuration
+#define ERR_NO_CLAMP_WITHIN_ANGLE_RANGE                              -1074395192 // Supplied angle range for clamp is insufficient
+#define ERR_GHT_INVALID_USE_ALL_CURVES_VALUE                         -1074395188 // The use all curves advanced option specified during learn is not supported
+#define ERR_INVALID_GAUSS_SIGMA_VALUE                                -1074395187 // The sigma value specified for the Gaussian filter is too small.
+#define ERR_INVALID_GAUSS_FILTER_TYPE                                -1074395186 // The specified Gaussian filter type is not supported.
+#define ERR_INVALID_CONTRAST_REVERSAL_MODE                           -1074395185 // The contrast reversal mode specified during matching is invalid.
+#define ERR_INVALID_ROTATION_RANGE                                   -1074395184 // Invalid roation angle range. The upper bound must be greater than or equal to the lower bound.
+#define ERR_GHT_INVALID_MINIMUM_LEARN_ANGLE_VALUE                    -1074395183 // The minimum rotation angle value specifed during learning of the template is not supported.
+#define ERR_GHT_INVALID_MAXIMUM_LEARN_ANGLE_VALUE                    -1074395182 // The maximum rotation angle value specifed during learning of the template is not supported.
+#define ERR_GHT_INVALID_MAXIMUM_LEARN_SCALE_FACTOR                   -1074395181 // The maximum scale factor specifed during learning of the template is not supported.
+#define ERR_GHT_INVALID_MINIMUM_LEARN_SCALE_FACTOR                   -1074395180 // The minimum scale factor specifed during learning of the template is not supported.
 #define ERR_OCR_PREPROCESSING_FAILED                                 -1074395179 // The OCR engine failed during the preprocessing stage.
 #define ERR_OCR_RECOGNITION_FAILED                                   -1074395178 // The OCR engine failed during the recognition stage.
 #define ERR_OCR_BAD_USER_DICTIONARY                                  -1074395175 // The provided filename is not valid user dictionary filename.
@@ -725,253 +828,12 @@
 //============================================================================
 //  Enumerated Types
 //============================================================================
-typedef enum SearchStrategy_enum {
-    IMAQ_CONSERVATIVE               = 1,           //Instructs the pattern matching algorithm to use the largest possible amount of information from the image at the expense of slowing down the speed of the algorithm.
-    IMAQ_BALANCED                   = 2,           //Instructs the pattern matching algorithm to balance the amount of information from the image it uses with the speed of the algorithm.
-    IMAQ_AGGRESSIVE                 = 3,           //Instructs the pattern matching algorithm to use a lower amount of information from the image, which allows the algorithm to run quickly but at the expense of accuracy.
-    IMAQ_VERY_AGGRESSIVE            = 4,           //Instructs the pattern matching algorithm to use the smallest possible amount of information from the image, which allows the algorithm to run at the highest speed possible but at the expense of accuracy.
-    IMAQ_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
-} SearchStrategy;
-
-typedef enum MeterArcMode_enum {
-    IMAQ_METER_ARC_ROI             = 0,           //The function uses the roi parameter and ignores the base, start, and end parameters.
-    IMAQ_METER_ARC_POINTS          = 1,           //The function uses the base,start, and end parameters and ignores the roi parameter.
-    IMAQ_METER_ARC_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} MeterArcMode;
-
-typedef enum MorphologyMethod_enum {
-    IMAQ_AUTOM                        = 0,           //The function uses a transformation that generates simpler particles that contain fewer details.
-    IMAQ_CLOSE                        = 1,           //The function uses a transformation that fills tiny holes and smooths boundaries.
-    IMAQ_DILATE                       = 2,           //The function uses a transformation that eliminates tiny holes isolated in particles and expands the contour of the particles according to the template defined by the structuring element.
-    IMAQ_ERODE                        = 3,           //The function uses a transformation that eliminates pixels isolated in the background and erodes the contour of particles according to the template defined by the structuring element.
-    IMAQ_GRADIENT                     = 4,           //The function uses a transformation that leaves only the pixels that would be added by the dilation process or eliminated by the erosion process.
-    IMAQ_GRADIENTOUT                  = 5,           //The function uses a transformation that leaves only the pixels that would be added by the dilation process.
-    IMAQ_GRADIENTIN                   = 6,           //The function uses a transformation that leaves only the pixels that would be eliminated by the erosion process.
-    IMAQ_HITMISS                      = 7,           //The function uses a transformation that extracts each pixel located in a neighborhood exactly matching the template defined by the structuring element.
-    IMAQ_OPEN                         = 8,           //The function uses a transformation that removes small particles and smooths boundaries.
-    IMAQ_PCLOSE                       = 9,           //The function uses a transformation that fills tiny holes and smooths the inner contour of particles according to the template defined by the structuring element.
-    IMAQ_POPEN                        = 10,          //The function uses a transformation that removes small particles and smooths the contour of particles according to the template defined by the structuring element.
-    IMAQ_THICK                        = 11,          //The function uses a transformation that adds to an image those pixels located in a neighborhood that matches a template specified by the structuring element.
-    IMAQ_THIN                         = 12,          //The function uses a transformation that eliminates pixels that are located in a neighborhood matching a template specified by the structuring element.
-    IMAQ_MORPHOLOGY_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} MorphologyMethod;
-
-typedef enum ObjectType_enum {
-    IMAQ_BRIGHT_OBJECTS         = 0,           //The function detects bright objects.
-    IMAQ_DARK_OBJECTS           = 1,           //The function detects dark objects.
-    IMAQ_OBJECT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ObjectType;
-
-typedef enum OutlineMethod_enum {
-    IMAQ_EDGE_DIFFERENCE           = 0,           //The function uses a method that produces continuous contours by highlighting each pixel where an intensity variation occurs between itself and its three upper-left neighbors.
-    IMAQ_EDGE_GRADIENT             = 1,           //The function uses a method that outlines contours where an intensity variation occurs along the vertical axis.
-    IMAQ_EDGE_PREWITT              = 2,           //The function uses a method that extracts the outer contours of objects.
-    IMAQ_EDGE_ROBERTS              = 3,           //The function uses a method that outlines the contours that highlight pixels where an intensity variation occurs along the diagonal axes.
-    IMAQ_EDGE_SIGMA                = 4,           //The function uses a method that outlines contours and details by setting pixels to the mean value found in their neighborhood, if their deviation from this value is not significant.
-    IMAQ_EDGE_SOBEL                = 5,           //The function uses a method that extracts the outer contours of objects.
-    IMAQ_OUTLINE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} OutlineMethod;
-
-typedef enum PaletteType_enum {
-    IMAQ_PALETTE_GRAY            = 0,           //The function uses a palette that has a gradual gray-level variation from black to white.
-    IMAQ_PALETTE_BINARY          = 1,           //The function uses a palette of 16 cycles of 16 different colors that is useful with binary images.
-    IMAQ_PALETTE_GRADIENT        = 2,           //The function uses a palette that has a gradation from red to white with a prominent range of light blue in the upper value range.
-    IMAQ_PALETTE_RAINBOW         = 3,           //The function uses a palette that has a gradation from blue to red with a prominent range of greens in the middle value range.
-    IMAQ_PALETTE_TEMPERATURE     = 4,           //The function uses a palette that has a gradation from light brown to dark brown.
-    IMAQ_PALETTE_USER            = 5,           //The function uses a palette defined by the user.
-    IMAQ_PALETTE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} PaletteType;
-
-typedef enum ParticleInfoMode_enum {
-    IMAQ_BASIC_INFO                    = 0,           //The function returns only the following elements of each report: area, calibratedArea, boundingRect.
-    IMAQ_ALL_INFO                      = 1,           //The function returns all the information about each particle.
-    IMAQ_PARTICLE_INFO_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ParticleInfoMode;
-
-typedef enum PhotometricMode_enum {
-    IMAQ_WHITE_IS_ZERO               = 0,           //The function interprets zero-value pixels as white.
-    IMAQ_BLACK_IS_ZERO               = 1,           //The function interprets zero-value pixels as black.
-    IMAQ_PHOTOMETRIC_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} PhotometricMode;
-
-typedef enum Plane3D_enum {
-    IMAQ_3D_REAL             = 0,           //The function shows the real part of complex images.
-    IMAQ_3D_IMAGINARY        = 1,           //The function shows the imaginary part of complex images.
-    IMAQ_3D_MAGNITUDE        = 2,           //The function shows the magnitude part of complex images.
-    IMAQ_3D_PHASE            = 3,           //The function shows the phase part of complex images.
-    IMAQ_PLANE_3D_SIZE_GUARD = 0xFFFFFFFF   
-} Plane3D;
-
 typedef enum PointSymbol_enum {
     IMAQ_POINT_AS_PIXEL          = 0,           //A single pixel represents a point in the overlay.
     IMAQ_POINT_AS_CROSS          = 1,           //A cross represents a point in the overlay.
     IMAQ_POINT_USER_DEFINED      = 2,           //The pattern supplied by the user represents a point in the overlay.
     IMAQ_POINT_SYMBOL_SIZE_GUARD = 0xFFFFFFFF   
 } PointSymbol;
-
-typedef enum PolarityType_enum {
-    IMAQ_EDGE_RISING              = 1,           //The edge is a rising edge.
-    IMAQ_EDGE_FALLING             = -1,          //The edge is a falling edge.
-    IMAQ_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} PolarityType;
-
-typedef enum RakeDirection_enum {
-    IMAQ_LEFT_TO_RIGHT             = 0,           //The function searches from the left side of the search area to the right side of the search area.
-    IMAQ_RIGHT_TO_LEFT             = 1,           //The function searches from the right side of the search area to the left side of the search area.
-    IMAQ_TOP_TO_BOTTOM             = 2,           //The function searches from the top side of the search area to the bottom side of the search area.
-    IMAQ_BOTTOM_TO_TOP             = 3,           //The function searches from the bottom side of the search area to the top side of the search area.
-    IMAQ_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
-} RakeDirection;
-
-typedef enum RectOrientation_enum {
-    IMAQ_BASE_INSIDE                 = 0,           //Specifies that the base of the rectangular image lies along the inside edge of the annulus.
-    IMAQ_BASE_OUTSIDE                = 1,           //Specifies that the base of the rectangular image lies along the outside edge of the annulus.
-    IMAQ_TEXT_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
-} RectOrientation;
-
-typedef enum ReferenceMode_enum {
-    IMAQ_COORD_X_Y                 = 0,           //This method requires three elements in the points array.
-    IMAQ_COORD_ORIGIN_X            = 1,           //This method requires two elements in the points array.
-    IMAQ_REFERENCE_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ReferenceMode;
-
-typedef enum WindowOptions_enum {
-    IMAQ_WIND_RESIZABLE            = 1,           //When present, the user may resize the window interactively.
-    IMAQ_WIND_TITLEBAR             = 2,           //When present, the title bar on the window is visible.
-    IMAQ_WIND_CLOSEABLE            = 4,           //When present, the close box is available.
-    IMAQ_WIND_TOPMOST              = 8,           //When present, the window is always on top.
-    IMAQ_WINDOW_OPTIONS_SIZE_GUARD = 0xFFFFFFFF   
-} WindowOptions;
-
-typedef enum ThresholdMethod_enum {
-    IMAQ_THRESH_CLUSTERING           = 0,           //The function uses a method that sorts the histogram of the image within a discrete number of classes corresponding to the number of phases perceived in an image.
-    IMAQ_THRESH_ENTROPY              = 1,           //The function uses a method that is best for detecting particles that are present in minuscule proportions on the image.
-    IMAQ_THRESH_METRIC               = 2,           //The function uses a method that is well-suited for images in which classes are not too disproportionate.
-    IMAQ_THRESH_MOMENTS              = 3,           //The function uses a method that is suited for images that have poor contrast.
-    IMAQ_THRESH_INTERCLASS           = 4,           //The function uses a method that is well-suited for images in which classes have well separated pixel value distributions.
-    IMAQ_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} ThresholdMethod;
-
-typedef enum AttenuateMode_enum {
-    IMAQ_ATTENUATE_LOW             = 0,           //The function attenuates low frequencies.
-    IMAQ_ATTENUATE_HIGH            = 1,           //The function attenuates high frequencies.
-    IMAQ_ATTENUATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} AttenuateMode;
-
-typedef enum VisionInfoType_enum {
-    IMAQ_ANY_VISION_INFO             = 0,           //The function checks if any extra vision information is associated with the image.
-    IMAQ_PATTERN_MATCHING_INFO       = 1,           //The function checks if any pattern matching template information is associated with the image.
-    IMAQ_CALIBRATION_INFO            = 2,           //The function checks if any calibration information is associated with the image.
-    IMAQ_OVERLAY_INFO                = 3,           //The function checks if any overlay information is associated with the image.
-    IMAQ_VISION_INFO_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} VisionInfoType;
-
-typedef enum VerticalTextAlignment_enum {
-    IMAQ_BOTTOM                             = 0,           //Aligns the bottom of the text at the reference point.
-    IMAQ_TOP                                = 1,           //Aligns the top of the text at the reference point.
-    IMAQ_BASELINE                           = 2,           //Aligns the baseline of the text at the reference point.
-    IMAQ_VERTICAL_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
-} VerticalTextAlignment;
-
-typedef enum TwoEdgePolarityType_enum {
-    IMAQ_NONE                              = 0,           //The function ignores the polarity of the edges.
-    IMAQ_RISING_FALLING                    = 1,           //The polarity of the first edge is rising (dark to light) and the polarity of the second edge is falling (light to dark).
-    IMAQ_FALLING_RISING                    = 2,           //The polarity of the first edge is falling (light to dark) and the polarity of the second edge is rising (dark to light).
-    IMAQ_RISING_RISING                     = 3,           //The polarity of the first edge is rising (dark to light) and the polarity of the second edge is rising (dark to light).
-    IMAQ_FALLING_FALLING                   = 4,           //The polarity of the first edge is falling (light to dark) and the polarity of the second edge is falling (light to dark).
-    IMAQ_TWO_EDGE_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} TwoEdgePolarityType;
-
-typedef enum TruncateMode_enum {
-    IMAQ_TRUNCATE_LOW             = 0,           //The function truncates low frequencies.
-    IMAQ_TRUNCATE_HIGH            = 1,           //The function truncates high frequencies.
-    IMAQ_TRUNCATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} TruncateMode;
-
-typedef enum ScalingMethod_enum {
-    IMAQ_SCALE_TO_PRESERVE_AREA    = 0,           //Correction functions scale the image such that the features in the corrected image have the same area as the features in the input image.
-    IMAQ_SCALE_TO_FIT              = 1,           //Correction functions scale the image such that the corrected image is the same size as the input image.
-    IMAQ_SCALING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} ScalingMethod;
-
-typedef enum TIFFCompressionType_enum {
-    IMAQ_NO_COMPRESSION                   = 0,           //The function does not compress the TIFF file.
-    IMAQ_JPEG                             = 1,           //The function uses the JPEG compression algorithm to compress the TIFF file.
-    IMAQ_RUN_LENGTH                       = 2,           //The function uses a run length compression algorithm to compress the TIFF file.
-    IMAQ_ZIP                              = 3,           //The function uses the ZIP compression algorithm to compress the TIFF file.
-    IMAQ_TIFF_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} TIFFCompressionType;
-
-typedef enum ScalingMode_enum {
-    IMAQ_SCALE_LARGER            = 0,           //The function duplicates pixels to make the image larger.
-    IMAQ_SCALE_SMALLER           = 1,           //The function subsamples pixels to make the image smaller.
-    IMAQ_SCALING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ScalingMode;
-
-typedef enum TextAlignment_enum {
-    IMAQ_LEFT                      = 0,           //Left aligns the text at the reference point.
-    IMAQ_CENTER                    = 1,           //Centers the text around the reference point.
-    IMAQ_RIGHT                     = 2,           //Right aligns the text at the reference point.
-    IMAQ_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
-} TextAlignment;
-
-typedef enum SpokeDirection_enum {
-    IMAQ_OUTSIDE_TO_INSIDE          = 0,           //The function searches from the outside of the search area to the inside of the search area.
-    IMAQ_INSIDE_TO_OUTSIDE          = 1,           //The function searches from the inside of the search area to the outside of the search area.
-    IMAQ_SPOKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
-} SpokeDirection;
-
-typedef enum SkeletonMethod_enum {
-    IMAQ_SKELETON_L                 = 0,           //Uses an L-shaped structuring element in the skeleton function.
-    IMAQ_SKELETON_M                 = 1,           //Uses an M-shaped structuring element in the skeleton function.
-    IMAQ_SKELETON_INVERSE           = 2,           //Uses an L-shaped structuring element on an inverse of the image in the skeleton function.
-    IMAQ_SKELETON_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} SkeletonMethod;
-
-typedef enum SizeType_enum {
-    IMAQ_KEEP_LARGE           = 0,           //The function keeps large particles remaining after the erosion.
-    IMAQ_KEEP_SMALL           = 1,           //The function keeps small particles eliminated by the erosion.
-    IMAQ_SIZE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} SizeType;
-
-typedef enum ShapeMode_enum {
-    IMAQ_SHAPE_RECT            = 1,           //The function draws a rectangle.
-    IMAQ_SHAPE_OVAL            = 2,           //The function draws an oval.
-    IMAQ_SHAPE_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ShapeMode;
-
-typedef enum MatchingMode_enum {
-    IMAQ_MATCH_SHIFT_INVARIANT    = 1,           //Searches for occurrences of the template image anywhere in the searchRect, assuming that the pattern is not rotated more than plus or minus 4 degrees.
-    IMAQ_MATCH_ROTATION_INVARIANT = 2,           //Searches for occurrences of the pattern in the image with no restriction on the rotation of the pattern.
-    IMAQ_MATCHING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} MatchingMode;
-
-typedef enum Tool_enum {
-    IMAQ_NO_TOOL              = -1,          //No tool is in the selected state.
-    IMAQ_SELECTION_TOOL       = 0,           //The selection tool selects an existing ROI in an image.
-    IMAQ_POINT_TOOL           = 1,           //The point tool draws a point on the image.
-    IMAQ_LINE_TOOL            = 2,           //The line tool draws a line on the image.
-    IMAQ_RECTANGLE_TOOL       = 3,           //The rectangle tool draws a rectangle on the image.
-    IMAQ_OVAL_TOOL            = 4,           //The oval tool draws an oval on the image.
-    IMAQ_POLYGON_TOOL         = 5,           //The polygon tool draws a polygon on the image.
-    IMAQ_CLOSED_FREEHAND_TOOL = 6,           //The closed freehand tool draws closed freehand shapes on the image.
-    IMAQ_ANNULUS_TOOL         = 7,           //The annulus tool draws annuluses on the image.
-    IMAQ_ZOOM_TOOL            = 8,           //The zoom tool controls the zoom of an image.
-    IMAQ_PAN_TOOL             = 9,           //The pan tool shifts the view of the image.
-    IMAQ_POLYLINE_TOOL        = 10,          //The polyline tool draws a series of connected straight lines on the image.
-    IMAQ_FREEHAND_TOOL        = 11,          //The freehand tool draws freehand lines on the image.
-    IMAQ_ROTATED_RECT_TOOL    = 12,          //The rotated rectangle tool draws rotated rectangles on the image.
-    IMAQ_TOOL_SIZE_GUARD      = 0xFFFFFFFF   
-} Tool;
-
-typedef enum CalibrationROI_enum {
-    IMAQ_FULL_IMAGE                 = 0,           //The correction function corrects the whole image, regardless of the user-defined or calibration-defined ROIs.
-    IMAQ_CALIBRATION_ROI            = 1,           //The correction function corrects the area defined by the calibration ROI.
-    IMAQ_USER_ROI                   = 2,           //The correction function corrects the area defined by the user-defined ROI.
-    IMAQ_CALIBRATION_AND_USER_ROI   = 3,           //The correction function corrects the area defined by the intersection of the user-defined ROI and the calibration ROI.
-    IMAQ_CALIBRATION_OR_USER_ROI    = 4,           //The correction function corrects the area defined by the union of the user-defined ROI and the calibration ROI.
-    IMAQ_CALIBRATION_ROI_SIZE_GUARD = 0xFFFFFFFF   
-} CalibrationROI;
 
 typedef enum MeasurementValue_enum {
     IMAQ_AREA                         = 0,           //Surface area of the particle in pixels.
@@ -1027,6 +889,275 @@ typedef enum MeasurementValue_enum {
     IMAQ_MEASUREMENT_VALUE_SIZE_GUARD = 0xFFFFFFFF   
 } MeasurementValue;
 
+typedef enum ScalingMode_enum {
+    IMAQ_SCALE_LARGER            = 0,           //The function duplicates pixels to make the image larger.
+    IMAQ_SCALE_SMALLER           = 1,           //The function subsamples pixels to make the image smaller.
+    IMAQ_SCALING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ScalingMode;
+
+typedef enum ScalingMethod_enum {
+    IMAQ_SCALE_TO_PRESERVE_AREA    = 0,           //Correction functions scale the image such that the features in the corrected image have the same area as the features in the input image.
+    IMAQ_SCALE_TO_FIT              = 1,           //Correction functions scale the image such that the corrected image is the same size as the input image.
+    IMAQ_SCALING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} ScalingMethod;
+
+typedef enum ReferenceMode_enum {
+    IMAQ_COORD_X_Y                 = 0,           //This method requires three elements in the points array.
+    IMAQ_COORD_ORIGIN_X            = 1,           //This method requires two elements in the points array.
+    IMAQ_REFERENCE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ReferenceMode;
+
+typedef enum RectOrientation_enum {
+    IMAQ_BASE_INSIDE                 = 0,           //Specifies that the base of the rectangular image lies along the inside edge of the annulus.
+    IMAQ_BASE_OUTSIDE                = 1,           //Specifies that the base of the rectangular image lies along the outside edge of the annulus.
+    IMAQ_TEXT_ORIENTATION_SIZE_GUARD = 0xFFFFFFFF   
+} RectOrientation;
+
+typedef enum ShapeMode_enum {
+    IMAQ_SHAPE_RECT            = 1,           //The function draws a rectangle.
+    IMAQ_SHAPE_OVAL            = 2,           //The function draws an oval.
+    IMAQ_SHAPE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ShapeMode;
+
+typedef enum PolarityType_enum {
+    IMAQ_EDGE_RISING              = 1,           //The edge is a rising edge.
+    IMAQ_EDGE_FALLING             = -1,          //The edge is a falling edge.
+    IMAQ_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} PolarityType;
+
+typedef enum SizeType_enum {
+    IMAQ_KEEP_LARGE           = 0,           //The function keeps large particles remaining after the erosion.
+    IMAQ_KEEP_SMALL           = 1,           //The function keeps small particles eliminated by the erosion.
+    IMAQ_SIZE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} SizeType;
+
+typedef enum Plane3D_enum {
+    IMAQ_3D_REAL             = 0,           //The function shows the real part of complex images.
+    IMAQ_3D_IMAGINARY        = 1,           //The function shows the imaginary part of complex images.
+    IMAQ_3D_MAGNITUDE        = 2,           //The function shows the magnitude part of complex images.
+    IMAQ_3D_PHASE            = 3,           //The function shows the phase part of complex images.
+    IMAQ_PLANE_3D_SIZE_GUARD = 0xFFFFFFFF   
+} Plane3D;
+
+typedef enum PhotometricMode_enum {
+    IMAQ_WHITE_IS_ZERO               = 0,           //The function interprets zero-value pixels as white.
+    IMAQ_BLACK_IS_ZERO               = 1,           //The function interprets zero-value pixels as black.
+    IMAQ_PHOTOMETRIC_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} PhotometricMode;
+
+typedef enum ParticleInfoMode_enum {
+    IMAQ_BASIC_INFO                    = 0,           //The function returns only the following elements of each report: area, calibratedArea, boundingRect.
+    IMAQ_ALL_INFO                      = 1,           //The function returns all the information about each particle.
+    IMAQ_PARTICLE_INFO_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ParticleInfoMode;
+
+typedef enum OutlineMethod_enum {
+    IMAQ_EDGE_DIFFERENCE           = 0,           //The function uses a method that produces continuous contours by highlighting each pixel where an intensity variation occurs between itself and its three upper-left neighbors.
+    IMAQ_EDGE_GRADIENT             = 1,           //The function uses a method that outlines contours where an intensity variation occurs along the vertical axis.
+    IMAQ_EDGE_PREWITT              = 2,           //The function uses a method that extracts the outer contours of objects.
+    IMAQ_EDGE_ROBERTS              = 3,           //The function uses a method that outlines the contours that highlight pixels where an intensity variation occurs along the diagonal axes.
+    IMAQ_EDGE_SIGMA                = 4,           //The function uses a method that outlines contours and details by setting pixels to the mean value found in their neighborhood, if their deviation from this value is not significant.
+    IMAQ_EDGE_SOBEL                = 5,           //The function uses a method that extracts the outer contours of objects.
+    IMAQ_OUTLINE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} OutlineMethod;
+
+typedef enum MorphologyMethod_enum {
+    IMAQ_AUTOM                        = 0,           //The function uses a transformation that generates simpler particles that contain fewer details.
+    IMAQ_CLOSE                        = 1,           //The function uses a transformation that fills tiny holes and smooths boundaries.
+    IMAQ_DILATE                       = 2,           //The function uses a transformation that eliminates tiny holes isolated in particles and expands the contour of the particles according to the template defined by the structuring element.
+    IMAQ_ERODE                        = 3,           //The function uses a transformation that eliminates pixels isolated in the background and erodes the contour of particles according to the template defined by the structuring element.
+    IMAQ_GRADIENT                     = 4,           //The function uses a transformation that leaves only the pixels that would be added by the dilation process or eliminated by the erosion process.
+    IMAQ_GRADIENTOUT                  = 5,           //The function uses a transformation that leaves only the pixels that would be added by the dilation process.
+    IMAQ_GRADIENTIN                   = 6,           //The function uses a transformation that leaves only the pixels that would be eliminated by the erosion process.
+    IMAQ_HITMISS                      = 7,           //The function uses a transformation that extracts each pixel located in a neighborhood exactly matching the template defined by the structuring element.
+    IMAQ_OPEN                         = 8,           //The function uses a transformation that removes small particles and smooths boundaries.
+    IMAQ_PCLOSE                       = 9,           //The function uses a transformation that fills tiny holes and smooths the inner contour of particles according to the template defined by the structuring element.
+    IMAQ_POPEN                        = 10,          //The function uses a transformation that removes small particles and smooths the contour of particles according to the template defined by the structuring element.
+    IMAQ_THICK                        = 11,          //The function uses a transformation that adds to an image those pixels located in a neighborhood that matches a template specified by the structuring element.
+    IMAQ_THIN                         = 12,          //The function uses a transformation that eliminates pixels that are located in a neighborhood matching a template specified by the structuring element.
+    IMAQ_MORPHOLOGY_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} MorphologyMethod;
+
+typedef enum MeterArcMode_enum {
+    IMAQ_METER_ARC_ROI             = 0,           //The function uses the roi parameter and ignores the base, start, and end parameters.
+    IMAQ_METER_ARC_POINTS          = 1,           //The function uses the base,start, and end parameters and ignores the roi parameter.
+    IMAQ_METER_ARC_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} MeterArcMode;
+
+typedef enum RakeDirection_enum {
+    IMAQ_LEFT_TO_RIGHT             = 0,           //The function searches from the left side of the search area to the right side of the search area.
+    IMAQ_RIGHT_TO_LEFT             = 1,           //The function searches from the right side of the search area to the left side of the search area.
+    IMAQ_TOP_TO_BOTTOM             = 2,           //The function searches from the top side of the search area to the bottom side of the search area.
+    IMAQ_BOTTOM_TO_TOP             = 3,           //The function searches from the bottom side of the search area to the top side of the search area.
+    IMAQ_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+} RakeDirection;
+
+typedef enum TruncateMode_enum {
+    IMAQ_TRUNCATE_LOW             = 0,           //The function truncates low frequencies.
+    IMAQ_TRUNCATE_HIGH            = 1,           //The function truncates high frequencies.
+    IMAQ_TRUNCATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} TruncateMode;
+
+typedef enum AttenuateMode_enum {
+    IMAQ_ATTENUATE_LOW             = 0,           //The function attenuates low frequencies.
+    IMAQ_ATTENUATE_HIGH            = 1,           //The function attenuates high frequencies.
+    IMAQ_ATTENUATE_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} AttenuateMode;
+
+typedef enum WindowThreadPolicy_enum {
+    IMAQ_CALLING_THREAD                  = 0,           //Using this policy, NI Vision creates windows in the thread that makes the first display function call for a given window number.
+    IMAQ_SEPARATE_THREAD                 = 1,           //Using this policy, NI Vision creates windows in a separate thread and processes messages for the windows automatically.
+    IMAQ_WINDOW_THREAD_POLICY_SIZE_GUARD = 0xFFFFFFFF   
+} WindowThreadPolicy;
+
+typedef enum WindowOptions_enum {
+    IMAQ_WIND_RESIZABLE            = 1,           //When present, the user may resize the window interactively.
+    IMAQ_WIND_TITLEBAR             = 2,           //When present, the title bar on the window is visible.
+    IMAQ_WIND_CLOSEABLE            = 4,           //When present, the close box is available.
+    IMAQ_WIND_TOPMOST              = 8,           //When present, the window is always on top.
+    IMAQ_WINDOW_OPTIONS_SIZE_GUARD = 0xFFFFFFFF   
+} WindowOptions;
+
+typedef enum WindowEventType_enum {
+    IMAQ_NO_EVENT                     = 0,           //No event occurred since the last call to imaqGetLastEvent().
+    IMAQ_CLICK_EVENT                  = 1,           //The user clicked on a window.
+    IMAQ_DRAW_EVENT                   = 2,           //The user drew an ROI in a window.
+    IMAQ_MOVE_EVENT                   = 3,           //The user moved a window.
+    IMAQ_SIZE_EVENT                   = 4,           //The user sized a window.
+    IMAQ_SCROLL_EVENT                 = 5,           //The user scrolled a window.
+    IMAQ_ACTIVATE_EVENT               = 6,           //The user activated a window.
+    IMAQ_CLOSE_EVENT                  = 7,           //The user closed a window.
+    IMAQ_DOUBLE_CLICK_EVENT           = 8,           //The user double-clicked in a window.
+    IMAQ_WINDOW_EVENT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} WindowEventType;
+
+typedef enum VisionInfoType_enum {
+    IMAQ_ANY_VISION_INFO             = 0,           //The function checks if any extra vision information is associated with the image.
+    IMAQ_PATTERN_MATCHING_INFO       = 1,           //The function checks if any pattern matching template information is associated with the image.
+    IMAQ_CALIBRATION_INFO            = 2,           //The function checks if any calibration information is associated with the image.
+    IMAQ_OVERLAY_INFO                = 3,           //The function checks if any overlay information is associated with the image.
+    IMAQ_VISION_INFO_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} VisionInfoType;
+
+typedef enum SearchStrategy_enum {
+    IMAQ_CONSERVATIVE               = 1,           //Instructs the pattern matching algorithm to use the largest possible amount of information from the image at the expense of slowing down the speed of the algorithm.
+    IMAQ_BALANCED                   = 2,           //Instructs the pattern matching algorithm to balance the amount of information from the image it uses with the speed of the algorithm.
+    IMAQ_AGGRESSIVE                 = 3,           //Instructs the pattern matching algorithm to use a lower amount of information from the image, which allows the algorithm to run quickly but at the expense of accuracy.
+    IMAQ_VERY_AGGRESSIVE            = 4,           //Instructs the pattern matching algorithm to use the smallest possible amount of information from the image, which allows the algorithm to run at the highest speed possible but at the expense of accuracy.
+    IMAQ_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+} SearchStrategy;
+
+typedef enum TwoEdgePolarityType_enum {
+    IMAQ_NONE                              = 0,           //The function ignores the polarity of the edges.
+    IMAQ_RISING_FALLING                    = 1,           //The polarity of the first edge is rising (dark to light) and the polarity of the second edge is falling (light to dark).
+    IMAQ_FALLING_RISING                    = 2,           //The polarity of the first edge is falling (light to dark) and the polarity of the second edge is rising (dark to light).
+    IMAQ_RISING_RISING                     = 3,           //The polarity of the first edge is rising (dark to light) and the polarity of the second edge is rising (dark to light).
+    IMAQ_FALLING_FALLING                   = 4,           //The polarity of the first edge is falling (light to dark) and the polarity of the second edge is falling (light to dark).
+    IMAQ_TWO_EDGE_POLARITY_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} TwoEdgePolarityType;
+
+typedef enum ObjectType_enum {
+    IMAQ_BRIGHT_OBJECTS         = 0,           //The function detects bright objects.
+    IMAQ_DARK_OBJECTS           = 1,           //The function detects dark objects.
+    IMAQ_OBJECT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ObjectType;
+
+typedef enum Tool_enum {
+    IMAQ_NO_TOOL              = -1,          //No tool is in the selected state.
+    IMAQ_SELECTION_TOOL       = 0,           //The selection tool selects an existing ROI in an image.
+    IMAQ_POINT_TOOL           = 1,           //The point tool draws a point on the image.
+    IMAQ_LINE_TOOL            = 2,           //The line tool draws a line on the image.
+    IMAQ_RECTANGLE_TOOL       = 3,           //The rectangle tool draws a rectangle on the image.
+    IMAQ_OVAL_TOOL            = 4,           //The oval tool draws an oval on the image.
+    IMAQ_POLYGON_TOOL         = 5,           //The polygon tool draws a polygon on the image.
+    IMAQ_CLOSED_FREEHAND_TOOL = 6,           //The closed freehand tool draws closed freehand shapes on the image.
+    IMAQ_ANNULUS_TOOL         = 7,           //The annulus tool draws annuluses on the image.
+    IMAQ_ZOOM_TOOL            = 8,           //The zoom tool controls the zoom of an image.
+    IMAQ_PAN_TOOL             = 9,           //The pan tool shifts the view of the image.
+    IMAQ_POLYLINE_TOOL        = 10,          //The polyline tool draws a series of connected straight lines on the image.
+    IMAQ_FREEHAND_TOOL        = 11,          //The freehand tool draws freehand lines on the image.
+    IMAQ_ROTATED_RECT_TOOL    = 12,          //The rotated rectangle tool draws rotated rectangles on the image.
+    IMAQ_ZOOM_OUT_TOOL        = 13,          //The zoom out tool controls the zoom of an image.
+    IMAQ_TOOL_SIZE_GUARD      = 0xFFFFFFFF   
+} Tool;
+
+typedef enum TIFFCompressionType_enum {
+    IMAQ_NO_COMPRESSION                   = 0,           //The function does not compress the TIFF file.
+    IMAQ_JPEG                             = 1,           //The function uses the JPEG compression algorithm to compress the TIFF file.
+    IMAQ_RUN_LENGTH                       = 2,           //The function uses a run length compression algorithm to compress the TIFF file.
+    IMAQ_ZIP                              = 3,           //The function uses the ZIP compression algorithm to compress the TIFF file.
+    IMAQ_TIFF_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} TIFFCompressionType;
+
+typedef enum ThresholdMethod_enum {
+    IMAQ_THRESH_CLUSTERING           = 0,           //The function uses a method that sorts the histogram of the image within a discrete number of classes corresponding to the number of phases perceived in an image.
+    IMAQ_THRESH_ENTROPY              = 1,           //The function uses a method that is best for detecting particles that are present in minuscule proportions on the image.
+    IMAQ_THRESH_METRIC               = 2,           //The function uses a method that is well-suited for images in which classes are not too disproportionate.
+    IMAQ_THRESH_MOMENTS              = 3,           //The function uses a method that is suited for images that have poor contrast.
+    IMAQ_THRESH_INTERCLASS           = 4,           //The function uses a method that is well-suited for images in which classes have well separated pixel value distributions.
+    IMAQ_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} ThresholdMethod;
+
+typedef enum TextAlignment_enum {
+    IMAQ_LEFT                      = 0,           //Left aligns the text at the reference point.
+    IMAQ_CENTER                    = 1,           //Centers the text around the reference point.
+    IMAQ_RIGHT                     = 2,           //Right aligns the text at the reference point.
+    IMAQ_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
+} TextAlignment;
+
+typedef enum SpokeDirection_enum {
+    IMAQ_OUTSIDE_TO_INSIDE          = 0,           //The function searches from the outside of the search area to the inside of the search area.
+    IMAQ_INSIDE_TO_OUTSIDE          = 1,           //The function searches from the inside of the search area to the outside of the search area.
+    IMAQ_SPOKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+} SpokeDirection;
+
+typedef enum SkeletonMethod_enum {
+    IMAQ_SKELETON_L                 = 0,           //Uses an L-shaped structuring element in the skeleton function.
+    IMAQ_SKELETON_M                 = 1,           //Uses an M-shaped structuring element in the skeleton function.
+    IMAQ_SKELETON_INVERSE           = 2,           //Uses an L-shaped structuring element on an inverse of the image in the skeleton function.
+    IMAQ_SKELETON_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} SkeletonMethod;
+
+typedef enum VerticalTextAlignment_enum {
+    IMAQ_BOTTOM                             = 0,           //Aligns the bottom of the text at the reference point.
+    IMAQ_TOP                                = 1,           //Aligns the top of the text at the reference point.
+    IMAQ_BASELINE                           = 2,           //Aligns the baseline of the text at the reference point.
+    IMAQ_VERTICAL_TEXT_ALIGNMENT_SIZE_GUARD = 0xFFFFFFFF   
+} VerticalTextAlignment;
+
+typedef enum CalibrationROI_enum {
+    IMAQ_FULL_IMAGE                 = 0,           //The correction function corrects the whole image, regardless of the user-defined or calibration-defined ROIs.
+    IMAQ_CALIBRATION_ROI            = 1,           //The correction function corrects the area defined by the calibration ROI.
+    IMAQ_USER_ROI                   = 2,           //The correction function corrects the area defined by the user-defined ROI.
+    IMAQ_CALIBRATION_AND_USER_ROI   = 3,           //The correction function corrects the area defined by the intersection of the user-defined ROI and the calibration ROI.
+    IMAQ_CALIBRATION_OR_USER_ROI    = 4,           //The correction function corrects the area defined by the union of the user-defined ROI and the calibration ROI.
+    IMAQ_CALIBRATION_ROI_SIZE_GUARD = 0xFFFFFFFF   
+} CalibrationROI;
+
+typedef enum ContourType_enum {
+    IMAQ_EMPTY_CONTOUR           = 0,           //The contour is empty.
+    IMAQ_POINT                   = 1,           //The contour represents a point.
+    IMAQ_LINE                    = 2,           //The contour represents a line.
+    IMAQ_RECT                    = 3,           //The contour represents a rectangle.
+    IMAQ_OVAL                    = 4,           //The contour represents an oval.
+    IMAQ_CLOSED_CONTOUR          = 5,           //The contour represents a series of connected points where the last point connects to the first.
+    IMAQ_OPEN_CONTOUR            = 6,           //The contour represents a series of connected points where the last point does not connect to the first.
+    IMAQ_ANNULUS                 = 7,           //The contour represents an annulus.
+    IMAQ_ROTATED_RECT            = 8,           //The contour represents a rotated rectangle.
+    IMAQ_CONTOUR_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ContourType;
+
+typedef enum MathTransformMethod_enum {
+    IMAQ_TRANSFORM_LINEAR                 = 0,           //The function uses linear remapping.
+    IMAQ_TRANSFORM_LOG                    = 1,           //The function uses logarithmic remapping.
+    IMAQ_TRANSFORM_EXP                    = 2,           //The function uses exponential remapping.
+    IMAQ_TRANSFORM_SQR                    = 3,           //The function uses square remapping.
+    IMAQ_TRANSFORM_SQRT                   = 4,           //The function uses square root remapping.
+    IMAQ_TRANSFORM_POWX                   = 5,           //The function uses power X remapping.
+    IMAQ_TRANSFORM_POW1X                  = 6,           //The function uses power 1/X remapping.
+    IMAQ_MATH_TRANSFORM_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} MathTransformMethod;
+
 typedef enum ComplexPlane_enum {
     IMAQ_REAL                     = 0,           //The function operates on the real plane of the complex image.
     IMAQ_IMAGINARY                = 1,           //The function operates on the imaginary plane of the complex image.
@@ -1035,14 +1166,15 @@ typedef enum ComplexPlane_enum {
     IMAQ_COMPLEX_PLANE_SIZE_GUARD = 0xFFFFFFFF   
 } ComplexPlane;
 
-typedef enum ComparisonFunction_enum {
-    IMAQ_CLEAR_LESS                  = 0,           //The comparison is true if the source pixel value is less than the comparison image pixel value.
-    IMAQ_CLEAR_LESS_OR_EQUAL         = 1,           //The comparison is true if the source pixel value is less than or equal to the comparison image pixel value.
-    IMAQ_CLEAR_EQUAL                 = 2,           //The comparison is true if the source pixel value is equal to the comparison image pixel value.
-    IMAQ_CLEAR_GREATER_OR_EQUAL      = 3,           //The comparison is true if the source pixel value is greater than or equal to the comparison image pixel value.
-    IMAQ_CLEAR_GREATER               = 4,           //The comparison is true if the source pixel value is greater than the comparison image pixel value.
-    IMAQ_COMPARE_FUNCTION_SIZE_GUARD = 0xFFFFFFFF   
-} ComparisonFunction;
+typedef enum PaletteType_enum {
+    IMAQ_PALETTE_GRAY            = 0,           //The function uses a palette that has a gradual gray-level variation from black to white.
+    IMAQ_PALETTE_BINARY          = 1,           //The function uses a palette of 16 cycles of 16 different colors that is useful with binary images.
+    IMAQ_PALETTE_GRADIENT        = 2,           //The function uses a palette that has a gradation from red to white with a prominent range of light blue in the upper value range.
+    IMAQ_PALETTE_RAINBOW         = 3,           //The function uses a palette that has a gradation from blue to red with a prominent range of greens in the middle value range.
+    IMAQ_PALETTE_TEMPERATURE     = 4,           //The function uses a palette that has a gradation from light brown to dark brown.
+    IMAQ_PALETTE_USER            = 5,           //The function uses a palette defined by the user.
+    IMAQ_PALETTE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} PaletteType;
 
 typedef enum ColorSensitivity_enum {
     IMAQ_SENSITIVITY_LOW              = 0,           //Instructs the algorithm to divide the hue plane into a low number of sectors, allowing for simple color analysis.
@@ -1061,18 +1193,11 @@ typedef enum ColorMode_enum {
     IMAQ_COLOR_MODE_SIZE_GUARD = 0xFFFFFFFF   
 } ColorMode;
 
-typedef enum ContourType_enum {
-    IMAQ_EMPTY_CONTOUR           = 0,           //The contour is empty.
-    IMAQ_POINT                   = 1,           //The contour represents a point.
-    IMAQ_LINE                    = 2,           //The contour represents a line.
-    IMAQ_RECT                    = 3,           //The contour represents a rectangle.
-    IMAQ_OVAL                    = 4,           //The contour represents an oval.
-    IMAQ_CLOSED_CONTOUR          = 5,           //The contour represents a series of connected points where the last point connects to the first.
-    IMAQ_OPEN_CONTOUR            = 6,           //The contour represents a series of connected points where the last point does not connect to the first.
-    IMAQ_ANNULUS                 = 7,           //The contour represents an annulus.
-    IMAQ_ROTATED_RECT            = 8,           //The contour represents a rotated rectangle.
-    IMAQ_CONTOUR_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ContourType;
+typedef enum DetectionMode_enum {
+    IMAQ_DETECT_PEAKS              = 0,           //The function detects peaks.
+    IMAQ_DETECT_VALLEYS            = 1,           //The function detects valleys.
+    IMAQ_DETECTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DetectionMode;
 
 typedef enum CalibrationUnit_enum {
     IMAQ_UNDEFINED                   = 0,           //The image does not have a defined unit of measurement.
@@ -1091,18 +1216,18 @@ typedef enum CalibrationUnit_enum {
     IMAQ_CALIBRATION_UNIT_SIZE_GUARD = 0xFFFFFFFF   
 } CalibrationUnit;
 
-typedef enum DetectionMode_enum {
-    IMAQ_DETECT_PEAKS              = 0,           //The function detects peaks.
-    IMAQ_DETECT_VALLEYS            = 1,           //The function detects valleys.
-    IMAQ_DETECTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DetectionMode;
+typedef enum ConcentricRakeDirection_enum {
+    IMAQ_COUNTER_CLOCKWISE                    = 0,           //The function searches the search area in a counter-clockwise direction.
+    IMAQ_CLOCKWISE                            = 1,           //The function searches the search area in a clockwise direction.
+    IMAQ_CONCENTRIC_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+} ConcentricRakeDirection;
 
 typedef enum CalibrationMode_enum {
-    IMAQ_PERSPECTIVE                = 0,           //Functions correct for distortion caused by the camera's perspective.
-    IMAQ_NONLINEAR                  = 1,           //Functions correct for distortion caused by the camera's lens.
-    IMAQ_SIMPLE_CALIBRATION         = 2,           //Functions do not correct for distortion.
-    IMAQ_CORRECTED_IMAGE            = 3,           //The image is already corrected.
-    IMAQ_DISTORTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+    IMAQ_PERSPECTIVE                 = 0,           //Functions correct for distortion caused by the camera's perspective.
+    IMAQ_NONLINEAR                   = 1,           //Functions correct for distortion caused by the camera's lens.
+    IMAQ_SIMPLE_CALIBRATION          = 2,           //Functions do not correct for distortion.
+    IMAQ_CORRECTED_IMAGE             = 3,           //The image is already corrected.
+    IMAQ_CALIBRATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
 } CalibrationMode;
 
 typedef enum BrowserLocation_enum {
@@ -1158,6 +1283,83 @@ typedef enum ColorIgnoreMode_enum {
     IMAQ_BLACK_WHITE_IGNORE_MODE_SIZE_GUARD = 0xFFFFFFFF   
 } ColorIgnoreMode;
 
+typedef enum LevelType_enum {
+    IMAQ_ABSOLUTE              = 0,           //The function evaluates the threshold and hysteresis values as absolute values.
+    IMAQ_RELATIVE              = 1,           //The function evaluates the threshold and hysteresis values relative to the dynamic range of the given path.
+    IMAQ_LEVEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} LevelType;
+
+typedef enum MatchingMode_enum {
+    IMAQ_MATCH_SHIFT_INVARIANT    = 1,           //Searches for occurrences of the template image anywhere in the searchRect, assuming that the pattern is not rotated more than plus or minus 4 degrees.
+    IMAQ_MATCH_ROTATION_INVARIANT = 2,           //Searches for occurrences of the pattern in the image with no restriction on the rotation of the pattern.
+    IMAQ_MATCHING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} MatchingMode;
+
+typedef enum MappingMethod_enum {
+    IMAQ_FULL_DYNAMIC              = 0,           //(Obsolete) When the image bit depth is 0, the function maps the full dynamic range of the 16-bit image to an 8-bit scale.
+    IMAQ_DOWNSHIFT                 = 1,           //(Obsolete) When the image bit depth is 0, the function shifts the 16-bit image pixels to the right the number of times specified by the shiftCount element of the DisplayMapping structure.
+    IMAQ_RANGE                     = 2,           //(Obsolete) When the image bit depth is 0, the function maps the pixel values in the range specified by the minimumValue and maximumValue elements of the DisplayMapping structure to an 8-bit scale.
+    IMAQ_90_PCT_DYNAMIC            = 3,           //(Obsolete) When the image bit depth to 0, the function maps the dynamic range containing the middle 90 percent of the cumulated histogram of the image to an 8-bit (256 grayscale values) scale.
+    IMAQ_PERCENT_RANGE             = 4,           //(Obsolete) When the image bit depth is 0, the function maps the pixel values in the relative percentage range (0 to 100) of the cumulated histogram specified by minimumValue and maximumValue to an 8-bit scale.
+    IMAQ_DEFAULT_MAPPING           = 10,          //If the bit depth is 0, the function maps the 16-bit image to 8 bits by following the IMAQ_FULL_DYNAMIC_ALWAYS behavior; otherwise, the function shifts the image data to the right according to the IMAQ_MOST_SIGNIFICANT behavior.
+    IMAQ_MOST_SIGNIFICANT          = 11,          //The function shifts the 16-bit image pixels to the right until the 8 most significant bits of the image data are remaining.
+    IMAQ_FULL_DYNAMIC_ALWAYS       = 12,          //The function maps the full dynamic range of the 16-bit image to an 8-bit scale.
+    IMAQ_DOWNSHIFT_ALWAYS          = 13,          //The function shifts the 16-bit image pixels to the right the number of times specified by the shiftCount element of the DisplayMapping structure.
+    IMAQ_RANGE_ALWAYS              = 14,          //The function maps the pixel values in the range specified by the minimumValue and maximumValue elements of the DisplayMapping structure to an 8-bit scale.
+    IMAQ_90_PCT_DYNAMIC_ALWAYS     = 15,          //The function maps the dynamic range containing the middle 90 percent of the cumulated histogram of the image to an 8-bit (256 grayscale values) scale.
+    IMAQ_PERCENT_RANGE_ALWAYS      = 16,          //The function maps the pixel values in the relative percentage range (0 to 100) of the cumulated histogram specified by minimumValue and maximumValue to an 8-bit scale.
+    IMAQ_MAPPING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} MappingMethod;
+
+typedef enum ComparisonFunction_enum {
+    IMAQ_CLEAR_LESS                  = 0,           //The comparison is true if the source pixel value is less than the comparison image pixel value.
+    IMAQ_CLEAR_LESS_OR_EQUAL         = 1,           //The comparison is true if the source pixel value is less than or equal to the comparison image pixel value.
+    IMAQ_CLEAR_EQUAL                 = 2,           //The comparison is true if the source pixel value is equal to the comparison image pixel value.
+    IMAQ_CLEAR_GREATER_OR_EQUAL      = 3,           //The comparison is true if the source pixel value is greater than or equal to the comparison image pixel value.
+    IMAQ_CLEAR_GREATER               = 4,           //The comparison is true if the source pixel value is greater than the comparison image pixel value.
+    IMAQ_COMPARE_FUNCTION_SIZE_GUARD = 0xFFFFFFFF   
+} ComparisonFunction;
+
+typedef enum LineGaugeMethod_enum {
+    IMAQ_EDGE_TO_EDGE                 = 0,           //Measures from the first edge on the line to the last edge on the line.
+    IMAQ_EDGE_TO_POINT                = 1,           //Measures from the first edge on the line to the end point of the line.
+    IMAQ_POINT_TO_EDGE                = 2,           //Measures from the start point of the line to the first edge on the line.
+    IMAQ_POINT_TO_POINT               = 3,           //Measures from the start point of the line to the end point of the line.
+    IMAQ_LINE_GAUGE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} LineGaugeMethod;
+
+typedef enum Direction3D_enum {
+    IMAQ_3D_NW                   = 0,           //The viewing angle for the 3D image is from the northwest.
+    IMAQ_3D_SW                   = 1,           //The viewing angle for the 3D image is from the southwest.
+    IMAQ_3D_SE                   = 2,           //The viewing angle for the 3D image is from the southeast.
+    IMAQ_3D_NE                   = 3,           //The viewing angle for the 3D image is from the northeast.
+    IMAQ_DIRECTION_3D_SIZE_GUARD = 0xFFFFFFFF   
+} Direction3D;
+
+typedef enum LearningMode_enum {
+    IMAQ_LEARN_ALL                  = 0,           //The function extracts information for shift- and rotation-invariant matching.
+    IMAQ_LEARN_SHIFT_INFORMATION    = 1,           //The function extracts information for shift-invariant matching.
+    IMAQ_LEARN_ROTATION_INFORMATION = 2,           //The function extracts information for rotation-invariant matching.
+    IMAQ_LEARNING_MODE_SIZE_GUARD   = 0xFFFFFFFF   
+} LearningMode;
+
+typedef enum KernelFamily_enum {
+    IMAQ_GRADIENT_FAMILY          = 0,           //The kernel is in the gradient family.
+    IMAQ_LAPLACIAN_FAMILY         = 1,           //The kernel is in the Laplacian family.
+    IMAQ_SMOOTHING_FAMILY         = 2,           //The kernel is in the smoothing family.
+    IMAQ_GAUSSIAN_FAMILY          = 3,           //The kernel is in the Gaussian family.
+    IMAQ_KERNEL_FAMILY_SIZE_GUARD = 0xFFFFFFFF   
+} KernelFamily;
+
+typedef enum InterpolationMethod_enum {
+    IMAQ_ZERO_ORDER                      = 0,           //The function uses an interpolation method that interpolates new pixel values using the nearest valid neighboring pixel.
+    IMAQ_BILINEAR                        = 1,           //The function uses an interpolation method that interpolates new pixel values using a bidirectional average of the neighboring pixels.
+    IMAQ_QUADRATIC                       = 2,           //The function uses an interpolation method that interpolates new pixel values using a quadratic approximating polynomial.
+    IMAQ_CUBIC_SPLINE                    = 3,           //The function uses an interpolation method that interpolates new pixel values by fitting them to a cubic spline curve, where the curve is based on known pixel values from the image.
+    IMAQ_BILINEAR_FIXED                  = 4,           //The function uses an interpolation method that interpolates new pixel values using a bidirectional average of the neighboring pixels.
+    IMAQ_INTERPOLATION_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} InterpolationMethod;
+
 typedef enum ImageType_enum {
     IMAQ_IMAGE_U8              = 0,           //The image type is 8-bit unsigned integer grayscale.
     IMAQ_IMAGE_U16             = 7,           //The image type is 16-bit unsigned integer grayscale.
@@ -1169,68 +1371,6 @@ typedef enum ImageType_enum {
     IMAQ_IMAGE_RGB_U64         = 6,           //The image type is 64-bit unsigned RGB color.
     IMAQ_IMAGE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
 } ImageType;
-
-typedef enum WindowThreadPolicy_enum {
-    IMAQ_CALLING_THREAD                  = 0,           //Using this policy, NI Vision creates windows in the thread that makes the first display function call for a given window number.
-    IMAQ_SEPARATE_THREAD                 = 1,           //Using this policy, NI Vision creates windows in a separate thread and processes messages for the windows automatically.
-    IMAQ_WINDOW_THREAD_POLICY_SIZE_GUARD = 0xFFFFFFFF   
-} WindowThreadPolicy;
-
-typedef enum MappingMethod_enum {
-    IMAQ_FULL_DYNAMIC              = 0,           //The function maps the full dynamic range of the 16-bit image to an 8-bit scale.
-    IMAQ_DOWNSHIFT                 = 1,           //The function shifts the 16-bit image pixels to the right the number of times specified by the shiftCount element of the DisplayMapping structure.
-    IMAQ_RANGE                     = 2,           //The function maps the pixel values in the range specified by the minimumValue and maximumValue elements of the DisplayMapping structure to an 8-bit scale.
-    IMAQ_90_PCT_DYNAMIC            = 3,           //The function maps the dynamic range containing the middle 90 percent of the cumulated histogram of the image to an 8-bit (256 grayscale values) scale.
-    IMAQ_PERCENT_RANGE             = 4,           //The function maps the pixel values in the relative percentage range (0 to 100) of the cumulated histogram specified by minimumValue and maximumValue to an 8-bit scale.
-    IMAQ_MAPPING_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} MappingMethod;
-
-typedef enum LineGaugeMethod_enum {
-    IMAQ_EDGE_TO_EDGE                 = 0,           //Measures from the first edge on the line to the last edge on the line.
-    IMAQ_EDGE_TO_POINT                = 1,           //Measures from the first edge on the line to the end point of the line.
-    IMAQ_POINT_TO_EDGE                = 2,           //Measures from the start point of the line to the first edge on the line.
-    IMAQ_POINT_TO_POINT               = 3,           //Measures from the start point of the line to the end point of the line.
-    IMAQ_LINE_GAUGE_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} LineGaugeMethod;
-
-typedef enum LevelType_enum {
-    IMAQ_ABSOLUTE              = 0,           //The function evaluates the threshold and hysteresis values as absolute values.
-    IMAQ_RELATIVE              = 1,           //The function evaluates the threshold and hysteresis values relative to the dynamic range of the given path.
-    IMAQ_LEVEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} LevelType;
-
-typedef enum LearningMode_enum {
-    IMAQ_LEARN_ALL                  = 0,           //The function extracts information for shift- and rotation-invariant matching.
-    IMAQ_LEARN_SHIFT_INFORMATION    = 1,           //The function extracts information for shift-invariant matching.
-    IMAQ_LEARN_ROTATION_INFORMATION = 2,           //The function extracts information for rotation-invariant matching.
-    IMAQ_LEARNING_MODE_SIZE_GUARD   = 0xFFFFFFFF   
-} LearningMode;
-
-typedef enum ConcentricRakeDirection_enum {
-    IMAQ_COUNTER_CLOCKWISE                    = 0,           //The function searches the search area in a counter-clockwise direction.
-    IMAQ_CLOCKWISE                            = 1,           //The function searches the search area in a clockwise direction.
-    IMAQ_CONCENTRIC_RAKE_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
-} ConcentricRakeDirection;
-
-typedef enum InterpolationMethod_enum {
-    IMAQ_ZERO_ORDER                      = 0,           //The function uses an interpolation method that interpolates new pixel values using the nearest valid neighboring pixel.
-    IMAQ_BILINEAR                        = 1,           //The function uses an interpolation method that interpolates new pixel values using a bidirectional average of the neighboring pixels.
-    IMAQ_QUADRATIC                       = 2,           //The function uses an interpolation method that interpolates new pixel values using a quadratic approximating polynomial.
-    IMAQ_CUBIC_SPLINE                    = 3,           //The function uses an interpolation method that interpolates new pixel values by fitting them to a cubic spline curve, where the curve is based on known pixel values from the image.
-    IMAQ_BILINEAR_FIXED                  = 4,           //The function uses an interpolation method that interpolates new pixel values using a bidirectional average of the neighboring pixels.
-    IMAQ_INTERPOLATION_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} InterpolationMethod;
-
-typedef enum MathTransformMethod_enum {
-    IMAQ_TRANSFORM_LINEAR                 = 0,           //The function uses linear remapping.
-    IMAQ_TRANSFORM_LOG                    = 1,           //The function uses logarithmic remapping.
-    IMAQ_TRANSFORM_EXP                    = 2,           //The function uses exponential remapping.
-    IMAQ_TRANSFORM_SQR                    = 3,           //The function uses square remapping.
-    IMAQ_TRANSFORM_SQRT                   = 4,           //The function uses square root remapping.
-    IMAQ_TRANSFORM_POWX                   = 5,           //The function uses power X remapping.
-    IMAQ_TRANSFORM_POW1X                  = 6,           //The function uses power 1/X remapping.
-    IMAQ_MATH_TRANSFORM_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} MathTransformMethod;
 
 typedef enum ImageFeatureMode_enum {
     IMAQ_COLOR_AND_SHAPE_FEATURES = 0,           //Instructs the function to use the color and the shape features of the color pattern.
@@ -1274,415 +1414,33 @@ typedef enum DrawMode_enum {
     IMAQ_DRAW_MODE_SIZE_GUARD = 0xFFFFFFFF   
 } DrawMode;
 
-typedef enum Direction3D_enum {
-    IMAQ_3D_NW                   = 0,           //The viewing angle for the 3D image is from the northwest.
-    IMAQ_3D_SW                   = 1,           //The viewing angle for the 3D image is from the southwest.
-    IMAQ_3D_SE                   = 2,           //The viewing angle for the 3D image is from the southeast.
-    IMAQ_3D_NE                   = 3,           //The viewing angle for the 3D image is from the northeast.
-    IMAQ_DIRECTION_3D_SIZE_GUARD = 0xFFFFFFFF   
-} Direction3D;
+typedef enum NearestNeighborMetric_enum {
+    IMAQ_METRIC_MAXIMUM                     = 0,           //The maximum metric.
+    IMAQ_METRIC_SUM                         = 1,           //The sum metric.
+    IMAQ_METRIC_EUCLIDEAN                   = 2,           //The Euclidean metric.
+    IMAQ_NEAREST_NEIGHBOR_METRIC_SIZE_GUARD = 0xFFFFFFFF   
+} NearestNeighborMetric;
 
-typedef enum KernelFamily_enum {
-    IMAQ_GRADIENT_FAMILY          = 0,           //The kernel is in the gradient family.
-    IMAQ_LAPLACIAN_FAMILY         = 1,           //The kernel is in the Laplacian family.
-    IMAQ_SMOOTHING_FAMILY         = 2,           //The kernel is in the smoothing family.
-    IMAQ_GAUSSIAN_FAMILY          = 3,           //The kernel is in the Gaussian family.
-    IMAQ_KERNEL_FAMILY_SIZE_GUARD = 0xFFFFFFFF   
-} KernelFamily;
+typedef enum ReadResolution_enum {
+    IMAQ_LOW_RESOLUTION             = 0,           //Configures NI Vision to use low resolution during the read process.
+    IMAQ_MEDIUM_RESOLUTION          = 1,           //Configures NI Vision to use medium resolution during the read process.
+    IMAQ_HIGH_RESOLUTION            = 2,           //Configures NI Vision to use high resolution during the read process.
+    IMAQ_READ_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
+} ReadResolution;
 
-typedef enum WindowEventType_enum {
-    IMAQ_NO_EVENT                     = 0,           //No event occurred since the last call to imaqGetLastEvent().
-    IMAQ_CLICK_EVENT                  = 1,           //The user clicked on a window.
-    IMAQ_DRAW_EVENT                   = 2,           //The user drew an ROI in a window.
-    IMAQ_MOVE_EVENT                   = 3,           //The user moved a window.
-    IMAQ_SIZE_EVENT                   = 4,           //The user sized a window.
-    IMAQ_SCROLL_EVENT                 = 5,           //The user scrolled a window.
-    IMAQ_ACTIVATE_EVENT               = 6,           //The user activated a window.
-    IMAQ_CLOSE_EVENT                  = 7,           //The user closed a window.
-    IMAQ_DOUBLE_CLICK_EVENT           = 8,           //The user double-clicked in a window.
-    IMAQ_WINDOW_EVENT_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} WindowEventType;
+typedef enum ThresholdMode_enum {
+    IMAQ_FIXED_RANGE               = 0,           //Performs thresholding using the values you provide in the lowThreshold and highThreshold elements of OCRProcessingOptions.
+    IMAQ_COMPUTED_UNIFORM          = 1,           //Calculates a single threshold value for the entire ROI.
+    IMAQ_COMPUTED_LINEAR           = 2,           //Calculates a value on the left side of the ROI, calculates a value on the right side of the ROI, and linearly fills the middle values from left to right.
+    IMAQ_COMPUTED_NONLINEAR        = 3,           //Divides the ROI into the number of blocks specified by the blockCount element of OCRProcessingOptions and calculates a threshold value for each block.
+    IMAQ_THRESHOLD_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ThresholdMode;
 
-typedef enum SearchDirection_enum {
-    IMAQ_SEARCH_DIRECTION_LEFT_TO_RIGHT = 0,           //Searches from the left side of the search area to the right side of the search area.
-    IMAQ_SEARCH_DIRECTION_RIGHT_TO_LEFT = 1,           //Searches from the right side of the search area to the left side of the search area.
-    IMAQ_SEARCH_DIRECTION_TOP_TO_BOTTOM = 2,           //Searches from the top side of the search area to the bottom side of the search area.
-    IMAQ_SEARCH_DIRECTION_BOTTOM_TO_TOP = 3,           //Searches from the bottom side of the search area to the top side of the search area.
-    IMAQ_SEARCH_DIRECTION_SIZE_GUARD    = 0xFFFFFFFF   
-} SearchDirection;
-
-typedef enum WaveletTransformMode_enum {
-    IMAQ_WAVELET_TRANSFORM_INTEGER         = 0,           //Uses a 5-3 reversible integer transform.
-    IMAQ_WAVELET_TRANSFORM_FLOATING_POINT  = 1,           //Performs a 9-7 irreversible floating-point transform.
-    IMAQ_WAVELET_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} WaveletTransformMode;
-
-typedef enum DataMatrixGradingMode_enum {
-    IMAQ_NO_GRADING                          = 0,           //The function does not make any preparatory calculations.
-    IMAQ_PREPARE_FOR_AIM                     = 1,           //The function prepares the image for grading using the AIM Print Quality metrics.
-    IMAQ_DATA_MATRIX_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixGradingMode;
-
-typedef enum DataMatrixRotationMode_enum {
-    IMAQ_UNLIMITED_ROTATION                   = 0,           //The function allows for unlimited rotation.
-    IMAQ_0_DEGREES                            = 1,           //The function allows for between -5 and 5 degrees of rotation.
-    IMAQ_90_DEGREES                           = 2,           //The function allows for between 85 and 95 degrees of rotation.
-    IMAQ_180_DEGREES                          = 3,           //The function allows for between 175 and 185 degrees of rotation.
-    IMAQ_270_DEGREES                          = 4,           //The function allows for between 265 and 275 degrees of rotation.
-    IMAQ_DATA_MATRIX_ROTATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixRotationMode;
-
-typedef enum DataMatrixMirrorMode_enum {
-    IMAQ_AUTO_DETECT_MIRROR                 = -2,          //Specifies that the function should determine if the Data Matrix barcode is mirrored.
-    IMAQ_APPEARS_NORMAL                     = 0,           //Specifies that the function should expect the Data Matrix barcode to appear normal.
-    IMAQ_APPEARS_MIRRORED                   = 1,           //Specifies that the function should expect the Data Matrix barcode to appear mirrored.
-    IMAQ_DATA_MATRIX_MIRROR_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixMirrorMode;
-
-typedef enum DataMatrixCellSampleSize_enum {
-    IMAQ_AUTO_DETECT_CELL_SAMPLE_SIZE            = -2,          //The function will try each sample size and use the one which decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_1x1                                     = 1,           //The function will use a 1x1 sized sample from each cell.
-    IMAQ_2x2                                     = 2,           //The function will use a 2x2 sized sample from each cell.
-    IMAQ_3x3                                     = 3,           //The function will use a 3x3 sized sample from each cell.
-    IMAQ_4x4                                     = 4,           //The function will use a 4x4 sized sample from each cell.
-    IMAQ_5x5                                     = 5,           //The function will use a 5x5 sized sample from each cell.
-    IMAQ_6x6                                     = 6,           //The function will use a 6x6 sized sample from each cell.
-    IMAQ_7x7                                     = 7,           //The function will use a 7x7 sized sample from each cell.
-    IMAQ_DATA_MATRIX_CELL_SAMPLE_SIZE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixCellSampleSize;
-
-typedef enum DataMatrixCellFilterMode_enum {
-    IMAQ_AUTO_DETECT_CELL_FILTER_MODE            = -2,          //The function will try all filter modes and uses the one that decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_AVERAGE_FILTER                          = 0,           //The function sets the pixel value for the cell to the average of the sampled pixels.
-    IMAQ_MEDIAN_FILTER                           = 1,           //The function sets the pixel value for the cell to the median of the sampled pixels.
-    IMAQ_CENTRAL_AVERAGE_FILTER                  = 2,           //The function sets the pixel value for the cell to the average of the pixels in the center of the cell sample.
-    IMAQ_HIGH_AVERAGE_FILTER                     = 3,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the highest pixel values.
-    IMAQ_LOW_AVERAGE_FILTER                      = 4,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the lowest pixel values.
-    IMAQ_VERY_HIGH_AVERAGE_FILTER                = 5,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the highest pixel values.
-    IMAQ_VERY_LOW_AVERAGE_FILTER                 = 6,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the lowest pixel values.
-    IMAQ_ALL_CELL_FILTERS                        = 8,           //The function tries each filter mode, starting with IMAQ_AVERAGE_FILTER and ending with IMAQ_VERY_LOW_AVERAGE_FILTER, stopping once a filter mode decodes correctly.
-    IMAQ_DATA_MATRIX_CELL_FILTER_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixCellFilterMode;
-
-typedef enum DataMatrixPolarity_enum {
-    IMAQ_AUTO_DETECT_POLARITY            = -2,          //Sets the function to determine the Data Matrix barcode polarity automatically.
-    IMAQ_BLACK_DATA_ON_WHITE_BACKGROUND  = 0,           //Sets the function to read Data Matrix barcodes with dark data on a bright background.
-    IMAQ_WHITE_DATA_ON_BLACK_BACKGROUND  = 1,           //Sets the function to read Data Matrix barcodes with bright data on a dark background.
-    IMAQ_DATA_MATRIX_POLARITY_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixPolarity;
-
-typedef enum DataMatrixECC_enum {
-    IMAQ_AUTO_DETECT_ECC            = -2,          //Sets the function to determine the Data Matrix barcode ECC automatically.
-    IMAQ_ECC_000                    = 0,           //Sets the function to read Data Matrix barcodes of ECC 000 only.
-    IMAQ_ECC_050                    = 50,          //Sets the function to read Data Matrix barcodes of ECC 050 only.
-    IMAQ_ECC_080                    = 80,          //Sets the function to read Data Matrix barcodes of ECC 080 only.
-    IMAQ_ECC_100                    = 100,         //Sets the function to read Data Matrix barcodes of ECC 100 only.
-    IMAQ_ECC_140                    = 140,         //Sets the function to read Data Matrix barcodes of ECC 140 only.
-    IMAQ_ECC_000_140                = 190,         //Sets the function to read Data Matrix barcodes of ECC 000, ECC 050, ECC 080, ECC 100, and ECC 140 only.
-    IMAQ_ECC_200                    = 200,         //Sets the function to read Data Matrix barcodes of ECC 200 only.
-    IMAQ_DATA_MATRIX_ECC_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixECC;
-
-typedef enum DataMatrixDemodulationMode_enum {
-    IMAQ_AUTO_DETECT_DEMODULATION_MODE            = -2,          //The function will try each demodulation mode and use the one which decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_HISTOGRAM                                = 0,           //The function uses a histogram of all of the Data Matrix cells to calculate a threshold.
-    IMAQ_LOCAL_CONTRAST                           = 1,           //The function examines each of the cell's neighbors to determine if the cell is on or off.
-    IMAQ_COMBINED                                 = 2,           //The function uses the histogram of the Data Matrix barcode to calculate a threshold.
-    IMAQ_ALL_DEMODULATION_MODES                   = 3,           //The function tries IMAQ_HISTOGRAM, then IMAQ_LOCAL_CONTRAST and then IMAQ_COMBINATION, stopping once one mode is successful.
-    IMAQ_DATA_MATRIX_DEMODULATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixDemodulationMode;
-
-typedef enum DataMatrixCellFillMode_enum {
-    IMAQ_AUTO_DETECT_CELL_FILL_MODE            = -2,          //Sets the function to determine the Data Matrix barcode cell fill percentage automatically.
-    IMAQ_LOW_FILL                              = 0,           //Sets the function to read Data Matrix barcodes with a cell fill percentage of less than 30 percent.
-    IMAQ_NORMAL_FILL                           = 1,           //Sets the function to read Data Matrix barcodes with a cell fill percentage greater than or equal to 30 percent.
-    IMAQ_DATA_MATRIX_CELL_FILL_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} DataMatrixCellFillMode;
-
-typedef enum AIMGrade_enum {
-    IMAQ_AIM_GRADE_F                      = 0,           //The Data Matrix barcode received a grade of F.
-    IMAQ_AIM_GRADE_D                      = 1,           //The Data Matrix barcode received a grade of D.
-    IMAQ_AIM_GRADE_C                      = 2,           //The Data Matrix barcode received a grade of C.
-    IMAQ_AIM_GRADE_B                      = 3,           //The Data Matrix barcode received a grade of B.
-    IMAQ_AIM_GRADE_A                      = 4,           //The Data Matrix barcode received a grade of A.
-    IMAQ_DATA_MATRIX_AIM_GRADE_SIZE_GUARD = 0xFFFFFFFF   
-} AIMGrade;
-
-typedef enum EdgePolaritySearchMode_enum {
-    IMAQ_SEARCH_FOR_ALL_EDGES          = 0,           //Searches for all edges.
-    IMAQ_SEARCH_FOR_RISING_EDGES       = 1,           //Searches for rising edges only.
-    IMAQ_SEARCH_FOR_FALLING_EDGES      = 2,           //Searches for falling edges only.
-    IMAQ_EDGE_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} EdgePolaritySearchMode;
-
-typedef enum ColumnProcessingMode_enum {
-    IMAQ_AVERAGE_COLUMNS                   = 0,           //Averages the data extracted for edge detection.
-    IMAQ_MEDIAN_COLUMNS                    = 1,           //Takes the median of the data extracted for edge detection.
-    IMAQ_COLUMN_PROCESSING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ColumnProcessingMode;
-
-typedef enum QRDemodulationMode_enum {
-    IMAQ_QR_DEMODULATION_MODE_AUTO_DETECT    = -2,          //The function will try each demodulation mode and use the one which decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_QR_DEMODULATION_MODE_HISTOGRAM      = 0,           //The function uses a histogram of all of the QR cells to calculate a threshold.
-    IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST = 1,           //The function examines each of the cell's neighbors to determine if the cell is on or off.
-    IMAQ_QR_DEMODULATION_MODE_COMBINED       = 2,           //The function uses the histogram of the QR code to calculate a threshold.
-    IMAQ_QR_DEMODULATION_MODE_ALL            = 3,           //The function tries IMAQ_QR_DEMODULATION_MODE_HISTOGRAM, then IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST and then IMAQ_QR_DEMODULATION_MODE_COMBINED, stopping once one mode is successful.
-    IMAQ_QR_DEMODULATION_MODE_SIZE_GUARD     = 0xFFFFFFFF   
-} QRDemodulationMode;
-
-typedef enum FindTransformMode_enum {
-    IMAQ_FIND_REFERENCE                 = 0,           //Update both parts of the coordinate system.
-    IMAQ_UPDATE_TRANSFORM               = 1,           //Update only the new reference system.
-    IMAQ_FIND_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} FindTransformMode;
-
-typedef enum FindReferenceDirection_enum {
-    IMAQ_LEFT_TO_RIGHT_DIRECT          = 0,           //Searches from the left side of the search area to the right side of the search area for a direct axis.
-    IMAQ_LEFT_TO_RIGHT_INDIRECT        = 1,           //Searches from the left side of the search area to the right side of the search area for an indirect axis.
-    IMAQ_TOP_TO_BOTTOM_DIRECT          = 2,           //Searches from the top of the search area to the bottom of the search area for a direct axis.
-    IMAQ_TOP_TO_BOTTOM_INDIRECT        = 3,           //Searches from the top of the search area to the bottom of the search area for an indirect axis.
-    IMAQ_RIGHT_TO_LEFT_DIRECT          = 4,           //Searches from the right side of the search area to the left side of the search area for a direct axis.
-    IMAQ_RIGHT_TO_LEFT_INDIRECT        = 5,           //Searches from the right side of the search area to the left side of the search area for an indirect axis.
-    IMAQ_BOTTOM_TO_TOP_DIRECT          = 6,           //Searches from the bottom of the search area to the top of the search area for a direct axis.
-    IMAQ_BOTTOM_TO_TOP_INDIRECT        = 7,           //Searches from the bottom of the search area to the top of the search area for an indirect axis.
-    IMAQ_FIND_COORD_SYS_DIR_SIZE_GUARD = 0xFFFFFFFF   
-} FindReferenceDirection;
-
-typedef enum MulticoreOperation_enum {
-    IMAQ_GET_CORES                      = 0,           //The number of processor cores NI Vision is currently using.
-    IMAQ_SET_CORES                      = 1,           //The number of processor cores for NI Vision to use.
-    IMAQ_USE_MAX_AVAILABLE              = 2,           //Use the maximum number of available processor cores.
-    IMAQ_MULTICORE_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
-} MulticoreOperation;
-
-typedef enum GroupBehavior_enum {
-    IMAQ_GROUP_CLEAR               = 0,           //Sets the behavior of the overlay group to clear the current settings when an image is transformed.
-    IMAQ_GROUP_KEEP                = 1,           //Sets the behavior of the overlay group to keep the current settings when an image is transformed.
-    IMAQ_GROUP_TRANSFORM           = 2,           //Sets the behavior of the overlay group to transform with the image.
-    IMAQ_GROUP_BEHAVIOR_SIZE_GUARD = 0xFFFFFFFF   
-} GroupBehavior;
-
-typedef enum QRDimensions_enum {
-    IMAQ_QR_DIMENSIONS_AUTO_DETECT = 0,           //The function will automatically determine the dimensions of the QR code.
-    IMAQ_QR_DIMENSIONS_11x11       = 11,          //Specifies the dimensions of the QR code as 11 x 11.
-    IMAQ_QR_DIMENSIONS_13x13       = 13,          //Specifies the dimensions of the QR code as 13 x 13.
-    IMAQ_QR_DIMENSIONS_15x15       = 15,          //Specifies the dimensions of the QR code as 15 x 15.
-    IMAQ_QR_DIMENSIONS_17x17       = 17,          //Specifies the dimensions of the QR code as 17 x 17.
-    IMAQ_QR_DIMENSIONS_21x21       = 21,          //Specifies the dimensions of the QR code as 21 x 21.
-    IMAQ_QR_DIMENSIONS_25x25       = 25,          //Specifies the dimensions of the QR code as 25 x 25.
-    IMAQ_QR_DIMENSIONS_29x29       = 29,          //Specifies the dimensions of the QR code as 29 x 29.
-    IMAQ_QR_DIMENSIONS_33x33       = 33,          //Specifies the dimensions of the QR code as 33 x 33.
-    IMAQ_QR_DIMENSIONS_37x37       = 37,          //Specifies the dimensions of the QR code as 37 x 37.
-    IMAQ_QR_DIMENSIONS_41x41       = 41,          //Specifies the dimensions of the QR code as 41 x 41.
-    IMAQ_QR_DIMENSIONS_45x45       = 45,          //Specifies the dimensions of the QR code as 45 x 45.
-    IMAQ_QR_DIMENSIONS_49x49       = 49,          //Specifies the dimensions of the QR code as 49 x 49.
-    IMAQ_QR_DIMENSIONS_53x53       = 53,          //Specifies the dimensions of the QR code as 53 x 53.
-    IMAQ_QR_DIMENSIONS_57x57       = 57,          //Specifies the dimensions of the QR code as 57 x 57.
-    IMAQ_QR_DIMENSIONS_61x61       = 61,          //Specifies the dimensions of the QR code as 61 x 61.
-    IMAQ_QR_DIMENSIONS_65x65       = 65,          //Specifies the dimensions of the QR code as 65 x 65.
-    IMAQ_QR_DIMENSIONS_69x69       = 69,          //Specifies the dimensions of the QR code as 69 x 69.
-    IMAQ_QR_DIMENSIONS_73x73       = 73,          //Specifies the dimensions of the QR code as 73 x 73.
-    IMAQ_QR_DIMENSIONS_77x77       = 77,          //Specifies the dimensions of the QR code as 77 x 77.
-    IMAQ_QR_DIMENSIONS_81x81       = 81,          //Specifies the dimensions of the QR code as 81 x 81.
-    IMAQ_QR_DIMENSIONS_85x85       = 85,          //Specifies the dimensions of the QR code as 85 x 85.
-    IMAQ_QR_DIMENSIONS_89x89       = 89,          //Specifies the dimensions of the QR code as 89 x 89.
-    IMAQ_QR_DIMENSIONS_93x93       = 93,          //Specifies the dimensions of the QR code as 93 x 93.
-    IMAQ_QR_DIMENSIONS_97x97       = 97,          //Specifies the dimensions of the QR code as 97 x 97.
-    IMAQ_QR_DIMENSIONS_101x101     = 101,         //Specifies the dimensions of the QR code as 101 x 101.
-    IMAQ_QR_DIMENSIONS_105x105     = 105,         //Specifies the dimensions of the QR code as 105 x 105.
-    IMAQ_QR_DIMENSIONS_109x109     = 109,         //Specifies the dimensions of the QR code as 109 x 109.
-    IMAQ_QR_DIMENSIONS_113x113     = 113,         //Specifies the dimensions of the QR code as 113 x 113.
-    IMAQ_QR_DIMENSIONS_117x117     = 117,         //Specifies the dimensions of the QR code as 117 x 117.
-    IMAQ_QR_DIMENSIONS_121x121     = 121,         //Specifies the dimensions of the QR code as 121 x 121.
-    IMAQ_QR_DIMENSIONS_125x125     = 125,         //Specifies the dimensions of the QR code as 125 x 125.
-    IMAQ_QR_DIMENSIONS_128x128     = 128,         //Specifies the dimensions of the QR code as 128 x 128.
-    IMAQ_QR_DIMENSIONS_133x133     = 133,         //Specifies the dimensions of the QR code as 133 x 133.
-    IMAQ_QR_DIMENSIONS_137x137     = 137,         //Specifies the dimensions of the QR code as 137 x 137.
-    IMAQ_QR_DIMENSIONS_141x141     = 141,         //Specifies the dimensions of the QR code as 141 x 141.
-    IMAQ_QR_DIMENSIONS_145x145     = 145,         //Specifies the dimensions of the QR code as 145 x 145.
-    IMAQ_QR_DIMENSIONS_149x149     = 149,         //Specifies the dimensions of the QR code as 149 x 149.
-    IMAQ_QR_DIMENSIONS_153x153     = 153,         //Specifies the dimensions of the QR code as 153 x 153.
-    IMAQ_QR_DIMENSIONS_157x157     = 157,         //Specifies the dimensions of the QR code as 157 x 1537.
-    IMAQ_QR_DIMENSIONS_161x161     = 161,         //Specifies the dimensions of the QR code as 161 x 161.
-    IMAQ_QR_DIMENSIONS_165x165     = 165,         //Specifies the dimensions of the QR code as 165 x 165.
-    IMAQ_QR_DIMENSIONS_169x169     = 169,         //Specifies the dimensions of the QR code as 169 x 169.
-    IMAQ_QR_DIMENSIONS_173x173     = 173,         //Specifies the dimensions of the QR code as 173 x 173.
-    IMAQ_QR_DIMENSIONS_177x177     = 177,         //Specifies the dimensions of the QR code as 177 x 177.
-    IMAQ_QR_DIMENSIONS_SIZE_GUARD  = 0xFFFFFFFF   
-} QRDimensions;
-
-typedef enum QRModelType_enum {
-    IMAQ_QR_MODELTYPE_AUTO_DETECT = 0,           //Specifies that the function will auto-detect the type of QR code.
-    IMAQ_QR_MODELTYPE_MICRO       = 1,           //Specifies the QR code is of a micro type.
-    IMAQ_QR_MODELTYPE_MODEL1      = 2,           //Specifies the QR code is of a model1 type.
-    IMAQ_QR_MODELTYPE_MODEL2      = 3,           //Specifies the QR code is of a model2 type.
-    IMAQ_QR_MODEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} QRModelType;
-
-typedef enum QRCellSampleSize_enum {
-    IMAQ_QR_CELL_SAMPLE_SIZE_AUTO_DETECT = -2,          //The function will try each sample size and use the one which decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_QR_CELL_SAMPLE_SIZE1X1          = 1,           //The function will use a 1x1 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE2X2          = 2,           //The function will use a 2x2 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE3X3          = 3,           //The function will use a 3x3 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE4X4          = 4,           //The function will use a 4x4 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE5X5          = 5,           //The function will use a 5x5 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE6X6          = 6,           //The function will use a 6x6 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_SIZE7X7          = 7,           //The function will use a 7x7 sized sample from each cell.
-    IMAQ_QR_CELL_SAMPLE_TYPE_SIZE_GUARD  = 0xFFFFFFFF   
-} QRCellSampleSize;
-
-typedef enum QRStreamMode_enum {
-    IMAQ_QR_MODE_NUMERIC      = 0,           //Specifies that the data was encoded using numeric mode.
-    IMAQ_QR_MODE_ALPHANUMERIC = 1,           //Specifies that the data was encoded using alpha-numeric mode.
-    IMAQ_QR_MODE_RAW_BYTE     = 2,           //Specifies that the data was not encoded but is only raw binary bytes, or encoded in JIS-8.
-    IMAQ_QR_MODE_EAN128_TOKEN = 3,           //Specifies that the data has a special meaning represented by the application ID.
-    IMAQ_QR_MODE_EAN128_DATA  = 4,           //Specifies that the data has a special meaning represented by the application ID.
-    IMAQ_QR_MODE_ECI          = 5,           //Specifies that the data was meant to be read using the language represented in the language ID.
-    IMAQ_QR_MODE_KANJI        = 6,           //Specifies that the data was encoded in Shift-JIS16 Japanese.
-    IMAQ_QR_MODE_SIZE_GUARD   = 0xFFFFFFFF   
-} QRStreamMode;
-
-typedef enum QRMirrorMode_enum {
-    IMAQ_QR_MIRROR_MODE_AUTO_DETECT = -2,          //The function should determine if the QR code is mirrored.
-    IMAQ_QR_MIRROR_MODE_MIRRORED    = 1,           //The function should expect the QR code to appear mirrored.
-    IMAQ_QR_MIRROR_MODE_NORMAL      = 0,           //The function should expect the QR code to appear normal.
-    IMAQ_QR_MIRROR_MODE_SIZE_GUARD  = 0xFFFFFFFF   
-} QRMirrorMode;
-
-typedef enum QRPolarities_enum {
-    IMAQ_QR_POLARITY_AUTO_DETECT     = -2,          //The function should determine the polarity of the QR code.
-    IMAQ_QR_POLARITY_BLACK_ON_WHITE  = 0,           //The function should search for a QR code with dark data on a bright background.
-    IMAQ_QR_POLARITY_WHITE_ON_BLACK  = 1,           //The function should search for a QR code with bright data on a dark background.
-    IMAQ_QR_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} QRPolarities;
-
-typedef enum QRRotationMode_enum {
-    IMAQ_QR_ROTATION_MODE_UNLIMITED   = 0,           //The function allows for unlimited rotation.
-    IMAQ_QR_ROTATION_MODE_0_DEGREES   = 1,           //The function allows for x 5 degrees of rotation.
-    IMAQ_QR_ROTATION_MODE_90_DEGREES  = 2,           //The function allows for between 85 and 95 degrees of rotation.
-    IMAQ_QR_ROTATION_MODE_180_DEGREES = 3,           //The function allows for between 175 and 185 degrees of rotation.
-    IMAQ_QR_ROTATION_MODE_270_DEGREES = 4,           //The function allows for between 265 and 275 degrees of rotation.
-    IMAQ_QR_ROTATION_MODE_SIZE_GUARD  = 0xFFFFFFFF   
-} QRRotationMode;
-
-typedef enum QRGradingMode_enum {
-    IMAQ_QR_NO_GRADING              = 0,           //The function does not make any preparatory calculations.
-    IMAQ_QR_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} QRGradingMode;
-
-typedef enum StraightEdgeSearchMode_enum {
-    IMAQ_USE_FIRST_RAKE_EDGES            = 0,           //Fits a straight edge on the first points detected using a rake.
-    IMAQ_USE_BEST_RAKE_EDGES             = 1,           //Fits a straight edge on the best points detected using a rake.
-    IMAQ_USE_BEST_HOUGH_LINE             = 2,           //Finds the strongest straight edge using all points detected on a rake.
-    IMAQ_USE_FIRST_PROJECTION_EDGE       = 3,           //Uses the location of the first projected edge as the straight edge.
-    IMAQ_USE_BEST_PROJECTION_EDGE        = 4,           //Finds the strongest projected edge location to determine the straight edge.
-    IMAQ_STRAIGHT_EDGE_SEARCH_SIZE_GUARD = 0xFFFFFFFF   
-} StraightEdgeSearchMode;
-
-typedef enum LinearAveragesMode_enum {
-    IMAQ_COLUMN_AVERAGES                 = 1,           //Specifies that the function calculates the mean pixel value of each column.
-    IMAQ_ROW_AVERAGES                    = 2,           //Specifies that the function calculates the mean pixel value of each row.
-    IMAQ_RISING_DIAGONAL_AVERAGES        = 4,           //Specifies that the function calculates the mean pixel value of each diagonal running from the lower left to the upper right of the inspected area of the image.
-    IMAQ_FALLING_DIAGONAL_AVERAGES       = 8,           //Specifies that the function calculates the mean pixel value of each diagonal running from the upper left to the lower right of the inspected area of the image.
-    IMAQ_ALL_LINEAR_AVERAGES             = 15,          //Specifies that the function calculates all four linear mean pixel values.
-    IMAQ_LINEAR_AVERAGES_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} LinearAveragesMode;
-
-typedef enum QRCellFilterMode_enum {
-    IMAQ_QR_CELL_FILTER_MODE_AUTO_DETECT       = -2,          //The function will try all filter modes and uses the one that decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
-    IMAQ_QR_CELL_FILTER_MODE_AVERAGE           = 0,           //The function sets the pixel value for the cell to the average of the sampled pixels.
-    IMAQ_QR_CELL_FILTER_MODE_MEDIAN            = 1,           //The function sets the pixel value for the cell to the median of the sampled pixels.
-    IMAQ_QR_CELL_FILTER_MODE_CENTRAL_AVERAGE   = 2,           //The function sets the pixel value for the cell to the average of the pixels in the center of the cell sample.
-    IMAQ_QR_CELL_FILTER_MODE_HIGH_AVERAGE      = 3,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the highest pixel values.
-    IMAQ_QR_CELL_FILTER_MODE_LOW_AVERAGE       = 4,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the lowest pixel values.
-    IMAQ_QR_CELL_FILTER_MODE_VERY_HIGH_AVERAGE = 5,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the highest pixel values.
-    IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE  = 6,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the lowest pixel values.
-    IMAQ_QR_CELL_FILTER_MODE_ALL               = 8,           //The function tries each filter mode, starting with IMAQ_QR_CELL_FILTER_MODE_AVERAGE and ending with IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE, stopping once a filter mode decodes correctly.
-    IMAQ_QR_CELL_FILTER_MODE_SIZE_GUARD        = 0xFFFFFFFF   
-} QRCellFilterMode;
-
-typedef enum ParticleClassifierType_enum {
-    IMAQ_PARTICLE_LARGEST                    = 0,           //Use only the largest particle in the image.
-    IMAQ_PARTICLE_ALL                        = 1,           //Use all particles in the image.
-    IMAQ_PARTICLE_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ParticleClassifierType;
-
-typedef enum NormalizationMethod_enum {
-    IMAQ_NORMALIZATION_NONE               = 0,           //No normalization.
-    IMAQ_NORMALIZATION_HISTOGRAM_MATCHING = 1,           //Adjust image so its histogram is similar to the golden template's histogram.
-    IMAQ_NORMALIZATION_AVERAGE_MATCHING   = 2,           //Adjust image so its mean pixel value equals the golden template's mean pixel value.
-    IMAQ_NORMALIZATION_SIZE_GUARD         = 0xFFFFFFFF   
-} NormalizationMethod;
-
-typedef enum ParticleType_enum {
-    IMAQ_PARTICLE_BRIGHT          = 0,           //Bright particles.
-    IMAQ_PARTICLE_DARK            = 1,           //Dark particles.
-    IMAQ_PARTICLE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ParticleType;
-
-typedef enum VisionInfoType2_enum {
-    IMAQ_VISIONINFO_CALIBRATION       = 0x01,        //Used to indicate interaction with the Calibration information in an image.
-    IMAQ_VISIONINFO_OVERLAY           = 0x02,        //Used to indicate interaction with the Overlay information in an image.
-    IMAQ_VISIONINFO_GRAYTEMPLATE      = 0x04,        //Used to indicate interaction with the grayscale template information in an image.
-    IMAQ_VISIONINFO_COLORTEMPLATE     = 0x08,        //Used to indicate interaction with the color template information in an image.
-    IMAQ_VISIONINFO_GEOMETRICTEMPLATE = 0x10,        //Used to indicate interaction with the geometric template information in an image.
-    IMAQ_VISIONINFO_CUSTOMDATA        = 0x20,        //Used to indicate interaction with the binary or text Custom Data in an image.
-    IMAQ_VISIONINFO_GOLDENTEMPLATE    = 0x40,        //Used to indicate interaction with the golden template information in an image.
-    IMAQ_VISIONINFO_ALL               = 0xFFFFFFFF,  //Removes, checks for, or indicates the presence of all types of extra information in an image.
-} VisionInfoType2;
-
-typedef enum ReadClassifierFileMode_enum {
-    IMAQ_CLASSIFIER_READ_ALL                   = 0,           //Read all information from the classifier file.
-    IMAQ_CLASSIFIER_READ_SAMPLES               = 1,           //Read only the samples from the classifier file.
-    IMAQ_CLASSIFIER_READ_PROPERTIES            = 2,           //Read only the properties from the classifier file.
-    IMAQ_READ_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
-} ReadClassifierFileMode;
-
-typedef enum WriteClassifierFileMode_enum {
-    IMAQ_CLASSIFIER_WRITE_ALL                   = 0,           //Writes all information to the classifier file.
-    IMAQ_CLASSIFIER_WRITE_CLASSIFY_ONLY         = 1,           //Write only the information needed to classify to the classifier file.
-    IMAQ_WRITE_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
-} WriteClassifierFileMode;
-
-typedef enum ClassifierEngineType_enum {
-    IMAQ_ENGINE_NONE                       = 0,           //No engine has been set on this classifier session.
-    IMAQ_ENGINE_NEAREST_NEIGHBOR           = 1,           //Nearest neighbor engine.
-    IMAQ_CLASSIFIER_ENGINE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ClassifierEngineType;
-
-typedef enum NearestNeighborMethod_enum {
-    IMAQ_MINIMUM_MEAN_DISTANCE              = 0,           //The minimum mean distance method.
-    IMAQ_K_NEAREST_NEIGHBOR                 = 1,           //The k-nearest neighbor method.
-    IMAQ_NEAREST_PROTOTYPE                  = 2,           //The nearest prototype method.
-    IMAQ_NEAREST_NEIGHBOR_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} NearestNeighborMethod;
-
-typedef enum Barcode2DType_enum {
-    IMAQ_PDF417                     = 0,           //The 2D barcode is of type PDF417.
-    IMAQ_DATA_MATRIX_ECC_000        = 1,           //The 2D barcode is of type Data Matrix ECC 000.
-    IMAQ_DATA_MATRIX_ECC_050        = 2,           //The 2D barcode is of type Data Matrix ECC 050.
-    IMAQ_DATA_MATRIX_ECC_080        = 3,           //The 2D barcode is of type Data Matrix ECC 080.
-    IMAQ_DATA_MATRIX_ECC_100        = 4,           //The 2D barcode is of type Data Matrix ECC 100.
-    IMAQ_DATA_MATRIX_ECC_140        = 5,           //The 2D barcode is of type Data Matrix ECC 140.
-    IMAQ_DATA_MATRIX_ECC_200        = 6,           //The 2D barcode is of type Data Matrix ECC 200.
-    IMAQ_BARCODE_2D_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} Barcode2DType;
-
-typedef enum ButtonLabel_enum {
-    IMAQ_BUTTON_OK               = 0,           //The label "OK".
-    IMAQ_BUTTON_SAVE             = 1,           //The label "Save".
-    IMAQ_BUTTON_SELECT           = 2,           //The label "Select".
-    IMAQ_BUTTON_LOAD             = 3,           //The label "Load".
-    IMAQ_BUTTON_LABEL_SIZE_GUARD = 0xFFFFFFFF   
-} ButtonLabel;
-
-typedef enum GeometricMatchingMode_enum {
-    IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT     = 0,           //Searches for occurrences of the pattern in the image, assuming that the pattern is not rotated more than plus or minus 5 degrees.
-    IMAQ_GEOMETRIC_MATCH_ROTATION_INVARIANT  = 1,           //Searches for occurrences of the pattern in the image with reduced restriction on the rotation of the pattern.
-    IMAQ_GEOMETRIC_MATCH_SCALE_INVARIANT     = 2,           //Searches for occurrences of the pattern in the image with reduced restriction on the size of the pattern.
-    IMAQ_GEOMETRIC_MATCH_OCCLUSION_INVARIANT = 4,           //Searches for occurrences of the pattern in the image, allowing for a specified percentage of the pattern to be occluded.
-    IMAQ_GEOMETRIC_MATCHING_MODE_SIZE_GUARD  = 0xFFFFFFFF   
-} GeometricMatchingMode;
+typedef enum ReadStrategy_enum {
+    IMAQ_READ_AGGRESSIVE          = 0,           //Configures NI Vision to perform fewer checks when analyzing objects to determine if they match trained characters.
+    IMAQ_READ_CONSERVATIVE        = 1,           //Configures NI Vision to perform more checks to determine if an object matches a trained character.
+    IMAQ_READ_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+} ReadStrategy;
 
 typedef enum MeasurementType_enum {
     IMAQ_MT_CENTER_OF_MASS_X                    = 0,           //X-coordinate of the point representing the average position of the total particle mass, assuming every point in the particle has a constant density.
@@ -1769,39 +1527,129 @@ typedef enum MeasurementType_enum {
     IMAQ_MEASUREMENT_TYPE_SIZE_GUARD            = 0xFFFFFFFF   
 } MeasurementType;
 
-typedef enum ReadStrategy_enum {
-    IMAQ_READ_AGGRESSIVE          = 0,           //Configures NI Vision to perform fewer checks when analyzing objects to determine if they match trained characters.
-    IMAQ_READ_CONSERVATIVE        = 1,           //Configures NI Vision to perform more checks to determine if an object matches a trained character.
-    IMAQ_READ_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
-} ReadStrategy;
+typedef enum GeometricMatchingMode_enum {
+    IMAQ_GEOMETRIC_MATCH_SHIFT_INVARIANT     = 0,           //Searches for occurrences of the pattern in the image, assuming that the pattern is not rotated more than plus or minus 5 degrees.
+    IMAQ_GEOMETRIC_MATCH_ROTATION_INVARIANT  = 1,           //Searches for occurrences of the pattern in the image with reduced restriction on the rotation of the pattern.
+    IMAQ_GEOMETRIC_MATCH_SCALE_INVARIANT     = 2,           //Searches for occurrences of the pattern in the image with reduced restriction on the size of the pattern.
+    IMAQ_GEOMETRIC_MATCH_OCCLUSION_INVARIANT = 4,           //Searches for occurrences of the pattern in the image, allowing for a specified percentage of the pattern to be occluded.
+    IMAQ_GEOMETRIC_MATCHING_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+} GeometricMatchingMode;
 
-typedef enum ThresholdMode_enum {
-    IMAQ_FIXED_RANGE               = 0,           //Performs thresholding using the values you provide in the lowThreshold and highThreshold elements of OCRProcessingOptions.
-    IMAQ_COMPUTED_UNIFORM          = 1,           //Calculates a single threshold value for the entire ROI.
-    IMAQ_COMPUTED_LINEAR           = 2,           //Calculates a value on the left side of the ROI, calculates a value on the right side of the ROI, and linearly fills the middle values from left to right.
-    IMAQ_COMPUTED_NONLINEAR        = 3,           //Divides the ROI into the number of blocks specified by the blockCount element of OCRProcessingOptions and calculates a threshold value for each block.
-    IMAQ_THRESHOLD_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ThresholdMode;
+typedef enum ButtonLabel_enum {
+    IMAQ_BUTTON_OK               = 0,           //The label "OK".
+    IMAQ_BUTTON_SAVE             = 1,           //The label "Save".
+    IMAQ_BUTTON_SELECT           = 2,           //The label "Select".
+    IMAQ_BUTTON_LOAD             = 3,           //The label "Load".
+    IMAQ_BUTTON_LABEL_SIZE_GUARD = 0xFFFFFFFF   
+} ButtonLabel;
 
-typedef enum ReadResolution_enum {
-    IMAQ_LOW_RESOLUTION             = 0,           //Configures NI Vision to use low resolution during the read process.
-    IMAQ_MEDIUM_RESOLUTION          = 1,           //Configures NI Vision to use medium resolution during the read process.
-    IMAQ_HIGH_RESOLUTION            = 2,           //Configures NI Vision to use high resolution during the read process.
-    IMAQ_READ_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
-} ReadResolution;
+typedef enum NearestNeighborMethod_enum {
+    IMAQ_MINIMUM_MEAN_DISTANCE              = 0,           //The minimum mean distance method.
+    IMAQ_K_NEAREST_NEIGHBOR                 = 1,           //The k-nearest neighbor method.
+    IMAQ_NEAREST_PROTOTYPE                  = 2,           //The nearest prototype method.
+    IMAQ_NEAREST_NEIGHBOR_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} NearestNeighborMethod;
 
-typedef enum NearestNeighborMetric_enum {
-    IMAQ_METRIC_MAXIMUM                     = 0,           //The maximum metric.
-    IMAQ_METRIC_SUM                         = 1,           //The sum metric.
-    IMAQ_METRIC_EUCLIDEAN                   = 2,           //The Euclidean metric.
-    IMAQ_NEAREST_NEIGHBOR_METRIC_SIZE_GUARD = 0xFFFFFFFF   
-} NearestNeighborMetric;
+typedef enum QRMirrorMode_enum {
+    IMAQ_QR_MIRROR_MODE_AUTO_DETECT = -2,          //The function should determine if the QR code is mirrored.
+    IMAQ_QR_MIRROR_MODE_MIRRORED    = 1,           //The function should expect the QR code to appear mirrored.
+    IMAQ_QR_MIRROR_MODE_NORMAL      = 0,           //The function should expect the QR code to appear normal.
+    IMAQ_QR_MIRROR_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+} QRMirrorMode;
 
-typedef enum ExtractionMode_enum {
-    IMAQ_NORMAL_IMAGE               = 0,           //Specifies that the function makes no assumptions about the uniformity of objects in the image or the image background.
-    IMAQ_UNIFORM_REGIONS            = 1,           //Specifies that the function assumes that either the objects in the image or the image background consists of uniform pixel values.
-    IMAQ_EXTRACTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
-} ExtractionMode;
+typedef enum ColumnProcessingMode_enum {
+    IMAQ_AVERAGE_COLUMNS                   = 0,           //Averages the data extracted for edge detection.
+    IMAQ_MEDIAN_COLUMNS                    = 1,           //Takes the median of the data extracted for edge detection.
+    IMAQ_COLUMN_PROCESSING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ColumnProcessingMode;
+
+typedef enum FindReferenceDirection_enum {
+    IMAQ_LEFT_TO_RIGHT_DIRECT          = 0,           //Searches from the left side of the search area to the right side of the search area for a direct axis.
+    IMAQ_LEFT_TO_RIGHT_INDIRECT        = 1,           //Searches from the left side of the search area to the right side of the search area for an indirect axis.
+    IMAQ_TOP_TO_BOTTOM_DIRECT          = 2,           //Searches from the top of the search area to the bottom of the search area for a direct axis.
+    IMAQ_TOP_TO_BOTTOM_INDIRECT        = 3,           //Searches from the top of the search area to the bottom of the search area for an indirect axis.
+    IMAQ_RIGHT_TO_LEFT_DIRECT          = 4,           //Searches from the right side of the search area to the left side of the search area for a direct axis.
+    IMAQ_RIGHT_TO_LEFT_INDIRECT        = 5,           //Searches from the right side of the search area to the left side of the search area for an indirect axis.
+    IMAQ_BOTTOM_TO_TOP_DIRECT          = 6,           //Searches from the bottom of the search area to the top of the search area for a direct axis.
+    IMAQ_BOTTOM_TO_TOP_INDIRECT        = 7,           //Searches from the bottom of the search area to the top of the search area for an indirect axis.
+    IMAQ_FIND_COORD_SYS_DIR_SIZE_GUARD = 0xFFFFFFFF   
+} FindReferenceDirection;
+
+typedef enum MulticoreOperation_enum {
+    IMAQ_GET_CORES                      = 0,           //The number of processor cores NI Vision is currently using.
+    IMAQ_SET_CORES                      = 1,           //The number of processor cores for NI Vision to use.
+    IMAQ_USE_MAX_AVAILABLE              = 2,           //Use the maximum number of available processor cores.
+    IMAQ_MULTICORE_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
+} MulticoreOperation;
+
+typedef enum GroupBehavior_enum {
+    IMAQ_GROUP_CLEAR               = 0,           //Sets the behavior of the overlay group to clear the current settings when an image is transformed.
+    IMAQ_GROUP_KEEP                = 1,           //Sets the behavior of the overlay group to keep the current settings when an image is transformed.
+    IMAQ_GROUP_TRANSFORM           = 2,           //Sets the behavior of the overlay group to transform with the image.
+    IMAQ_GROUP_BEHAVIOR_SIZE_GUARD = 0xFFFFFFFF   
+} GroupBehavior;
+
+typedef enum QRDimensions_enum {
+    IMAQ_QR_DIMENSIONS_AUTO_DETECT = 0,           //The function will automatically determine the dimensions of the QR code.
+    IMAQ_QR_DIMENSIONS_11x11       = 11,          //Specifies the dimensions of the QR code as 11 x 11.
+    IMAQ_QR_DIMENSIONS_13x13       = 13,          //Specifies the dimensions of the QR code as 13 x 13.
+    IMAQ_QR_DIMENSIONS_15x15       = 15,          //Specifies the dimensions of the QR code as 15 x 15.
+    IMAQ_QR_DIMENSIONS_17x17       = 17,          //Specifies the dimensions of the QR code as 17 x 17.
+    IMAQ_QR_DIMENSIONS_21x21       = 21,          //Specifies the dimensions of the QR code as 21 x 21.
+    IMAQ_QR_DIMENSIONS_25x25       = 25,          //Specifies the dimensions of the QR code as 25 x 25.
+    IMAQ_QR_DIMENSIONS_29x29       = 29,          //Specifies the dimensions of the QR code as 29 x 29.
+    IMAQ_QR_DIMENSIONS_33x33       = 33,          //Specifies the dimensions of the QR code as 33 x 33.
+    IMAQ_QR_DIMENSIONS_37x37       = 37,          //Specifies the dimensions of the QR code as 37 x 37.
+    IMAQ_QR_DIMENSIONS_41x41       = 41,          //Specifies the dimensions of the QR code as 41 x 41.
+    IMAQ_QR_DIMENSIONS_45x45       = 45,          //Specifies the dimensions of the QR code as 45 x 45.
+    IMAQ_QR_DIMENSIONS_49x49       = 49,          //Specifies the dimensions of the QR code as 49 x 49.
+    IMAQ_QR_DIMENSIONS_53x53       = 53,          //Specifies the dimensions of the QR code as 53 x 53.
+    IMAQ_QR_DIMENSIONS_57x57       = 57,          //Specifies the dimensions of the QR code as 57 x 57.
+    IMAQ_QR_DIMENSIONS_61x61       = 61,          //Specifies the dimensions of the QR code as 61 x 61.
+    IMAQ_QR_DIMENSIONS_65x65       = 65,          //Specifies the dimensions of the QR code as 65 x 65.
+    IMAQ_QR_DIMENSIONS_69x69       = 69,          //Specifies the dimensions of the QR code as 69 x 69.
+    IMAQ_QR_DIMENSIONS_73x73       = 73,          //Specifies the dimensions of the QR code as 73 x 73.
+    IMAQ_QR_DIMENSIONS_77x77       = 77,          //Specifies the dimensions of the QR code as 77 x 77.
+    IMAQ_QR_DIMENSIONS_81x81       = 81,          //Specifies the dimensions of the QR code as 81 x 81.
+    IMAQ_QR_DIMENSIONS_85x85       = 85,          //Specifies the dimensions of the QR code as 85 x 85.
+    IMAQ_QR_DIMENSIONS_89x89       = 89,          //Specifies the dimensions of the QR code as 89 x 89.
+    IMAQ_QR_DIMENSIONS_93x93       = 93,          //Specifies the dimensions of the QR code as 93 x 93.
+    IMAQ_QR_DIMENSIONS_97x97       = 97,          //Specifies the dimensions of the QR code as 97 x 97.
+    IMAQ_QR_DIMENSIONS_101x101     = 101,         //Specifies the dimensions of the QR code as 101 x 101.
+    IMAQ_QR_DIMENSIONS_105x105     = 105,         //Specifies the dimensions of the QR code as 105 x 105.
+    IMAQ_QR_DIMENSIONS_109x109     = 109,         //Specifies the dimensions of the QR code as 109 x 109.
+    IMAQ_QR_DIMENSIONS_113x113     = 113,         //Specifies the dimensions of the QR code as 113 x 113.
+    IMAQ_QR_DIMENSIONS_117x117     = 117,         //Specifies the dimensions of the QR code as 117 x 117.
+    IMAQ_QR_DIMENSIONS_121x121     = 121,         //Specifies the dimensions of the QR code as 121 x 121.
+    IMAQ_QR_DIMENSIONS_125x125     = 125,         //Specifies the dimensions of the QR code as 125 x 125.
+    IMAQ_QR_DIMENSIONS_129x129     = 129,         //Specifies the dimensions of the QR code as 129 x 129.
+    IMAQ_QR_DIMENSIONS_133x133     = 133,         //Specifies the dimensions of the QR code as 133 x 133.
+    IMAQ_QR_DIMENSIONS_137x137     = 137,         //Specifies the dimensions of the QR code as 137 x 137.
+    IMAQ_QR_DIMENSIONS_141x141     = 141,         //Specifies the dimensions of the QR code as 141 x 141.
+    IMAQ_QR_DIMENSIONS_145x145     = 145,         //Specifies the dimensions of the QR code as 145 x 145.
+    IMAQ_QR_DIMENSIONS_149x149     = 149,         //Specifies the dimensions of the QR code as 149 x 149.
+    IMAQ_QR_DIMENSIONS_153x153     = 153,         //Specifies the dimensions of the QR code as 153 x 153.
+    IMAQ_QR_DIMENSIONS_157x157     = 157,         //Specifies the dimensions of the QR code as 157 x 1537.
+    IMAQ_QR_DIMENSIONS_161x161     = 161,         //Specifies the dimensions of the QR code as 161 x 161.
+    IMAQ_QR_DIMENSIONS_165x165     = 165,         //Specifies the dimensions of the QR code as 165 x 165.
+    IMAQ_QR_DIMENSIONS_169x169     = 169,         //Specifies the dimensions of the QR code as 169 x 169.
+    IMAQ_QR_DIMENSIONS_173x173     = 173,         //Specifies the dimensions of the QR code as 173 x 173.
+    IMAQ_QR_DIMENSIONS_177x177     = 177,         //Specifies the dimensions of the QR code as 177 x 177.
+    IMAQ_QR_DIMENSIONS_SIZE_GUARD  = 0xFFFFFFFF   
+} QRDimensions;
+
+typedef enum QRCellFilterMode_enum {
+    IMAQ_QR_CELL_FILTER_MODE_AUTO_DETECT       = -2,          //The function will try all filter modes and uses the one that decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_QR_CELL_FILTER_MODE_AVERAGE           = 0,           //The function sets the pixel value for the cell to the average of the sampled pixels.
+    IMAQ_QR_CELL_FILTER_MODE_MEDIAN            = 1,           //The function sets the pixel value for the cell to the median of the sampled pixels.
+    IMAQ_QR_CELL_FILTER_MODE_CENTRAL_AVERAGE   = 2,           //The function sets the pixel value for the cell to the average of the pixels in the center of the cell sample.
+    IMAQ_QR_CELL_FILTER_MODE_HIGH_AVERAGE      = 3,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the highest pixel values.
+    IMAQ_QR_CELL_FILTER_MODE_LOW_AVERAGE       = 4,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the lowest pixel values.
+    IMAQ_QR_CELL_FILTER_MODE_VERY_HIGH_AVERAGE = 5,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the highest pixel values.
+    IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE  = 6,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the lowest pixel values.
+    IMAQ_QR_CELL_FILTER_MODE_ALL               = 8,           //The function tries each filter mode, starting with IMAQ_QR_CELL_FILTER_MODE_AVERAGE and ending with IMAQ_QR_CELL_FILTER_MODE_VERY_LOW_AVERAGE, stopping once a filter mode decodes correctly.
+    IMAQ_QR_CELL_FILTER_MODE_SIZE_GUARD        = 0xFFFFFFFF   
+} QRCellFilterMode;
 
 typedef enum RoundingMode_enum {
     IMAQ_ROUNDING_MODE_OPTIMIZE   = 0,           //Rounds the result of a division using the best available method.
@@ -1809,45 +1657,289 @@ typedef enum RoundingMode_enum {
     IMAQ_ROUNDING_MODE_SIZE_GUARD = 0xFFFFFFFF   
 } RoundingMode;
 
-typedef enum CompressionType_enum {
-    IMAQ_COMPRESSION_NONE            = 0,           //Specifies that the function should not compress the image.
-    IMAQ_COMPRESSION_JPEG            = 1,           //Specifies that the function should use lossy JPEG compression on the image.
-    IMAQ_COMPRESSION_PACKED_BINARY   = 2,           //Specifies that the function should use lossless binary packing on the image.
-    IMAQ_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} CompressionType;
+typedef enum QRDemodulationMode_enum {
+    IMAQ_QR_DEMODULATION_MODE_AUTO_DETECT    = -2,          //The function will try each demodulation mode and use the one which decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_QR_DEMODULATION_MODE_HISTOGRAM      = 0,           //The function uses a histogram of all of the QR cells to calculate a threshold.
+    IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST = 1,           //The function examines each of the cell's neighbors to determine if the cell is on or off.
+    IMAQ_QR_DEMODULATION_MODE_COMBINED       = 2,           //The function uses the histogram of the QR code to calculate a threshold.
+    IMAQ_QR_DEMODULATION_MODE_ALL            = 3,           //The function tries IMAQ_QR_DEMODULATION_MODE_HISTOGRAM, then IMAQ_QR_DEMODULATION_MODE_LOCAL_CONTRAST and then IMAQ_QR_DEMODULATION_MODE_COMBINED, stopping once one mode is successful.
+    IMAQ_QR_DEMODULATION_MODE_SIZE_GUARD     = 0xFFFFFFFF   
+} QRDemodulationMode;
 
-typedef enum FlattenType_enum {
-    IMAQ_FLATTEN_IMAGE                 = 0,           //Flattens just the image data.
-    IMAQ_FLATTEN_IMAGE_AND_VISION_INFO = 1,           //Flattens the image data and any Vision information associated with the image.
-    IMAQ_FLATTEN_TYPE_SIZE_GUARD       = 0xFFFFFFFF   
-} FlattenType;
+typedef enum ContrastMode_enum {
+    IMAQ_ORIGINAL_CONTRAST = 0,  //Instructs the geometric matching algorithm to find matches with the same contrast as the template.
+    IMAQ_REVERSED_CONTRAST = 1,  //Instructs the geometric matching algorithm to find matches with the inverted contrast of the template.
+    IMAQ_BOTH_CONTRASTS    = 2,  //Instructs the geometric matching algorithm to find matches with the same and inverted contrast of the template.
+} ContrastMode;
 
-typedef enum LocalThresholdMethod_enum {
-    IMAQ_NIBLACK                           = 0,           //The function computes thresholds for each pixel based on its local statistics using the Niblack local thresholding algorithm.
-    IMAQ_BACKGROUND_CORRECTION             = 1,           //The function performs background correction first to eliminate non-uniform lighting effects, then performs thresholding using the Otsu thresholding algorithm.
-    IMAQ_LOCAL_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
-} LocalThresholdMethod;
+typedef enum QRPolarities_enum {
+    IMAQ_QR_POLARITY_AUTO_DETECT     = -2,          //The function should determine the polarity of the QR code.
+    IMAQ_QR_POLARITY_BLACK_ON_WHITE  = 0,           //The function should search for a QR code with dark data on a bright background.
+    IMAQ_QR_POLARITY_WHITE_ON_BLACK  = 1,           //The function should search for a QR code with bright data on a dark background.
+    IMAQ_QR_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} QRPolarities;
 
-typedef enum FeatureType_enum {
-    IMAQ_NOT_FOUND_FEATURE                   = 0,           //Specifies the feature is not found.
-    IMAQ_CIRCLE_FEATURE                      = 1,           //Specifies the feature is a circle.
-    IMAQ_ELLIPSE_FEATURE                     = 2,           //Specifies the feature is an ellipse.
-    IMAQ_CONST_CURVE_FEATURE                 = 3,           //Specifies the features is a constant curve.
-    IMAQ_RECTANGLE_FEATURE                   = 4,           //Specifies the feature is a rectangle.
-    IMAQ_LEG_FEATURE                         = 5,           //Specifies the feature is a leg.
-    IMAQ_CORNER_FEATURE                      = 6,           //Specifies the feature is a corner.
-    IMAQ_PARALLEL_LINE_PAIR_FEATURE          = 7,           //Specifies the feature is a parallel line pair.
-    IMAQ_PAIR_OF_PARALLEL_LINE_PAIRS_FEATURE = 8,           //Specifies the feature is a pair of parallel line pairs.
-    IMAQ_LINE_FEATURE                        = 9,           //Specifies the feature is a line.
-    IMAQ_CLOSED_CURVE_FEATURE                = 10,          //Specifies the feature is a closed curve.
-    IMAQ_FEATURE_TYPE_SIZE_GUARD             = 0xFFFFFFFF   
-} FeatureType;
+typedef enum QRRotationMode_enum {
+    IMAQ_QR_ROTATION_MODE_UNLIMITED   = 0,           //The function allows for unlimited rotation.
+    IMAQ_QR_ROTATION_MODE_0_DEGREES   = 1,           //The function allows for ??? 5 degrees of rotation.
+    IMAQ_QR_ROTATION_MODE_90_DEGREES  = 2,           //The function allows for between 85 and 95 degrees of rotation.
+    IMAQ_QR_ROTATION_MODE_180_DEGREES = 3,           //The function allows for between 175 and 185 degrees of rotation.
+    IMAQ_QR_ROTATION_MODE_270_DEGREES = 4,           //The function allows for between 265 and 275 degrees of rotation.
+    IMAQ_QR_ROTATION_MODE_SIZE_GUARD  = 0xFFFFFFFF   
+} QRRotationMode;
 
-typedef enum ClassifierType_enum {
-    IMAQ_CLASSIFIER_CUSTOM          = 0,           //The classifier session classifies vectors of doubles.
-    IMAQ_CLASSIFIER_PARTICLE        = 1,           //The classifier session classifies particles in binary images.
-    IMAQ_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
-} ClassifierType;
+typedef enum QRGradingMode_enum {
+    IMAQ_QR_NO_GRADING              = 0,           //The function does not make any preparatory calculations.
+    IMAQ_QR_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} QRGradingMode;
+
+typedef enum StraightEdgeSearchMode_enum {
+    IMAQ_USE_FIRST_RAKE_EDGES            = 0,           //Fits a straight edge on the first points detected using a rake.
+    IMAQ_USE_BEST_RAKE_EDGES             = 1,           //Fits a straight edge on the best points detected using a rake.
+    IMAQ_USE_BEST_HOUGH_LINE             = 2,           //Finds the strongest straight edge using all points detected on a rake.
+    IMAQ_USE_FIRST_PROJECTION_EDGE       = 3,           //Uses the location of the first projected edge as the straight edge.
+    IMAQ_USE_BEST_PROJECTION_EDGE        = 4,           //Finds the strongest projected edge location to determine the straight edge.
+    IMAQ_STRAIGHT_EDGE_SEARCH_SIZE_GUARD = 0xFFFFFFFF   
+} StraightEdgeSearchMode;
+
+typedef enum SearchDirection_enum {
+    IMAQ_SEARCH_DIRECTION_LEFT_TO_RIGHT = 0,           //Searches from the left side of the search area to the right side of the search area.
+    IMAQ_SEARCH_DIRECTION_RIGHT_TO_LEFT = 1,           //Searches from the right side of the search area to the left side of the search area.
+    IMAQ_SEARCH_DIRECTION_TOP_TO_BOTTOM = 2,           //Searches from the top side of the search area to the bottom side of the search area.
+    IMAQ_SEARCH_DIRECTION_BOTTOM_TO_TOP = 3,           //Searches from the bottom side of the search area to the top side of the search area.
+    IMAQ_SEARCH_DIRECTION_SIZE_GUARD    = 0xFFFFFFFF   
+} SearchDirection;
+
+typedef enum QRStreamMode_enum {
+    IMAQ_QR_MODE_NUMERIC      = 0,           //Specifies that the data was encoded using numeric mode.
+    IMAQ_QR_MODE_ALPHANUMERIC = 1,           //Specifies that the data was encoded using alpha-numeric mode.
+    IMAQ_QR_MODE_RAW_BYTE     = 2,           //Specifies that the data was not encoded but is only raw binary bytes, or encoded in JIS-8.
+    IMAQ_QR_MODE_EAN128_TOKEN = 3,           //Specifies that the data has a special meaning represented by the application ID.
+    IMAQ_QR_MODE_EAN128_DATA  = 4,           //Specifies that the data has a special meaning represented by the application ID.
+    IMAQ_QR_MODE_ECI          = 5,           //Specifies that the data was meant to be read using the language represented in the language ID.
+    IMAQ_QR_MODE_KANJI        = 6,           //Specifies that the data was encoded in Shift-JIS16 Japanese.
+    IMAQ_QR_MODE_SIZE_GUARD   = 0xFFFFFFFF   
+} QRStreamMode;
+
+typedef enum ParticleClassifierType_enum {
+    IMAQ_PARTICLE_LARGEST                    = 0,           //Use only the largest particle in the image.
+    IMAQ_PARTICLE_ALL                        = 1,           //Use all particles in the image.
+    IMAQ_PARTICLE_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ParticleClassifierType;
+
+typedef enum QRCellSampleSize_enum {
+    IMAQ_QR_CELL_SAMPLE_SIZE_AUTO_DETECT = -2,          //The function will try each sample size and use the one which decodes the QR code within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_QR_CELL_SAMPLE_SIZE1X1          = 1,           //The function will use a 1x1 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE2X2          = 2,           //The function will use a 2x2 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE3X3          = 3,           //The function will use a 3x3 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE4X4          = 4,           //The function will use a 4x4 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE5X5          = 5,           //The function will use a 5x5 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE6X6          = 6,           //The function will use a 6x6 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_SIZE7X7          = 7,           //The function will use a 7x7 sized sample from each cell.
+    IMAQ_QR_CELL_SAMPLE_TYPE_SIZE_GUARD  = 0xFFFFFFFF   
+} QRCellSampleSize;
+
+typedef enum RakeProcessType_enum {
+    IMAQ_GET_FIRST_EDGES              = 0,           
+    IMAQ_GET_FIRST_AND_LAST_EDGES     = 1,           
+    IMAQ_GET_ALL_EDGES                = 2,           
+    IMAQ_GET_BEST_EDGES               = 3,           
+    IMAQ_RAKE_PROCESS_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} RakeProcessType;
+
+typedef enum GeometricSetupDataItem_enum {
+    IMAQ_CURVE_EXTRACTION_MODE             = 0,   //Specifies how the function identifies curves in the image.
+    IMAQ_CURVE_EDGE_THRSHOLD               = 1,   //Specifies the minimum contrast an edge pixel must have for it to be considered part of a curve.
+    IMAQ_CURVE_EDGE_FILTER                 = 2,   //Specifies the width of the edge filter that the function uses to identify curves in the image.
+    IMAQ_MINIMUM_CURVE_LENGTH              = 3,   //Specifies the length, in pixels, of the smallest curve that you want the function to identify.
+    IMAQ_CURVE_ROW_SEARCH_STEP_SIZE        = 4,   //Specifies the distance, in the y direction, between the image rows that the algorithm inspects for curve seed points.
+    IMAQ_CURVE_COL_SEARCH_STEP_SIZE        = 5,   //Specifies the distance, in the x direction, between the image columns that the algorithm inspects for curve seed points.
+    IMAQ_CURVE_MAX_END_POINT_GAP           = 6,   //Specifies the maximum gap, in pixels, between the endpoints of a curve that the function identifies as a closed curve.
+    IMAQ_EXTRACT_CLOSED_CURVES             = 7,   //Specifies whether to identify only closed curves in the image.
+    IMAQ_ENABLE_SUBPIXEL_CURVE_EXTRACTION  = 8,   //The function ignores this option.
+    IMAQ_ENABLE_CORRELATION_SCORE          = 9,   //Specifies that the function should calculate the Correlation Score and return it for each match result.
+    IMAQ_ENABLE_SUBPIXEL_ACCURACY          = 10,  //Determines whether to return the match results with subpixel accuracy.
+    IMAQ_SUBPIXEL_ITERATIONS               = 11,  //Specifies the maximum number of incremental improvements used to refine matches using subpixel information.
+    IMAQ_SUBPIXEL_TOLERANCE                = 12,  //Specifies the maximum amount of change, in pixels, between consecutive incremental improvements in the match position before the function stops refining the match position.
+    IMAQ_INITIAL_MATCH_LIST_LENGTH         = 13,  //Specifies the maximum size of the match list.
+    IMAQ_ENABLE_TARGET_TEMPLATE_CURVESCORE = 14,  //Specifies whether the function should calculate the match curve to template curve score and return it for each match result.
+    IMAQ_MINIMUM_MATCH_SEPARATION_DISTANCE = 15,  //Specifies the minimum separation distance, in pixels, between the origins of two matches that have unique positions.
+    IMAQ_MINIMUM_MATCH_SEPARATION_ANGLE    = 16,  //Specifies the minimum angular difference, in degrees, between two matches that have unique angles.
+    IMAQ_MINIMUM_MATCH_SEPARATION_SCALE    = 17,  //Specifies the minimum difference in scale, expressed as a percentage, between two matches that have unique scales.
+    IMAQ_MAXIMUM_MATCH_OVERLAP             = 18,  //Specifies whether you want the algorithm to spend less time accurately estimating the location of a match.
+    IMAQ_ENABLE_COARSE_RESULT              = 19,  //Specifies whether you want the algorithm to spend less time accurately estimating the location of a match.
+    IMAQ_ENABLE_CALIBRATION_SUPPORT        = 20,  //Specifies whether or not the algorithm treat the inspection image as a calibrated image.
+    IMAQ_ENABLE_CONTRAST_REVERSAL          = 21,  //Specifies the contrast of the matches to search for.
+    IMAQ_SEARCH_STRATEGY                   = 22,  //Specifies the aggressiveness of the strategy used to find matches in the image.
+    IMAQ_REFINEMENT_MATCH_FACTOR           = 23,  //Specifies the factor applied to the number of matches requested to determine how many matches are refined in the pyramid stage.
+    IMAQ_SUBPIXEL_MATCH_FACTOR             = 24,  //Specifies the factor applied to the number for matches requested to determine how many matches are used for the final (subpixel) stage.
+    IMAQ_MAX_REFINEMENT_ITERATIONS         = 25,  //Specifies maximum refinement iteration.
+} GeometricSetupDataItem;
+
+typedef enum DistortionModel_enum {
+    IMAQ_POLYNOMIAL_MODEL    = 0,   //Polynomial model.
+    IMAQ_DIVISION_MODEL      = 1,   //Division Model.
+    IMAQ_NO_DISTORTION_MODEL = -1,  //Not a distortion model.
+} DistortionModel;
+
+typedef enum CalibrationThumbnailType_enum {
+    IMAQ_CAMARA_MODEL_TYPE                     = 0,           //Camara model thumbnail type.
+    IMAQ_PERSPECTIVE_TYPE                      = 1,           //Perspective thumbnail type.
+    IMAQ_MICRO_PLANE_TYPE                      = 2,           //Micro Plane thumbnail type.
+    IMAQ_CALIBRATION_THUMBNAIL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} CalibrationThumbnailType;
+
+typedef enum SettingType_enum {
+    IMAQ_ROTATION_ANGLE_RANGE    = 0,           //Set a range for this option to specify the angles at which you expect the Function to find template matches in the inspection image.
+    IMAQ_SCALE_RANGE             = 1,           //Set a range for this option to specify the sizes at which you expect the Function to find template matches in the inspection image.
+    IMAQ_OCCLUSION_RANGE         = 2,           //Set a range for this option to specify the amount of occlusion you expect for a match in the inspection image.
+    IMAQ_SETTING_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} SettingType;
+
+typedef enum SegmentationDistanceLevel_enum {
+    IMAQ_SEGMENTATION_LEVEL_CONSERVATIVE = 0,           //Uses extensive criteria to determine the Maximum Distance.
+    IMAQ_SEGMENTATION_LEVEL_AGGRESSIVE   = 1,           //Uses few criteria to determine the Maximum Distance.
+    IMAQ_SEGMENTATION_LEVEL_SIZE_GUARD   = 0xFFFFFFFF   
+} SegmentationDistanceLevel;
+
+typedef enum ExtractContourSelection_enum {
+    IMAQ_CLOSEST                              = 0,           //Selects the curve closest to the ROI.
+    IMAQ_LONGEST                              = 1,           //Selects the longest curve.
+    IMAQ_STRONGEST                            = 2,           //Selects the curve with the highest edge strength averaged from each point on the curve.
+    IMAQ_EXTRACT_CONTOUR_SELECTION_SIZE_GUARD = 0xFFFFFFFF   
+} ExtractContourSelection;
+
+typedef enum FindTransformMode_enum {
+    IMAQ_FIND_REFERENCE                 = 0,           //Update both parts of the coordinate system.
+    IMAQ_UPDATE_TRANSFORM               = 1,           //Update only the new reference system.
+    IMAQ_FIND_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} FindTransformMode;
+
+typedef enum ExtractContourDirection_enum {
+    IMAQ_RECT_LEFT_RIGHT                      = 0,           //Searches the ROI from left to right.
+    IMAQ_RECT_RIGHT_LEFT                      = 1,           //Searches the ROI from right to left.
+    IMAQ_RECT_TOP_BOTTOM                      = 2,           //Searches the ROI from top to bottom.
+    IMAQ_RECT_BOTTOM_TOP                      = 3,           //Searches the ROI from bottom to top.
+    IMAQ_ANNULUS_INNER_OUTER                  = 4,           //Searches the ROI from the inner radius to the outer radius.
+    IMAQ_ANNULUS_OUTER_INNER                  = 5,           //Searches the ROI from the outer radius to the inner radius.
+    IMAQ_ANNULUS_START_STOP                   = 6,           //Searches the ROI from start angle to end angle.
+    IMAQ_ANNULUS_STOP_START                   = 7,           //Searches the ROI from end angle to start angle.
+    IMAQ_EXTRACT_CONTOUR_DIRECTION_SIZE_GUARD = 0xFFFFFFFF   
+} ExtractContourDirection;
+
+typedef enum EdgePolaritySearchMode_enum {
+    IMAQ_SEARCH_FOR_ALL_EDGES          = 0,           //Searches for all edges.
+    IMAQ_SEARCH_FOR_RISING_EDGES       = 1,           //Searches for rising edges only.
+    IMAQ_SEARCH_FOR_FALLING_EDGES      = 2,           //Searches for falling edges only.
+    IMAQ_EDGE_POLARITY_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} EdgePolaritySearchMode;
+
+typedef enum Connectivity_enum {
+    IMAQ_FOUR_CONNECTED          = 0,           //Morphological reconstruction is performed in connectivity mode 4.
+    IMAQ_EIGHT_CONNECTED         = 1,           //Morphological reconstruction is performed in connectivity mode 8.
+    IMAQ_CONNECTIVITY_SIZE_GUARD = 0xFFFFFFFF   
+} Connectivity;
+
+typedef enum MorphologyReconstructOperation_enum {
+    IMAQ_DILATE_RECONSTRUCT                          = 0,           //Performs Reconstruction by dilation.
+    IMAQ_ERODE_RECONSTRUCT                           = 1,           //Performs Reconstruction by erosion.
+    IMAQ_MORPHOLOGY_RECONSTRUCT_OPERATION_SIZE_GUARD = 0xFFFFFFFF   
+} MorphologyReconstructOperation;
+
+typedef enum WaveletType_enum {
+    IMAQ_DB02                 = 0,           
+    IMAQ_DB03                 = 1,           
+    IMAQ_DB04                 = 2,           //Specifies the Wavelet Type as DB02.
+    IMAQ_DB05                 = 3,           
+    IMAQ_DB06                 = 4,           
+    IMAQ_DB07                 = 5,           
+    IMAQ_DB08                 = 6,           
+    IMAQ_DB09                 = 7,           
+    IMAQ_DB10                 = 8,           
+    IMAQ_DB11                 = 9,           
+    IMAQ_DB12                 = 10,          
+    IMAQ_DB13                 = 11,          
+    IMAQ_DB14                 = 12,          
+    IMAQ_HAAR                 = 13,          
+    IMAQ_BIOR1_3              = 14,          
+    IMAQ_BIOR1_5              = 15,          
+    IMAQ_BIOR2_2              = 16,          
+    IMAQ_BIOR2_4              = 17,          
+    IMAQ_BIOR2_6              = 18,          
+    IMAQ_BIOR2_8              = 19,          
+    IMAQ_BIOR3_1              = 20,          
+    IMAQ_BIOR3_3              = 21,          
+    IMAQ_BIOR3_5              = 22,          
+    IMAQ_BIOR3_7              = 23,          
+    IMAQ_BIOR3_9              = 24,          
+    IMAQ_BIOR4_4              = 25,          
+    IMAQ_COIF1                = 26,          
+    IMAQ_COIF2                = 27,          
+    IMAQ_COIF3                = 28,          
+    IMAQ_COIF4                = 29,          
+    IMAQ_COIF5                = 30,          
+    IMAQ_SYM2                 = 31,          
+    IMAQ_SYM3                 = 32,          
+    IMAQ_SYM4                 = 33,          
+    IMAQ_SYM5                 = 34,          
+    IMAQ_SYM6                 = 35,          
+    IMAQ_SYM7                 = 36,          
+    IMAQ_SYM8                 = 37,          
+    IMAQ_BIOR5_5              = 38,          
+    IMAQ_BIOR6_8              = 39,          
+    IMAQ_WAVE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} WaveletType;
+
+typedef enum ParticleClassifierThresholdType_enum {
+    IMAQ_THRESHOLD_MANUAL = 0,  //The classifier performs a manual threshold on the image during preprocessing.
+    IMAQ_THRESHOLD_AUTO   = 1,  //The classifier performs an auto threshold on the image during preprocessing.
+    IMAQ_THRESHOLD_LOCAL  = 2,  //The classifier performs a local threshold on the image during preprocessing.
+} ParticleClassifierThresholdType;
+
+typedef enum MeasureParticlesCalibrationMode_enum {
+    IMAQ_CALIBRATION_MODE_PIXEL                        = 0,           //The function takes only pixel measurements on the particles in the image.
+    IMAQ_CALIBRATION_MODE_CALIBRATED                   = 1,           //The function takes only calibrated measurements on the particles in the image.
+    IMAQ_CALIBRATION_MODE_BOTH                         = 2,           //The function takes both pixel and calibrated measurements on the particles in the image.
+    IMAQ_MEASURE_PARTICLES_CALIBRATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} MeasureParticlesCalibrationMode;
+
+typedef enum GeometricMatchingSearchStrategy_enum {
+    IMAQ_GEOMETRIC_MATCHING_CONSERVATIVE               = 0,           //Instructs the pattern matching algorithm to use the largest possible amount of information from the image at the expense of slowing down the speed of the algorithm.
+    IMAQ_GEOMETRIC_MATCHING_BALANCED                   = 1,           //Instructs the pattern matching algorithm to balance the amount of information from the image it uses with the speed of the algorithm.
+    IMAQ_GEOMETRIC_MATCHING_AGGRESSIVE                 = 2,           //Instructs the pattern matching algorithm to use a lower amount of information from the image, which allows the algorithm to run quickly but at the expense of accuracy.
+    IMAQ_GEOMETRIC_MATCHING_SEARCH_STRATEGY_SIZE_GUARD = 0xFFFFFFFF   
+} GeometricMatchingSearchStrategy;
+
+typedef enum ColorClassificationResolution_enum {
+    IMAQ_CLASSIFIER_LOW_RESOLUTION        = 0,           //Low resolution version of the color classifier.
+    IMAQ_CLASSIFIER_MEDIUM_RESOLUTION     = 1,           //Medium resolution version of the color classifier.
+    IMAQ_CLASSIFIER_HIGH_RESOLUTION       = 2,           //High resolution version of the color classifier.
+    IMAQ_CLASSIFIER_RESOLUTION_SIZE_GUARD = 0xFFFFFFFF   
+} ColorClassificationResolution;
+
+typedef enum ConnectionConstraintType_enum {
+    IMAQ_DISTANCE_CONSTRAINT              = 0,           //Specifies the distance, in pixels, within which the end points of two curves must lie in order to be considered part of a contour.
+    IMAQ_ANGLE_CONSTRAINT                 = 1,           //Specifies the range, in degrees, within which the difference between the angle of two curves, measured at the end points, must lie in order for the two curves to be considered part of a contour.
+    IMAQ_CONNECTIVITY_CONSTRAINT          = 2,           //Specifies the distance, in pixels, within which a line extended from the end point of a curve must pass the end point of another curve in order for the two curves to be considered part of a contour.
+    IMAQ_GRADIENT_CONSTRAINT              = 3,           //Specifies the range, in degrees, within which the gradient angles of two curves, measured at the end points, must lie in order for the two curves to be considered part of a contour.
+    IMAQ_NUM_CONNECTION_CONSTRAINT_TYPES  = 4,           //.
+    IMAQ_CONNECTION_CONSTRAINT_SIZE_GUARD = 0xFFFFFFFF   
+} ConnectionConstraintType;
+
+typedef enum Barcode2DContrast_enum {
+    IMAQ_ALL_BARCODE_2D_CONTRASTS       = 0,           //The function searches for barcodes of each contrast type.
+    IMAQ_BLACK_ON_WHITE_BARCODE_2D      = 1,           //The function searches for 2D barcodes containing black data on a white background.
+    IMAQ_WHITE_ON_BLACK_BARCODE_2D      = 2,           //The function searches for 2D barcodes containing white data on a black background.
+    IMAQ_BARCODE_2D_CONTRAST_SIZE_GUARD = 0xFFFFFFFF   
+} Barcode2DContrast;
+
+typedef enum QRModelType_enum {
+    IMAQ_QR_MODELTYPE_AUTO_DETECT = 0,           //Specifies that the function will auto-detect the type of QR code.
+    IMAQ_QR_MODELTYPE_MICRO       = 1,           //Specifies the QR code is of a micro type.
+    IMAQ_QR_MODELTYPE_MODEL1      = 2,           //Specifies the QR code is of a model1 type.
+    IMAQ_QR_MODELTYPE_MODEL2      = 3,           //Specifies the QR code is of a model2 type.
+    IMAQ_QR_MODEL_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} QRModelType;
 
 typedef enum WindowBackgroundFillStyle_enum {
     IMAQ_FILL_STYLE_SOLID      = 0,           //Fill the display window with a solid color.
@@ -1856,15 +1948,16 @@ typedef enum WindowBackgroundFillStyle_enum {
     IMAQ_FILL_STYLE_SIZE_GUARD = 0xFFFFFFFF   
 } WindowBackgroundFillStyle;
 
-typedef enum RegistrationMethod_enum {
-    IMAQ_REGISTRATION_NONE        = 0,           //No registration.
-    IMAQ_REGISTRATION_PERSPECTIVE = 1,           //Adjust image to correct for minor variations in alignment or perspective.
-    IMAQ_REGISTRATION_SIZE_GUARD  = 0xFFFFFFFF   
-} RegistrationMethod;
+typedef enum ExtractionMode_enum {
+    IMAQ_NORMAL_IMAGE               = 0,           //Specifies that the function makes no assumptions about the uniformity of objects in the image or the image background.
+    IMAQ_UNIFORM_REGIONS            = 1,           //Specifies that the function assumes that either the objects in the image or the image background consists of uniform pixel values.
+    IMAQ_EXTRACTION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} ExtractionMode;
 
 typedef enum EdgeFilterSize_enum {
     IMAQ_FINE                        = 0,           //Specifies that the function uses a fine (narrow) edge filter.
     IMAQ_NORMAL                      = 1,           //Specifies that the function uses a normal edge filter.
+    IMAQ_CONTOUR_TRACING             = 2,           //Sets the Edge Filter Size to contour tracing, which provides the best results for contour extraction but increases the time required to process the image.
     IMAQ_EDGE_FILTER_SIZE_SIZE_GUARD = 0xFFFFFFFF   
 } EdgeFilterSize;
 
@@ -1882,11 +1975,20 @@ typedef enum DataMatrixSubtype_enum {
     IMAQ_DATA_MATRIX_SUBTYPE_SIZE_GUARD       = 0xFFFFFFFF   
 } DataMatrixSubtype;
 
-typedef enum Barcode2DShape_enum {
-    IMAQ_SQUARE_BARCODE_2D           = 0,           //The function searches for square 2D barcodes.
-    IMAQ_RECTANGULAR_BARCODE_2D      = 1,           //The function searches for rectangular 2D barcodes.
-    IMAQ_BARCODE_2D_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
-} Barcode2DShape;
+typedef enum FeatureType_enum {
+    IMAQ_NOT_FOUND_FEATURE                   = 0,           //Specifies the feature is not found.
+    IMAQ_CIRCLE_FEATURE                      = 1,           //Specifies the feature is a circle.
+    IMAQ_ELLIPSE_FEATURE                     = 2,           //Specifies the feature is an ellipse.
+    IMAQ_CONST_CURVE_FEATURE                 = 3,           //Specifies the features is a constant curve.
+    IMAQ_RECTANGLE_FEATURE                   = 4,           //Specifies the feature is a rectangle.
+    IMAQ_LEG_FEATURE                         = 5,           //Specifies the feature is a leg.
+    IMAQ_CORNER_FEATURE                      = 6,           //Specifies the feature is a corner.
+    IMAQ_PARALLEL_LINE_PAIR_FEATURE          = 7,           //Specifies the feature is a parallel line pair.
+    IMAQ_PAIR_OF_PARALLEL_LINE_PAIRS_FEATURE = 8,           //Specifies the feature is a pair of parallel line pairs.
+    IMAQ_LINE_FEATURE                        = 9,           //Specifies the feature is a line.
+    IMAQ_CLOSED_CURVE_FEATURE                = 10,          //Specifies the feature is a closed curve.
+    IMAQ_FEATURE_TYPE_SIZE_GUARD             = 0xFFFFFFFF   
+} FeatureType;
 
 typedef enum Barcode2DCellShape_enum {
     IMAQ_SQUARE_CELLS                     = 0,           //The function uses an algorithm for decoding the 2D barcode that works with square data cells.
@@ -1894,12 +1996,140 @@ typedef enum Barcode2DCellShape_enum {
     IMAQ_BARCODE_2D_CELL_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
 } Barcode2DCellShape;
 
-typedef enum Barcode2DContrast_enum {
-    IMAQ_ALL_BARCODE_2D_CONTRASTS       = 0,           //The function searches for barcodes of each contrast type.
-    IMAQ_BLACK_ON_WHITE_BARCODE_2D      = 1,           //The function searches for 2D barcodes containing black data on a white background.
-    IMAQ_WHITE_ON_BLACK_BARCODE_2D      = 2,           //The function searches for 2D barcodes containing white data on a black background.
-    IMAQ_BARCODE_2D_CONTRAST_SIZE_GUARD = 0xFFFFFFFF   
-} Barcode2DContrast;
+typedef enum LocalThresholdMethod_enum {
+    IMAQ_NIBLACK                           = 0,           //The function computes thresholds for each pixel based on its local statistics using the Niblack local thresholding algorithm.
+    IMAQ_BACKGROUND_CORRECTION             = 1,           //The function performs background correction first to eliminate non-uniform lighting effects, then performs thresholding using the Otsu thresholding algorithm.
+    IMAQ_LOCAL_THRESHOLD_METHOD_SIZE_GUARD = 0xFFFFFFFF   
+} LocalThresholdMethod;
+
+typedef enum Barcode2DType_enum {
+    IMAQ_PDF417                     = 0,           //The 2D barcode is of type PDF417.
+    IMAQ_DATA_MATRIX_ECC_000        = 1,           //The 2D barcode is of type Data Matrix ECC 000.
+    IMAQ_DATA_MATRIX_ECC_050        = 2,           //The 2D barcode is of type Data Matrix ECC 050.
+    IMAQ_DATA_MATRIX_ECC_080        = 3,           //The 2D barcode is of type Data Matrix ECC 080.
+    IMAQ_DATA_MATRIX_ECC_100        = 4,           //The 2D barcode is of type Data Matrix ECC 100.
+    IMAQ_DATA_MATRIX_ECC_140        = 5,           //The 2D barcode is of type Data Matrix ECC 140.
+    IMAQ_DATA_MATRIX_ECC_200        = 6,           //The 2D barcode is of type Data Matrix ECC 200.
+    IMAQ_BARCODE_2D_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} Barcode2DType;
+
+typedef enum ClassifierEngineType_enum {
+    IMAQ_ENGINE_NONE                       = 0,           //No engine has been set on this classifier session.
+    IMAQ_ENGINE_NEAREST_NEIGHBOR           = 1,           //Nearest neighbor engine.
+    IMAQ_ENGINE_SUPPORT_VECTOR_MACHINE     = 2,           
+    IMAQ_CLASSIFIER_ENGINE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ClassifierEngineType;
+
+typedef enum ClassifierType_enum {
+    IMAQ_CLASSIFIER_CUSTOM          = 0,           //The classifier session classifies vectors of doubles.
+    IMAQ_CLASSIFIER_PARTICLE        = 1,           //The classifier session classifies particles in binary images.
+    IMAQ_CLASSIFIER_COLOR           = 2,           //The classifier session classifies an image based on its color.
+    IMAQ_CLASSIFIER_TEXTURE         = 3,           //The classifier session classifies an image based on its texture.
+    IMAQ_CLASSIFIER_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ClassifierType;
+
+typedef enum ParticleType_enum {
+    IMAQ_PARTICLE_BRIGHT          = 0,           //Bright particles.
+    IMAQ_PARTICLE_DARK            = 1,           //Dark particles.
+    IMAQ_PARTICLE_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} ParticleType;
+
+typedef enum VisionInfoType2_enum {
+    IMAQ_VISIONINFO_CALIBRATION        = 0x01,        //Used to indicate interaction with the Calibration information in an image.
+    IMAQ_VISIONINFO_OVERLAY            = 0x02,        //Used to indicate interaction with the Overlay information in an image.
+    IMAQ_VISIONINFO_GRAYTEMPLATE       = 0x04,        //Used to indicate interaction with the grayscale template information in an image.
+    IMAQ_VISIONINFO_COLORTEMPLATE      = 0x08,        //Used to indicate interaction with the color template information in an image.
+    IMAQ_VISIONINFO_GEOMETRICTEMPLATE  = 0x10,        //Used to indicate interaction with the geometric template information in an image.
+    IMAQ_VISIONINFO_CUSTOMDATA         = 0x20,        //Used to indicate interaction with the binary or text Custom Data in an image.
+    IMAQ_VISIONINFO_GOLDENTEMPLATE     = 0x40,        //Used to indicate interaction with the golden template information in an image.
+    IMAQ_VISIONINFO_GEOMETRICTEMPLATE2 = 0x80,        //Used to indicate interaction with the geometric template 2 information in an image.
+    IMAQ_VISIONINFO_ALL                = 0xFFFFFFFF,  //Removes, checks for, or indicates the presence of all types of extra information in an image.
+} VisionInfoType2;
+
+typedef enum ReadClassifierFileMode_enum {
+    IMAQ_CLASSIFIER_READ_ALL                   = 0,           //Read all information from the classifier file.
+    IMAQ_CLASSIFIER_READ_SAMPLES               = 1,           //Read only the samples from the classifier file.
+    IMAQ_CLASSIFIER_READ_PROPERTIES            = 2,           //Read only the properties from the classifier file.
+    IMAQ_READ_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
+} ReadClassifierFileMode;
+
+typedef enum WriteClassifierFileMode_enum {
+    IMAQ_CLASSIFIER_WRITE_ALL                   = 0,           //Writes all information to the classifier file.
+    IMAQ_CLASSIFIER_WRITE_CLASSIFY_ONLY         = 1,           //Write only the information needed to classify to the classifier file.
+    IMAQ_WRITE_CLASSIFIER_FILE_MODES_SIZE_GUARD = 0xFFFFFFFF   
+} WriteClassifierFileMode;
+
+typedef enum Barcode2DShape_enum {
+    IMAQ_SQUARE_BARCODE_2D           = 0,           //The function searches for square 2D barcodes.
+    IMAQ_RECTANGULAR_BARCODE_2D      = 1,           //The function searches for rectangular 2D barcodes.
+    IMAQ_BARCODE_2D_SHAPE_SIZE_GUARD = 0xFFFFFFFF   
+} Barcode2DShape;
+
+typedef enum DataMatrixRotationMode_enum {
+    IMAQ_UNLIMITED_ROTATION                   = 0,           //The function allows for unlimited rotation.
+    IMAQ_0_DEGREES                            = 1,           //The function allows for between -5 and 5 degrees of rotation.
+    IMAQ_90_DEGREES                           = 2,           //The function allows for between 85 and 95 degrees of rotation.
+    IMAQ_180_DEGREES                          = 3,           //The function allows for between 175 and 185 degrees of rotation.
+    IMAQ_270_DEGREES                          = 4,           //The function allows for between 265 and 275 degrees of rotation.
+    IMAQ_DATA_MATRIX_ROTATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixRotationMode;
+
+typedef enum AIMGrade_enum {
+    IMAQ_AIM_GRADE_F                      = 0,           //The Data Matrix barcode received a grade of F.
+    IMAQ_AIM_GRADE_D                      = 1,           //The Data Matrix barcode received a grade of D.
+    IMAQ_AIM_GRADE_C                      = 2,           //The Data Matrix barcode received a grade of C.
+    IMAQ_AIM_GRADE_B                      = 3,           //The Data Matrix barcode received a grade of B.
+    IMAQ_AIM_GRADE_A                      = 4,           //The Data Matrix barcode received a grade of A.
+    IMAQ_DATA_MATRIX_AIM_GRADE_SIZE_GUARD = 0xFFFFFFFF   
+} AIMGrade;
+
+typedef enum DataMatrixCellFillMode_enum {
+    IMAQ_AUTO_DETECT_CELL_FILL_MODE            = -2,          //Sets the function to determine the Data Matrix barcode cell fill percentage automatically.
+    IMAQ_LOW_FILL                              = 0,           //Sets the function to read Data Matrix barcodes with a cell fill percentage of less than 30 percent.
+    IMAQ_NORMAL_FILL                           = 1,           //Sets the function to read Data Matrix barcodes with a cell fill percentage greater than or equal to 30 percent.
+    IMAQ_DATA_MATRIX_CELL_FILL_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixCellFillMode;
+
+typedef enum DataMatrixDemodulationMode_enum {
+    IMAQ_AUTO_DETECT_DEMODULATION_MODE            = -2,          //The function will try each demodulation mode and use the one which decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_HISTOGRAM                                = 0,           //The function uses a histogram of all of the Data Matrix cells to calculate a threshold.
+    IMAQ_LOCAL_CONTRAST                           = 1,           //The function examines each of the cell's neighbors to determine if the cell is on or off.
+    IMAQ_COMBINED                                 = 2,           //The function uses the histogram of the Data Matrix barcode to calculate a threshold.
+    IMAQ_ALL_DEMODULATION_MODES                   = 3,           //The function tries IMAQ_HISTOGRAM, then IMAQ_LOCAL_CONTRAST and then IMAQ_COMBINATION, stopping once one mode is successful.
+    IMAQ_DATA_MATRIX_DEMODULATION_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixDemodulationMode;
+
+typedef enum DataMatrixECC_enum {
+    IMAQ_AUTO_DETECT_ECC            = -2,          //Sets the function to determine the Data Matrix barcode ECC automatically.
+    IMAQ_ECC_000                    = 0,           //Sets the function to read Data Matrix barcodes of ECC 000 only.
+    IMAQ_ECC_050                    = 50,          //Sets the function to read Data Matrix barcodes of ECC 050 only.
+    IMAQ_ECC_080                    = 80,          //Sets the function to read Data Matrix barcodes of ECC 080 only.
+    IMAQ_ECC_100                    = 100,         //Sets the function to read Data Matrix barcodes of ECC 100 only.
+    IMAQ_ECC_140                    = 140,         //Sets the function to read Data Matrix barcodes of ECC 140 only.
+    IMAQ_ECC_000_140                = 190,         //Sets the function to read Data Matrix barcodes of ECC 000, ECC 050, ECC 080, ECC 100, and ECC 140 only.
+    IMAQ_ECC_200                    = 200,         //Sets the function to read Data Matrix barcodes of ECC 200 only.
+    IMAQ_DATA_MATRIX_ECC_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixECC;
+
+typedef enum DataMatrixPolarity_enum {
+    IMAQ_AUTO_DETECT_POLARITY            = -2,          //Sets the function to determine the Data Matrix barcode polarity automatically.
+    IMAQ_BLACK_DATA_ON_WHITE_BACKGROUND  = 0,           //Sets the function to read Data Matrix barcodes with dark data on a bright background.
+    IMAQ_WHITE_DATA_ON_BLACK_BACKGROUND  = 1,           //Sets the function to read Data Matrix barcodes with bright data on a dark background.
+    IMAQ_DATA_MATRIX_POLARITY_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixPolarity;
+
+typedef enum DataMatrixCellFilterMode_enum {
+    IMAQ_AUTO_DETECT_CELL_FILTER_MODE            = -2,          //The function will try all filter modes and uses the one that decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_AVERAGE_FILTER                          = 0,           //The function sets the pixel value for the cell to the average of the sampled pixels.
+    IMAQ_MEDIAN_FILTER                           = 1,           //The function sets the pixel value for the cell to the median of the sampled pixels.
+    IMAQ_CENTRAL_AVERAGE_FILTER                  = 2,           //The function sets the pixel value for the cell to the average of the pixels in the center of the cell sample.
+    IMAQ_HIGH_AVERAGE_FILTER                     = 3,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the highest pixel values.
+    IMAQ_LOW_AVERAGE_FILTER                      = 4,           //The function sets the pixel value for the cell to the average value of the half of the sampled pixels with the lowest pixel values.
+    IMAQ_VERY_HIGH_AVERAGE_FILTER                = 5,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the highest pixel values.
+    IMAQ_VERY_LOW_AVERAGE_FILTER                 = 6,           //The function sets the pixel value for the cell to the average value of the ninth of the sampled pixels with the lowest pixel values.
+    IMAQ_ALL_CELL_FILTERS                        = 8,           //The function tries each filter mode, starting with IMAQ_AVERAGE_FILTER and ending with IMAQ_VERY_LOW_AVERAGE_FILTER, stopping once a filter mode decodes correctly.
+    IMAQ_DATA_MATRIX_CELL_FILTER_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixCellFilterMode;
 
 typedef enum WindowBackgroundHatchStyle_enum {
     IMAQ_HATCH_STYLE_HORIZONTAL        = 0,           //The background of the display window will be horizontal bars.
@@ -1910,6 +2140,81 @@ typedef enum WindowBackgroundHatchStyle_enum {
     IMAQ_HATCH_STYLE_CROSS_HATCH       = 5,           //The background of the display window will be intersecting forward and backward diagonal bars.
     IMAQ_HATCH_STYLE_SIZE_GUARD        = 0xFFFFFFFF   
 } WindowBackgroundHatchStyle;
+
+typedef enum DataMatrixMirrorMode_enum {
+    IMAQ_AUTO_DETECT_MIRROR                 = -2,          //Specifies that the function should determine if the Data Matrix barcode is mirrored.
+    IMAQ_APPEARS_NORMAL                     = 0,           //Specifies that the function should expect the Data Matrix barcode to appear normal.
+    IMAQ_APPEARS_MIRRORED                   = 1,           //Specifies that the function should expect the Data Matrix barcode to appear mirrored.
+    IMAQ_DATA_MATRIX_MIRROR_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixMirrorMode;
+
+typedef enum CalibrationMode2_enum {
+    IMAQ_PERSPECTIVE_MODE             = 0,           //Functions correct for distortion caused by the camera's perspective.
+    IMAQ_MICROPLANE_MODE              = 1,           //Functions correct for distortion caused by the camera's lens.
+    IMAQ_SIMPLE_CALIBRATION_MODE      = 2,           //Functions do not correct for distortion.
+    IMAQ_CORRECTED_IMAGE_MODE         = 3,           //The image is already corrected.
+    IMAQ_NO_CALIBRATION_MODE          = 4,           //Image with No calibration.
+    IMAQ_CALIBRATION_MODE2_SIZE_GUARD = 0xFFFFFFFF   
+} CalibrationMode2;
+
+typedef enum DataMatrixGradingMode_enum {
+    IMAQ_NO_GRADING                          = 0,           //The function does not make any preparatory calculations.
+    IMAQ_PREPARE_FOR_AIM                     = 1,           //The function prepares the image for grading using the AIM Print Quality metrics.
+    IMAQ_DATA_MATRIX_GRADING_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixGradingMode;
+
+typedef enum WaveletTransformMode_enum {
+    IMAQ_WAVELET_TRANSFORM_INTEGER         = 0,           //Uses a 5-3 reversible integer transform.
+    IMAQ_WAVELET_TRANSFORM_FLOATING_POINT  = 1,           //Performs a 9-7 irreversible floating-point transform.
+    IMAQ_WAVELET_TRANSFORM_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} WaveletTransformMode;
+
+typedef enum NormalizationMethod_enum {
+    IMAQ_NORMALIZATION_NONE               = 0,           //No normalization.
+    IMAQ_NORMALIZATION_HISTOGRAM_MATCHING = 1,           //Adjust image so its histogram is similar to the golden template's histogram.
+    IMAQ_NORMALIZATION_AVERAGE_MATCHING   = 2,           //Adjust image so its mean pixel value equals the golden template's mean pixel value.
+    IMAQ_NORMALIZATION_SIZE_GUARD         = 0xFFFFFFFF   
+} NormalizationMethod;
+
+typedef enum RegistrationMethod_enum {
+    IMAQ_REGISTRATION_NONE        = 0,           //No registration.
+    IMAQ_REGISTRATION_PERSPECTIVE = 1,           //Adjust image to correct for minor variations in alignment or perspective.
+    IMAQ_REGISTRATION_SIZE_GUARD  = 0xFFFFFFFF   
+} RegistrationMethod;
+
+typedef enum LinearAveragesMode_enum {
+    IMAQ_COLUMN_AVERAGES                 = 1,           //Specifies that the function calculates the mean pixel value of each column.
+    IMAQ_ROW_AVERAGES                    = 2,           //Specifies that the function calculates the mean pixel value of each row.
+    IMAQ_RISING_DIAGONAL_AVERAGES        = 4,           //Specifies that the function calculates the mean pixel value of each diagonal running from the lower left to the upper right of the inspected area of the image.
+    IMAQ_FALLING_DIAGONAL_AVERAGES       = 8,           //Specifies that the function calculates the mean pixel value of each diagonal running from the upper left to the lower right of the inspected area of the image.
+    IMAQ_ALL_LINEAR_AVERAGES             = 15,          //Specifies that the function calculates all four linear mean pixel values.
+    IMAQ_LINEAR_AVERAGES_MODE_SIZE_GUARD = 0xFFFFFFFF   
+} LinearAveragesMode;
+
+typedef enum CompressionType_enum {
+    IMAQ_COMPRESSION_NONE            = 0,           //Specifies that the function should not compress the image.
+    IMAQ_COMPRESSION_JPEG            = 1,           //Specifies that the function should use lossy JPEG compression on the image.
+    IMAQ_COMPRESSION_PACKED_BINARY   = 2,           //Specifies that the function should use lossless binary packing on the image.
+    IMAQ_COMPRESSION_TYPE_SIZE_GUARD = 0xFFFFFFFF   
+} CompressionType;
+
+typedef enum FlattenType_enum {
+    IMAQ_FLATTEN_IMAGE                 = 0,           //Flattens just the image data.
+    IMAQ_FLATTEN_IMAGE_AND_VISION_INFO = 1,           //Flattens the image data and any Vision information associated with the image.
+    IMAQ_FLATTEN_TYPE_SIZE_GUARD       = 0xFFFFFFFF   
+} FlattenType;
+
+typedef enum DataMatrixCellSampleSize_enum {
+    IMAQ_AUTO_DETECT_CELL_SAMPLE_SIZE            = -2,          //The function will try each sample size and use the one which decodes the Data Matrix barcode within the fewest iterations and utilizing the least amount of error correction.
+    IMAQ_1x1                                     = 1,           //The function will use a 1x1 sized sample from each cell.
+    IMAQ_2x2                                     = 2,           //The function will use a 2x2 sized sample from each cell.
+    IMAQ_3x3                                     = 3,           //The function will use a 3x3 sized sample from each cell.
+    IMAQ_4x4                                     = 4,           //The function will use a 4x4 sized sample from each cell.
+    IMAQ_5x5                                     = 5,           //The function will use a 5x5 sized sample from each cell.
+    IMAQ_6x6                                     = 6,           //The function will use a 6x6 sized sample from each cell.
+    IMAQ_7x7                                     = 7,           //The function will use a 7x7 sized sample from each cell.
+    IMAQ_DATA_MATRIX_CELL_SAMPLE_SIZE_SIZE_GUARD = 0xFFFFFFFF   
+} DataMatrixCellSampleSize;
 
 
 //============================================================================
@@ -1932,9 +2237,84 @@ typedef struct ReadTextOptions_struct ReadTextOptions;
 typedef struct CharInfo_struct CharInfo;
 typedef struct CharReport_struct CharReport;
 typedef struct ReadTextReport_struct ReadTextReport;
-typedef struct ParticleFilterOptions2_struct ParticleFilterOptions2;
+typedef struct DivisionModel_struct DivisionModel;
+typedef struct FocalLength_struct FocalLength;
+typedef struct PolyModel_struct PolyModel;
+typedef struct DistortionModelParams_struct DistortionModelParams;
+typedef struct PointFloat_struct PointFloat;
+typedef struct InternalParameters_struct InternalParameters;
+typedef struct MaxGridSize_struct MaxGridSize;
+typedef struct ImageSize_struct ImageSize;
+typedef struct CalibrationReferencePoints_struct CalibrationReferencePoints;
+typedef struct GetCameraParametersReport_struct GetCameraParametersReport;
+typedef struct CalibrationAxisInfo_struct CalibrationAxisInfo;
+typedef struct CalibrationLearnSetupInfo_struct CalibrationLearnSetupInfo;
+typedef struct GridDescriptor_struct GridDescriptor;
+typedef struct ErrorStatistics_struct ErrorStatistics;
+typedef struct GetCalibrationInfoReport_struct GetCalibrationInfoReport;
+typedef struct EdgePolarity_struct EdgePolarity;
+typedef struct ClampSettings_struct ClampSettings;
+typedef struct PointDouble_struct PointDouble;
+typedef struct PointDoublePair_struct PointDoublePair;
+typedef struct ClampResults_struct ClampResults;
+typedef struct ClampPoints_struct ClampPoints;
 typedef struct RGBValue_struct RGBValue;
+typedef struct ClampOverlaySettings_struct ClampOverlaySettings;
+typedef struct ClampMax2Report_struct ClampMax2Report;
+typedef struct ContourFitSplineReport_struct ContourFitSplineReport;
+typedef struct LineFloat_struct LineFloat;
+typedef struct LineEquation_struct LineEquation;
+typedef struct ContourFitLineReport_struct ContourFitLineReport;
+typedef struct ContourFitPolynomialReport_struct ContourFitPolynomialReport;
+typedef struct PartialCircle_struct PartialCircle;
+typedef struct PartialEllipse_struct PartialEllipse;
+typedef struct SetupMatchPatternData_struct SetupMatchPatternData;
+typedef struct RangeSettingDouble_struct RangeSettingDouble;
+typedef struct GeometricAdvancedSetupDataOption_struct GeometricAdvancedSetupDataOption;
+typedef struct ContourInfoReport_struct ContourInfoReport;
+typedef struct ROILabel_struct ROILabel;
+typedef struct SupervisedColorSegmentationReport_struct SupervisedColorSegmentationReport;
+typedef struct LabelToROIReport_struct LabelToROIReport;
+typedef struct ColorSegmenationOptions_struct ColorSegmenationOptions;
+typedef struct ClassifiedCurve_struct ClassifiedCurve;
+typedef struct RangeDouble_struct RangeDouble;
+typedef struct RangeLabel_struct RangeLabel;
+typedef struct CurvatureAnalysisReport_struct CurvatureAnalysisReport;
+typedef struct Disparity_struct Disparity;
+typedef struct ComputeDistancesReport_struct ComputeDistancesReport;
+typedef struct MatchMode_struct MatchMode;
+typedef struct ClassifiedDisparity_struct ClassifiedDisparity;
+typedef struct ClassifyDistancesReport_struct ClassifyDistancesReport;
+typedef struct ContourComputeCurvatureReport_struct ContourComputeCurvatureReport;
+typedef struct ContourOverlaySettings_struct ContourOverlaySettings;
+typedef struct CurveParameters_struct CurveParameters;
+typedef struct ExtractContourReport_struct ExtractContourReport;
+typedef struct ConnectionConstraint_struct ConnectionConstraint;
+typedef struct ExtractTextureFeaturesReport_struct ExtractTextureFeaturesReport;
+typedef struct WaveletBandsReport_struct WaveletBandsReport;
+typedef struct CircleFitOptions_struct CircleFitOptions;
 typedef struct EdgeOptions2_struct EdgeOptions2;
+typedef struct FindCircularEdgeOptions_struct FindCircularEdgeOptions;
+typedef struct FindConcentricEdgeOptions_struct FindConcentricEdgeOptions;
+typedef struct ConcentricEdgeFitOptions_struct ConcentricEdgeFitOptions;
+typedef struct FindConcentricEdgeReport_struct FindConcentricEdgeReport;
+typedef struct FindCircularEdgeReport_struct FindCircularEdgeReport;
+typedef struct WindowSize_struct WindowSize;
+typedef struct DisplacementVector_struct DisplacementVector;
+typedef struct WaveletOptions_struct WaveletOptions;
+typedef struct CooccurrenceOptions_struct CooccurrenceOptions;
+typedef struct ParticleClassifierLocalThresholdOptions_struct ParticleClassifierLocalThresholdOptions;
+typedef struct RangeFloat_struct RangeFloat;
+typedef struct ParticleClassifierAutoThresholdOptions_struct ParticleClassifierAutoThresholdOptions;
+typedef struct ParticleClassifierPreprocessingOptions2_struct ParticleClassifierPreprocessingOptions2;
+typedef struct MeasureParticlesReport_struct MeasureParticlesReport;
+typedef struct GeometricPatternMatch3_struct GeometricPatternMatch3;
+typedef struct MatchGeometricPatternAdvancedOptions3_struct MatchGeometricPatternAdvancedOptions3;
+typedef struct ColorOptions_struct ColorOptions;
+typedef struct SampleScore_struct SampleScore;
+typedef struct ClassifierReportAdvanced_struct ClassifierReportAdvanced;
+typedef struct LearnGeometricPatternAdvancedOptions2_struct LearnGeometricPatternAdvancedOptions2;
+typedef struct ParticleFilterOptions2_struct ParticleFilterOptions2;
 typedef struct FindEdgeOptions2_struct FindEdgeOptions2;
 typedef struct FindEdgeReport_struct FindEdgeReport;
 typedef struct FindTransformRectOptions2_struct FindTransformRectOptions2;
@@ -1942,14 +2322,12 @@ typedef struct FindTransformRectsOptions2_struct FindTransformRectsOptions2;
 typedef struct ReadTextReport3_struct ReadTextReport3;
 typedef struct CharacterStatistics_struct CharacterStatistics;
 typedef struct CharReport3_struct CharReport3;
-typedef struct PointFloat_struct PointFloat;
 typedef struct ArcInfo2_struct ArcInfo2;
 typedef struct EdgeReport2_struct EdgeReport2;
 typedef struct SearchArcInfo_struct SearchArcInfo;
 typedef struct ConcentricRakeReport2_struct ConcentricRakeReport2;
 typedef struct SpokeReport2_struct SpokeReport2;
 typedef struct EdgeInfo_struct EdgeInfo;
-typedef struct LineFloat_struct LineFloat;
 typedef struct SearchLineInfo_struct SearchLineInfo;
 typedef struct RakeReport2_struct RakeReport2;
 typedef struct TransformBehaviors_struct TransformBehaviors;
@@ -1995,7 +2373,6 @@ typedef struct EllipseDescriptor_struct EllipseDescriptor;
 typedef struct EllipseMatch_struct EllipseMatch;
 typedef struct CircleMatch_struct CircleMatch;
 typedef struct CircleDescriptor_struct CircleDescriptor;
-typedef struct RangeFloat_struct RangeFloat;
 typedef struct ShapeDetectionOptions_struct ShapeDetectionOptions;
 typedef struct Curve_struct Curve;
 typedef struct CurveOptions_struct CurveOptions;
@@ -2050,7 +2427,6 @@ typedef struct EdgeOptions_struct EdgeOptions;
 typedef struct EdgeReport_struct EdgeReport;
 typedef struct ExtremeReport_struct ExtremeReport;
 typedef struct FitLineOptions_struct FitLineOptions;
-typedef struct GridDescriptor_struct GridDescriptor;
 typedef struct DisplayMapping_struct DisplayMapping;
 typedef struct DetectExtremesOptions_struct DetectExtremesOptions;
 typedef struct ImageInfo_struct ImageInfo;
@@ -2061,7 +2437,6 @@ typedef struct LearnCalibrationOptions_struct LearnCalibrationOptions;
 typedef struct LearnColorPatternOptions_struct LearnColorPatternOptions;
 typedef struct Line_struct Line;
 typedef struct LinearAverages_struct LinearAverages;
-typedef struct LineEquation_struct LineEquation;
 typedef struct LineProfile_struct LineProfile;
 typedef struct MatchColorPatternOptions_struct MatchColorPatternOptions;
 typedef struct HistogramReport_struct HistogramReport;
@@ -2127,15 +2502,139 @@ typedef struct SpokeOptions_struct SpokeOptions;
 //============================================================================
 // Data Structures
 //============================================================================
-#ifndef __GNUC__
+#if !defined __GNUC__ && !defined _M_X64
 #pragma pack(push,1)
 #endif
-typedef struct ParticleFilterOptions2_struct {
-    int rejectMatches; //Set this parameter to TRUE to transfer only those particles that do not meet all the criteria.
-    int rejectBorder;  //Set this element to TRUE to reject border particles.
-    int fillHoles;     //Set this element to TRUE to fill holes in particles.
-    int connectivity8; //Set this parameter to TRUE to use connectivity-8 to determine whether particles are touching.
-} ParticleFilterOptions2;
+typedef struct DivisionModel_struct {
+    float kappa; //The learned kappa coefficient of division model.
+} DivisionModel;
+
+typedef struct FocalLength_struct {
+    float fx; //Focal length in X direction.
+    float fy; //Focal length in Y direction.
+} FocalLength;
+
+typedef struct PolyModel_struct {
+    float*       kCoeffs;    //The learned radial coefficients of polynomial model.
+    unsigned int numKCoeffs; //Number of K coefficients.
+    float        p1;         //The P1(learned tangential coefficients of polynomial model).
+    float        p2;         //The P2(learned tangential coefficients of polynomial model).
+} PolyModel;
+
+typedef struct DistortionModelParams_struct {
+    DistortionModel distortionModel; //Type of learned distortion model.
+    PolyModel       polyModel;       //The learned coefficients of polynomial model.
+    DivisionModel   divisionModel;   //The learned coefficient of division model.
+} DistortionModelParams;
+
+typedef struct PointFloat_struct {
+    float x; //The x-coordinate of the point.
+    float y; //The y-coordinate of the point.
+} PointFloat;
+
+typedef struct InternalParameters_struct {
+    char        isInsufficientData; 
+    FocalLength focalLength;        
+    PointFloat  opticalCenter;      
+} InternalParameters;
+
+typedef struct MaxGridSize_struct {
+    unsigned int xMax; //Maximum x limit for the grid size.
+    unsigned int yMax; //Maximum y limit for the grid size.
+} MaxGridSize;
+
+typedef struct ImageSize_struct {
+    unsigned int xRes; //X resolution of the image.
+    unsigned int yRes; //Y resolution of the image.
+} ImageSize;
+
+typedef struct CalibrationReferencePoints_struct {
+    PointDouble*    pixelCoords;    //Specifies the coordinates of the pixel reference points.
+    unsigned int    numPixelCoords; //Number of pixel coordinates.
+    PointDouble*    realCoords;     //Specifies the measuring unit associated with the image.
+    unsigned int    numRealCoords;  //Number of real coordinates.
+    CalibrationUnit units;          //Specifies the units of X Step and Y Step.
+    ImageSize       imageSize;      //Specifies the size of calibration template image.
+} CalibrationReferencePoints;
+
+typedef struct GetCameraParametersReport_struct {
+    double*               projectionMatrix;     //The projection(homography) matrix of working plane.
+    unsigned int          projectionMatrixRows; //Number of rows in projection matrix.
+    unsigned int          projectionMatrixCols; //Number of columns in projection matrix.
+    DistortionModelParams distortion;           //Distortion model Coefficients.
+    InternalParameters    internalParams;       //The learned internal paramters of camera model such as focal length and optical center.
+} GetCameraParametersReport;
+
+typedef struct CalibrationAxisInfo_struct {
+    PointFloat      center;        //The origin of the reference coordinate system, expressed in pixel units.
+    float           rotationAngle; //The angle of the x-axis of the real-world coordinate system, in relation to the horizontal.
+    AxisOrientation axisDirection; //Specifies the direction of the calibraiton axis which is either Direct or Indirect.
+} CalibrationAxisInfo;
+
+typedef struct CalibrationLearnSetupInfo_struct {
+    CalibrationMode2 calibrationMethod;    //Type of calibration method used.
+    DistortionModel  distortionModel;      //Type of learned distortion model.
+    ScalingMethod    scaleMode;            //The aspect scaling to use when correcting an image.
+    CalibrationROI   roiMode;              //The ROI to use when correcting an image.
+    char             learnCorrectionTable; //Set this input to true value if you want the correction table to be determined and stored.
+} CalibrationLearnSetupInfo;
+
+typedef struct GridDescriptor_struct {
+    float           xStep; //The distance in the x direction between two adjacent pixels in units specified by unit.
+    float           yStep; //The distance in the y direction between two adjacent pixels in units specified by unit.
+    CalibrationUnit unit;  //The unit of measure for the image.
+} GridDescriptor;
+
+typedef struct ErrorStatistics_struct {
+    double mean;              //Mean error statistics value.
+    double maximum;           //Maximum value of error.
+    double standardDeviation; //The standard deviation error statistiscs value.
+    double distortion;        //The distortion error statistics value.
+} ErrorStatistics;
+
+typedef struct GetCalibrationInfoReport_struct {
+    ROI*                      userRoi;         //Specifies the ROI the user provided when learning the calibration.
+    ROI*                      calibrationRoi;  //Specifies the ROI that corresponds to the region of the image where the calibration information is accurate.
+    CalibrationAxisInfo       axisInfo;        //Reference Coordinate System for the real-world coordinates.
+    CalibrationLearnSetupInfo learnSetupInfo;  //Calibration learn setup information.
+    GridDescriptor            gridDescriptor;  //Specifies scaling constants used to calibrate the image.
+    float*                    errorMap;        //The the error map of calibration template image.
+    unsigned int              errorMapRows;    //Number of rows in error map.
+    unsigned int              errorMapCols;    //Number of Columns in error map.
+    ErrorStatistics           errorStatistics; //Error statistics of the calibration.
+} GetCalibrationInfoReport;
+
+typedef struct EdgePolarity_struct {
+    EdgePolaritySearchMode start; 
+    EdgePolaritySearchMode end;   
+} EdgePolarity;
+
+typedef struct ClampSettings_struct {
+    double       angleRange;   //Specifies the angle range.
+    EdgePolarity edgePolarity; //Specifies the edge polarity.
+} ClampSettings;
+
+typedef struct PointDouble_struct {
+    double x; //The x-coordinate of the point.
+    double y; //The y-coordinate of the point.
+} PointDouble;
+
+typedef struct PointDoublePair_struct {
+    PointDouble start; //The Start co-ordinate of the pair.
+    PointDouble end;   //The End co-ordinate of the pair.
+} PointDoublePair;
+
+typedef struct ClampResults_struct {
+    double distancePix;       //Defines the Pixel world distance.
+    double distanceRealWorld; //Defines the real world distance.
+    double angleAbs;          //Defines the absolute angle.
+    double angleRelative;     //Defines the relative angle.
+} ClampResults;
+
+typedef struct ClampPoints_struct {
+    PointDoublePair pixel;     //Specifies the pixel world point pair for clamp.
+    PointDoublePair realWorld; //Specifies the real world point pair for clamp.
+} ClampPoints;
 
 typedef struct RGBValue_struct {
     unsigned char B;     //The blue value of the color.
@@ -2144,14 +2643,443 @@ typedef struct RGBValue_struct {
     unsigned char alpha; //The alpha value of the color, which represents extra information about a color image, such as gamma correction.
 } RGBValue;
 
+typedef struct ClampOverlaySettings_struct {
+    int      showSearchArea;      //If TRUE, the function overlays the search area on the image.
+    int      showCurves;          //If TRUE, the function overlays the curves on the image.
+    int      showClampLocation;   //If TRUE, the function overlays the clamp location on the image.
+    int      showResult;          //If TRUE, the function overlays the hit lines to the object and the edge used to generate the hit line on the result image.
+    RGBValue searchAreaColor;     //Specifies the RGB color value to use to overlay the search area.
+    RGBValue curvesColor;         //Specifies the RGB color value to use to overlay the curves.
+    RGBValue clampLocationsColor; //Specifies the RGB color value to use to overlay the clamp locations.
+    RGBValue resultColor;         //Specifies the RGB color value to use to overlay the results.
+    char*    overlayGroupName;    //Specifies the group overlay name for the step overlays.
+} ClampOverlaySettings;
+
+typedef struct ClampMax2Report_struct {
+    ClampResults clampResults;     //Specifies the Clamp results information returned by the function.
+    ClampPoints  clampPoints;      //Specifies the clamp points information returned by the function.
+    unsigned int calibrationValid; //Specifies if the calibration information is valid or not.
+} ClampMax2Report;
+
+typedef struct ContourFitSplineReport_struct {
+    PointDouble* points;         //It returns the points of the best-fit B-spline curve.
+    int          numberOfPoints; //Number of Best fit points returned.
+} ContourFitSplineReport;
+
+typedef struct LineFloat_struct {
+    PointFloat start; //The coordinate location of the start of the line.
+    PointFloat end;   //The coordinate location of the end of the line.
+} LineFloat;
+
+typedef struct LineEquation_struct {
+    double a; //The a coefficient of the line equation.
+    double b; //The b coefficient of the line equation.
+    double c; //The c coefficient of the line equation.
+} LineEquation;
+
+typedef struct ContourFitLineReport_struct {
+    LineFloat    lineSegment;  //Line Segment represents the intersection of the line equation and the contour.
+    LineEquation lineEquation; //Line Equation is a structure of three coefficients A, B, and C of the equation in the normal form (Ax + By + C=0) of the best fit line.
+} ContourFitLineReport;
+
+typedef struct ContourFitPolynomialReport_struct {
+    PointDouble* bestFit;                //It returns the points of the best-fit polynomial.
+    int          numberOfPoints;         //Number of Best fit points returned.
+    double*      polynomialCoefficients; //Polynomial Coefficients returns the coefficients of the polynomial equation.
+    int          numberOfCoefficients;   //Number of Coefficients returned in the polynomial coefficients array.
+} ContourFitPolynomialReport;
+
+typedef struct PartialCircle_struct {
+    PointFloat center;     //Center of the circle.
+    double     radius;     //Radius of the circle.
+    double     startAngle; //Start angle of the fitted structure.
+    double     endAngle;   //End angle of the fitted structure.
+} PartialCircle;
+
+typedef struct PartialEllipse_struct {
+    PointFloat center;      //Center of the Ellipse.
+    double     angle;       //Angle of the ellipse.
+    double     majorRadius; //The length of the semi-major axis of the ellipse.
+    double     minorRadius; //The length of the semi-minor axis of the ellipse.
+    double     startAngle;  //Start angle of the fitted structure.
+    double     endAngle;    //End angle of the fitted structure.
+} PartialEllipse;
+
+typedef struct SetupMatchPatternData_struct {
+    unsigned char* matchSetupData;    //String containing the match setup data.
+    int            numMatchSetupData; //Number of match setup data.
+} SetupMatchPatternData;
+
+typedef struct RangeSettingDouble_struct {
+    SettingType settingType; //Match Constraints specifies the match option whose values you want to constrain by the given range.
+    double      min;         //Min is the minimum value of the range for a given Match Constraint.
+    double      max;         //Max is the maximum value of the range for a given Match Constraint.
+} RangeSettingDouble;
+
+typedef struct GeometricAdvancedSetupDataOption_struct {
+    GeometricSetupDataItem type;  //It determines the option you want to use during the matching phase.
+    double                 value; //Value is the value for the option you want to use during the matching phase.
+} GeometricAdvancedSetupDataOption;
+
+typedef struct ContourInfoReport_struct {
+    PointDouble* pointsPixel;       //Points (pixel) specifies the location of every point detected on the curve, in pixels.
+    unsigned int numPointsPixel;    //Number of points pixel elements.
+    PointDouble* pointsReal;        //Points (real) specifies the location of every point detected on the curve, in calibrated units.
+    unsigned int numPointsReal;     //Number of points real elements.
+    double*      curvaturePixel;    //Curvature Pixel displays the curvature profile for the selected contour, in pixels.
+    unsigned int numCurvaturePixel; //Number of curvature pixels.
+    double*      curvatureReal;     //Curvature Real displays the curvature profile for the selected contour, in calibrated units.
+    unsigned int numCurvatureReal;  //Number of curvature Real elements.
+    double       length;            //Length (pixel) specifies the length, in pixels, of the curves in the image.
+    double       lengthReal;        //Length (real) specifies the length, in calibrated units, of the curves within the curvature range.
+    unsigned int hasEquation;       //Has Equation specifies whether the contour has a fitted equation.
+} ContourInfoReport;
+
+typedef struct ROILabel_struct {
+    char*        className; //Specifies the classname you want to segment.
+    unsigned int label;     //Label is the label number associated with the Class Name.
+} ROILabel;
+
+typedef struct SupervisedColorSegmentationReport_struct {
+    ROILabel*    labelOut;    //The Roi labels array.
+    unsigned int numLabelOut; //The number of elements in labelOut array.
+} SupervisedColorSegmentationReport;
+
+typedef struct LabelToROIReport_struct {
+    ROI**         roiArray;                  //Array of ROIs.
+    unsigned int  numOfROIs;                 //Number of ROIs in the roiArray.
+    unsigned int* labelsOutArray;            //Array of labels.
+    unsigned int  numOfLabels;               //Number of labels.
+    int*          isTooManyVectorsArray;     //isTooManyVectorsArray array.
+    unsigned int  isTooManyVectorsArraySize; //Number of elements in isTooManyVectorsArray.
+} LabelToROIReport;
+
+typedef struct ColorSegmenationOptions_struct {
+    unsigned int windowX;         //X is the window size in x direction.
+    unsigned int windowY;         //Y is the window size in y direction.
+    unsigned int stepSize;        //Step Size is the distance between two windows.
+    unsigned int minParticleArea; //Min Particle Area is the minimum number of allowed pixels.
+    unsigned int maxParticleArea; //Max Particle Area is the maximum number of allowed pixels.
+    short        isFineSegment;   //When enabled, the step processes the boundary pixels of each segmentation cluster using a step size of 1.
+} ColorSegmenationOptions;
+
+typedef struct ClassifiedCurve_struct {
+    double       length;           //Specifies the length, in pixels, of the curves within the curvature range.
+    double       lengthReal;       //specifies the length, in calibrated units, of the curves within the curvature range.
+    double       maxCurvature;     //specifies the maximum curvature, in pixels, for the selected curvature range.
+    double       maxCurvatureReal; //specifies the maximum curvature, in calibrated units, for the selected curvature range.
+    unsigned int label;            //specifies the class to which the the sample belongs.
+    PointDouble* curvePoints;      //Curve Points is a point-coordinate cluster that defines the points of the curve.
+    unsigned int numCurvePoints;   //Number of curve points.
+} ClassifiedCurve;
+
+typedef struct RangeDouble_struct {
+    double minValue; //The minimum value of the range.
+    double maxValue; //The maximum value of the range.
+} RangeDouble;
+
+typedef struct RangeLabel_struct {
+    RangeDouble  range; //Specifies the range of curvature values.
+    unsigned int label; //Class Label specifies the class to which the the sample belongs.
+} RangeLabel;
+
+typedef struct CurvatureAnalysisReport_struct {
+    ClassifiedCurve* curves;    
+    unsigned int     numCurves; 
+} CurvatureAnalysisReport;
+
+typedef struct Disparity_struct {
+    PointDouble current;   //Current is a array of points that defines the target contour.
+    PointDouble reference; //reference is a array of points that defines the template contour.
+    double      distance;  //Specifies the distance, in pixels, between the template contour point and the target contour point.
+} Disparity;
+
+typedef struct ComputeDistancesReport_struct {
+    Disparity*   distances;        //Distances is an array containing the computed distances.
+    unsigned int numDistances;     //Number elements in the distances array.
+    Disparity*   distancesReal;    //Distances Real is an array containing the computed distances in calibrated units.
+    unsigned int numDistancesReal; //Number of elements in real distances array.
+} ComputeDistancesReport;
+
+typedef struct MatchMode_struct {
+    unsigned int rotation;  //Rotation When enabled, the Function searches for occurrences of the template in the inspection image, allowing for template matches to be rotated.
+    unsigned int scale;     //Rotation When enabled, the Function searches for occurrences of the template in the inspection image, allowing for template matches to be rotated.
+    unsigned int occlusion; //Occlusion specifies whether or not to search for occluded versions of the shape.
+} MatchMode;
+
+typedef struct ClassifiedDisparity_struct {
+    double       length;                //Length (pixel) specifies the length, in pixels, of the curves within the curvature range.
+    double       lengthReal;            //Length (real) specifies the length, in calibrated units, of the curves within the curvature range.
+    double       maxDistance;           //Maximum Distance (pixel) specifies the maximum distance, in pixels, between points along the selected contour and the template contour.
+    double       maxDistanceReal;       //Maximum Distance (real) specifies the maximum distance, in calibrated units, between points along the selected contour and the template contour.
+    unsigned int label;                 //Class Label specifies the class to which the the sample belongs.
+    PointDouble* templateSubsection;    //Template subsection points is an array of points that defines the boundary of the template.
+    unsigned int numTemplateSubsection; //Number of reference points.
+    PointDouble* targetSubsection;      //Current Points(Target subsection points) is an array of points that defines the boundary of the target.
+    unsigned int numTargetSubsection;   //Number of current points.
+} ClassifiedDisparity;
+
+typedef struct ClassifyDistancesReport_struct {
+    ClassifiedDisparity* classifiedDistances;    //Disparity array containing the classified distances.
+    unsigned int         numClassifiedDistances; //Number of elements in the disparity array.
+} ClassifyDistancesReport;
+
+typedef struct ContourComputeCurvatureReport_struct {
+    double*      curvaturePixel;    //Curvature Pixel displays the curvature profile for the selected contour, in pixels.
+    unsigned int numCurvaturePixel; //Number of curvature pixels.
+    double*      curvatureReal;     //Curvature Real displays the curvature profile for the selected contour, in calibrated units.
+    unsigned int numCurvatureReal;  //Number of curvature Real elements.
+} ContourComputeCurvatureReport;
+
+typedef struct ContourOverlaySettings_struct {
+    unsigned int overlay;       //Overlay specifies whether to display the overlay on the image.
+    RGBValue     color;         //Color is the color of the overlay.
+    unsigned int width;         //Width specifies the width of the overlay in pixels.
+    unsigned int maintainWidth; //Maintain Width? specifies whether you want the overlay measured in screen pixels or image pixels.
+} ContourOverlaySettings;
+
+typedef struct CurveParameters_struct {
+    ExtractionMode extractionMode; //Specifies the method the function uses to identify curves in the image.
+    int            threshold;      //Specifies the minimum contrast a seed point must have in order to begin a curve.
+    EdgeFilterSize filterSize;     //Specifies the width of the edge filter the function uses to identify curves in the image.
+    int            minLength;      //Specifies the length, in pixels, of the smallest curve the function will extract.
+    int            searchStep;     //Search Step Size specifies the distance, in the y direction, between the image rows that the algorithm inspects for curve seed points.
+    int            maxEndPointGap; //Specifies the maximum gap, in pixels, between the endpoints of a curve that the function identifies as a closed curve.
+    int            subpixel;       //Subpixel specifies whether to detect curve points with subpixel accuracy.
+} CurveParameters;
+
+typedef struct ExtractContourReport_struct {
+    PointDouble* contourPoints;    //Contour Points specifies every point found on the contour.
+    int          numContourPoints; //Number of contour points.
+    PointDouble* sourcePoints;     //Source Image Points specifies every point found on the contour in the source image.
+    int          numSourcePoints;  //Number of source points.
+} ExtractContourReport;
+
+typedef struct ConnectionConstraint_struct {
+    ConnectionConstraintType constraintType; //Constraint Type specifies what criteria to use to consider two curves part of a contour.
+    RangeDouble              range;          //Specifies range for a given Match Constraint.
+} ConnectionConstraint;
+
+typedef struct ExtractTextureFeaturesReport_struct {
+    int*     waveletBands;        //The array having all the Wavelet Banks used for extraction.
+    int      numWaveletBands;     //Number of wavelet banks in the Array.
+    double** textureFeatures;     //2-D array to store all the Texture features extracted.
+    int      textureFeaturesRows; //Number of Rows in the Texture Features array.
+    int      textureFeaturesCols; //Number of Cols in Texture Features array.
+} ExtractTextureFeaturesReport;
+
+typedef struct WaveletBandsReport_struct {
+    float** LLBand;  //2-D array for LL Band.
+    float** LHBand;  //2-D array for LH Band.
+    float** HLBand;  //2-D array for HL Band.
+    float** HHBand;  //2-D array for HH Band.
+    float** LLLBand; //2-D array for LLL Band.
+    float** LLHBand; //2-D array for LLH Band.
+    float   LHLBand; //2-D array for LHL Band.
+    float** LHHBand; //2-D array for LHH Band.
+    int     rows;    //Number of Rows for each of the 2-D arrays.
+    int     cols;    //Number of Columns for each of the 2-D arrays.
+} WaveletBandsReport;
+
+typedef struct CircleFitOptions_struct {
+    int             maxRadius;   //Specifies the acceptable distance, in pixels, that a point determined to belong to the circle can be from the perimeter of the circle.
+    double          stepSize;    //Step Size is the angle, in degrees, between each radial line in the annular region.
+    RakeProcessType processType; //Method used to process the data extracted for edge detection.
+} CircleFitOptions;
+
 typedef struct EdgeOptions2_struct {
     EdgePolaritySearchMode polarity;             //Specifies the polarity of the edges to be found.
-    int                    kernelSize;           //Specifies the size of the edge detection kernel.
-    int                    width;                //Specifies the number of pixels averaged perpendicular to the search direction to compute the edge profile strength at each point along the search ROI.
+    unsigned int           kernelSize;           //Specifies the size of the edge detection kernel.
+    unsigned int           width;                //Specifies the number of pixels averaged perpendicular to the search direction to compute the edge profile strength at each point along the search ROI.
     float                  minThreshold;         //Specifies the minimum edge strength (gradient magnitude) required for a detected edge.
     InterpolationMethod    interpolationType;    //Specifies the interpolation method used to locate the edge position.
     ColumnProcessingMode   columnProcessingMode; //Specifies the method used to find the straight edge.
 } EdgeOptions2;
+
+typedef struct FindCircularEdgeOptions_struct {
+    SpokeDirection direction;        //Specifies the Spoke direction to search in the ROI.
+    int            showSearchArea;   //If TRUE, the function overlays the search area on the image.
+    int            showSearchLines;  //If TRUE, the function overlays the search lines used to locate the edges on the image.
+    int            showEdgesFound;   //If TRUE, the function overlays the locations of the edges found on the image.
+    int            showResult;       //If TRUE, the function overlays the hit lines to the object and the edge used to generate the hit line on the result image.
+    RGBValue       searchAreaColor;  //Specifies the RGB color value to use to overlay the search area.
+    RGBValue       searchLinesColor; //Specifies the RGB color value to use to overlay the search lines.
+    RGBValue       searchEdgesColor; //Specifies the RGB color value to use to overlay the search edges.
+    RGBValue       resultColor;      //Specifies the RGB color value to use to overlay the results.
+    char*          overlayGroupName; //Specifies the overlay group name to assign to the overlays.
+    EdgeOptions2   edgeOptions;      //Specifies the edge detection options along a single search line.
+} FindCircularEdgeOptions;
+
+typedef struct FindConcentricEdgeOptions_struct {
+    ConcentricRakeDirection direction;        //Specifies the Concentric Rake direction.
+    int                     showSearchArea;   //If TRUE, the function overlays the search area on the image.
+    int                     showSearchLines;  //If TRUE, the function overlays the search lines used to locate the edges on the image.
+    int                     showEdgesFound;   //If TRUE, the function overlays the locations of the edges found on the image.
+    int                     showResult;       //If TRUE, the function overlays the hit lines to the object and the edge used to generate the hit line on the result image.
+    RGBValue                searchAreaColor;  //Specifies the RGB color value to use to overlay the search area.
+    RGBValue                searchLinesColor; //Specifies the RGB color value to use to overlay the search lines.
+    RGBValue                searchEdgesColor; //Specifies the RGB color value to use to overlay the search edges.
+    RGBValue                resultColor;      //Specifies the RGB color value to use to overlay the results.
+    char*                   overlayGroupName; //Specifies the overlay group name to assign to the overlays.
+    EdgeOptions2            edgeOptions;      //Specifies the edge detection options along a single search line.
+} FindConcentricEdgeOptions;
+
+typedef struct ConcentricEdgeFitOptions_struct {
+    int             maxRadius;   //Specifies the acceptable distance, in pixels, that a point determined to belong to the circle can be from the perimeter of the circle.
+    double          stepSize;    //The sampling factor that determines the gap between the rake lines.
+    RakeProcessType processType; //Method used to process the data extracted for edge detection.
+} ConcentricEdgeFitOptions;
+
+typedef struct FindConcentricEdgeReport_struct {
+    PointFloat startPt;           //Pixel Coordinates for starting point of the edge.
+    PointFloat endPt;             //Pixel Coordinates for end point of the edge.
+    PointFloat startPtCalibrated; //Real world Coordinates for starting point of the edge.
+    PointFloat endPtCalibrated;   //Real world Coordinates for end point of the edge.
+    double     angle;             //Angle of the edge found.
+    double     angleCalibrated;   //Calibrated angle of the edge found.
+    double     straightness;      //The straightness value of the detected straight edge.
+    double     avgStrength;       //Average strength of the egde found.
+    double     avgSNR;            //Average SNR(Signal to Noise Ratio) for the edge found.
+    int        lineFound;         //If the edge is found or not.
+} FindConcentricEdgeReport;
+
+typedef struct FindCircularEdgeReport_struct {
+    PointFloat centerCalibrated; //Real world Coordinates of the Center.
+    double     radiusCalibrated; //Real world radius of the Circular Edge found.
+    PointFloat center;           //Pixel Coordinates of the Center.
+    double     radius;           //Radius in pixels of the Circular Edge found.
+    double     roundness;        //The roundness of the calculated circular edge.
+    double     avgStrength;      //Average strength of the egde found.
+    double     avgSNR;           //Average SNR(Signal to Noise Ratio) for the edge found.
+    int        circleFound;      //If the circlular edge is found or not.
+} FindCircularEdgeReport;
+
+typedef struct WindowSize_struct {
+    int x;        //Window lenght on X direction.
+    int y;        //Window lenght on Y direction.
+    int stepSize; //Distance between windows.
+} WindowSize;
+
+typedef struct DisplacementVector_struct {
+    int x; //length on X direction.
+    int y; //length on Y direction.
+} DisplacementVector;
+
+typedef struct WaveletOptions_struct {
+    WaveletType typeOfWavelet; //Type of wavelet(db, bior.
+    float       minEnergy;     //Minimum Energy in the bands to consider for texture defect detection.
+} WaveletOptions;
+
+typedef struct CooccurrenceOptions_struct {
+    int                level;        //Level/size of matrix.
+    DisplacementVector displacement; //Displacemnet between pixels to accumulate the matrix.
+} CooccurrenceOptions;
+
+typedef struct ParticleClassifierLocalThresholdOptions_struct {
+    LocalThresholdMethod method;          //Specifies the local thresholding method the function uses.
+    ParticleType         particleType;    //Specifies what kind of particles to look for.
+    unsigned int         windowWidth;     //The width of the rectangular window around the pixel on which the function performs the local threshold.
+    unsigned int         windowHeight;    //The height of the rectangular window around the pixel on which the function performs the local threshold.
+    double               deviationWeight; //Specifies the k constant used in the Niblack local thresholding algorithm, which determines the weight applied to the variance calculation.
+} ParticleClassifierLocalThresholdOptions;
+
+typedef struct RangeFloat_struct {
+    float minValue; //The minimum value of the range.
+    float maxValue; //The maximum value of the range.
+} RangeFloat;
+
+typedef struct ParticleClassifierAutoThresholdOptions_struct {
+    ThresholdMethod method;       //The method for binary thresholding, which specifies how to calculate the classes.
+    ParticleType    particleType; //Specifies what kind of particles to look for.
+    RangeFloat      limits;       //The limits on the automatic threshold range.
+} ParticleClassifierAutoThresholdOptions;
+
+typedef struct ParticleClassifierPreprocessingOptions2_struct {
+    ParticleClassifierThresholdType         thresholdType;         //The type of threshold to perform on the image.
+    RangeFloat                              manualThresholdRange;  //The range of pixels to keep if manually thresholding the image.
+    ParticleClassifierAutoThresholdOptions  autoThresholdOptions;  //The options used to auto threshold the image.
+    ParticleClassifierLocalThresholdOptions localThresholdOptions; //The options used to local threshold the image.
+    int                                     rejectBorder;          //Set this element to TRUE to reject border particles.
+    int                                     numErosions;           //The number of erosions to perform.
+} ParticleClassifierPreprocessingOptions2;
+
+typedef struct MeasureParticlesReport_struct {
+    double** pixelMeasurements;      //The measurements on the particles in the image, in pixel coordinates.
+    double** calibratedMeasurements; //The measurements on the particles in the image, in real-world coordinates.
+    size_t   numParticles;           //The number of particles on which measurements were taken.
+    size_t   numMeasurements;        //The number of measurements taken.
+} MeasureParticlesReport;
+
+typedef struct GeometricPatternMatch3_struct {
+    PointFloat position;                //The location of the origin of the template in the match.
+    float      rotation;                //The rotation of the match relative to the template image, in degrees.
+    float      scale;                   //The size of the match relative to the size of the template image, expressed as a percentage.
+    float      score;                   //The accuracy of the match.
+    PointFloat corner[4];               //An array of four points describing the rectangle surrounding the template image.
+    int        inverse;                 //This element is TRUE if the match is an inverse of the template image.
+    float      occlusion;               //The percentage of the match that is occluded.
+    float      templateMatchCurveScore; //The accuracy of the match obtained by comparing the template curves to the curves in the match region.
+    float      matchTemplateCurveScore; //The accuracy of the match obtained by comparing the curves in the match region to the template curves.
+    float      correlationScore;        //The accuracy of the match obtained by comparing the template image to the match region using a correlation metric that compares the two regions as a function of their pixel values.
+    PointFloat calibratedPosition;      //The location of the origin of the template in the match.
+    float      calibratedRotation;      //The rotation of the match relative to the template image, in degrees.
+    PointFloat calibratedCorner[4];     //An array of four points describing the rectangle surrounding the template image.
+} GeometricPatternMatch3;
+
+typedef struct MatchGeometricPatternAdvancedOptions3_struct {
+    unsigned int                    subpixelIterations;         //Specifies the maximum number of incremental improvements used to refine matches with subpixel information.
+    double                          subpixelTolerance;          //Specifies the maximum amount of change, in pixels, between consecutive incremental improvements in the match position before the function stops refining the match position.
+    unsigned int                    initialMatchListLength;     //Specifies the maximum size of the match list.
+    int                             targetTemplateCurveScore;   //Set this element to TRUE to specify that the function should calculate the match curve to template curve score and return it for each match result.
+    int                             correlationScore;           //Set this element to TRUE to specify that the function should calculate the correlation score and return it for each match result.
+    double                          minMatchSeparationDistance; //Specifies the minimum separation distance, in pixels, between the origins of two matches that have unique positions.
+    double                          minMatchSeparationAngle;    //Specifies the minimum angular difference, in degrees, between two matches that have unique angles.
+    double                          minMatchSeparationScale;    //Specifies the minimum difference in scale, expressed as a percentage, between two matches that have unique scales.
+    double                          maxMatchOverlap;            //Specifies the maximum amount of overlap, expressed as a percentage, allowed between the bounding rectangles of two unique matches.
+    int                             coarseResult;               //Specifies whether you want the function to spend less time accurately estimating the location of a match.
+    int                             enableCalibrationSupport;   //Set this element to TRUE to specify the algorithm treat the inspection image as a calibrated image.
+    ContrastMode                    enableContrastReversal;     //Use this element to specify the contrast of the matches to search for in the image.
+    GeometricMatchingSearchStrategy matchStrategy;              //Specifies the aggressiveness of the search strategy.
+    unsigned int                    refineMatchFactor;          //Specifies the factor that is applied to the number of matches requested by the user to determine the number of matches that are refined at the initial matching stage.
+    unsigned int                    subpixelMatchFactor;        //Specifies the factor that is applied to the number of matches requested by the user to determine the number of matches that are evaluated at the final subpixel matching stage.
+} MatchGeometricPatternAdvancedOptions3;
+
+typedef struct ColorOptions_struct {
+    ColorClassificationResolution colorClassificationResolution; //Specifies the color resolution of the classifier.
+    unsigned int                  useLuminance;                  //Specifies if the luminance band is going to be used in the feature vector.
+    ColorMode                     colorMode;                     //Specifies the color mode of the classifier.
+} ColorOptions;
+
+typedef struct SampleScore_struct {
+    char*        className; //The name of the class.
+    float        distance;  //The distance from the item to this class.
+    unsigned int index;     //index of this sample.
+} SampleScore;
+
+typedef struct ClassifierReportAdvanced_struct {
+    char*        bestClassName;       //The name of the best class for the sample.
+    float        classificationScore; //The similarity of the sample and the two closest classes in the classifier.
+    float        identificationScore; //The similarity of the sample and the assigned class.
+    ClassScore*  allScores;           //All classes and their scores.
+    int          allScoresSize;       //The number of entries in allScores.
+    SampleScore* sampleScores;        //All samples and their scores.
+    int          sampleScoresSize;    //The number of entries in sampleScores.
+} ClassifierReportAdvanced;
+
+typedef struct LearnGeometricPatternAdvancedOptions2_struct {
+    double       minScaleFactor;        //Specifies the minimum scale factor that the template is learned for.
+    double       maxScaleFactor;        //Specifies the maximum scale factor the template is learned for.
+    double       minRotationAngleValue; //Specifies the minimum rotation angle the template is learned for.
+    double       maxRotationAngleValue; //Specifies the maximum rotation angle the template is learned for.
+    unsigned int imageSamplingFactor;   //Specifies the factor that is used to subsample the template and the image for the initial matching phase.
+} LearnGeometricPatternAdvancedOptions2;
+
+typedef struct ParticleFilterOptions2_struct {
+    int rejectMatches; //Set this parameter to TRUE to transfer only those particles that do not meet all the criteria.
+    int rejectBorder;  //Set this element to TRUE to reject border particles.
+    int fillHoles;     //Set this element to TRUE to fill holes in particles.
+    int connectivity8; //Set this parameter to TRUE to use connectivity-8 to determine whether particles are touching.
+} ParticleFilterOptions2;
 
 typedef struct FindEdgeOptions2_struct {
     RakeDirection direction;        //The direction to search in the ROI.
@@ -2197,7 +3125,7 @@ typedef struct FindTransformRectsOptions2_struct {
     RGBValue               searchEdgesColor;     //Specifies the RGB color value to use to overlay the search edges.
     RGBValue               resultColor;          //Specifies the RGB color value to use to overlay the results.
     char*                  overlayGroupName;     //Specifies the overlay group name to assign to the overlays.
-    EdgeOptions2           primaryEdgeOptions;   //Specifies the parameters used to compute the edge gradient information and detect the edges got the primary ROI.
+    EdgeOptions2           primaryEdgeOptions;   //Specifies the parameters used to compute the edge gradient information and detect the edges for the primary ROI.
     EdgeOptions2           secondaryEdgeOptions; //Specifies the parameters used to compute the edge gradient information and detect the edges for the secondary ROI.
 } FindTransformRectsOptions2;
 
@@ -2225,11 +3153,6 @@ typedef struct CharReport3_struct {
     int                 highThreshold;       //The maximum value of the threshold range used for this character.
     CharacterStatistics characterStats;      //Describes the characters segmented in the ROI.
 } CharReport3;
-
-typedef struct PointFloat_struct {
-    float x; //The x-coordinate of the point.
-    float y; //The y-coordinate of the point.
-} PointFloat;
 
 typedef struct ArcInfo2_struct {
     PointFloat center;     //The center point of the arc.
@@ -2278,11 +3201,6 @@ typedef struct EdgeInfo_struct {
     double     noisePeak;          //The strength of the noise associated with the current edge.
     int        rising;             //Indicates the polarity of the edge.
 } EdgeInfo;
-
-typedef struct LineFloat_struct {
-    PointFloat start; //The coordinate location of the start of the line.
-    PointFloat end;   //The coordinate location of the end of the line.
-} LineFloat;
 
 typedef struct SearchLineInfo_struct {
     LineFloat   lineCoordinates; //The endpoints of the search line.
@@ -2478,7 +3396,7 @@ typedef struct MatchGeometricPatternAdvancedOptions2_struct {
     int    subpixelIterations;         //Specifies the maximum number of incremental improvements used to refine matches with subpixel information.
     double subpixelTolerance;          //Specifies the maximum amount of change, in pixels, between consecutive incremental improvements in the match position before the function stops refining the match position.
     int    initialMatchListLength;     //Specifies the maximum size of the match list.
-    float  matchTemplateCurveScore;    //The accuracy of the match obtained by comparing the curves in the match region to the template curves.
+    float  matchTemplateCurveScore;    //Set this element to TRUE to specify that the function should calculate the match curve to template curve score and return it for each match result.
     int    correlationScore;           //Set this element to TRUE to specify that the function should calculate the correlation score and return it for each match result.
     double minMatchSeparationDistance; //Specifies the minimum separation distance, in pixels, between the origins of two matches that have unique positions.
     double minMatchSeparationAngle;    //Specifies the minimum angular difference, in degrees, between two matches that have unique angles.
@@ -2690,11 +3608,6 @@ typedef struct CircleDescriptor_struct {
     double maxRadius; //Specifies the maximum radius of a circle the function will return.
 } CircleDescriptor;
 
-typedef struct RangeFloat_struct {
-    float minValue; //The minimum value of the range.
-    float maxValue; //The maximum value of the range.
-} RangeFloat;
-
 typedef struct ShapeDetectionOptions_struct {
     unsigned int mode;           //Specifies the method used when looking for the shape in the image.
     RangeFloat*  angleRanges;    //An array of angle ranges, in degrees, where each range specifies how much you expect the shape to be rotated in the image.
@@ -2771,7 +3684,7 @@ typedef struct ParticleClassifierPreprocessingOptions_struct {
     RangeFloat      manualThresholdRange; //If a manual threshold is being done, the range of pixels to keep.
     ThresholdMethod autoThresholdMethod;  //If an automatic threshold is being done, the method used to calculate the threshold range.
     RangeFloat      limits;               //The limits on the automatic threshold range.
-    ParticleType    particleType;         //What kind of particles to look for.
+    ParticleType    particleType;         //Specifies what kind of particles to look for.
     int             rejectBorder;         //Set this element to TRUE to reject border particles.
     int             numErosions;          //The number of erosions to perform.
 } ParticleClassifierPreprocessingOptions;
@@ -3127,12 +4040,6 @@ typedef struct FitLineOptions_struct {
     int   numRefinements; //Specifies the number of refinement iterations you allow the function to perform on the initial subset of points.
 } FitLineOptions;
 
-typedef struct GridDescriptor_struct {
-    float           xStep; //The distance in the x direction between two adjacent pixels in units specified by unit.
-    float           yStep; //The distance in the y direction between two adjacent pixels in units specified by unit.
-    CalibrationUnit unit;  //The unit of measure for the image.
-} GridDescriptor;
-
 typedef struct DisplayMapping_struct {
     MappingMethod method;       //Describes the method for converting 16-bit pixels to 8-bit pixels.
     int           minimumValue; //When method is IMAQ_RANGE, minimumValue represents the value that is mapped to 0.
@@ -3218,12 +4125,6 @@ typedef struct LinearAverages_struct {
     float* fallingDiagAverages; //An array containing the mean pixel value of each diagonal running from the upper left to the lower right of the inspected area of the image.
     int    fallingDiagCount;    //The number of elements in the fallingDiagAverages array.
 } LinearAverages;
-
-typedef struct LineEquation_struct {
-    double a; //The a coefficient of the line equation.
-    double b; //The b coefficient of the line equation.
-    double c; //The c coefficient of the line equation.
-} LineEquation;
 
 typedef struct LineProfile_struct {
     float* profileData; //An array containing the value of each pixel in the line.
@@ -3721,7 +4622,7 @@ typedef struct ToolWindowOptions_struct {
     int showAnnulusTool;          //If TRUE, the annulus becomes visible.
     int showRotatedRectangleTool; //If TRUE, the rotated rectangle tool becomes visible.
     int showPanTool;              //If TRUE, the pan tool becomes visible.
-    int reserved1;                //This element is reserved and should be set to FALSE.
+    int showZoomOutTool;          //If TRUE, the zoom out tool becomes visible.
     int reserved2;                //This element is reserved and should be set to FALSE.
     int reserved3;                //This element is reserved and should be set to FALSE.
     int reserved4;                //This element is reserved and should be set to FALSE.
@@ -3736,7 +4637,7 @@ typedef struct SpokeOptions_struct {
     int                 subpixelDivisions; //The number of samples the function obtains from a pixel.
 } SpokeOptions;
 
-#ifndef __GNUC__
+#if !defined __GNUC__ && !defined _M_X64
 #pragma pack(pop)
 #endif
 
@@ -3773,18 +4674,50 @@ typedef ColorSensitivity 		ColorComplexity;
 #define IMAQ_COMPLEXITY_HIGH 		IMAQ_SENSITIVITY_HIGH
 #define ERR_INVALID_COLORCOMPLEXITY 	ERR_INVALID_COLORSENSITIVITY
 
+//============================================================================
+//  Logical functions
+//============================================================================
+IMAQ_FUNC int IMAQ_STDCALL imaqAnd(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqAndConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqCompare(Image* dest, const Image* source, const Image* compareImage, ComparisonFunction compare);
+IMAQ_FUNC int IMAQ_STDCALL imaqCompareConstant(Image* dest, const Image* source, PixelValue value, ComparisonFunction compare);
+IMAQ_FUNC int IMAQ_STDCALL imaqLogicalDifference(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqLogicalDifferenceConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqNand(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqNandConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqNor(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqNorConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqOr(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqOrConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqXnor(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqXnorConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int IMAQ_STDCALL imaqXor(Image* dest, const Image* sourceA, const Image* sourceB);
+IMAQ_FUNC int IMAQ_STDCALL imaqXorConstant(Image* dest, const Image* source, PixelValue value);
 
 //============================================================================
-//  Display functions
+//  Particle Analysis functions
 //============================================================================
-IMAQ_FUNC int   IMAQ_STDCALL imaqAreToolsContextSensitive(int* sensitive);
-IMAQ_FUNC int   IMAQ_STDCALL imaqCloseWindow(int windowNumber);
-IMAQ_FUNC int   IMAQ_STDCALL imaqDisplayImage(const Image* image, int windowNumber, int resize);
-IMAQ_FUNC int   IMAQ_STDCALL imaqGetLastKey(char* keyPressed, int* windowNumber, int* modifiers);
-IMAQ_FUNC void* IMAQ_STDCALL imaqGetSystemWindowHandle(int windowNumber);
-IMAQ_FUNC int   IMAQ_STDCALL imaqGetWindowCenterPos(int windowNumber, Point* centerPosition);
-IMAQ_FUNC int   IMAQ_STDCALL imaqSetToolContextSensitivity(int sensitive);
-IMAQ_FUNC int   IMAQ_STDCALL imaqShowWindow(int windowNumber, int visible);
+IMAQ_FUNC int                     IMAQ_STDCALL imaqCountParticles(Image* image, int connectivity8, int* numParticles);
+IMAQ_FUNC int                     IMAQ_STDCALL imaqMeasureParticle(Image* image, int particleNumber, int calibrated, MeasurementType measurement, double* value);
+IMAQ_FUNC MeasureParticlesReport* IMAQ_STDCALL imaqMeasureParticles(Image* image, MeasureParticlesCalibrationMode calibrationMode, const MeasurementType* measurements, size_t numMeasurements);
+IMAQ_FUNC int                     IMAQ_STDCALL imaqParticleFilter4(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, const ParticleFilterOptions2* options, const ROI* roi, int* numParticles);
+
+//============================================================================
+//  Morphology functions
+//============================================================================
+IMAQ_FUNC int           IMAQ_STDCALL imaqConvexHull(Image* dest, Image* source, int connectivity8);
+IMAQ_FUNC int           IMAQ_STDCALL imaqDanielssonDistance(Image* dest, Image* source);
+IMAQ_FUNC int           IMAQ_STDCALL imaqFillHoles(Image* dest, const Image* source, int connectivity8);
+IMAQ_FUNC CircleReport* IMAQ_STDCALL imaqFindCircles(Image* dest, Image* source, float minRadius, float maxRadius, int* numCircles);
+IMAQ_FUNC int           IMAQ_STDCALL imaqLabel2(Image* dest, Image* source, int connectivity8, int* particleCount);
+IMAQ_FUNC int           IMAQ_STDCALL imaqMorphology(Image* dest, Image* source, MorphologyMethod method, const StructuringElement* structuringElement);
+IMAQ_FUNC int           IMAQ_STDCALL imaqRejectBorder(Image* dest, Image* source, int connectivity8);
+IMAQ_FUNC int           IMAQ_STDCALL imaqSegmentation(Image* dest, Image* source);
+IMAQ_FUNC int           IMAQ_STDCALL imaqSeparation(Image* dest, Image* source, int erosions, const StructuringElement* structuringElement);
+IMAQ_FUNC int           IMAQ_STDCALL imaqSimpleDistance(Image* dest, Image* source, const StructuringElement* structuringElement);
+IMAQ_FUNC int           IMAQ_STDCALL imaqSizeFilter(Image* dest, Image* source, int connectivity8, int erosions, SizeType keepSize, const StructuringElement* structuringElement);
+IMAQ_FUNC int           IMAQ_STDCALL imaqSkeleton(Image* dest, Image* source, SkeletonMethod method);
+
 
 //============================================================================
 //  Acquisition functions
@@ -3840,6 +4773,7 @@ IMAQ_FUNC RakeReport2*           IMAQ_STDCALL imaqRake2(Image* image, ROI* roi, 
 IMAQ_FUNC PointFloat*            IMAQ_STDCALL imaqSimpleEdge(const Image* image, const Point* points, int numPoints, const SimpleEdgeOptions* options, int* numEdges);
 IMAQ_FUNC SpokeReport2*          IMAQ_STDCALL imaqSpoke2(Image* image, ROI* roi, SpokeDirection direction, EdgeProcess process, int stepSize, EdgeOptions2* edgeOptions);
 IMAQ_FUNC StraightEdgeReport2*   IMAQ_STDCALL imaqStraightEdge(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions);
+IMAQ_FUNC StraightEdgeReport2*   IMAQ_STDCALL imaqStraightEdge2(const Image* image, const ROI* roi, SearchDirection searchDirection, const EdgeOptions2* edgeOptions, const StraightEdgeOptions* straightEdgeOptions, unsigned int optimizedMode);
 
 //============================================================================
 //  Spatial Filters functions
@@ -3887,65 +4821,57 @@ IMAQ_FUNC int    IMAQ_STDCALL imaqSetMaskOffset(Image* image, Point offset);
 IMAQ_FUNC int    IMAQ_STDCALL imaqWriteCustomData(Image* image, const char* key, const void* data, unsigned int size);
 
 //============================================================================
-//  Tool Window functions
+//  Display functions
 //============================================================================
-IMAQ_FUNC int   IMAQ_STDCALL imaqCloseToolWindow();
-IMAQ_FUNC int   IMAQ_STDCALL imaqGetCurrentTool(Tool* currentTool);
-IMAQ_FUNC int   IMAQ_STDCALL imaqGetLastEvent(WindowEventType* type, int* windowNumber, Tool* tool, Rect* rect);
-IMAQ_FUNC void* IMAQ_STDCALL imaqGetToolWindowHandle();
-IMAQ_FUNC int   IMAQ_STDCALL imaqGetToolWindowPos(Point* position);
-IMAQ_FUNC int   IMAQ_STDCALL imaqIsToolWindowVisible(int* visible);
-IMAQ_FUNC int   IMAQ_STDCALL imaqMoveToolWindow(Point position);
-IMAQ_FUNC int   IMAQ_STDCALL imaqSetCurrentTool(Tool currentTool);
-#ifndef __GNUC__
-IMAQ_FUNC int   IMAQ_STDCALL imaqSetEventCallback(EventCallback callback, int synchronous);
-#endif
-IMAQ_FUNC int   IMAQ_STDCALL imaqSetToolColor(const RGBValue* color);
-IMAQ_FUNC int   IMAQ_STDCALL imaqSetupToolWindow(int showCoordinates, int maxIconsPerLine, const ToolWindowOptions* options);
-IMAQ_FUNC int   IMAQ_STDCALL imaqShowToolWindow(int visible);
+IMAQ_FUNC int   IMAQ_STDCALL imaqAreToolsContextSensitive(int* sensitive);
+IMAQ_FUNC int   IMAQ_STDCALL imaqCloseWindow(int windowNumber);
+IMAQ_FUNC int   IMAQ_STDCALL imaqDisplayImage(const Image* image, int windowNumber, int resize);
+IMAQ_FUNC int   IMAQ_STDCALL imaqGetLastKey(char* keyPressed, int* windowNumber, int* modifiers);
+IMAQ_FUNC void* IMAQ_STDCALL imaqGetSystemWindowHandle(int windowNumber);
+IMAQ_FUNC int   IMAQ_STDCALL imaqGetWindowCenterPos(int windowNumber, Point* centerPosition);
+IMAQ_FUNC int   IMAQ_STDCALL imaqSetToolContextSensitivity(int sensitive);
+IMAQ_FUNC int   IMAQ_STDCALL imaqShowWindow(int windowNumber, int visible);
 
 //============================================================================
-//  Morphology functions
+//  Image Manipulation functions
 //============================================================================
-IMAQ_FUNC int           IMAQ_STDCALL imaqConvexHull(Image* dest, Image* source, int connectivity8);
-IMAQ_FUNC int           IMAQ_STDCALL imaqDanielssonDistance(Image* dest, Image* source);
-IMAQ_FUNC int           IMAQ_STDCALL imaqFillHoles(Image* dest, const Image* source, int connectivity8);
-IMAQ_FUNC CircleReport* IMAQ_STDCALL imaqFindCircles(Image* dest, Image* source, float minRadius, float maxRadius, int* numCircles);
-IMAQ_FUNC int           IMAQ_STDCALL imaqLabel2(Image* dest, Image* source, int connectivity8, int* particleCount);
-IMAQ_FUNC int           IMAQ_STDCALL imaqMorphology(Image* dest, Image* source, MorphologyMethod method, const StructuringElement* structuringElement);
-IMAQ_FUNC int           IMAQ_STDCALL imaqRejectBorder(Image* dest, Image* source, int connectivity8);
-IMAQ_FUNC int           IMAQ_STDCALL imaqSegmentation(Image* dest, Image* source);
-IMAQ_FUNC int           IMAQ_STDCALL imaqSeparation(Image* dest, Image* source, int erosions, const StructuringElement* structuringElement);
-IMAQ_FUNC int           IMAQ_STDCALL imaqSimpleDistance(Image* dest, Image* source, const StructuringElement* structuringElement);
-IMAQ_FUNC int           IMAQ_STDCALL imaqSizeFilter(Image* dest, Image* source, int connectivity8, int erosions, SizeType keepSize, const StructuringElement* structuringElement);
-IMAQ_FUNC int           IMAQ_STDCALL imaqSkeleton(Image* dest, Image* source, SkeletonMethod method);
+IMAQ_FUNC int   IMAQ_STDCALL imaqCast(Image* dest, const Image* source, ImageType type, const float* lookup, int shift);
+IMAQ_FUNC int   IMAQ_STDCALL imaqCopyRect(Image* dest, const Image* source, Rect rect, Point destLoc);
+IMAQ_FUNC int   IMAQ_STDCALL imaqDuplicate(Image* dest, const Image* source);
+IMAQ_FUNC void* IMAQ_STDCALL imaqFlatten(const Image* image, FlattenType type, CompressionType compression, int quality, unsigned int* size);
+IMAQ_FUNC int   IMAQ_STDCALL imaqFlip(Image* dest, const Image* source, FlipAxis axis);
+IMAQ_FUNC int   IMAQ_STDCALL imaqMask(Image* dest, const Image* source, const Image* mask);
+IMAQ_FUNC int   IMAQ_STDCALL imaqResample(Image* dest, const Image* source, int newWidth, int newHeight, InterpolationMethod method, Rect rect);
+IMAQ_FUNC int   IMAQ_STDCALL imaqRotate2(Image* dest, const Image* source, float angle, PixelValue fill, InterpolationMethod method, int maintainSize);
+IMAQ_FUNC int   IMAQ_STDCALL imaqScale(Image* dest, const Image* source, int xScale, int yScale, ScalingMode scaleMode, Rect rect);
+IMAQ_FUNC int   IMAQ_STDCALL imaqShift(Image* dest, const Image* source, int shiftX, int shiftY, PixelValue fill);
+IMAQ_FUNC int   IMAQ_STDCALL imaqTranspose(Image* dest, const Image* source);
+IMAQ_FUNC int   IMAQ_STDCALL imaqUnflatten(Image* image, const void* data, unsigned int size);
+IMAQ_FUNC int   IMAQ_STDCALL imaqUnwrapImage(Image* dest, const Image* source, Annulus annulus, RectOrientation orientation, InterpolationMethod method);
+IMAQ_FUNC int   IMAQ_STDCALL imaqView3D(Image* dest, Image* source, const View3DOptions* options);
 
 //============================================================================
-//  Logical functions
+//  File I/O functions
 //============================================================================
-IMAQ_FUNC int IMAQ_STDCALL imaqAnd(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqAndConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqCompare(Image* dest, const Image* source, const Image* compareImage, ComparisonFunction compare);
-IMAQ_FUNC int IMAQ_STDCALL imaqCompareConstant(Image* dest, const Image* source, PixelValue value, ComparisonFunction compare);
-IMAQ_FUNC int IMAQ_STDCALL imaqLogicalDifference(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqLogicalDifferenceConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqNand(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqNandConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqNor(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqNorConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqOr(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqOrConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqXnor(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqXnorConstant(Image* dest, const Image* source, PixelValue value);
-IMAQ_FUNC int IMAQ_STDCALL imaqXor(Image* dest, const Image* sourceA, const Image* sourceB);
-IMAQ_FUNC int IMAQ_STDCALL imaqXorConstant(Image* dest, const Image* source, PixelValue value);
+IMAQ_FUNC int         IMAQ_STDCALL imaqCloseAVI(AVISession session);
+IMAQ_FUNC AVISession  IMAQ_STDCALL imaqCreateAVI(const char* fileName, const char* compressionFilter, int quality, unsigned int framesPerSecond, unsigned int maxDataSize);
+IMAQ_FUNC int         IMAQ_STDCALL imaqGetAVIInfo(AVISession session, AVIInfo* info);
+IMAQ_FUNC int         IMAQ_STDCALL imaqGetFileInfo(const char* fileName, CalibrationUnit* calibrationUnit, float* calibrationX, float* calibrationY, int* width, int* height, ImageType* imageType);
+IMAQ_FUNC FilterName* IMAQ_STDCALL imaqGetFilterNames(int* numFilters);
+IMAQ_FUNC char**      IMAQ_STDCALL imaqLoadImagePopup(const char* defaultDirectory, const char* defaultFileSpec, const char* fileTypeList, const char* title, int allowMultiplePaths, ButtonLabel buttonLabel, int restrictDirectory, int restrictExtension, int allowCancel, int allowMakeDirectory, int* cancelled, int* numPaths);
+IMAQ_FUNC AVISession  IMAQ_STDCALL imaqOpenAVI(const char* fileName);
+IMAQ_FUNC int         IMAQ_STDCALL imaqReadAVIFrame(Image* image, AVISession session, unsigned int frameNum, void* data, unsigned int* dataSize);
+IMAQ_FUNC int         IMAQ_STDCALL imaqReadFile(Image* image, const char* fileName, RGBValue* colorTable, int* numColors);
+IMAQ_FUNC int         IMAQ_STDCALL imaqReadVisionFile(Image* image, const char* fileName, RGBValue* colorTable, int* numColors);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteAVIFrame(Image* image, AVISession session, const void* data, unsigned int dataLength);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteBMPFile(const Image* image, const char* fileName, int compress, const RGBValue* colorTable);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteFile(const Image* image, const char* fileName, const RGBValue* colorTable);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteJPEGFile(const Image* image, const char* fileName, unsigned int quality, void* colorTable);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteJPEG2000File(const Image* image, const char* fileName, int lossless, float compressionRatio, const JPEG2000FileAdvancedOptions* advancedOptions, const RGBValue* colorTable);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWritePNGFile2(const Image* image, const char* fileName, unsigned int compressionSpeed, const RGBValue* colorTable, int useBitDepth);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteTIFFFile(const Image* image, const char* fileName, const TIFFFileOptions* options, const RGBValue* colorTable);
+IMAQ_FUNC int         IMAQ_STDCALL imaqWriteVisionFile(const Image* image, const char* fileName, const RGBValue* colorTable);
 
-//============================================================================
-//  Particle Analysis functions
-//============================================================================
-IMAQ_FUNC int IMAQ_STDCALL imaqCountParticles(Image* image, int connectivity8, int* numParticles);
-IMAQ_FUNC int IMAQ_STDCALL imaqMeasureParticle(Image* image, int particleNumber, int calibrated, MeasurementType measurement, double* value);
-IMAQ_FUNC int IMAQ_STDCALL imaqParticleFilter4(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, const ParticleFilterOptions2* options, const ROI* roi, int* numParticles);
 
 //============================================================================
 //  Analytic Geometry functions
@@ -3988,12 +4914,14 @@ IMAQ_FUNC void*  IMAQ_STDCALL imaqImageToArray(const Image* image, Rect rect, in
 //============================================================================
 //  Color Processing functions
 //============================================================================
-IMAQ_FUNC Color2                IMAQ_STDCALL imaqChangeColorSpace2(const Color2* sourceColor, ColorMode sourceSpace, ColorMode destSpace, double offset, const CIEXYZValue* whiteReference);
-IMAQ_FUNC int                   IMAQ_STDCALL imaqColorBCGTransform(Image* dest, const Image* source, const BCGOptions* redOptions, const BCGOptions* greenOptions, const BCGOptions* blueOptions, const Image* mask);
-IMAQ_FUNC int                   IMAQ_STDCALL imaqColorEqualize(Image* dest, const Image* source, int colorEqualization);
-IMAQ_FUNC ColorHistogramReport* IMAQ_STDCALL imaqColorHistogram2(Image* image, int numClasses, ColorMode mode, const CIEXYZValue* whiteReference, Image* mask);
-IMAQ_FUNC int                   IMAQ_STDCALL imaqColorLookup(Image* dest, const Image* source, ColorMode mode, const Image* mask, const short* plane1, const short* plane2, const short* plane3);
-IMAQ_FUNC int                   IMAQ_STDCALL imaqColorThreshold(Image* dest, const Image* source, int replaceValue, ColorMode mode, const Range* plane1Range, const Range* plane2Range, const Range* plane3Range);
+IMAQ_FUNC Color2                             IMAQ_STDCALL imaqChangeColorSpace2(const Color2* sourceColor, ColorMode sourceSpace, ColorMode destSpace, double offset, const CIEXYZValue* whiteReference);
+IMAQ_FUNC int                                IMAQ_STDCALL imaqColorBCGTransform(Image* dest, const Image* source, const BCGOptions* redOptions, const BCGOptions* greenOptions, const BCGOptions* blueOptions, const Image* mask);
+IMAQ_FUNC int                                IMAQ_STDCALL imaqColorEqualize(Image* dest, const Image* source, int colorEqualization);
+IMAQ_FUNC ColorHistogramReport*              IMAQ_STDCALL imaqColorHistogram2(Image* image, int numClasses, ColorMode mode, const CIEXYZValue* whiteReference, Image* mask);
+IMAQ_FUNC int                                IMAQ_STDCALL imaqColorLookup(Image* dest, const Image* source, ColorMode mode, const Image* mask, const short* plane1, const short* plane2, const short* plane3);
+IMAQ_FUNC int                                IMAQ_STDCALL imaqColorThreshold(Image* dest, const Image* source, int replaceValue, ColorMode mode, const Range* plane1Range, const Range* plane2Range, const Range* plane3Range);
+IMAQ_FUNC SupervisedColorSegmentationReport* IMAQ_STDCALL imaqSupervisedColorSegmentation(ClassifierSession* session, Image* labelImage, const Image* srcImage, const ROI* roi, const ROILabel* labelIn, unsigned int numLabelIn, int maxDistance, int minIdentificationScore, const ColorSegmenationOptions* segmentOptions);
+IMAQ_FUNC int                                IMAQ_STDCALL imaqGetColorSegmentationMaxDistance(ClassifierSession* session, const ColorSegmenationOptions* segmentOptions, SegmentationDistanceLevel distLevel, int* maxDistance);
 
 //============================================================================
 //  Transform functions
@@ -4001,9 +4929,9 @@ IMAQ_FUNC int                   IMAQ_STDCALL imaqColorThreshold(Image* dest, con
 IMAQ_FUNC int IMAQ_STDCALL imaqBCGTransform(Image* dest, const Image* source, const BCGOptions* options, const Image* mask);
 IMAQ_FUNC int IMAQ_STDCALL imaqEqualize(Image* dest, const Image* source, float min, float max, const Image* mask);
 IMAQ_FUNC int IMAQ_STDCALL imaqInverse(Image* dest, const Image* source, const Image* mask);
-IMAQ_FUNC int IMAQ_STDCALL imaqLookup(Image* dest, const Image* source, const short* table, const Image* mask);
 IMAQ_FUNC int IMAQ_STDCALL imaqMathTransform(Image* dest, const Image* source, MathTransformMethod method, float rangeMin, float rangeMax, float power, const Image* mask);
 IMAQ_FUNC int IMAQ_STDCALL imaqWatershedTransform(Image* dest, const Image* source, int connectivity8, int* zoneCount);
+IMAQ_FUNC int IMAQ_STDCALL imaqLookup2(Image* dest, const Image* source, const int* table, const Image* mask);
 
 
 //============================================================================
@@ -4051,77 +4979,63 @@ IMAQ_FUNC RotatedRect  IMAQ_STDCALL imaqMakeRotatedRectFromRect(Rect rect);
 IMAQ_FUNC int          IMAQ_STDCALL imaqMulticoreOptions(MulticoreOperation operation, unsigned int* customNumCores);
 
 //============================================================================
-//  Image Manipulation functions
+//  Tool Window functions
 //============================================================================
-IMAQ_FUNC int   IMAQ_STDCALL imaqCast(Image* dest, const Image* source, ImageType type, const float* lookup, int shift);
-IMAQ_FUNC int   IMAQ_STDCALL imaqCopyRect(Image* dest, const Image* source, Rect rect, Point destLoc);
-IMAQ_FUNC int   IMAQ_STDCALL imaqDuplicate(Image* dest, const Image* source);
-IMAQ_FUNC void* IMAQ_STDCALL imaqFlatten(const Image* image, FlattenType type, CompressionType compression, int quality, unsigned int* size);
-IMAQ_FUNC int   IMAQ_STDCALL imaqFlip(Image* dest, const Image* source, FlipAxis axis);
-IMAQ_FUNC int   IMAQ_STDCALL imaqMask(Image* dest, const Image* source, const Image* mask);
-IMAQ_FUNC int   IMAQ_STDCALL imaqResample(Image* dest, const Image* source, int newWidth, int newHeight, InterpolationMethod method, Rect rect);
-IMAQ_FUNC int   IMAQ_STDCALL imaqRotate2(Image* dest, const Image* source, float angle, PixelValue fill, InterpolationMethod method, int maintainSize);
-IMAQ_FUNC int   IMAQ_STDCALL imaqScale(Image* dest, const Image* source, int xScale, int yScale, ScalingMode scaleMode, Rect rect);
-IMAQ_FUNC int   IMAQ_STDCALL imaqShift(Image* dest, const Image* source, int shiftX, int shiftY, PixelValue fill);
-IMAQ_FUNC int   IMAQ_STDCALL imaqTranspose(Image* dest, const Image* source);
-IMAQ_FUNC int   IMAQ_STDCALL imaqUnflatten(Image* image, const void* data, unsigned int size);
-IMAQ_FUNC int   IMAQ_STDCALL imaqUnwrapImage(Image* dest, const Image* source, Annulus annulus, RectOrientation orientation, InterpolationMethod method);
-IMAQ_FUNC int   IMAQ_STDCALL imaqView3D(Image* dest, Image* source, const View3DOptions* options);
+IMAQ_FUNC int   IMAQ_STDCALL imaqCloseToolWindow(void);
+IMAQ_FUNC int   IMAQ_STDCALL imaqGetCurrentTool(Tool* currentTool);
+IMAQ_FUNC int   IMAQ_STDCALL imaqGetLastEvent(WindowEventType* type, int* windowNumber, Tool* tool, Rect* rect);
+IMAQ_FUNC void* IMAQ_STDCALL imaqGetToolWindowHandle(void);
+IMAQ_FUNC int   IMAQ_STDCALL imaqGetToolWindowPos(Point* position);
+IMAQ_FUNC int   IMAQ_STDCALL imaqIsToolWindowVisible(int* visible);
+IMAQ_FUNC int   IMAQ_STDCALL imaqMoveToolWindow(Point position);
+IMAQ_FUNC int   IMAQ_STDCALL imaqSetCurrentTool(Tool currentTool);
+#ifndef __GNUC__
+IMAQ_FUNC int   IMAQ_STDCALL imaqSetEventCallback(EventCallback callback, int synchronous);
+#endif
+IMAQ_FUNC int   IMAQ_STDCALL imaqSetToolColor(const RGBValue* color);
+IMAQ_FUNC int   IMAQ_STDCALL imaqSetupToolWindow(int showCoordinates, int maxIconsPerLine, const ToolWindowOptions* options);
+IMAQ_FUNC int   IMAQ_STDCALL imaqShowToolWindow(int visible);
 
 //============================================================================
-//  Pattern Matching functions
+//  Meter functions
 //============================================================================
-IMAQ_FUNC CircleMatch*              IMAQ_STDCALL imaqDetectCircles(const Image* image, const CircleDescriptor* circleDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
-IMAQ_FUNC EllipseMatch*             IMAQ_STDCALL imaqDetectEllipses(const Image* image, const EllipseDescriptor* ellipseDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
-IMAQ_FUNC LineMatch*                IMAQ_STDCALL imaqDetectLines(const Image* image, const LineDescriptor* lineDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
-IMAQ_FUNC RectangleMatch*           IMAQ_STDCALL imaqDetectRectangles(const Image* image, const RectangleDescriptor* rectangleDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
-IMAQ_FUNC FeatureData*              IMAQ_STDCALL imaqGetGeometricFeaturesFromCurves(const Curve* curves, unsigned int numCurves, const FeatureType* featureTypes, unsigned int numFeatureTypes, unsigned int* numFeatures);
-IMAQ_FUNC FeatureData*              IMAQ_STDCALL imaqGetGeometricTemplateFeatureInfo(const Image* pattern, unsigned int* numFeatures);
-IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnColorPattern(Image* image, const LearnColorPatternOptions* options);
-IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnGeometricPattern(Image* image, PointFloat originOffset, const CurveOptions* curveOptions, const LearnGeometricPatternAdvancedOptions* advancedLearnOptions, const Image* mask);
-IMAQ_FUNC MultipleGeometricPattern* IMAQ_STDCALL imaqLearnMultipleGeometricPatterns(const Image** patterns, unsigned int numberOfPatterns, const String255* labels);
-IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnPattern3(Image* image, LearningMode learningMode, LearnPatternAdvancedOptions* advancedOptions, const Image* mask);
-IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqMatchColorPattern(const Image* image, Image* pattern, const MatchColorPatternOptions* options, Rect searchRect, int* numMatches);
-IMAQ_FUNC GeometricPatternMatch2*   IMAQ_STDCALL imaqMatchGeometricPattern2(const Image* image, const Image* pattern, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions, const ROI* roi, int* numMatches);
-IMAQ_FUNC GeometricPatternMatch2*   IMAQ_STDCALL imaqMatchMultipleGeometricPatterns(const Image* image, const MultipleGeometricPattern* multiplePattern, const ROI* roi, int* numMatches);
-IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqMatchPattern2(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternOptions* advancedOptions, Rect searchRect, int* numMatches);
-IMAQ_FUNC MultipleGeometricPattern* IMAQ_STDCALL imaqReadMultipleGeometricPatternFile(const char* fileName, String255 description);
-IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqRefineMatches(const Image* image, const Image* pattern, const PatternMatch* candidatesIn, int numCandidatesIn, MatchPatternOptions* options, MatchPatternAdvancedOptions* advancedOptions, int* numCandidatesOut);
-IMAQ_FUNC int                       IMAQ_STDCALL imaqSetMultipleGeometricPatternsOptions(MultipleGeometricPattern* multiplePattern, const char* label, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions);
-IMAQ_FUNC int                       IMAQ_STDCALL imaqWriteMultipleGeometricPatternFile(const MultipleGeometricPattern* multiplePattern, const char* fileName, const char* description);
+IMAQ_FUNC MeterArc* IMAQ_STDCALL imaqGetMeterArc(int lightNeedle, MeterArcMode mode, const ROI* roi, PointFloat base, PointFloat start, PointFloat end);
+IMAQ_FUNC int       IMAQ_STDCALL imaqReadMeter(const Image* image, const MeterArc* arcInfo, double* percentage, PointFloat* endOfNeedle);
 
 //============================================================================
 //  Calibration functions
 //============================================================================
-IMAQ_FUNC int              IMAQ_STDCALL imaqCopyCalibrationInfo2(Image* dest, Image* source, Point offset);
-IMAQ_FUNC int              IMAQ_STDCALL imaqCorrectCalibratedImage(Image* dest, const Image* source, PixelValue fill, InterpolationMethod method, const ROI* roi);
-IMAQ_FUNC CalibrationInfo* IMAQ_STDCALL imaqGetCalibrationInfo2(const Image* image);
-IMAQ_FUNC int              IMAQ_STDCALL imaqLearnCalibrationGrid(Image* image, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, const RangeFloat* range, float* quality);
-IMAQ_FUNC int              IMAQ_STDCALL imaqLearnCalibrationPoints(Image* image, const CalibrationPoints* points, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, float* quality);
-IMAQ_FUNC int              IMAQ_STDCALL imaqSetCoordinateSystem(Image* image, const CoordinateSystem* system);
-IMAQ_FUNC int              IMAQ_STDCALL imaqSetSimpleCalibration(Image* image, ScalingMethod method, int learnTable, const GridDescriptor* grid, const CoordinateSystem* system);
-IMAQ_FUNC TransformReport* IMAQ_STDCALL imaqTransformPixelToRealWorld(const Image* image, const PointFloat* pixelCoordinates, int numCoordinates);
-IMAQ_FUNC TransformReport* IMAQ_STDCALL imaqTransformRealWorldToPixel(const Image* image, const PointFloat* realWorldCoordinates, int numCoordinates);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqCopyCalibrationInfo2(Image* dest, Image* source, Point offset);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqCorrectCalibratedImage(Image* dest, const Image* source, PixelValue fill, InterpolationMethod method, const ROI* roi);
+IMAQ_FUNC CalibrationInfo*           IMAQ_STDCALL imaqGetCalibrationInfo2(const Image* image);
+IMAQ_FUNC CalibrationInfo*           IMAQ_STDCALL imaqGetCalibrationInfo3(Image* image, unsigned int isGetErrorMap);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqLearnCalibrationGrid(Image* image, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, const RangeFloat* range, float* quality);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqLearnCalibrationPoints(Image* image, const CalibrationPoints* points, const ROI* roi, const LearnCalibrationOptions* options, const GridDescriptor* grid, const CoordinateSystem* system, float* quality);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqSetCoordinateSystem(Image* image, const CoordinateSystem* system);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqSetSimpleCalibration(Image* image, ScalingMethod method, int learnTable, const GridDescriptor* grid, const CoordinateSystem* system);
+IMAQ_FUNC TransformReport*           IMAQ_STDCALL imaqTransformPixelToRealWorld(const Image* image, const PointFloat* pixelCoordinates, int numCoordinates);
+IMAQ_FUNC TransformReport*           IMAQ_STDCALL imaqTransformRealWorldToPixel(const Image* image, const PointFloat* realWorldCoordinates, int numCoordinates);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqSetSimpleCalibration2(Image* image, const GridDescriptor* gridDescriptor);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqCalibrationSetAxisInfo(Image* image, CoordinateSystem* axisInfo);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqCalibrationGetThumbnailImage(Image* templateImage, Image* image, CalibrationThumbnailType type, unsigned int index);
+IMAQ_FUNC GetCalibrationInfoReport*  IMAQ_STDCALL imaqCalibrationGetCalibrationInfo(Image* image, unsigned int isGetErrorMap);
+IMAQ_FUNC GetCameraParametersReport* IMAQ_STDCALL imaqCalibrationGetCameraParameters(Image* templateImage);
+IMAQ_FUNC int                        IMAQ_STDCALL imaqCalibrationCompactInformation(Image* image);
 
 //============================================================================
-//  Overlay functions
+//  Pixel Manipulation functions
 //============================================================================
-IMAQ_FUNC int IMAQ_STDCALL imaqClearOverlay(Image* image, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqCopyOverlay(Image* dest, const Image* source, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqGetOverlayProperties(Image* image, const char* group, TransformBehaviors* transformBehaviors);
-IMAQ_FUNC int IMAQ_STDCALL imaqMergeOverlay(Image* dest, const Image* source, const RGBValue* palette, unsigned int numColors, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayArc(Image* image, const ArcInfo* arc, const RGBValue* color, DrawMode drawMode, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayBitmap(Image* image, Point destLoc, const RGBValue* bitmap, unsigned int numCols, unsigned int numRows, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayClosedContour(Image* image, const Point* points, int numPoints, const RGBValue* color, DrawMode drawMode, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayLine(Image* image, Point start, Point end, const RGBValue* color, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayMetafile(Image* image, const void* metafile, Rect rect, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayOpenContour(Image* image, const Point* points, int numPoints, const RGBValue* color, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayOval(Image* image, Rect boundingBox, const RGBValue* color, DrawMode drawMode, char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayPoints(Image* image, const Point* points, int numPoints, const RGBValue* colors, int numColors, PointSymbol symbol, const UserPointSymbol* userSymbol, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayRect(Image* image, Rect rect, const RGBValue* color, DrawMode drawMode, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayROI(Image* image, const ROI* roi, PointSymbol symbol, const UserPointSymbol* userSymbol, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqOverlayText(Image* image, Point origin, const char* text, const RGBValue* color, const OverlayTextOptions* options, const char* group);
-IMAQ_FUNC int IMAQ_STDCALL imaqSetOverlayProperties(Image* image, const char* group, TransformBehaviors* transformBehaviors);
+IMAQ_FUNC int    IMAQ_STDCALL imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
+IMAQ_FUNC float* IMAQ_STDCALL imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* rows, int* columns);
+IMAQ_FUNC int    IMAQ_STDCALL imaqExtractColorPlanes(const Image* image, ColorMode mode, Image* plane1, Image* plane2, Image* plane3);
+IMAQ_FUNC int    IMAQ_STDCALL imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
+IMAQ_FUNC int    IMAQ_STDCALL imaqFillImage(Image* image, PixelValue value, const Image* mask);
+IMAQ_FUNC void*  IMAQ_STDCALL imaqGetLine(const Image* image, Point start, Point end, int* numPoints);
+IMAQ_FUNC int    IMAQ_STDCALL imaqGetPixel(const Image* image, Point pixel, PixelValue* value);
+IMAQ_FUNC int    IMAQ_STDCALL imaqReplaceColorPlanes(Image* dest, const Image* source, ColorMode mode, const Image* plane1, const Image* plane2, const Image* plane3);
+IMAQ_FUNC int    IMAQ_STDCALL imaqReplaceComplexPlane(Image* dest, const Image* source, const Image* newValues, ComplexPlane plane);
+IMAQ_FUNC int    IMAQ_STDCALL imaqSetLine(Image* image, const void* array, int arraySize, Point start, Point end);
+IMAQ_FUNC int    IMAQ_STDCALL imaqSetPixel(Image* image, Point coord, PixelValue value);
 
 //============================================================================
 //  Color Matching functions
@@ -4130,10 +5044,14 @@ IMAQ_FUNC ColorInformation* IMAQ_STDCALL imaqLearnColor(const Image* image, cons
 IMAQ_FUNC int*              IMAQ_STDCALL imaqMatchColor(const Image* image, const ColorInformation* info, const ROI* roi, int* numScores);
 
 //============================================================================
-//  Meter functions
+//  Frequency Domain Analysis functions
 //============================================================================
-IMAQ_FUNC MeterArc* IMAQ_STDCALL imaqGetMeterArc(int lightNeedle, MeterArcMode mode, const ROI* roi, PointFloat base, PointFloat start, PointFloat end);
-IMAQ_FUNC int       IMAQ_STDCALL imaqReadMeter(const Image* image, const MeterArc* arcInfo, double* percentage, PointFloat* endOfNeedle);
+IMAQ_FUNC int IMAQ_STDCALL imaqAttenuate(Image* dest, const Image* source, AttenuateMode highlow);
+IMAQ_FUNC int IMAQ_STDCALL imaqConjugate(Image* dest, const Image* source);
+IMAQ_FUNC int IMAQ_STDCALL imaqFFT(Image* dest, const Image* source);
+IMAQ_FUNC int IMAQ_STDCALL imaqFlipFrequencies(Image* dest, const Image* source);
+IMAQ_FUNC int IMAQ_STDCALL imaqInverseFFT(Image* dest, const Image* source);
+IMAQ_FUNC int IMAQ_STDCALL imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float ratioToKeep);
 
 //============================================================================
 //  Barcode I/O functions
@@ -4144,6 +5062,11 @@ IMAQ_FUNC DataMatrixReport* IMAQ_STDCALL imaqReadDataMatrixBarcode2(Image* image
 IMAQ_FUNC Barcode2DInfo*    IMAQ_STDCALL imaqReadPDF417Barcode(const Image* image, const ROI* roi, Barcode2DSearchMode searchMode, unsigned int* numBarcodes);
 IMAQ_FUNC QRCodeReport*     IMAQ_STDCALL imaqReadQRCode(Image* image, const ROI* roi, QRGradingMode reserved, const QRCodeDescriptionOptions* descriptionOptions, const QRCodeSizeOptions* sizeOptions, const QRCodeSearchOptions* searchOptions);
 
+//============================================================================
+//  LCD functions
+//============================================================================
+IMAQ_FUNC int        IMAQ_STDCALL imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
+IMAQ_FUNC LCDReport* IMAQ_STDCALL imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options);
 
 //============================================================================
 //  Shape Matching functions
@@ -4174,7 +5097,7 @@ IMAQ_FUNC int           IMAQ_STDCALL imaqSetContourColor(ROI* roi, ContourID id,
 //  Regions of Interest functions
 //============================================================================
 IMAQ_FUNC int  IMAQ_STDCALL imaqConstructROI2(const Image* image, ROI* roi, Tool initialTool, const ToolWindowOptions* tools, const ConstructROIOptions2* options, int* okay);
-IMAQ_FUNC ROI* IMAQ_STDCALL imaqCreateROI();
+IMAQ_FUNC ROI* IMAQ_STDCALL imaqCreateROI(void);
 IMAQ_FUNC int  IMAQ_STDCALL imaqGetROIBoundingBox(const ROI* roi, Rect* boundingBox);
 IMAQ_FUNC int  IMAQ_STDCALL imaqGetROIColor(const ROI* roi, RGBValue* roiColor);
 IMAQ_FUNC ROI* IMAQ_STDCALL imaqGetWindowROI(int windowNumber);
@@ -4194,10 +5117,10 @@ IMAQ_FUNC QuantifyReport*  IMAQ_STDCALL imaqQuantify(const Image* image, const I
 //============================================================================
 //  Error Management functions
 //============================================================================
-IMAQ_FUNC int         IMAQ_STDCALL imaqClearError();
+IMAQ_FUNC int         IMAQ_STDCALL imaqClearError(void);
 IMAQ_FUNC char*       IMAQ_STDCALL imaqGetErrorText(int errorCode);
-IMAQ_FUNC int         IMAQ_STDCALL imaqGetLastError();
-IMAQ_FUNC const char* IMAQ_STDCALL imaqGetLastErrorFunc();
+IMAQ_FUNC int         IMAQ_STDCALL imaqGetLastError(void);
+IMAQ_FUNC const char* IMAQ_STDCALL imaqGetLastErrorFunc(void);
 IMAQ_FUNC int         IMAQ_STDCALL imaqSetError(int errorCode, const char* function);
 
 //============================================================================
@@ -4215,70 +5138,53 @@ IMAQ_FUNC int            IMAQ_STDCALL imaqThreshold(Image* dest, const Image* so
 IMAQ_FUNC int IMAQ_STDCALL imaqDispose(void* object);
 
 //============================================================================
-//  File I/O functions
+//  Pattern Matching functions
 //============================================================================
-IMAQ_FUNC int         IMAQ_STDCALL imaqCloseAVI(AVISession session);
-IMAQ_FUNC AVISession  IMAQ_STDCALL imaqCreateAVI(const char* fileName, const char* compressionFilter, int quality, unsigned int framesPerSecond, unsigned int maxDataSize);
-IMAQ_FUNC int         IMAQ_STDCALL imaqGetAVIInfo(AVISession session, AVIInfo* info);
-IMAQ_FUNC int         IMAQ_STDCALL imaqGetFileInfo(const char* fileName, CalibrationUnit* calibrationUnit, float* calibrationX, float* calibrationY, int* width, int* height, ImageType* imageType);
-IMAQ_FUNC FilterName* IMAQ_STDCALL imaqGetFilterNames(int* numFilters);
-IMAQ_FUNC char**      IMAQ_STDCALL imaqLoadImagePopup(const char* defaultDirectory, const char* defaultFileSpec, const char* fileTypeList, const char* title, int allowMultiplePaths, ButtonLabel buttonLabel, int restrictDirectory, int restrictExtension, int allowCancel, int allowMakeDirectory, int* cancelled, int* numPaths);
-IMAQ_FUNC AVISession  IMAQ_STDCALL imaqOpenAVI(const char* fileName);
-IMAQ_FUNC int         IMAQ_STDCALL imaqReadAVIFrame(Image* image, AVISession session, unsigned int frameNum, void* data, unsigned int* dataSize);
-IMAQ_FUNC int         IMAQ_STDCALL imaqReadFile(Image* image, const char* fileName, RGBValue* colorTable, int* numColors);
-IMAQ_FUNC int         IMAQ_STDCALL imaqReadVisionFile(Image* image, const char* fileName, RGBValue* colorTable, int* numColors);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteAVIFrame(Image* image, AVISession session, const void* data, unsigned int dataLength);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteBMPFile(const Image* image, const char* fileName, int compress, const RGBValue* colorTable);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteFile(const Image* image, const char* fileName, const RGBValue* colorTable);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteJPEGFile(const Image* image, const char* fileName, unsigned int quality, void* colorTable);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteJPEG2000File(const Image* image, const char* fileName, int lossless, float compressionRatio, const JPEG2000FileAdvancedOptions* advancedOptions, const RGBValue* colorTable);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWritePNGFile2(const Image* image, const char* fileName, unsigned int compressionSpeed, const RGBValue* colorTable, int useBitDepth);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteTIFFFile(const Image* image, const char* fileName, const TIFFFileOptions* options, const RGBValue* colorTable);
-IMAQ_FUNC int         IMAQ_STDCALL imaqWriteVisionFile(const Image* image, const char* fileName, const RGBValue* colorTable);
+IMAQ_FUNC CircleMatch*              IMAQ_STDCALL imaqDetectCircles(const Image* image, const CircleDescriptor* circleDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
+IMAQ_FUNC EllipseMatch*             IMAQ_STDCALL imaqDetectEllipses(const Image* image, const EllipseDescriptor* ellipseDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
+IMAQ_FUNC LineMatch*                IMAQ_STDCALL imaqDetectLines(const Image* image, const LineDescriptor* lineDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
+IMAQ_FUNC RectangleMatch*           IMAQ_STDCALL imaqDetectRectangles(const Image* image, const RectangleDescriptor* rectangleDescriptor, const CurveOptions* curveOptions, const ShapeDetectionOptions* shapeDetectionOptions, const ROI* roi, int* numMatchesReturned);
+IMAQ_FUNC FeatureData*              IMAQ_STDCALL imaqGetGeometricFeaturesFromCurves(const Curve* curves, unsigned int numCurves, const FeatureType* featureTypes, unsigned int numFeatureTypes, unsigned int* numFeatures);
+IMAQ_FUNC FeatureData*              IMAQ_STDCALL imaqGetGeometricTemplateFeatureInfo(const Image* pattern, unsigned int* numFeatures);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnColorPattern(Image* image, const LearnColorPatternOptions* options);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnGeometricPattern(Image* image, PointFloat originOffset, const CurveOptions* curveOptions, const LearnGeometricPatternAdvancedOptions* advancedLearnOptions, const Image* mask);
+IMAQ_FUNC MultipleGeometricPattern* IMAQ_STDCALL imaqLearnMultipleGeometricPatterns(const Image** patterns, unsigned int numberOfPatterns, const String255* labels);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnPattern3(Image* image, LearningMode learningMode, LearnPatternAdvancedOptions* advancedOptions, const Image* mask);
+IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqMatchColorPattern(const Image* image, Image* pattern, const MatchColorPatternOptions* options, Rect searchRect, int* numMatches);
+IMAQ_FUNC GeometricPatternMatch2*   IMAQ_STDCALL imaqMatchGeometricPattern2(const Image* image, const Image* pattern, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions, const ROI* roi, int* numMatches);
+IMAQ_FUNC GeometricPatternMatch2*   IMAQ_STDCALL imaqMatchMultipleGeometricPatterns(const Image* image, const MultipleGeometricPattern* multiplePattern, const ROI* roi, int* numMatches);
+IMAQ_FUNC MultipleGeometricPattern* IMAQ_STDCALL imaqReadMultipleGeometricPatternFile(const char* fileName, String255 description);
+IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqRefineMatches(const Image* image, const Image* pattern, const PatternMatch* candidatesIn, int numCandidatesIn, MatchPatternOptions* options, MatchPatternAdvancedOptions* advancedOptions, int* numCandidatesOut);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqSetMultipleGeometricPatternsOptions(MultipleGeometricPattern* multiplePattern, const char* label, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions2* advancedMatchOptions);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqWriteMultipleGeometricPatternFile(const MultipleGeometricPattern* multiplePattern, const char* fileName, const char* description);
+IMAQ_FUNC GeometricPatternMatch3*   IMAQ_STDCALL imaqMatchGeometricPattern3(const Image* image, const Image* pattern, const CurveOptions* curveOptions, const MatchGeometricPatternOptions* matchOptions, const MatchGeometricPatternAdvancedOptions3* advancedMatchOptions, const ROI* roi, size_t* numMatches);
+IMAQ_FUNC int                       IMAQ_STDCALL imaqLearnGeometricPattern2(Image* image, PointFloat originOffset, double angleOffset, const CurveOptions* curveOptions, const LearnGeometricPatternAdvancedOptions2* advancedLearnOptions, const Image* mask);
+IMAQ_FUNC PatternMatch*             IMAQ_STDCALL imaqMatchPattern3(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternAdvancedOptions* advancedOptions, const ROI* roi, int* numMatches);
 
 //============================================================================
-//  Frequency Domain Analysis functions
+//  Overlay functions
 //============================================================================
-IMAQ_FUNC int IMAQ_STDCALL imaqAttenuate(Image* dest, const Image* source, AttenuateMode highlow);
-IMAQ_FUNC int IMAQ_STDCALL imaqConjugate(Image* dest, const Image* source);
-IMAQ_FUNC int IMAQ_STDCALL imaqFFT(Image* dest, const Image* source);
-IMAQ_FUNC int IMAQ_STDCALL imaqFlipFrequencies(Image* dest, const Image* source);
-IMAQ_FUNC int IMAQ_STDCALL imaqInverseFFT(Image* dest, const Image* source);
-IMAQ_FUNC int IMAQ_STDCALL imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float ratioToKeep);
-
-//============================================================================
-//  Pixel Manipulation functions
-//============================================================================
-IMAQ_FUNC int    IMAQ_STDCALL imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
-IMAQ_FUNC float* IMAQ_STDCALL imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* columns, int* rows);
-IMAQ_FUNC int    IMAQ_STDCALL imaqExtractColorPlanes(const Image* image, ColorMode mode, Image* plane1, Image* plane2, Image* plane3);
-IMAQ_FUNC int    IMAQ_STDCALL imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
-IMAQ_FUNC int    IMAQ_STDCALL imaqFillImage(Image* image, PixelValue value, const Image* mask);
-IMAQ_FUNC void*  IMAQ_STDCALL imaqGetLine(const Image* image, Point start, Point end, int* numPoints);
-IMAQ_FUNC int    IMAQ_STDCALL imaqGetPixel(const Image* image, Point pixel, PixelValue* value);
-IMAQ_FUNC int    IMAQ_STDCALL imaqReplaceColorPlanes(Image* dest, const Image* source, ColorMode mode, const Image* plane1, const Image* plane2, const Image* plane3);
-IMAQ_FUNC int    IMAQ_STDCALL imaqReplaceComplexPlane(Image* dest, const Image* source, const Image* newValues, ComplexPlane plane);
-IMAQ_FUNC int    IMAQ_STDCALL imaqSetLine(Image* image, const void* array, int arraySize, Point start, Point end);
-IMAQ_FUNC int    IMAQ_STDCALL imaqSetPixel(Image* image, Point coord, PixelValue value);
-
-//============================================================================
-//  LCD functions
-//============================================================================
-IMAQ_FUNC int        IMAQ_STDCALL imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
-IMAQ_FUNC LCDReport* IMAQ_STDCALL imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options);
-
-//============================================================================
-//  Regions of Interest Manipulation functions
-//============================================================================
-IMAQ_FUNC ROI*        IMAQ_STDCALL imaqMaskToROI(const Image* mask, int* withinLimit);
-IMAQ_FUNC ROIProfile* IMAQ_STDCALL imaqROIProfile(const Image* image, const ROI* roi);
-IMAQ_FUNC int         IMAQ_STDCALL imaqROIToMask(Image* mask, const ROI* roi, int fillValue, const Image* imageModel, int* inSpace);
-IMAQ_FUNC int         IMAQ_STDCALL imaqTransformROI2(ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem);
+IMAQ_FUNC int IMAQ_STDCALL imaqClearOverlay(Image* image, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqCopyOverlay(Image* dest, const Image* source, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqGetOverlayProperties(const Image* image, const char* group, TransformBehaviors* transformBehaviors);
+IMAQ_FUNC int IMAQ_STDCALL imaqMergeOverlay(Image* dest, const Image* source, const RGBValue* palette, unsigned int numColors, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayArc(Image* image, const ArcInfo* arc, const RGBValue* color, DrawMode drawMode, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayBitmap(Image* image, Point destLoc, const RGBValue* bitmap, unsigned int numCols, unsigned int numRows, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayClosedContour(Image* image, const Point* points, int numPoints, const RGBValue* color, DrawMode drawMode, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayLine(Image* image, Point start, Point end, const RGBValue* color, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayMetafile(Image* image, const void* metafile, Rect rect, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayOpenContour(Image* image, const Point* points, int numPoints, const RGBValue* color, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayOval(Image* image, Rect boundingBox, const RGBValue* color, DrawMode drawMode, char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayPoints(Image* image, const Point* points, int numPoints, const RGBValue* colors, int numColors, PointSymbol symbol, const UserPointSymbol* userSymbol, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayRect(Image* image, Rect rect, const RGBValue* color, DrawMode drawMode, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayROI(Image* image, const ROI* roi, PointSymbol symbol, const UserPointSymbol* userSymbol, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqOverlayText(Image* image, Point origin, const char* text, const RGBValue* color, const OverlayTextOptions* options, const char* group);
+IMAQ_FUNC int IMAQ_STDCALL imaqSetOverlayProperties(Image* image, const char* group, TransformBehaviors* transformBehaviors);
 
 //============================================================================
 //  OCR functions
 //============================================================================
-IMAQ_FUNC CharSet*         IMAQ_STDCALL imaqCreateCharSet();
+IMAQ_FUNC CharSet*         IMAQ_STDCALL imaqCreateCharSet(void);
 IMAQ_FUNC int              IMAQ_STDCALL imaqDeleteChar(CharSet* set, int index);
 IMAQ_FUNC int              IMAQ_STDCALL imaqGetCharCount(const CharSet* set);
 IMAQ_FUNC CharInfo2*       IMAQ_STDCALL imaqGetCharInfo2(const CharSet* set, int index);
@@ -4292,37 +5198,95 @@ IMAQ_FUNC int*             IMAQ_STDCALL imaqVerifyText(const Image* image, const
 IMAQ_FUNC int              IMAQ_STDCALL imaqWriteOCRFile(const char* fileName, const CharSet* set, const char* setDescription, const ReadTextOptions* readOptions, const OCRProcessingOptions* processingOptions, const OCRSpacingOptions* spacingOptions);
 
 //============================================================================
-//  Classification functions
+//  Geometric Matching functions
 //============================================================================
-IMAQ_FUNC int                            IMAQ_STDCALL imaqAddClassifierSample(Image* image, ClassifierSession* session, const ROI* roi, const char* sampleClass, double* featureVector, unsigned int vectorSize);
-IMAQ_FUNC ClassifierReport*              IMAQ_STDCALL imaqClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
-IMAQ_FUNC ClassifierSession*             IMAQ_STDCALL imaqCreateClassifier(ClassifierType type);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqDeleteClassifierSample(ClassifierSession* session, int index);
-IMAQ_FUNC ClassifierAccuracyReport*      IMAQ_STDCALL imaqGetClassifierAccuracy(const ClassifierSession* session);
-IMAQ_FUNC ClassifierSampleInfo*          IMAQ_STDCALL imaqGetClassifierSampleInfo(const ClassifierSession* session, int index, int* numSamples);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqGetNearestNeighborOptions(const ClassifierSession* session, NearestNeighborOptions* options);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqGetParticleClassifierOptions(const ClassifierSession* session, ParticleClassifierPreprocessingOptions* preprocessingOptions, ParticleClassifierOptions* options);
-IMAQ_FUNC ClassifierSession*             IMAQ_STDCALL imaqReadClassifierFile(ClassifierSession* session, const char* fileName, ReadClassifierFileMode mode, ClassifierType* type, ClassifierEngineType* engine, String255 description);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqRelabelClassifierSample(ClassifierSession* session, int index, const char* newClass);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqSetParticleClassifierOptions(ClassifierSession* session, const ParticleClassifierPreprocessingOptions* preprocessingOptions, const ParticleClassifierOptions* options);
-IMAQ_FUNC NearestNeighborTrainingReport* IMAQ_STDCALL imaqTrainNearestNeighborClassifier(ClassifierSession* session, const NearestNeighborOptions* options);
-IMAQ_FUNC int                            IMAQ_STDCALL imaqWriteClassifierFile(const ClassifierSession* session, const char* fileName, WriteClassifierFileMode mode, const String255 description);
+IMAQ_FUNC ExtractContourReport*          IMAQ_STDCALL imaqExtractContour(Image* image, const ROI* roi, ExtractContourDirection direction, CurveParameters* curveParams, const ConnectionConstraint* connectionConstraintParams, unsigned int numOfConstraints, ExtractContourSelection selection, Image* contourImage);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqContourOverlay(Image* image, const Image* contourImage, const ContourOverlaySettings* pointsSettings, const ContourOverlaySettings* eqnSettings, const char* groupName);
+IMAQ_FUNC ContourComputeCurvatureReport* IMAQ_STDCALL imaqContourComputeCurvature(const Image* contourImage, unsigned int kernel);
+IMAQ_FUNC CurvatureAnalysisReport*       IMAQ_STDCALL imaqContourClassifyCurvature(const Image* contourImage, unsigned int kernel, RangeLabel* curvatureClasses, unsigned int numCurvatureClasses);
+IMAQ_FUNC ComputeDistancesReport*        IMAQ_STDCALL imaqContourComputeDistances(const Image* targetImage, const Image* templateImage, const SetupMatchPatternData* matchSetupData, unsigned int smoothingKernel);
+IMAQ_FUNC ClassifyDistancesReport*       IMAQ_STDCALL imaqContourClassifyDistances(const Image* targetImage, const Image* templateImage, const SetupMatchPatternData* matchSetupData, unsigned int smoothingKernel, const RangeLabel* distanceRanges, unsigned int numDistanceRanges);
+IMAQ_FUNC ContourInfoReport*             IMAQ_STDCALL imaqContourInfo(const Image* contourImage);
+IMAQ_FUNC SetupMatchPatternData*         IMAQ_STDCALL imaqContourSetupMatchPattern(MatchMode* matchMode, unsigned int enableSubPixelAccuracy, CurveParameters* curveParams, unsigned int useLearnCurveParameters, const RangeSettingDouble* rangeSettings, unsigned int numRangeSettings);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqContourAdvancedSetupMatchPattern(SetupMatchPatternData* matchSetupData, GeometricAdvancedSetupDataOption* geometricOptions, unsigned int numGeometricOptions);
+IMAQ_FUNC ContourFitLineReport*          IMAQ_STDCALL imaqContourFitLine(Image* image, double pixelRadius);
+IMAQ_FUNC PartialCircle*                 IMAQ_STDCALL imaqContourFitCircle(Image* image, double pixelRadius, int rejectOutliers);
+IMAQ_FUNC PartialEllipse*                IMAQ_STDCALL imaqContourFitEllipse(Image* image, double pixelRadius, int rejectOutliers);
+IMAQ_FUNC ContourFitSplineReport*        IMAQ_STDCALL imaqContourFitSpline(Image* image, int degree, int numberOfControlPoints);
+IMAQ_FUNC ContourFitPolynomialReport*    IMAQ_STDCALL imaqContourFitPolynomial(Image* image, int order);
 
 //============================================================================
-//  Inspection functions
+//  Edge Detection functions
 //============================================================================
-IMAQ_FUNC int IMAQ_STDCALL imaqCompareGoldenTemplate(const Image* image, Image* goldenTemplate, Image* brightDefects, Image* darkDefects, const InspectionAlignment* alignment, const InspectionOptions* options);
-IMAQ_FUNC int IMAQ_STDCALL imaqLearnGoldenTemplate(Image* goldenTemplate, PointFloat originOffset, const Image* mask);
+IMAQ_FUNC FindCircularEdgeReport*   IMAQ_STDCALL imaqFindCircularEdge2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const FindCircularEdgeOptions* edgeOptions, const CircleFitOptions* circleFitOptions);
+IMAQ_FUNC FindConcentricEdgeReport* IMAQ_STDCALL imaqFindConcentricEdge2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const FindConcentricEdgeOptions* edgeOptions, const ConcentricEdgeFitOptions* concentricEdgeFitOptions);
+
+//============================================================================
+//  Morphology Reconstruction functions
+//============================================================================
+IMAQ_FUNC int IMAQ_STDCALL imaqGrayMorphologyReconstruct(Image* dstImage, Image* srcImage, const Image* markerImage, PointFloat* points, int numOfPoints, MorphologyReconstructOperation operation, const StructuringElement* structuringElement, const ROI* roi);
+IMAQ_FUNC int IMAQ_STDCALL imaqMorphologyReconstruct(Image* dstImage, Image* srcImage, const Image* markerImage, PointFloat* points, int numOfPoints, MorphologyReconstructOperation operation, Connectivity connectivity, const ROI* roi);
+
+//============================================================================
+//  Texture functions
+//============================================================================
+IMAQ_FUNC int                           IMAQ_STDCALL imaqDetectTextureDefect(ClassifierSession* session, Image* destImage, const Image* srcImage, const ROI* roi, int initialStepSize, int finalStepSize, unsigned char defectPixelValue, double minClassificationScore);
+IMAQ_FUNC int                           IMAQ_STDCALL imaqClassificationTextureDefectOptions(ClassifierSession* session, WindowSize* windowOptions, WaveletOptions* waveletOptions, void** bandsUsed, int* numBandsUsed, CooccurrenceOptions* cooccurrenceOptions, unsigned char setOperation);
+IMAQ_FUNC int                           IMAQ_STDCALL imaqCooccurrenceMatrix(const Image* srcImage, const ROI* roi, int levelPixel, const DisplacementVector* displacementVec, void* featureOptionArray, unsigned int featureOptionArraySize, void** cooccurrenceMatrixArray, int* coocurrenceMatrixRows, int* coocurrenceMatrixCols, void** featureVectorArray, int* featureVectorArraySize);
+IMAQ_FUNC ExtractTextureFeaturesReport* IMAQ_STDCALL imaqExtractTextureFeatures(const Image* srcImage, const ROI* roi, const WindowSize* windowOptions, const WaveletOptions* waveletOptions, void* waveletBands, unsigned int numWaveletBands, const CooccurrenceOptions* cooccurrenceOptions, unsigned char useWindow);
+IMAQ_FUNC WaveletBandsReport*           IMAQ_STDCALL imaqExtractWaveletBands(const Image* srcImage, const WaveletOptions* waveletOptions, void* waveletBands, unsigned int numWaveletBands);
+
+//============================================================================
+//  Regions of Interest Manipulation functions
+//============================================================================
+IMAQ_FUNC ROI*              IMAQ_STDCALL imaqMaskToROI(const Image* mask, int* withinLimit);
+IMAQ_FUNC ROIProfile*       IMAQ_STDCALL imaqROIProfile(const Image* image, const ROI* roi);
+IMAQ_FUNC int               IMAQ_STDCALL imaqROIToMask(Image* mask, const ROI* roi, int fillValue, const Image* imageModel, int* inSpace);
+IMAQ_FUNC int               IMAQ_STDCALL imaqTransformROI2(ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem);
+IMAQ_FUNC LabelToROIReport* IMAQ_STDCALL imaqLabelToROI(const Image* image, const unsigned int* labelsIn, unsigned int numLabelsIn, int maxNumVectors, int isExternelEdges);
 
 //============================================================================
 //  Morphology functions
 //============================================================================
 IMAQ_FUNC int IMAQ_STDCALL imaqGrayMorphology(Image* dest, Image* source, MorphologyMethod method, const StructuringElement* structuringElement);
+
+//============================================================================
+//  Classification functions
+//============================================================================
+IMAQ_FUNC int                            IMAQ_STDCALL imaqAddClassifierSample(Image* image, ClassifierSession* session, const ROI* roi, const char* sampleClass, double* featureVector, unsigned int vectorSize);
+IMAQ_FUNC ClassifierReportAdvanced*      IMAQ_STDCALL imaqAdvanceClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
+IMAQ_FUNC ClassifierReport*              IMAQ_STDCALL imaqClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
+IMAQ_FUNC ClassifierSession*             IMAQ_STDCALL imaqCreateClassifier(ClassifierType type);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqDeleteClassifierSample(ClassifierSession* session, int index);
+IMAQ_FUNC ClassifierAccuracyReport*      IMAQ_STDCALL imaqGetClassifierAccuracy(const ClassifierSession* session);
+IMAQ_FUNC ClassifierSampleInfo*          IMAQ_STDCALL imaqGetClassifierSampleInfo(const ClassifierSession* session, int index, int* numSamples);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqGetColorClassifierOptions(const ClassifierSession* session, ColorOptions* options);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqGetNearestNeighborOptions(const ClassifierSession* session, NearestNeighborOptions* options);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqGetParticleClassifierOptions2(const ClassifierSession* session, ParticleClassifierPreprocessingOptions2* preprocessingOptions, ParticleClassifierOptions* options);
+IMAQ_FUNC ClassifierSession*             IMAQ_STDCALL imaqReadClassifierFile(ClassifierSession* session, const char* fileName, ReadClassifierFileMode mode, ClassifierType* type, ClassifierEngineType* engine, String255 description);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqRelabelClassifierSample(ClassifierSession* session, int index, const char* newClass);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqSetParticleClassifierOptions2(ClassifierSession* session, const ParticleClassifierPreprocessingOptions2* preprocessingOptions, const ParticleClassifierOptions* options);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqSetColorClassifierOptions(ClassifierSession* session, const ColorOptions* options);
+IMAQ_FUNC NearestNeighborTrainingReport* IMAQ_STDCALL imaqTrainNearestNeighborClassifier(ClassifierSession* session, const NearestNeighborOptions* options);
+IMAQ_FUNC int                            IMAQ_STDCALL imaqWriteClassifierFile(const ClassifierSession* session, const char* fileName, WriteClassifierFileMode mode, const String255 description);
+
+//============================================================================
+//  Measure Distances functions
+//============================================================================
+IMAQ_FUNC ClampMax2Report* IMAQ_STDCALL imaqClampMax2(Image* image, const ROI* roi, const CoordinateSystem* baseSystem, const CoordinateSystem* newSystem, const CurveOptions* curveSettings, const ClampSettings* clampSettings, const ClampOverlaySettings* clampOverlaySettings);
+
+//============================================================================
+//  Inspection functions
+//============================================================================
+IMAQ_FUNC int IMAQ_STDCALL imaqCompareGoldenTemplate(const Image* image, const Image* goldenTemplate, Image* brightDefects, Image* darkDefects, const InspectionAlignment* alignment, const InspectionOptions* options);
+IMAQ_FUNC int IMAQ_STDCALL imaqLearnGoldenTemplate(Image* goldenTemplate, PointFloat originOffset, const Image* mask);
 //============================================================================
 //  Obsolete functions
 //============================================================================
-IMAQ_FUNC int                    IMAQ_STDCALL imaqLineGaugeTool(const Image* image, Point start, Point end, LineGaugeMethod method, const EdgeOptions* edgeOptions, const CoordinateTransform* reference, float* distance);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqRotate(Image* dest, const Image* source, float angle, PixelValue fill, InterpolationMethod method);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqWritePNGFile(const Image* image, const char* fileName, unsigned int compressionSpeed, const RGBValue* colorTable);
+IMAQ_FUNC ParticleReport*        IMAQ_STDCALL imaqSelectParticles(const Image* image, const ParticleReport* reports, int reportCount, int rejectBorder, const SelectParticleCriteria* criteria, int criteriaCount, int* selectedCount);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqParticleFilter(Image* dest, Image* source, const ParticleFilterCriteria* criteria, int criteriaCount, int rejectMatches, int connectivity8);
 IMAQ_FUNC ParticleReport*        IMAQ_STDCALL imaqGetParticleInfo(Image* image, int connectivity8, ParticleInfoMode mode, int* reportCount);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqCalcCoeff(const Image* image, const ParticleReport* report, MeasurementValue parameter, float* coefficient);
 IMAQ_FUNC EdgeReport*            IMAQ_STDCALL imaqEdgeTool(const Image* image, const Point* points, int numPoints, const EdgeOptions* options, int* numEdges);
@@ -4331,10 +5295,10 @@ IMAQ_FUNC int                    IMAQ_STDCALL imaqLabel(Image* dest, Image* sour
 IMAQ_FUNC int                    IMAQ_STDCALL imaqFitEllipse(const PointFloat* points, int numPoints, BestEllipse* ellipse);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqFitCircle(const PointFloat* points, int numPoints, BestCircle* circle);
 IMAQ_FUNC Color                  IMAQ_STDCALL imaqChangeColorSpace(const Color* sourceColor, ColorMode sourceSpace, ColorMode destSpace);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqConstructROI(const Image* image, ROI* roi, Tool initialTool, const ToolWindowOptions* tools, const ConstructROIOptions* options, int* okay);
-IMAQ_FUNC ParticleReport*        IMAQ_STDCALL imaqSelectParticles(const Image* image, const ParticleReport* reports, int reportCount, int rejectBorder, const SelectParticleCriteria* criteria, int criteriaCount, int* selectedCount);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqRotate(Image* dest, const Image* source, float angle, PixelValue fill, InterpolationMethod method);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqLearnPattern(Image* image, LearningMode learningMode);
+IMAQ_FUNC PatternMatch*          IMAQ_STDCALL imaqMatchPattern(const Image* image, Image* pattern, const MatchPatternOptions* options, Rect searchRect, int* numMatches);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqConvex(Image* dest, const Image* source);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqIsVisionInfoPresent(const Image* image, VisionInfoType type, int* present);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqLineGaugeTool(const Image* image, Point start, Point end, LineGaugeMethod method, const EdgeOptions* edgeOptions, const CoordinateTransform* reference, float* distance);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqBestCircle(const PointFloat* points, int numPoints, PointFloat* center, double* radius);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqSavePattern(const Image* pattern, const char* fileName);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqLoadPattern(Image* pattern, const char* fileName);
@@ -4346,8 +5310,9 @@ IMAQ_FUNC Overlay*               IMAQ_STDCALL imaqCreateOverlayFromROI(const ROI
 IMAQ_FUNC Overlay*               IMAQ_STDCALL imaqCreateOverlayFromMetafile(const void* metafile);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqSetCalibrationInfo(Image* image, CalibrationUnit unit, float xDistance, float yDistance);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqGetCalibrationInfo(const Image* image, CalibrationUnit* unit, float* xDistance, float* yDistance);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqConvex(Image* dest, const Image* source);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqParticleFilter2(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, int rejectMatches, int connectivity8, int* numParticles);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqConstructROI(const Image* image, ROI* roi, Tool initialTool, const ToolWindowOptions* tools, const ConstructROIOptions* options, int* okay);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqGetParticleClassifierOptions(const ClassifierSession* session, ParticleClassifierPreprocessingOptions* preprocessingOptions, ParticleClassifierOptions* options);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqZoomWindow(int windowNumber, int xZoom, int yZoom, Point center);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqGetWindowZoom(int windowNumber, int* xZoom, int* yZoom);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqParticleFilter3(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, const ParticleFilterOptions* options, const ROI* roi, int* numParticles);
 IMAQ_FUNC ReadTextReport2*       IMAQ_STDCALL imaqReadText2(const Image* image, const CharSet* set, const ROI* roi, const ReadTextOptions* readOptions, const OCRProcessingOptions* processingOptions, const OCRSpacingOptions* spacingOptions);
@@ -4358,9 +5323,12 @@ IMAQ_FUNC int                    IMAQ_STDCALL imaqDivide(Image* dest, const Imag
 IMAQ_FUNC EdgeReport2*           IMAQ_STDCALL imaqEdgeTool3(const Image* image, const ROI* roi, EdgeProcess processType, const EdgeOptions2* edgeOptions);
 IMAQ_FUNC ConcentricRakeReport*  IMAQ_STDCALL imaqConcentricRake(const Image* image, const ROI* roi, ConcentricRakeDirection direction, EdgeProcess process, const RakeOptions* options);
 IMAQ_FUNC SpokeReport*           IMAQ_STDCALL imaqSpoke(const Image* image, const ROI* roi, SpokeDirection direction, EdgeProcess process, const SpokeOptions* options);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqParticleFilter(Image* dest, Image* source, const ParticleFilterCriteria* criteria, int criteriaCount, int rejectMatches, int connectivity8);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqLearnPattern(Image* image, LearningMode learningMode);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqLookup(Image* dest, const Image* source, const short* table, const Image* mask);
+IMAQ_FUNC PatternMatch*          IMAQ_STDCALL imaqMatchPattern2(const Image* image, const Image* pattern, const MatchPatternOptions* options, const MatchPatternAdvancedOptions* advancedOptions, Rect searchRect, int* numMatches);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqSetParticleClassifierOptions(ClassifierSession* session, const ParticleClassifierPreprocessingOptions* preprocessingOptions, const ParticleClassifierOptions* options);
 IMAQ_FUNC int                    IMAQ_STDCALL imaqCopyCalibrationInfo(Image* dest, const Image* source);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqZoomWindow(int windowNumber, int xZoom, int yZoom, Point center);
+IMAQ_FUNC int                    IMAQ_STDCALL imaqParticleFilter2(Image* dest, Image* source, const ParticleFilterCriteria2* criteria, int criteriaCount, int rejectMatches, int connectivity8, int* numParticles);
 IMAQ_FUNC EdgeReport*            IMAQ_STDCALL imaqEdgeTool2(const Image* image, const Point* points, int numPoints, EdgeProcess process, const EdgeOptions* options, int* numEdges);
 IMAQ_FUNC ContourID              IMAQ_STDCALL imaqAddRotatedRectContour(ROI* roi, RotatedRect rect);
 IMAQ_FUNC Barcode2DInfo*         IMAQ_STDCALL imaqReadDataMatrixBarcode(const Image* image, const ROI* roi, const DataMatrixOptions* options, unsigned int* numBarcodes);
@@ -4370,8 +5338,6 @@ IMAQ_FUNC CharInfo*              IMAQ_STDCALL imaqGetCharInfo(const CharSet* set
 IMAQ_FUNC ReadTextReport*        IMAQ_STDCALL imaqReadText(const Image* image, const CharSet* set, const ROI* roi, const ReadTextOptions* readOptions, const OCRProcessingOptions* processingOptions, const OCRSpacingOptions* spacingOptions);
 IMAQ_FUNC ThresholdData*         IMAQ_STDCALL imaqAutoThreshold(Image* dest, Image* source, int numClasses, ThresholdMethod method);
 IMAQ_FUNC ColorHistogramReport*  IMAQ_STDCALL imaqColorHistogram(Image* image, int numClasses, ColorMode mode, const Image* mask);
-IMAQ_FUNC int                    IMAQ_STDCALL imaqIsVisionInfoPresent(const Image* image, VisionInfoType type, int* present);
-IMAQ_FUNC PatternMatch*          IMAQ_STDCALL imaqMatchPattern(const Image* image, Image* pattern, const MatchPatternOptions* options, Rect searchRect, int* numMatches);
 IMAQ_FUNC RakeReport*            IMAQ_STDCALL imaqRake(const Image* image, const ROI* roi, RakeDirection direction, EdgeProcess process, const RakeOptions* options);
 #endif
 

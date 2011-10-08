@@ -32,11 +32,20 @@ public:
 
 	Error();
 	~Error();
+	void Clone(Error &error /Out/);
 	Code GetCode() const;
 	const char *GetMessage() const;
 	const char *GetFilename() const;
+	const char *GetFunction() const;
 	UINT32 GetLineNumber() const;
 	const ErrorBase* GetOriginatingObject() const;
+	double GetTime() const;
 	void Clear();
-	void Set(Code code, const char* filename, UINT32 lineNumber, const ErrorBase* originatingObject);
+	void Set(Code code, const char* contextMessage, const char* filename,
+		const char *function, UINT32 lineNumber, const ErrorBase* originatingObject);
+	static void EnableStackTrace(bool enable);
+	static void EnableSuspendOnError(bool enable);
+
+private:
+	Error(const Error&);
 };

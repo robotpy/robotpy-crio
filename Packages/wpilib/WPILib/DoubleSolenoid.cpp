@@ -5,20 +5,45 @@
 /*----------------------------------------------------------------------------*/
 
 #include "DoubleSolenoid.h"
+#include "WPIErrors.h"
 
 /**
  * Common function to implement constructor behavior.
  */
 void DoubleSolenoid::InitSolenoid()
 {
-	if (CheckSolenoidModule(m_chassisSlot))
+	char buf[64];
+	if (!CheckSolenoidModule(m_moduleNumber))
 	{
-		CheckSolenoidChannel(m_forwardChannel);
-		CheckSolenoidChannel(m_reverseChannel);
-		Resource::CreateResourceObject(&m_allocated, tSolenoid::kNumDO7_0Elements * kSolenoidChannels);
+		snprintf(buf, 64, "Solenoid Module %d", m_moduleNumber);
+		wpi_setWPIErrorWithContext(ModuleIndexOutOfRange, buf);
+		return;
+	}
+	if (!CheckSolenoidChannel(m_forwardChannel))
+	{
+		snprintf(buf, 64, "Solenoid Channel %d", m_forwardChannel);
+		wpi_setWPIErrorWithContext(ChannelIndexOutOfRange, buf);
+		return;
+	}
+	if (!CheckSolenoidChannel(m_reverseChannel))
+	{
+		snprintf(buf, 64, "Solenoid Channel %d", m_reverseChannel);
+		wpi_setWPIErrorWithContext(ChannelIndexOutOfRange, buf);
+		return;
+	}
+	Resource::CreateResourceObject(&m_allocated, tSolenoid::kNumDO7_0Elements * kSolenoidChannels);
 
-		m_allocated->Allocate(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_forwardChannel - 1);
-		m_allocated->Allocate(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_reverseChannel - 1);
+	snprintf(buf, 64, "Solenoid %d (Module %d)", m_forwardChannel, m_moduleNumber);
+	if (m_allocated->Allocate((m_moduleNumber - 1) * kSolenoidChannels + m_forwardChannel - 1, buf) == ~0ul)
+	{
+		CloneError(m_allocated);
+		return;
+	}
+	snprintf(buf, 64, "Solenoid %d (Module %d)", m_reverseChannel, m_moduleNumber);
+	if (m_allocated->Allocate((m_moduleNumber - 1) * kSolenoidChannels + m_reverseChannel - 1, buf) == ~0ul)
+	{
+		CloneError(m_allocated);
+		return;
 	}
 	m_forwardMask = 1 << (m_forwardChannel - 1);
 	m_reverseMask = 1 << (m_reverseChannel - 1);
@@ -41,12 +66,12 @@ DoubleSolenoid::DoubleSolenoid(UINT32 forwardChannel, UINT32 reverseChannel)
 /**
  * Constructor.
  * 
- * @param slot The slot that the 9472 module is plugged into.
+ * @param moduleNumber The solenoid module (1 or 2).
  * @param forwardChannel The forward channel on the module to control.
  * @param reverseChannel The reverse channel on the module to control.
  */
-DoubleSolenoid::DoubleSolenoid(UINT32 slot, UINT32 forwardChannel, UINT32 reverseChannel)
-	: SolenoidBase (slot)
+DoubleSolenoid::DoubleSolenoid(UINT8 moduleNumber, UINT32 forwardChannel, UINT32 reverseChannel)
+	: SolenoidBase (moduleNumber)
 	, m_forwardChannel (forwardChannel)
 	, m_reverseChannel (reverseChannel)
 {
@@ -58,10 +83,10 @@ DoubleSolenoid::DoubleSolenoid(UINT32 slot, UINT32 forwardChannel, UINT32 revers
  */
 DoubleSolenoid::~DoubleSolenoid()
 {
-	if (CheckSolenoidModule(m_chassisSlot))
+	if (CheckSolenoidModule(m_moduleNumber))
 	{
-		m_allocated->Free(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_forwardChannel - 1);
-		m_allocated->Free(SlotToIndex(m_chassisSlot) * kSolenoidChannels + m_reverseChannel - 1);
+		m_allocated->Free((m_moduleNumber - 1) * kSolenoidChannels + m_forwardChannel - 1);
+		m_allocated->Free((m_moduleNumber - 1) * kSolenoidChannels + m_reverseChannel - 1);
 	}
 }
 
@@ -72,7 +97,8 @@ DoubleSolenoid::~DoubleSolenoid()
  */
 void DoubleSolenoid::Set(Value value)
 {
-	UINT8 rawValue;
+	if (StatusIsFatal()) return;
+	UINT8 rawValue = 0x00;
 
 	switch(value)
 	{
@@ -97,6 +123,7 @@ void DoubleSolenoid::Set(Value value)
  */
 DoubleSolenoid::Value DoubleSolenoid::Get()
 {
+	if (StatusIsFatal()) return kOff;
 	UINT8 value = GetAll();
 
 	if (value & m_forwardMask) return kForward;

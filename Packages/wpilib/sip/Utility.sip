@@ -25,8 +25,10 @@
 #include <WPILib/Utility.h>
 %End
 
+char *wpi_getLabel(unsigned int addr, INT32 *found = 0);
+void wpi_selfTrace();
 void wpi_suspendOnAssertEnabled(bool enabled);
-void wpi_stackTraceEnable(bool enabled);
+void wpi_stackTraceOnAssertEnable(bool enabled);
 
 UINT16 GetFPGAVersion();
 UINT32 GetFPGARevision();

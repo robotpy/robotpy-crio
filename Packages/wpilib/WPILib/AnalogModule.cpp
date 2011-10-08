@@ -7,8 +7,7 @@
 #include "AnalogModule.h"
 #include "Synchronized.h"
 #include "Timer.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 #include "NetworkCommunication/AICalibration.h"
 
 const long AnalogModule::kTimebase; ///< 40 MHz clock
@@ -23,31 +22,22 @@ SEM_ID AnalogModule::m_registerWindowSemaphore = NULL;
  * Singleton analog module creation where a module is allocated on the first use
  * and the same module is returned on subsequent uses.
  * 
- * @param slot The physical slot in the cRIO chassis where this analog module is installed.
+ * @param moduleNumber The analog module to get (1 or 2).
  * @return A pointer to the AnalogModule.
  */
-AnalogModule* AnalogModule::GetInstance(UINT32 slot)
+AnalogModule* AnalogModule::GetInstance(UINT8 moduleNumber)
 {
-	if (CheckAnalogModule(slot))
+	if (CheckAnalogModule(moduleNumber))
 	{
-		if (m_modules[slot] == NULL)
-		{
-			m_modules[slot] = new AnalogModule(slot);
-		}
-		return (AnalogModule*)m_modules[slot];
+		return (AnalogModule*)GetModule(nLoadOut::kModuleType_Analog, moduleNumber);
 	}
-	return NULL;
-}
 
-/**
- * Convert slot number to index.
- * 
- * @param slot The slot in the chassis where the module is plugged in.
- * @return An index to represent the module internally.
- */
-UINT32 AnalogModule::SlotToIndex(UINT32 slot)
-{
-	return slot - 1;
+	// If this wasn't caught before now, make sure we say what's wrong before we crash
+	char buf[64];
+	snprintf(buf, 64, "Analog Module %d", moduleNumber);
+	wpi_setGlobalWPIErrorWithContext(ModuleIndexOutOfRange, buf);
+
+	return NULL;
 }
 
 /**
@@ -59,23 +49,25 @@ UINT32 AnalogModule::SlotToIndex(UINT32 slot)
  * values are set the previously set value.
  * Analog modules are a singleton, so the constructor is never called outside of this class.
  * 
- * @param slot The slot in the chassis that the module is plugged into.
+ * @param moduleNumber The analog module to create (1 or 2).
  */
-AnalogModule::AnalogModule(UINT32 slot)
-	: Module(slot)
+AnalogModule::AnalogModule(UINT8 moduleNumber)
+	: Module(nLoadOut::kModuleType_Analog, moduleNumber)
 	, m_module (NULL)
 	, m_sampleRateSet (false)
 	, m_numChannelsToActivate (0)
 {
-	status = 0;
 	AddToSingletonList();
-	m_module = new tAI(SlotToIndex(slot), &status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_module = tAI::create(m_moduleNumber - 1, &localStatus);
+	wpi_setError(localStatus);
 	SetNumChannelsToActivate(kAnalogChannels);
 	SetSampleRate(kDefaultSampleRate);
 
 	for (UINT32 i = 0; i < kAnalogChannels; i++)
 	{
-		m_module->writeScanList(i, i, &status);
+		m_module->writeScanList(i, i, &localStatus);
+		wpi_setError(localStatus);
 		SetAverageBits(i + 1, kDefaultAverageBits);
 		SetOversampleBits(i + 1, kDefaultOversampleBits);
 	}
@@ -85,8 +77,6 @@ AnalogModule::AnalogModule(UINT32 slot)
 		// Needs to be global since the protected resource spans both module singletons.
 		m_registerWindowSemaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	}
-
-	wpi_assertCleanStatus(status);
 }
 
 /**
@@ -95,7 +85,6 @@ AnalogModule::AnalogModule(UINT32 slot)
 AnalogModule::~AnalogModule()
 {
 	delete m_module;
-	m_modules[m_slot] = NULL;
 }
 
 /**
@@ -118,7 +107,7 @@ void AnalogModule::SetSampleRate(float samplesPerSecond)
 	// ticksPerConversion must be at least 80
 	if (ticksPerConversion < 80)
 	{
-		wpi_fatal(SampleRateTooHigh);
+		wpi_setWPIError(SampleRateTooHigh);
 		ticksPerConversion = 80;
 	}
 
@@ -126,12 +115,12 @@ void AnalogModule::SetSampleRate(float samplesPerSecond)
 	tAI::tConfig config;
 	config.ScanSize = GetNumChannelsToActivate();
 	config.ConvertRate = ticksPerConversion;
-	m_module->writeConfig(config, &status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_module->writeConfig(config, &localStatus);
+	wpi_setError(localStatus);
 
 	// Indicate that the scan size has been commited to hardware.
 	SetNumChannelsToActivate(0);
-
-	wpi_assertCleanStatus(status);
 }
 
 /**
@@ -144,10 +133,10 @@ void AnalogModule::SetSampleRate(float samplesPerSecond)
  */
 float AnalogModule::GetSampleRate()
 {
-	UINT32 ticksPerConversion = m_module->readLoopTiming(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 ticksPerConversion = m_module->readLoopTiming(&localStatus);
+	wpi_setError(localStatus);
 	UINT32 ticksPerSample = ticksPerConversion * GetNumActiveChannels();
-	wpi_assertCleanStatus(status);
 	return (float)kTimebase / (float)ticksPerSample;
 }
 
@@ -158,8 +147,9 @@ float AnalogModule::GetSampleRate()
  */
 UINT32 AnalogModule::GetNumActiveChannels()
 {
-	UINT32 scanSize = m_module->readConfig_ScanSize(&status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 scanSize = m_module->readConfig_ScanSize(&localStatus);
+	wpi_setError(localStatus);
 	if (scanSize == 0)
 		return 8;
 	return scanSize;
@@ -207,8 +197,9 @@ void AnalogModule::SetNumChannelsToActivate(UINT32 channels)
  */
 void AnalogModule::SetAverageBits(UINT32 channel, UINT32 bits)
 {
-	m_module->writeAverageBits(channel - 1, bits, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_module->writeAverageBits(channel - 1, bits, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -222,8 +213,9 @@ void AnalogModule::SetAverageBits(UINT32 channel, UINT32 bits)
  */
 UINT32 AnalogModule::GetAverageBits(UINT32 channel)
 {
-	UINT32 result = m_module->readAverageBits(channel - 1, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 result = m_module->readAverageBits(channel - 1, &localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -239,8 +231,9 @@ UINT32 AnalogModule::GetAverageBits(UINT32 channel)
  */
 void AnalogModule::SetOversampleBits(UINT32 channel, UINT32 bits)
 {
-	m_module->writeOversampleBits(channel - 1, bits, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	m_module->writeOversampleBits(channel - 1, bits, &localStatus);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -254,8 +247,9 @@ void AnalogModule::SetOversampleBits(UINT32 channel, UINT32 bits)
  */
 UINT32 AnalogModule::GetOversampleBits(UINT32 channel)
 {
-	UINT32 result = m_module->readOversampleBits(channel - 1, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 result = m_module->readOversampleBits(channel - 1, &localStatus);
+	wpi_setError(localStatus);
 	return result;
 }
 
@@ -274,17 +268,18 @@ INT16 AnalogModule::GetValue(UINT32 channel)
 
 	tAI::tReadSelect readSelect;
 	readSelect.Channel = channel - 1;
-	readSelect.Module = SlotToIndex(m_slot);
+	readSelect.Module = m_moduleNumber - 1;
 	readSelect.Averaged = false;
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 
 	{
 		Synchronized sync(m_registerWindowSemaphore);
-		m_module->writeReadSelect(readSelect, &status);
-		m_module->strobeLatchOutput(&status);
-		value = (INT16) m_module->readOutput(&status);
+		m_module->writeReadSelect(readSelect, &localStatus);
+		m_module->strobeLatchOutput(&localStatus);
+		value = (INT16) m_module->readOutput(&localStatus);
 	}
 
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 	return value;
 }
 
@@ -307,17 +302,18 @@ INT32 AnalogModule::GetAverageValue(UINT32 channel)
 
 	tAI::tReadSelect readSelect;
 	readSelect.Channel = channel - 1;
-	readSelect.Module = SlotToIndex(m_slot);
+	readSelect.Module = m_moduleNumber - 1;
 	readSelect.Averaged = true;
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 
 	{
 		Synchronized sync(m_registerWindowSemaphore);
-		m_module->writeReadSelect(readSelect, &status);
-		m_module->strobeLatchOutput(&status);
-		value = m_module->readOutput(&status);
+		m_module->writeReadSelect(readSelect, &localStatus);
+		m_module->strobeLatchOutput(&localStatus);
+		value = m_module->readOutput(&localStatus);
 	}
 
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 	return value;
 }
 
@@ -338,17 +334,16 @@ INT32 AnalogModule::VoltsToValue(INT32 channel, float voltage)
 	if (voltage > 10.0)
 	{
 		voltage = 10.0;
-		wpi_fatal(VoltageOutOfRange);
+		wpi_setWPIError(VoltageOutOfRange);
 	}
 	if (voltage < -10.0)
 	{
 		voltage = -10.0;
-		wpi_fatal(VoltageOutOfRange);
+		wpi_setWPIError(VoltageOutOfRange);
 	}
 	UINT32 LSBWeight = GetLSBWeight(channel);
 	INT32 offset = GetOffset(channel);
 	INT32 value = (INT32) ((voltage + offset * 1.0e-9) / (LSBWeight * 1.0e-9));
-	wpi_assertCleanStatus(status);
 	return value;
 }
 
@@ -366,7 +361,6 @@ float AnalogModule::GetVoltage(UINT32 channel)
 	UINT32 LSBWeight = GetLSBWeight(channel);
 	INT32 offset = GetOffset(channel);
 	float voltage = LSBWeight * 1.0e-9 * value - offset * 1.0e-9;
-	wpi_assertCleanStatus(status);
 	return voltage;
 }
 
@@ -387,7 +381,6 @@ float AnalogModule::GetAverageVoltage(UINT32 channel)
 	INT32 offset = GetOffset(channel);
 	UINT32 oversampleBits = GetOversampleBits(channel);
 	float voltage = ((LSBWeight * 1.0e-9 * value) / (float)(1 << oversampleBits)) - offset * 1.0e-9;
-	wpi_assertCleanStatus(status);
 	return voltage;
 }
 
@@ -403,8 +396,9 @@ float AnalogModule::GetAverageVoltage(UINT32 channel)
  */
 UINT32 AnalogModule::GetLSBWeight(UINT32 channel) 
 {
-	UINT32 lsbWeight = FRC_NetworkCommunication_nAICalibration_getLSBWeight(m_module->getSystemIndex(), channel - 1, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	UINT32 lsbWeight = FRC_NetworkCommunication_nAICalibration_getLSBWeight(m_module->getSystemIndex(), channel - 1, (INT32*)&localStatus);
+	wpi_setError(localStatus);
 	return lsbWeight;
 }
 
@@ -420,8 +414,9 @@ UINT32 AnalogModule::GetLSBWeight(UINT32 channel)
  */
 INT32 AnalogModule::GetOffset(UINT32 channel)
 {
-	INT32 offset = FRC_NetworkCommunication_nAICalibration_getOffset(m_module->getSystemIndex(), channel - 1, &status);
-	wpi_assertCleanStatus(status);
+	tRioStatusCode localStatus = NiFpga_Status_Success;
+	INT32 offset = FRC_NetworkCommunication_nAICalibration_getOffset(m_module->getSystemIndex(), channel - 1, (INT32*)&localStatus);
+	wpi_setError(localStatus);
 	return offset;
 }
 

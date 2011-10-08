@@ -3,7 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
-#include "CGearTooth.h"
+#include "CInterfaces/CGearTooth.h"
 #include "DigitalModule.h"
 
 static GearTooth* gearToothSensors[SensorBase::kChassisSlots][SensorBase::kDigitalChannels];
@@ -16,7 +16,7 @@ static bool initialized = false;
  * @param slot The slot the GearTooth sensor is plugged into.
  * @param channel The channel the GearTooth sensor is plugged into.
  */
-static GearTooth *GTptr(UINT32 slot, UINT32 channel)
+static GearTooth *GTptr(UINT8 moduleNumber, UINT32 channel)
 {
 	if (!initialized)
 	{
@@ -26,13 +26,13 @@ static GearTooth *GTptr(UINT32 slot, UINT32 channel)
 				gearToothSensors[i][j] = NULL;
 	}
 	GearTooth *gt = NULL;
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotIndex = DigitalModule::SlotToIndex(slot);
+		UINT32 slotIndex = moduleNumber - 1;
 		gt = gearToothSensors[slotIndex][channel - 1];
 		if (gt == NULL)
 		{
-			gt = new GearTooth(slot, channel);
+			gt = new GearTooth(moduleNumber, channel);
 			gearToothSensors[slotIndex][channel - 1] = gt;
 		}
 	}
@@ -47,9 +47,9 @@ static GearTooth *GTptr(UINT32 slot, UINT32 channel)
  * @param directionSensitive True if this geartooth sensor can differentiate between
  * foward and backward movement.
  */
-void InitGearTooth(UINT32 slot, UINT32 channel, bool directionSensitive)
+void InitGearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive)
 {
-	GearTooth *gt = GTptr(slot, channel);
+	GearTooth *gt = GTptr(moduleNumber, channel);
 	if (gt) gt->EnableDirectionSensing(directionSensitive);
 }
 
@@ -73,9 +73,9 @@ void InitGearTooth(UINT32 channel, bool directionSensitive)
  * @param slot The slot the digital module is plugged into
  * @param channel The digital I/O channel the sensor is plugged into
  */
-void StartGearTooth(UINT32 slot, UINT32 channel)
+void StartGearTooth(UINT8 moduleNumber, UINT32 channel)
 {
-	GearTooth *gt = GTptr(slot, channel);
+	GearTooth *gt = GTptr(moduleNumber, channel);
 	if (gt) gt->Start();
 }
 
@@ -98,9 +98,9 @@ void StartGearTooth(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The digital I/O channel the sensor is plugged into
  */
-void StopGearTooth(UINT32 slot, UINT32 channel)
+void StopGearTooth(UINT8 moduleNumber, UINT32 channel)
 {
-	GearTooth *gt = GTptr(slot, channel);
+	GearTooth *gt = GTptr(moduleNumber, channel);
 	if (gt) gt->Stop();
 }
 
@@ -122,9 +122,9 @@ void StopGearTooth(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The digital I/O channel the sensor is plugged into
  */
-INT32 GetGearTooth(UINT32 slot, UINT32 channel)
+INT32 GetGearTooth(UINT8 moduleNumber, UINT32 channel)
 {
-	GearTooth *gt = GTptr(slot, channel);
+	GearTooth *gt = GTptr(moduleNumber, channel);
 	if (gt) return gt->Get();
 	return 0;
 }
@@ -147,9 +147,9 @@ INT32 GetGearTooth(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The digital I/O channel the sensor is plugged into
  */
-void ResetGearTooth(UINT32 slot, UINT32 channel)
+void ResetGearTooth(UINT8 moduleNumber, UINT32 channel)
 {
-	GearTooth *gt = GTptr(slot, channel);
+	GearTooth *gt = GTptr(moduleNumber, channel);
 	if (gt) gt->Reset();
 }
 
@@ -172,11 +172,11 @@ void ResetGearTooth(UINT32 channel)
  * @param slot The slot the digital module is plugged into
  * @param channel The digital I/O channel the sensor is plugged into
  */
-void DeleteGearTooth(UINT32 slot, UINT32 channel)
+void DeleteGearTooth(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckDigitalModule(slot) && SensorBase::CheckDigitalChannel(channel))
+	if (SensorBase::CheckDigitalModule(moduleNumber) && SensorBase::CheckDigitalChannel(channel))
 	{
-		UINT32 slotIndex = DigitalModule::SlotToIndex(slot);
+		UINT32 slotIndex = moduleNumber - 1;
 		delete gearToothSensors[slotIndex][channel - 1];
 		gearToothSensors[slotIndex][channel - 1] = NULL;
 	}
@@ -204,9 +204,9 @@ GearToothObject CreateGearTooth(UINT32 channel, bool directionSensitive)
 	return (GearToothObject) new GearTooth(channel, directionSensitive);
 }
 
-GearToothObject CreateGearTooth(UINT32 slot, UINT32 channel, bool directionSensitive)
+GearToothObject CreateGearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive)
 {
-	return (GearToothObject) new GearTooth(slot, channel, directionSensitive);
+	return (GearToothObject) new GearTooth(moduleNumber, channel, directionSensitive);
 }
 
 void StartGearTooth(GearToothObject o)

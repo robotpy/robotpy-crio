@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "MonoImage.h"
-#include "NIVision.h"
+#include "nivision.h"
 
 MonoImage::MonoImage() : ImageBase(IMAQ_IMAGE_U8)
 {

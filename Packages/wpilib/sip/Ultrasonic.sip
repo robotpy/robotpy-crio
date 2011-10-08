@@ -35,7 +35,7 @@ public:
 	
 	Ultrasonic(DigitalOutput *pingChannel, DigitalInput *echoChannel, DistanceUnit units = kInches);
 	Ultrasonic(UINT32 pingChannel, UINT32 echoChannel, DistanceUnit units = kInches);
-	Ultrasonic(UINT32 pingSlot, UINT32 pingChannel, UINT32 echoSlot, UINT32 echoChannel, DistanceUnit units = kInches);
+	Ultrasonic(UINT8 pingModuleNumber, UINT32 pingChannel, UINT8 echoModuleNumber, UINT32 echoChannel, DistanceUnit units = kInches);
 	virtual ~Ultrasonic();
 
 	void Ping();

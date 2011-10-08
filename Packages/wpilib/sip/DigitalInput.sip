@@ -29,7 +29,7 @@ class DigitalInput : DigitalSource
 
 public:
 	explicit DigitalInput(UINT32 channel);
-	DigitalInput(UINT32 slot, UINT32 channel);
+	DigitalInput(UINT8 moduleNumber, UINT32 channel);
 	virtual ~DigitalInput();
 	UINT32 Get();
 	UINT32 GetChannel();
@@ -44,10 +44,3 @@ public:
 	virtual void RequestInterrupts();
 	void SetUpSourceEdge(bool risingEdge, bool fallingEdge);
 };
-
-%ModuleCode
-#include <WPIlib/DigitalInput.h>
-%End
-UINT32 GetDigitalInput(UINT32 slot, UINT32 channel);
-UINT32 GetDigitalInput(UINT32 channel);
-

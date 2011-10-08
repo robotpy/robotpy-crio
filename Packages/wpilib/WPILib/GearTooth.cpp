@@ -36,12 +36,12 @@ GearTooth::GearTooth(UINT32 channel, bool directionSensitive)
 /**
  * Construct a GearTooth sensor given a channel and module.
  * 
- * @param slot The slot in the chassis that the digital module is plugged in to.
+ * @param moduleNumber The digital module (1 or 2).
  * @param channel The GPIO channel on the digital module that the sensor is connected to.
  * @param directionSensitive Enable the pulse length decoding in hardware to specify count direction.
  */
-GearTooth::GearTooth(UINT32 slot, UINT32 channel, bool directionSensitive)
-	: Counter(slot, channel)
+GearTooth::GearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive)
+	: Counter(moduleNumber, channel)
 {
 	EnableDirectionSensing(directionSensitive);
 }

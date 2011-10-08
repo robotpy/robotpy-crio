@@ -7,7 +7,7 @@
 #ifndef __SerialPort_h__
 #define __SerialPort_h__
 
-#include "Base.h"
+#include "ErrorBase.h"
 #include <vxWorks.h>
 
 /**
@@ -22,7 +22,7 @@
  * and the NI-VISA Programmer's Reference Manual here:
  *   http://www.ni.com/pdf/manuals/370132c.pdf
  */
-class SerialPort
+class SerialPort : public ErrorBase
 {
 public:
 	typedef enum {kParity_None=0, kParity_Odd=1, kParity_Even=2, kParity_Mark=3, kParity_Space=4} Parity;

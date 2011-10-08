@@ -9,6 +9,7 @@
 #include "DriverStation.h"
 #include "NetworkCommunication/FRCComm.h"
 #include "NetworkCommunication/symModuleLink.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Utility.h"
 #include <moduleLib.h>
 #include <taskLib.h>
@@ -140,6 +141,7 @@ void RobotBase::robotTask(FUNCPTR factory, Task *task)
  */
 void RobotBase::startRobotTask(FUNCPTR factory)
 {
+#ifdef SVN_REV
 	if (strlen(SVN_REV))
 	{
 		printf("WPILib was compiled from SVN revision %s\n", SVN_REV);
@@ -148,6 +150,9 @@ void RobotBase::startRobotTask(FUNCPTR factory)
 	{
 		printf("WPILib was compiled from a location that is not source controlled.\n");
 	}
+#else
+	printf("WPILib was compiled without -D'SVN_REV=nnnn'\n");
+#endif
 
 	// Check for startup code already running
 	INT32 oldId = taskNameToId("FRC_RobotTask");
@@ -172,6 +177,9 @@ void RobotBase::startRobotTask(FUNCPTR factory)
 	// Let the framework know that we are starting a new user program so the Driver Station can disable.
 	FRC_NetworkCommunication_observeUserProgramStarting();
 
+	// Let the Usage Reporting framework know that there is a C++ program running
+	nUsageReporting::report(nUsageReporting::kResourceType_Language, nUsageReporting::kLanguage_CPlusPlus);
+
 	// Start robot task
 	// This is done to ensure that the C++ robot task is spawned with the floating point
 	// context save parameter.
@@ -188,11 +196,10 @@ void RobotBase::startRobotTask(FUNCPTR factory)
 class RobotDeleter
 {
 public:
-	RobotDeleter(void){}
+	RobotDeleter() {}
 	~RobotDeleter()
 	{
 		delete &RobotBase::getInstance();
 	}
 };
 static RobotDeleter g_robotDeleter;
-

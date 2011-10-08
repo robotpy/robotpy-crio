@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
 /*----------------------------------------------------------------------------*/
 
-#include "CAnalogChannel.h"
+#include "CInterfaces/CAnalogChannel.h"
 #include "AnalogModule.h"
 
 static bool analogChannelsInitialized = false;
@@ -16,7 +16,7 @@ static AnalogChannel
  * @param slot The slot the analog module is plugged into
  * @param channel The channel number on the module for this analog channel object
  */
-AnalogChannel *AllocateAnalogChannel(UINT32 slot, UINT32 channel/*, SensorCreator createObject*/)
+AnalogChannel *AllocateAnalogChannel(UINT8 moduleNumber, UINT32 channel/*, SensorCreator createObject*/)
 {
 	if (!analogChannelsInitialized)
 	{
@@ -25,11 +25,11 @@ AnalogChannel *AllocateAnalogChannel(UINT32 slot, UINT32 channel/*, SensorCreato
 				analogs[i][j] = NULL;
 		analogChannelsInitialized = true;
 	}
-	if (SensorBase::CheckAnalogModule(slot) && SensorBase::CheckAnalogChannel(channel))
+	if (SensorBase::CheckAnalogModule(moduleNumber) && SensorBase::CheckAnalogChannel(channel))
 	{
-		if (analogs[AnalogModule::SlotToIndex(slot)][channel - 1] == NULL)
-			analogs[AnalogModule::SlotToIndex(slot)][channel - 1] = new AnalogChannel(slot, channel);
-		return analogs[AnalogModule::SlotToIndex(slot)][channel - 1];
+		if (analogs[moduleNumber - 1][channel - 1] == NULL)
+			analogs[moduleNumber - 1][channel - 1] = new AnalogChannel(moduleNumber, channel);
+		return analogs[moduleNumber - 1][channel - 1];
 	}
 	else
 		return NULL;
@@ -44,9 +44,9 @@ AnalogChannel *AllocateAnalogChannel(UINT32 slot, UINT32 channel/*, SensorCreato
  * @param channel the channel for the value being used
  * @return A sample straight from this channel on the module.
  */
-INT16 GetAnalogValue(UINT32 slot, UINT32 channel)
+INT16 GetAnalogValue(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetValue();
@@ -66,9 +66,9 @@ INT16 GetAnalogValue(UINT32 slot, UINT32 channel)
  * @param channel the channel for the value being used
  * @return A sample from the oversample and average engine for this channel.
  */
-INT32 GetAnalogAverageValue(UINT32 slot, UINT32 channel)
+INT32 GetAnalogAverageValue(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetAverageValue();
@@ -83,9 +83,9 @@ INT32 GetAnalogAverageValue(UINT32 slot, UINT32 channel)
  * @param channel The channel in the module assicated with this analog channel
  * @return A scaled sample straight from this channel on the module.
  */
-float GetAnalogVoltage(UINT32 slot, UINT32 channel)
+float GetAnalogVoltage(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetVoltage();
@@ -102,9 +102,9 @@ float GetAnalogVoltage(UINT32 slot, UINT32 channel)
  * @param channel The channel in the module assicated with this analog channel
  * @return A scaled sample from the output of the oversample and average engine for this channel.
  */
-float GetAnalogAverageVoltage(UINT32 slot, UINT32 channel)
+float GetAnalogAverageVoltage(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetAverageVoltage();
@@ -122,9 +122,9 @@ float GetAnalogAverageVoltage(UINT32 slot, UINT32 channel)
  * @param channel The channel in the module assicated with this analog channel
  * @param bits Number of bits of averaging.
  */
-void SetAnalogAverageBits(UINT32 slot, UINT32 channel, UINT32 bits)
+void SetAnalogAverageBits(UINT8 moduleNumber, UINT32 channel, UINT32 bits)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		analog->SetAverageBits(bits);
@@ -140,9 +140,9 @@ void SetAnalogAverageBits(UINT32 slot, UINT32 channel, UINT32 bits)
  * @param channel The channel in the module assicated with this analog channel
  * @return Number of bits of averaging previously configured.
  */
-UINT32 GetAnalogAverageBits(UINT32 slot, UINT32 channel)
+UINT32 GetAnalogAverageBits(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetAverageBits();
@@ -160,9 +160,9 @@ UINT32 GetAnalogAverageBits(UINT32 slot, UINT32 channel)
  * @param channel The channel in the module assicated with this analog channel
  * @param bits Number of bits of oversampling.
  */
-void SetAnalogOversampleBits(UINT32 slot, UINT32 channel, UINT32 bits)
+void SetAnalogOversampleBits(UINT8 moduleNumber, UINT32 channel, UINT32 bits)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		analog->SetOversampleBits(bits);
@@ -178,9 +178,9 @@ void SetAnalogOversampleBits(UINT32 slot, UINT32 channel, UINT32 bits)
  * @param channel The channel in the module assicated with this analog channel
  * @return Number of bits of oversampling previously configured.
  */
-UINT32 GetAnalogOversampleBits(UINT32 slot, UINT32 channel)
+UINT32 GetAnalogOversampleBits(UINT8 moduleNumber, UINT32 channel)
 {
-	AnalogChannel *analog = AllocateAnalogChannel(slot, channel);
+	AnalogChannel *analog = AllocateAnalogChannel(moduleNumber, channel);
 	if (analog != NULL)
 	{
 		return analog->GetOversampleBits();
@@ -342,12 +342,12 @@ UINT32 GetAnalogOversampleBits(UINT32 channel)
  * @param slot The slot the analog module is plugged into
  * @param channel The channel in the module assicated with this analog channel
  */
-void DeleteAnalogChannel(UINT32 slot, UINT32 channel)
+void DeleteAnalogChannel(UINT8 moduleNumber, UINT32 channel)
 {
-	if (SensorBase::CheckAnalogModule(slot) && SensorBase::CheckAnalogChannel(channel))
+	if (SensorBase::CheckAnalogModule(moduleNumber) && SensorBase::CheckAnalogChannel(channel))
 	{
-		delete analogs[AnalogModule::SlotToIndex(slot)][channel - 1];
-		analogs[AnalogModule::SlotToIndex(slot)][channel - 1] = NULL;
+		delete analogs[moduleNumber - 1][channel - 1];
+		analogs[moduleNumber - 1][channel - 1] = NULL;
 	}
 }
 

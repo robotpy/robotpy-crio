@@ -5,7 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Joystick.h"
-#include "CJoystick.h"
+#include "CInterfaces/CJoystick.h"
 
 static Joystick *joysticks[4];
 static bool initialized = false;

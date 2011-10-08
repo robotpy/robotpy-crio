@@ -11,11 +11,8 @@ PROJECT_OBJECTS += Vision2009/TrackAPI.o
 PROJECT_OBJECTS += Vision2009/VisionAPI.o
 
 ADDED_INCLUDES = -I../sip -I../wpilib -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
-ADDED_CFLAGS = -D'SVN_REV="2142"'
-ADDED_C++FLAGS = -D'SVN_REV="2142"'
-
-dist ::
-	cp *.py $(DISTDIR)/
+ADDED_CFLAGS = -D'SVN_REV="2993"'
+ADDED_C++FLAGS = -D'SVN_REV="2993"'
 
 include ../../mk/module.mk
 

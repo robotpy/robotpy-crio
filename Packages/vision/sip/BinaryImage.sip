@@ -30,7 +30,7 @@ public:
 	BinaryImage();
 	virtual ~BinaryImage();
 	int GetNumberParticles();
-	ParticleAnalysisReport GetParticleAnalysisReport(int particleNumber);
+	void GetParticleAnalysisReport(int particleNumber, ParticleAnalysisReport *par /Out/);
 	std::vector<ParticleAnalysisReport>* GetOrderedParticleAnalysisReports() /Factory/;
 	virtual void Write(const char *fileName);
 };

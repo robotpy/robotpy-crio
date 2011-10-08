@@ -8,8 +8,7 @@
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
 #include "Timer.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 const UINT32 Gyro::kOversampleBits;
 const UINT32 Gyro::kAverageBits;
@@ -29,7 +28,8 @@ void Gyro::InitGyro()
 {
 	if (!m_analog->IsAccumulatorChannel())
 	{
-		wpi_fatal(GyroNotAccumulatorChannel);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange,
+				"moduleNumber and/or channel (must be accumulator channel)");
 		if (m_channelAllocated)
 		{
 			delete m_analog;
@@ -65,12 +65,12 @@ void Gyro::InitGyro()
 /**
  * Gyro constructor given a slot and a channel.
  * 
- * @param slot The cRIO slot for the analog module the gyro is connected to.
- * @param channel The analog channel the gyro is connected to.
+ * @param moduleNumber The analog module the gyro is connected to (1).
+ * @param channel The analog channel the gyro is connected to (1 or 2).
  */
-Gyro::Gyro(UINT32 slot, UINT32 channel)
+Gyro::Gyro(UINT8 moduleNumber, UINT32 channel)
 {
-	m_analog = new AnalogChannel(slot, channel);
+	m_analog = new AnalogChannel(moduleNumber, channel);
 	m_channelAllocated = true;
 	InitGyro();
 }
@@ -101,7 +101,7 @@ Gyro::Gyro(AnalogChannel *channel)
 	m_channelAllocated = false;
 	if (channel == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 	}
 	else
 	{

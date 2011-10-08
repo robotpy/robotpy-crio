@@ -28,11 +28,11 @@ class AnalogChannel : SensorBase, PIDSource
 %End
 
 public:
-	enum { kAccumulatorSlot = 1 };
+	enum { kAccumulatorModuleNumber = 1 };
 	enum { kAccumulatorNumChannels = 2 };
 	//static const UINT32 kAccumulatorChannels[kAccumulatorNumChannels];
 
-	AnalogChannel(UINT32 slot, UINT32 channel);
+	AnalogChannel(UINT8 moduleNumber, UINT32 channel);
 	explicit AnalogChannel(UINT32 channel);
 	virtual ~AnalogChannel();
 
@@ -44,7 +44,7 @@ public:
 	float GetVoltage();
 	float GetAverageVoltage();
 
-	UINT32 GetSlot();
+	UINT8 GetModuleNumber();
 	UINT32 GetChannel();
 
 	void SetAverageBits(UINT32 bits);

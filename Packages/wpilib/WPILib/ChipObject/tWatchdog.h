@@ -1,26 +1,29 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__
+#ifndef __nFRC_2012_1_6_4_Watchdog_h__
+#define __nFRC_2012_1_6_4_Watchdog_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tWatchdog : public tScopedSystem
+class tWatchdog
 {
 public:
-   tWatchdog(tRioStatusCode *status);
-   ~tWatchdog();
+   tWatchdog(){}
+   virtual ~tWatchdog(){}
+
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tWatchdog* create(tRioStatusCode *status);
 
    typedef enum
    {
       kNumSystems = 1,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -39,65 +42,60 @@ public:
 
    typedef enum
    {
-      kWatchdog_StatusAddress = 0x8448,
-   } tStatus_Constants;
+   } tStatus_IfaceConstants;
 
-   tStatus readStatus(tRioStatusCode *status);
-   bool readStatus_SystemActive(tRioStatusCode *status);
-   bool readStatus_Alive(tRioStatusCode *status);
-   unsigned short readStatus_SysDisableCount(tRioStatusCode *status);
-   unsigned short readStatus_DisableCount(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kWatchdog_FeedAddress = 0x8444,
-   } tFeed_Constants;
-
-   void strobeFeed(tRioStatusCode *status);
+   virtual tStatus readStatus(tRioStatusCode *status) = 0;
+   virtual bool readStatus_SystemActive(tRioStatusCode *status) = 0;
+   virtual bool readStatus_Alive(tRioStatusCode *status) = 0;
+   virtual unsigned short readStatus_SysDisableCount(tRioStatusCode *status) = 0;
+   virtual unsigned short readStatus_DisableCount(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kWatchdog_KillAddress = 0x8440,
-   } tKill_Constants;
+   } tImmortal_IfaceConstants;
 
-   void strobeKill(tRioStatusCode *status);
-
-
-   typedef enum
-   {
-      kWatchdog_ImmortalAddress = 0x8434,
-   } tImmortal_Constants;
-
-   void writeImmortal(bool value, tRioStatusCode *status);
-   bool readImmortal(tRioStatusCode *status);
+   virtual void writeImmortal(bool value, tRioStatusCode *status) = 0;
+   virtual bool readImmortal(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kWatchdog_ExpirationAddress = 0x8438,
-   } tExpiration_Constants;
+   } tKill_IfaceConstants;
 
-   void writeExpiration(unsigned int value, tRioStatusCode *status);
-   unsigned int readExpiration(tRioStatusCode *status);
+   virtual void strobeKill(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kWatchdog_TimerAddress = 0x843C,
-   } tTimer_Constants;
+   } tFeed_IfaceConstants;
 
-   unsigned int readTimer(tRioStatusCode *status);
+   virtual void strobeFeed(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tExpiration_IfaceConstants;
+
+   virtual void writeExpiration(unsigned int value, tRioStatusCode *status) = 0;
+   virtual unsigned int readExpiration(tRioStatusCode *status) = 0;
+
+
+   typedef enum
+   {
+   } tTimer_IfaceConstants;
+
+   virtual unsigned int readTimer(tRioStatusCode *status) = 0;
 
 
 
 
 private:
-
+   tWatchdog(const tWatchdog&);
+   void operator=(const tWatchdog&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Watchdog_h__
+#endif // __nFRC_2012_1_6_4_Watchdog_h__

@@ -21,18 +21,15 @@ class SensorBase: public ErrorBase {
 public:
 	SensorBase();
 	virtual ~SensorBase();
-	static void SetDefaultAnalogModule(UINT32 slot);
-	static void SetDefaultDigitalModule(UINT32 slot);
-	static void SetDefaultSolenoidModule(UINT32 slot);
 	static void DeleteSingletons();
-	static UINT32 GetDefaultAnalogModule() { return m_defaultAnalogModule; }
-	static UINT32 GetDefaultDigitalModule() { return m_defaultDigitalModule; }
-	static UINT32 GetDefaultSolenoidModule() { return m_defaultSolenoidModule; }
-	static bool CheckDigitalModule(UINT32 slot);
-	static bool CheckRelayModule(UINT32 slot);
-	static bool CheckPWMModule(UINT32 slot);
-	static bool CheckSolenoidModule(UINT32 slot);
-	static bool CheckAnalogModule(UINT32 slot);
+	static UINT32 GetDefaultAnalogModule() { return 1; }
+	static UINT32 GetDefaultDigitalModule() { return 1; }
+	static UINT32 GetDefaultSolenoidModule() { return 1; }
+	static bool CheckAnalogModule(UINT8 moduleNumber);
+	static bool CheckDigitalModule(UINT8 moduleNumber);
+	static bool CheckPWMModule(UINT8 moduleNumber);
+	static bool CheckRelayModule(UINT8 moduleNumber);
+	static bool CheckSolenoidModule(UINT8 moduleNumber);
 	static bool CheckDigitalChannel(UINT32 channel);
 	static bool CheckRelayChannel(UINT32 channel);
 	static bool CheckPWMChannel(UINT32 channel);
@@ -54,9 +51,6 @@ protected:
 
 private:
 	DISALLOW_COPY_AND_ASSIGN(SensorBase);
-	static UINT32 m_defaultAnalogModule;
-	static UINT32 m_defaultDigitalModule;
-	static UINT32 m_defaultSolenoidModule;
 	static SensorBase *m_singletonList;
 	SensorBase *m_nextSingleton;
 };

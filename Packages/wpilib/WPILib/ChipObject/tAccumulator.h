@@ -1,31 +1,31 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__
+#ifndef __nFRC_2012_1_6_4_Accumulator_h__
+#define __nFRC_2012_1_6_4_Accumulator_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tAccumulator : public tScopedSystem
+class tAccumulator
 {
 public:
-   tAccumulator(unsigned char sys_index, tRioStatusCode *status);
-   ~tAccumulator();
+   tAccumulator(){}
+   virtual ~tAccumulator(){}
 
-   inline unsigned char getSystemIndex()
-   {
-      return _SystemIndex;
-   }
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tAccumulator* create(unsigned char sys_index, tRioStatusCode *status);
+   virtual unsigned char getSystemIndex() = 0;
+
 
    typedef enum
    {
       kNumSystems = 2,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -43,57 +43,45 @@ public:
 
    typedef enum
    {
-      kAccumulator0_OutputAddress = 0x83E4,
-      kAccumulator1_OutputAddress = 0x83D4,
-   } tOutput_Constants;
-   static const unsigned int kOutputAddresses [];
+   } tOutput_IfaceConstants;
 
-   tOutput readOutput(tRioStatusCode *status);
-   signed long long readOutput_Value(tRioStatusCode *status);
-   unsigned int readOutput_Count(tRioStatusCode *status);
+   virtual tOutput readOutput(tRioStatusCode *status) = 0;
+   virtual signed long long readOutput_Value(tRioStatusCode *status) = 0;
+   virtual unsigned int readOutput_Count(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAccumulator0_CenterAddress = 0x83EC,
-      kAccumulator1_CenterAddress = 0x83DC,
-   } tCenter_Constants;
-   static const unsigned int kCenterAddresses [];
+   } tCenter_IfaceConstants;
 
-   void writeCenter(signed int value, tRioStatusCode *status);
-   signed int readCenter(tRioStatusCode *status);
+   virtual void writeCenter(signed int value, tRioStatusCode *status) = 0;
+   virtual signed int readCenter(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAccumulator0_ResetAddress = 0x83E8,
-      kAccumulator1_ResetAddress = 0x83D8,
-   } tReset_Constants;
-   static const unsigned int kResetAddresses [];
+   } tReset_IfaceConstants;
 
-   void strobeReset(tRioStatusCode *status);
+   virtual void strobeReset(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAccumulator0_DeadbandAddress = 0x83E0,
-      kAccumulator1_DeadbandAddress = 0x83D0,
-   } tDeadband_Constants;
-   static const unsigned int kDeadbandAddresses [];
+   } tDeadband_IfaceConstants;
 
-   void writeDeadband(signed int value, tRioStatusCode *status);
-   signed int readDeadband(tRioStatusCode *status);
+   virtual void writeDeadband(signed int value, tRioStatusCode *status) = 0;
+   virtual signed int readDeadband(tRioStatusCode *status) = 0;
 
 
 
 
 
 private:
-   unsigned char _SystemIndex;
-
+   tAccumulator(const tAccumulator&);
+   void operator=(const tAccumulator&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Accumulator_h__
+#endif // __nFRC_2012_1_6_4_Accumulator_h__

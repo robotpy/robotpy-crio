@@ -8,7 +8,7 @@
 #define JOYSTICK_H_
 
 #include "GenericHID.h"
-#include "Base.h"
+#include "ErrorBase.h"
 
 class DriverStation;
 
@@ -18,7 +18,7 @@ class DriverStation;
  * the most recent value is returned. There is a single class instance for each joystick and the mapping
  * of ports to hardware buttons depends on the code in the driver station.
  */
-class Joystick : public GenericHID
+class Joystick : public GenericHID, public ErrorBase
 {
 public:
 	static const UINT32 kDefaultXAxis = 1;

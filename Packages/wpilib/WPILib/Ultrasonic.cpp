@@ -11,7 +11,7 @@
 #include "DigitalOutput.h"
 #include "Timer.h"
 #include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 const double Ultrasonic::kPingTime;	///< Time (sec) for the ping trigger pulse.
 const UINT32 Ultrasonic::kPriority;	///< Priority that the ultrasonic round robin task runs.
@@ -103,7 +103,7 @@ Ultrasonic::Ultrasonic(DigitalOutput *pingChannel, DigitalInput *echoChannel, Di
 {
 	if (pingChannel == NULL || echoChannel == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIError(NullParameter);
 		return;
 	}
 	m_allocatedChannels = false;
@@ -133,19 +133,19 @@ Ultrasonic::Ultrasonic(DigitalOutput &pingChannel, DigitalInput &echoChannel, Di
  * Create an instance of the Ultrasonic sensor using specified modules.
  * This is designed to supchannel the Daventech SRF04 and Vex ultrasonic sensors. This
  * constructors takes the channel and module slot for each of the required digital I/O channels.
- * @param pingSlot The digital module that the pingChannel is in.
+ * @param pingModuleNumber The digital module that the pingChannel is on.
  * @param pingChannel The digital output channel that sends the pulse to initiate the sensor
  * sending the ping.
- * @param echoSlot The digital module that the echoChannel is in.
+ * @param echoModuleNumber The digital module that the echoChannel is on.
  * @param echoChannel The digital input channel that receives the echo. The length of time
  * that the echo is high represents the round trip time of the ping, and the distance.
  * @param units The units returned in either kInches or kMilliMeters
  */
-Ultrasonic::Ultrasonic(UINT32 pingSlot, UINT32 pingChannel,
-		UINT32 echoSlot, UINT32 echoChannel, DistanceUnit units)
+Ultrasonic::Ultrasonic(UINT8 pingModuleNumber, UINT32 pingChannel,
+		UINT8 echoModuleNumber, UINT32 echoChannel, DistanceUnit units)
 {
-	m_pingChannel = new DigitalOutput(pingSlot, pingChannel);
-	m_echoChannel = new DigitalInput(echoSlot, echoChannel);
+	m_pingChannel = new DigitalOutput(pingModuleNumber, pingChannel);
+	m_echoChannel = new DigitalInput(echoModuleNumber, echoChannel);
 	m_allocatedChannels = true;
 	m_units = units;
 	Initialize();

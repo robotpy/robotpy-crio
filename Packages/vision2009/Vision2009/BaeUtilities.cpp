@@ -22,7 +22,6 @@
 #include "BaeUtilities.h"
 #include "Servo.h"
 #include "Timer.h"
-#include "Utility.h"
 
 /**
  *   Utility functions 

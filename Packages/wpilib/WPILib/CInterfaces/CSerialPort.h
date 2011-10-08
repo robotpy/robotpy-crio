@@ -11,15 +11,15 @@
 void OpenSerialPort(UINT32 baudRate, UINT8 dataBits, SerialPort::Parity parity, SerialPort::StopBits stopBits);
 void SetSerialFlowControl(SerialPort::FlowControl flowControl);
 void EnableSerialTermination(char terminator);
-void DisableSerialTermination(void);
-INT32 GetSerialBytesReceived(void);
+void DisableSerialTermination();
+INT32 GetSerialBytesReceived();
 void PrintfSerial(const char *writeFmt, ...);
 void ScanfSerial(const char *readFmt, ...);
 UINT32 ReadSerialPort(char *buffer, INT32 count);
 UINT32 WriteSerialPort(const char *buffer, INT32 count);
 void SetSerialTimeout(INT32 timeout_ms);
 void SetSerialWriteBufferMode(SerialPort::WriteBufferMode mode);
-void FlushSerialPort(void);
-void ResetSerialPort(void);
+void FlushSerialPort();
+void ResetSerialPort();
 
 #endif

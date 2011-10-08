@@ -5,8 +5,8 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Resource.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
+#include "ErrorBase.h"
 
 Resource *Resource::m_resourceList = NULL;
 
@@ -45,17 +45,17 @@ Resource::~Resource()
  * When a resource is requested, mark it allocated. In this case, a free resource value
  * within the range is located and returned after it is marked allocated.
  */
-UINT32 Resource::Allocate()
+UINT32 Resource::Allocate(const char *resourceDesc)
 {
 	for (UINT32 i=0; i < m_size; i++)
 	{
-		if ( ! m_isAllocated[i])
+		if (!m_isAllocated[i])
 		{
 			m_isAllocated[i] = true;
 			return i;
 		}
 	}
-	wpi_fatal(NoAvailablePorts);
+	wpi_setWPIErrorWithContext(NoAvailableResources, resourceDesc);
 	return ~0ul;
 }
 
@@ -64,16 +64,16 @@ UINT32 Resource::Allocate()
  * The user requests a specific resource value, i.e. channel number and it is verified
  * unallocated, then returned.
  */
-UINT32 Resource::Allocate(UINT32 index)
+UINT32 Resource::Allocate(UINT32 index, const char *resourceDesc)
 {
 	if (index >= m_size)
 	{
-		wpi_fatal(IndexOutOfRange);
+		wpi_setWPIErrorWithContext(ChannelIndexOutOfRange, resourceDesc);
 		return ~0ul;
 	}
 	if ( m_isAllocated[index] )
 	{
-		wpi_fatal(ResourceAlreadyAllocated);
+		wpi_setWPIErrorWithContext(ResourceAlreadyAllocated, resourceDesc);
 		return ~0ul;
 	}
 	m_isAllocated[index] = true;
@@ -88,14 +88,15 @@ UINT32 Resource::Allocate(UINT32 index)
  */
 void Resource::Free(UINT32 index)
 {
+	if (index == ~0ul) return;
 	if (index >= m_size)
 	{
-		wpi_fatal(IndexOutOfRange);
+		wpi_setWPIError(NotAllocated);
 		return;
 	}
 	if (!m_isAllocated[index])
 	{
-		wpi_fatal(NotAllocated);
+		wpi_setWPIError(NotAllocated);
 		return;
 	}
 	m_isAllocated[index] = false;

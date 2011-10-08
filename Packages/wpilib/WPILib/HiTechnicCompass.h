@@ -26,7 +26,7 @@ class I2C;
 class HiTechnicCompass : public SensorBase
 {
 public:
-	explicit HiTechnicCompass(UINT32 slot);
+	explicit HiTechnicCompass(UINT8 moduleNumber);
 	virtual ~HiTechnicCompass();
 	float GetAngle();
 

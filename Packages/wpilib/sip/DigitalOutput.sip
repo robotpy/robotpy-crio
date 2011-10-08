@@ -29,7 +29,7 @@ class DigitalOutput : DigitalSource
 
 public:
 	explicit DigitalOutput(UINT32 channel);
-	DigitalOutput(UINT32 slot, UINT32 channel);
+	DigitalOutput(UINT8 moduleNumber, UINT32 channel);
 	virtual ~DigitalOutput();
 	void Set(UINT32 value);
 	UINT32 GetChannel();

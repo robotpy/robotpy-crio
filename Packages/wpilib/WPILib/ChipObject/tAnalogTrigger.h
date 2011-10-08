@@ -1,31 +1,31 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__
+#ifndef __nFRC_2012_1_6_4_AnalogTrigger_h__
+#define __nFRC_2012_1_6_4_AnalogTrigger_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tAnalogTrigger : public tScopedSystem
+class tAnalogTrigger
 {
 public:
-   tAnalogTrigger(unsigned char sys_index, tRioStatusCode *status);
-   ~tAnalogTrigger();
+   tAnalogTrigger(){}
+   virtual ~tAnalogTrigger(){}
 
-   inline unsigned char getSystemIndex()
-   {
-      return _SystemIndex;
-   }
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tAnalogTrigger* create(unsigned char sys_index, tRioStatusCode *status);
+   virtual unsigned char getSystemIndex() = 0;
+
 
    typedef enum
    {
       kNumSystems = 8,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -57,92 +57,61 @@ public:
 
    typedef enum
    {
-      kSourceSelect_RolloverLimit_FixedPointIntegerShift = 4,
-      kAnalogTrigger0_SourceSelectAddress = 0x83C8,
-      kAnalogTrigger1_SourceSelectAddress = 0x83BC,
-      kAnalogTrigger2_SourceSelectAddress = 0x83B0,
-      kAnalogTrigger3_SourceSelectAddress = 0x83A4,
-      kAnalogTrigger4_SourceSelectAddress = 0x8398,
-      kAnalogTrigger5_SourceSelectAddress = 0x838C,
-      kAnalogTrigger6_SourceSelectAddress = 0x8380,
-      kAnalogTrigger7_SourceSelectAddress = 0x8374,
-   } tSourceSelect_Constants;
-   static const unsigned int kSourceSelectAddresses [];
+   } tSourceSelect_IfaceConstants;
 
-   void writeSourceSelect(tSourceSelect value, tRioStatusCode *status);
-   void writeSourceSelect_Channel(unsigned char value, tRioStatusCode *status);
-   void writeSourceSelect_Module(unsigned char value, tRioStatusCode *status);
-   void writeSourceSelect_Averaged(bool value, tRioStatusCode *status);
-   void writeSourceSelect_Filter(bool value, tRioStatusCode *status);
-   void writeSourceSelect_FloatingRollover(bool value, tRioStatusCode *status);
-   void writeSourceSelect_RolloverLimit(signed short value, tRioStatusCode *status);
-   tSourceSelect readSourceSelect(tRioStatusCode *status);
-   unsigned char readSourceSelect_Channel(tRioStatusCode *status);
-   unsigned char readSourceSelect_Module(tRioStatusCode *status);
-   bool readSourceSelect_Averaged(tRioStatusCode *status);
-   bool readSourceSelect_Filter(tRioStatusCode *status);
-   bool readSourceSelect_FloatingRollover(tRioStatusCode *status);
-   signed short readSourceSelect_RolloverLimit(tRioStatusCode *status);
+   virtual void writeSourceSelect(tSourceSelect value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_Averaged(bool value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_Filter(bool value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_FloatingRollover(bool value, tRioStatusCode *status) = 0;
+   virtual void writeSourceSelect_RolloverLimit(signed short value, tRioStatusCode *status) = 0;
+   virtual tSourceSelect readSourceSelect(tRioStatusCode *status) = 0;
+   virtual unsigned char readSourceSelect_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readSourceSelect_Module(tRioStatusCode *status) = 0;
+   virtual bool readSourceSelect_Averaged(tRioStatusCode *status) = 0;
+   virtual bool readSourceSelect_Filter(tRioStatusCode *status) = 0;
+   virtual bool readSourceSelect_FloatingRollover(tRioStatusCode *status) = 0;
+   virtual signed short readSourceSelect_RolloverLimit(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAnalogTrigger0_UpperLimitAddress = 0x83C4,
-      kAnalogTrigger1_UpperLimitAddress = 0x83B8,
-      kAnalogTrigger2_UpperLimitAddress = 0x83AC,
-      kAnalogTrigger3_UpperLimitAddress = 0x83A0,
-      kAnalogTrigger4_UpperLimitAddress = 0x8394,
-      kAnalogTrigger5_UpperLimitAddress = 0x837C,
-      kAnalogTrigger6_UpperLimitAddress = 0x8388,
-      kAnalogTrigger7_UpperLimitAddress = 0x8370,
-   } tUpperLimit_Constants;
-   static const unsigned int kUpperLimitAddresses [];
+   } tUpperLimit_IfaceConstants;
 
-   void writeUpperLimit(signed int value, tRioStatusCode *status);
-   signed int readUpperLimit(tRioStatusCode *status);
+   virtual void writeUpperLimit(signed int value, tRioStatusCode *status) = 0;
+   virtual signed int readUpperLimit(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kAnalogTrigger0_LowerLimitAddress = 0x83C0,
-      kAnalogTrigger1_LowerLimitAddress = 0x83B4,
-      kAnalogTrigger2_LowerLimitAddress = 0x83A8,
-      kAnalogTrigger3_LowerLimitAddress = 0x839C,
-      kAnalogTrigger4_LowerLimitAddress = 0x8390,
-      kAnalogTrigger5_LowerLimitAddress = 0x8378,
-      kAnalogTrigger6_LowerLimitAddress = 0x8384,
-      kAnalogTrigger7_LowerLimitAddress = 0x836C,
-   } tLowerLimit_Constants;
-   static const unsigned int kLowerLimitAddresses [];
+   } tLowerLimit_IfaceConstants;
 
-   void writeLowerLimit(signed int value, tRioStatusCode *status);
-   signed int readLowerLimit(tRioStatusCode *status);
+   virtual void writeLowerLimit(signed int value, tRioStatusCode *status) = 0;
+   virtual signed int readLowerLimit(tRioStatusCode *status) = 0;
 
 
 
    typedef enum
    {
       kNumOutputElements = 8,
-      kOutput_ElementSize = 4,
-      kOutput_ElementMask = 0xF,
-      kAnalogTrigger_OutputAddress = 0x83CC,
-   } tOutput_Constants;
+   } tOutput_IfaceConstants;
 
-   tOutput readOutput(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readOutput_InHysteresis(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readOutput_OverLimit(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readOutput_Rising(unsigned char bitfield_index, tRioStatusCode *status);
-   bool readOutput_Falling(unsigned char bitfield_index, tRioStatusCode *status);
+   virtual tOutput readOutput(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readOutput_InHysteresis(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readOutput_OverLimit(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readOutput_Rising(unsigned char bitfield_index, tRioStatusCode *status) = 0;
+   virtual bool readOutput_Falling(unsigned char bitfield_index, tRioStatusCode *status) = 0;
 
 
 
 
 private:
-   unsigned char _SystemIndex;
-
+   tAnalogTrigger(const tAnalogTrigger&);
+   void operator=(const tAnalogTrigger&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_AnalogTrigger_h__
+#endif // __nFRC_2012_1_6_4_AnalogTrigger_h__

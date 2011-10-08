@@ -31,29 +31,29 @@ public:
 	PIDController(float p, float i, float d,
 					PIDSource *source, PIDOutput *output,
 					float period = 0.05) /NewThread/;
-	~PIDController();
-	float Get();
-	void SetContinuous(bool continuous = true);
-	void SetInputRange(float minimumInput, float maximumInput);
-	void SetOutputRange(float mimimumOutput, float maximumOutput);
-	void SetPID(float p, float i, float d);
-	float GetP();
-	float GetI();
-	float GetD();
+	virtual ~PIDController();
+	virtual float Get();
+	virtual void SetContinuous(bool continuous = true);
+	virtual void SetInputRange(float minimumInput, float maximumInput);
+	virtual void SetOutputRange(float mimimumOutput, float maximumOutput);
+	virtual void SetPID(float p, float i, float d);
+	virtual float GetP();
+	virtual float GetI();
+	virtual float GetD();
 	
-	void SetSetpoint(float setpoint);
-	float GetSetpoint();
+	virtual void SetSetpoint(float setpoint);
+	virtual float GetSetpoint();
 
-	float GetError();
+	virtual float GetError();
 	
-	void SetTolerance(float percent);
-	bool OnTarget();
+	virtual void SetTolerance(float percent);
+	virtual bool OnTarget();
 	
-	void Enable();
-	void Disable();
-	bool IsEnabled();
+	virtual void Enable();
+	virtual void Disable();
+	virtual bool IsEnabled();
 
-	void Reset();
+	virtual void Reset();
 
 private:
 	PIDController(const PIDController&);

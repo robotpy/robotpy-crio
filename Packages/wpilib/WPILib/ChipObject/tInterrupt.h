@@ -1,31 +1,31 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__
+#ifndef __nFRC_2012_1_6_4_Interrupt_h__
+#define __nFRC_2012_1_6_4_Interrupt_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tInterrupt : public tScopedSystem
+class tInterrupt
 {
 public:
-   tInterrupt(unsigned char sys_index, tRioStatusCode *status);
-   ~tInterrupt();
+   tInterrupt(){}
+   virtual ~tInterrupt(){}
 
-   inline unsigned char getSystemIndex()
-   {
-      return _SystemIndex;
-   }
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tInterrupt* create(unsigned char sys_index, tRioStatusCode *status);
+   virtual unsigned char getSystemIndex() = 0;
+
 
    typedef enum
    {
       kNumSystems = 8,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -45,58 +45,40 @@ public:
 
    typedef enum
    {
-      kInterrupt0_TimeStampAddress = 0x8198,
-      kInterrupt1_TimeStampAddress = 0x8190,
-      kInterrupt2_TimeStampAddress = 0x8188,
-      kInterrupt3_TimeStampAddress = 0x8180,
-      kInterrupt4_TimeStampAddress = 0x8178,
-      kInterrupt5_TimeStampAddress = 0x8170,
-      kInterrupt6_TimeStampAddress = 0x8168,
-      kInterrupt7_TimeStampAddress = 0x8160,
-   } tTimeStamp_Constants;
-   static const unsigned int kTimeStampAddresses [];
+   } tTimeStamp_IfaceConstants;
 
-   unsigned int readTimeStamp(tRioStatusCode *status);
+   virtual unsigned int readTimeStamp(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kInterrupt0_ConfigAddress = 0x810C,
-      kInterrupt1_ConfigAddress = 0x8194,
-      kInterrupt2_ConfigAddress = 0x818C,
-      kInterrupt3_ConfigAddress = 0x8184,
-      kInterrupt4_ConfigAddress = 0x817C,
-      kInterrupt5_ConfigAddress = 0x8174,
-      kInterrupt6_ConfigAddress = 0x816C,
-      kInterrupt7_ConfigAddress = 0x8164,
-   } tConfig_Constants;
-   static const unsigned int kConfigAddresses [];
+   } tConfig_IfaceConstants;
 
-   void writeConfig(tConfig value, tRioStatusCode *status);
-   void writeConfig_Source_Channel(unsigned char value, tRioStatusCode *status);
-   void writeConfig_Source_Module(unsigned char value, tRioStatusCode *status);
-   void writeConfig_Source_AnalogTrigger(bool value, tRioStatusCode *status);
-   void writeConfig_RisingEdge(bool value, tRioStatusCode *status);
-   void writeConfig_FallingEdge(bool value, tRioStatusCode *status);
-   void writeConfig_WaitForAck(bool value, tRioStatusCode *status);
-   tConfig readConfig(tRioStatusCode *status);
-   unsigned char readConfig_Source_Channel(tRioStatusCode *status);
-   unsigned char readConfig_Source_Module(tRioStatusCode *status);
-   bool readConfig_Source_AnalogTrigger(tRioStatusCode *status);
-   bool readConfig_RisingEdge(tRioStatusCode *status);
-   bool readConfig_FallingEdge(tRioStatusCode *status);
-   bool readConfig_WaitForAck(tRioStatusCode *status);
+   virtual void writeConfig(tConfig value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Source_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Source_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Source_AnalogTrigger(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_RisingEdge(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_FallingEdge(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_WaitForAck(bool value, tRioStatusCode *status) = 0;
+   virtual tConfig readConfig(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_Source_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_Source_Module(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Source_AnalogTrigger(tRioStatusCode *status) = 0;
+   virtual bool readConfig_RisingEdge(tRioStatusCode *status) = 0;
+   virtual bool readConfig_FallingEdge(tRioStatusCode *status) = 0;
+   virtual bool readConfig_WaitForAck(tRioStatusCode *status) = 0;
 
 
 
 
 
 private:
-   unsigned char _SystemIndex;
-
+   tInterrupt(const tInterrupt&);
+   void operator=(const tInterrupt&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Interrupt_h__
+#endif // __nFRC_2012_1_6_4_Interrupt_h__

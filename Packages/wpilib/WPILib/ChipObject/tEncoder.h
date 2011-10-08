@@ -1,31 +1,31 @@
 // Copyright (c) National Instruments 2008.  All Rights Reserved.
 // Do Not Edit... this file is generated!
 
-#ifndef __n2EAA5E59CAF1A8A966853A011B61CC91_Encoder_h__
-#define __n2EAA5E59CAF1A8A966853A011B61CC91_Encoder_h__
+#ifndef __nFRC_2012_1_6_4_Encoder_h__
+#define __nFRC_2012_1_6_4_Encoder_h__
 
-#include "tScopedSystem.h"
+#include "tSystemInterface.h"
 
 namespace nFPGA
 {
-namespace n2EAA5E59CAF1A8A966853A011B61CC91
+namespace nFRC_2012_1_6_4
 {
 
-class tEncoder : public tScopedSystem
+class tEncoder
 {
 public:
-   tEncoder(unsigned char sys_index, tRioStatusCode *status);
-   ~tEncoder();
+   tEncoder(){}
+   virtual ~tEncoder(){}
 
-   inline unsigned char getSystemIndex()
-   {
-      return _SystemIndex;
-   }
+   virtual tSystemInterface* getSystemInterface() = 0;
+   static tEncoder* create(unsigned char sys_index, tRioStatusCode *status);
+   virtual unsigned char getSystemIndex() = 0;
+
 
    typedef enum
    {
       kNumSystems = 4,
-   } tConstants;
+   } tIfaceConstants;
 
    typedef
    union{
@@ -83,112 +83,85 @@ public:
 
    typedef enum
    {
-      kEncoder0_OutputAddress = 0x81E0,
-      kEncoder1_OutputAddress = 0x81CC,
-      kEncoder2_OutputAddress = 0x81B8,
-      kEncoder3_OutputAddress = 0x81A4,
-   } tOutput_Constants;
-   static const unsigned int kOutputAddresses [];
+   } tOutput_IfaceConstants;
 
-   tOutput readOutput(tRioStatusCode *status);
-   bool readOutput_Direction(tRioStatusCode *status);
-   signed int readOutput_Value(tRioStatusCode *status);
+   virtual tOutput readOutput(tRioStatusCode *status) = 0;
+   virtual bool readOutput_Direction(tRioStatusCode *status) = 0;
+   virtual signed int readOutput_Value(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kEncoder0_ConfigAddress = 0x81E8,
-      kEncoder1_ConfigAddress = 0x81D4,
-      kEncoder2_ConfigAddress = 0x81C0,
-      kEncoder3_ConfigAddress = 0x81AC,
-   } tConfig_Constants;
-   static const unsigned int kConfigAddresses [];
+   } tConfig_IfaceConstants;
 
-   void writeConfig(tConfig value, tRioStatusCode *status);
-   void writeConfig_ASource_Channel(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ASource_Module(unsigned char value, tRioStatusCode *status);
-   void writeConfig_ASource_AnalogTrigger(bool value, tRioStatusCode *status);
-   void writeConfig_BSource_Channel(unsigned char value, tRioStatusCode *status);
-   void writeConfig_BSource_Module(unsigned char value, tRioStatusCode *status);
-   void writeConfig_BSource_AnalogTrigger(bool value, tRioStatusCode *status);
-   void writeConfig_IndexSource_Channel(unsigned char value, tRioStatusCode *status);
-   void writeConfig_IndexSource_Module(unsigned char value, tRioStatusCode *status);
-   void writeConfig_IndexSource_AnalogTrigger(bool value, tRioStatusCode *status);
-   void writeConfig_IndexActiveHigh(bool value, tRioStatusCode *status);
-   void writeConfig_Reverse(bool value, tRioStatusCode *status);
-   void writeConfig_Enable(bool value, tRioStatusCode *status);
-   tConfig readConfig(tRioStatusCode *status);
-   unsigned char readConfig_ASource_Channel(tRioStatusCode *status);
-   unsigned char readConfig_ASource_Module(tRioStatusCode *status);
-   bool readConfig_ASource_AnalogTrigger(tRioStatusCode *status);
-   unsigned char readConfig_BSource_Channel(tRioStatusCode *status);
-   unsigned char readConfig_BSource_Module(tRioStatusCode *status);
-   bool readConfig_BSource_AnalogTrigger(tRioStatusCode *status);
-   unsigned char readConfig_IndexSource_Channel(tRioStatusCode *status);
-   unsigned char readConfig_IndexSource_Module(tRioStatusCode *status);
-   bool readConfig_IndexSource_AnalogTrigger(tRioStatusCode *status);
-   bool readConfig_IndexActiveHigh(tRioStatusCode *status);
-   bool readConfig_Reverse(tRioStatusCode *status);
-   bool readConfig_Enable(tRioStatusCode *status);
+   virtual void writeConfig(tConfig value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ASource_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ASource_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_ASource_AnalogTrigger(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_BSource_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_BSource_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_BSource_AnalogTrigger(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_IndexSource_Channel(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_IndexSource_Module(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_IndexSource_AnalogTrigger(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_IndexActiveHigh(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Reverse(bool value, tRioStatusCode *status) = 0;
+   virtual void writeConfig_Enable(bool value, tRioStatusCode *status) = 0;
+   virtual tConfig readConfig(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_ASource_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_ASource_Module(tRioStatusCode *status) = 0;
+   virtual bool readConfig_ASource_AnalogTrigger(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_BSource_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_BSource_Module(tRioStatusCode *status) = 0;
+   virtual bool readConfig_BSource_AnalogTrigger(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_IndexSource_Channel(tRioStatusCode *status) = 0;
+   virtual unsigned char readConfig_IndexSource_Module(tRioStatusCode *status) = 0;
+   virtual bool readConfig_IndexSource_AnalogTrigger(tRioStatusCode *status) = 0;
+   virtual bool readConfig_IndexActiveHigh(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Reverse(tRioStatusCode *status) = 0;
+   virtual bool readConfig_Enable(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kEncoder0_ResetAddress = 0x81E4,
-      kEncoder1_ResetAddress = 0x81D0,
-      kEncoder2_ResetAddress = 0x81BC,
-      kEncoder3_ResetAddress = 0x81A8,
-   } tReset_Constants;
-   static const unsigned int kResetAddresses [];
+   } tReset_IfaceConstants;
 
-   void strobeReset(tRioStatusCode *status);
+   virtual void strobeReset(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kTimerOutput_Period_FixedPointIntegerShift = 1,
-      kEncoder0_TimerOutputAddress = 0x81D8,
-      kEncoder1_TimerOutputAddress = 0x81C4,
-      kEncoder2_TimerOutputAddress = 0x81B0,
-      kEncoder3_TimerOutputAddress = 0x819C,
-   } tTimerOutput_Constants;
-   static const unsigned int kTimerOutputAddresses [];
+   } tTimerOutput_IfaceConstants;
 
-   tTimerOutput readTimerOutput(tRioStatusCode *status);
-   unsigned int readTimerOutput_Period(tRioStatusCode *status);
-   signed char readTimerOutput_Count(tRioStatusCode *status);
-   bool readTimerOutput_Stalled(tRioStatusCode *status);
+   virtual tTimerOutput readTimerOutput(tRioStatusCode *status) = 0;
+   virtual unsigned int readTimerOutput_Period(tRioStatusCode *status) = 0;
+   virtual signed char readTimerOutput_Count(tRioStatusCode *status) = 0;
+   virtual bool readTimerOutput_Stalled(tRioStatusCode *status) = 0;
 
 
    typedef enum
    {
-      kTimerConfig_StallPeriod_FixedPointIntegerShift = 1,
-      kEncoder0_TimerConfigAddress = 0x81DC,
-      kEncoder1_TimerConfigAddress = 0x81C8,
-      kEncoder2_TimerConfigAddress = 0x81B4,
-      kEncoder3_TimerConfigAddress = 0x81A0,
-   } tTimerConfig_Constants;
-   static const unsigned int kTimerConfigAddresses [];
+   } tTimerConfig_IfaceConstants;
 
-   void writeTimerConfig(tTimerConfig value, tRioStatusCode *status);
-   void writeTimerConfig_StallPeriod(unsigned int value, tRioStatusCode *status);
-   void writeTimerConfig_AverageSize(unsigned char value, tRioStatusCode *status);
-   void writeTimerConfig_UpdateWhenEmpty(bool value, tRioStatusCode *status);
-   tTimerConfig readTimerConfig(tRioStatusCode *status);
-   unsigned int readTimerConfig_StallPeriod(tRioStatusCode *status);
-   unsigned char readTimerConfig_AverageSize(tRioStatusCode *status);
-   bool readTimerConfig_UpdateWhenEmpty(tRioStatusCode *status);
+   virtual void writeTimerConfig(tTimerConfig value, tRioStatusCode *status) = 0;
+   virtual void writeTimerConfig_StallPeriod(unsigned int value, tRioStatusCode *status) = 0;
+   virtual void writeTimerConfig_AverageSize(unsigned char value, tRioStatusCode *status) = 0;
+   virtual void writeTimerConfig_UpdateWhenEmpty(bool value, tRioStatusCode *status) = 0;
+   virtual tTimerConfig readTimerConfig(tRioStatusCode *status) = 0;
+   virtual unsigned int readTimerConfig_StallPeriod(tRioStatusCode *status) = 0;
+   virtual unsigned char readTimerConfig_AverageSize(tRioStatusCode *status) = 0;
+   virtual bool readTimerConfig_UpdateWhenEmpty(tRioStatusCode *status) = 0;
 
 
 
 
 
 private:
-   unsigned char _SystemIndex;
-
+   tEncoder(const tEncoder&);
+   void operator=(const tEncoder&);
 };
 
 }
 }
 
-#endif // __n2EAA5E59CAF1A8A966853A011B61CC91_Encoder_h__
+#endif // __nFRC_2012_1_6_4_Encoder_h__

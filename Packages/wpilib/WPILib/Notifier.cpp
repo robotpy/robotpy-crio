@@ -8,7 +8,7 @@
 #include "Synchronized.h"
 #include "Timer.h"
 #include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
 
 const UINT32 Notifier::kTimerInterruptNumber;
 Notifier *Notifier::timerQueueHead = NULL;
@@ -24,8 +24,8 @@ int Notifier::refcount = 0;
  */
 Notifier::Notifier(TimerEventHandler handler, void *param)
 {
-	tRioStatusCode status = 0;
-	wpi_assert(handler != NULL);
+	if (handler == NULL)
+		wpi_setWPIErrorWithContext(NullParameter, "handler must not be NULL");
 	m_handler = handler;
 	m_param = param;
 	m_periodic = false;
@@ -38,19 +38,20 @@ Notifier::Notifier(TimerEventHandler handler, void *param)
 	{
 		queueSemaphore = semBCreate(SEM_Q_PRIORITY, SEM_FULL);
 	}
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 	{
 		Synchronized sync(queueSemaphore);
 		// do the first time intialization of static variables
 		if (refcount == 0)
 		{
-			manager = new tInterruptManager(1 << kTimerInterruptNumber, false, &status);
-			manager->registerHandler(ProcessQueue, NULL, &status);
-			manager->enable(&status);
-			talarm = new tAlarm(&status);
+			manager = new tInterruptManager(1 << kTimerInterruptNumber, false, &localStatus);
+			manager->registerHandler(ProcessQueue, NULL, &localStatus);
+			manager->enable(&localStatus);
+			talarm = tAlarm::create(&localStatus);
 		}
 		refcount++;
 	}
-	wpi_assertCleanStatus(status);
+	wpi_setError(localStatus);
 }
 
 /**
@@ -60,6 +61,7 @@ Notifier::Notifier(TimerEventHandler handler, void *param)
  */
 Notifier::~Notifier()
 {
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 	{
 		Synchronized sync(queueSemaphore);
 		DeleteFromQueue();
@@ -67,16 +69,15 @@ Notifier::~Notifier()
 		// Delete the static variables when the last one is going away
 		if (!(--refcount))
 		{
-			tRioStatusCode status = 0;
-			talarm->writeEnable(false, &status);
+			talarm->writeEnable(false, &localStatus);
 			delete talarm;
 			talarm = NULL;
-			manager->disable(&status);
+			manager->disable(&localStatus);
 			delete manager;
 			manager = NULL;
-			wpi_assertCleanStatus(status);
 		}
 	}
+	wpi_setError(localStatus);
 
 	// Acquire the semaphore; this makes certain that the handler is 
 	// not being executed by the interrupt manager.
@@ -94,15 +95,15 @@ Notifier::~Notifier()
  */
 void Notifier::UpdateAlarm()
 {
-	tRioStatusCode status = 0;
 	if (timerQueueHead != NULL)
 	{
+		tRioStatusCode localStatus = NiFpga_Status_Success;
 		// write the first item in the queue into the trigger time
-		talarm->writeTriggerTime((UINT32)(timerQueueHead->m_expirationTime * 1e6), &status);
+		talarm->writeTriggerTime((UINT32)(timerQueueHead->m_expirationTime * 1e6), &localStatus);
 		// Enable the alarm.  The hardware disables itself after each alarm.
-		talarm->writeEnable(true, &status);
+		talarm->writeEnable(true, &localStatus);
+		wpi_setStaticError(timerQueueHead, localStatus);
 	}
-	wpi_assertCleanStatus(status);
 }
 
 /**
@@ -111,7 +112,7 @@ void Notifier::UpdateAlarm()
  * as its scheduled time is after the current time. Then the item is removed or 
  * rescheduled (repetitive events) in the queue.
  */
-void Notifier::ProcessQueue(tNIRIO_u32 mask, void *params)
+void Notifier::ProcessQueue(uint32_t mask, void *params)
 {
 	Notifier *current;
 	while (true)				// keep processing past events until no more
@@ -161,7 +162,6 @@ void Notifier::ProcessQueue(tNIRIO_u32 mask, void *params)
  */
 void Notifier::InsertInQueue(bool reschedule)
 {
-	tRioStatusCode status = 0;
 	if (reschedule)
 	{
 		m_expirationTime += m_period;
@@ -181,7 +181,6 @@ void Notifier::InsertInQueue(bool reschedule)
 			// since the first element changed, update alarm, unless we already plan to
 			UpdateAlarm();
 		}
-		wpi_assertCleanStatus(status);
 	}
 	else
 	{

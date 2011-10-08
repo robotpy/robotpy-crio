@@ -7,8 +7,6 @@
 #include "ADXL345_I2C.h"
 #include "DigitalModule.h"
 #include "I2C.h"
-#include "Utility.h"
-#include "WPIStatus.h"
 
 const UINT8 ADXL345_I2C::kAddress;
 const UINT8 ADXL345_I2C::kPowerCtlRegister;
@@ -19,13 +17,13 @@ const double ADXL345_I2C::kGsPerLSB;
 /**
  * Constructor.
  * 
- * @param slot The slot of the digital module that the sensor is plugged into.
+ * @param moduleNumber The digital module that the sensor is plugged into (1 or 2).
  * @param range The range (+ or -) that the accelerometer will measure.
  */
-ADXL345_I2C::ADXL345_I2C(UINT32 slot, ADXL345_I2C::DataFormat_Range range)
+ADXL345_I2C::ADXL345_I2C(UINT8 moduleNumber, ADXL345_I2C::DataFormat_Range range)
 	: m_i2c (NULL)
 {
-	DigitalModule *module = DigitalModule::GetInstance(slot);
+	DigitalModule *module = DigitalModule::GetInstance(moduleNumber);
 	if (module)
 	{
 		m_i2c = module->GetI2C(kAddress);

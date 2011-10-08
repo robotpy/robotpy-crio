@@ -7,10 +7,11 @@
 #include "I2C.h"
 #include "DigitalModule.h"
 #include "Synchronized.h"
-#include "Utility.h"
-#include "WPIStatus.h"
+#include "WPIErrors.h"
+#include <taskLib.h>
 
 SEM_ID I2C::m_semaphore = NULL;
+UINT32 I2C::m_objCount = 0;
 
 /**
  * Constructor.
@@ -27,6 +28,7 @@ I2C::I2C(DigitalModule *module, UINT8 deviceAddress)
 	{
 		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	}
+	m_objCount++;
 }
 
 /**
@@ -34,6 +36,12 @@ I2C::I2C(DigitalModule *module, UINT8 deviceAddress)
  */
 I2C::~I2C()
 {
+	m_objCount--;
+	if (m_objCount <= 0)
+	{
+		semDelete(m_semaphore);
+		m_semaphore = NULL;
+	}
 }
 
 /**
@@ -51,12 +59,12 @@ bool I2C::Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived, UI
 {
 	if (sendSize > 6)
 	{
-		wpi_fatal(I2CByteCountError);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "sendSize");
 		return true;
 	}
 	if (receiveSize > 7)
 	{
-		wpi_fatal(I2CByteCountError);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "receiveSize");
 		return true;
 	}
 
@@ -73,22 +81,24 @@ bool I2C::Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived, UI
 	}
 
 	bool aborted = true;
+	tRioStatusCode localStatus = NiFpga_Status_Success;
 	{
 		Synchronized sync(m_semaphore);
-		m_module->m_fpgaDIO->writeI2CConfig_Address(m_deviceAddress, &status);
-		m_module->m_fpgaDIO->writeI2CConfig_BytesToWrite(sendSize, &status);
-		m_module->m_fpgaDIO->writeI2CConfig_BytesToRead(receiveSize, &status);
-		if (sendSize > 0) m_module->m_fpgaDIO->writeI2CDataToSend(data, &status);
-		if (sendSize > sizeof(data)) m_module->m_fpgaDIO->writeI2CConfig_DataToSendHigh(dataHigh, &status);
-		m_module->m_fpgaDIO->writeI2CConfig_BitwiseHandshake(m_compatibilityMode, &status);
-		UINT8 transaction = m_module->m_fpgaDIO->readI2CStatus_Transaction(&status);
-		m_module->m_fpgaDIO->strobeI2CStart(&status);
-		while(transaction == m_module->m_fpgaDIO->readI2CStatus_Transaction(&status)) taskDelay(1);
-		while(!m_module->m_fpgaDIO->readI2CStatus_Done(&status)) taskDelay(1);
-		aborted = m_module->m_fpgaDIO->readI2CStatus_Aborted(&status);
-		if (receiveSize > 0) data = m_module->m_fpgaDIO->readI2CDataReceived(&status);
-		if (receiveSize > sizeof(data)) dataHigh = m_module->m_fpgaDIO->readI2CStatus_DataReceivedHigh(&status);
+		m_module->m_fpgaDIO->writeI2CConfig_Address(m_deviceAddress, &localStatus);
+		m_module->m_fpgaDIO->writeI2CConfig_BytesToWrite(sendSize, &localStatus);
+		m_module->m_fpgaDIO->writeI2CConfig_BytesToRead(receiveSize, &localStatus);
+		if (sendSize > 0) m_module->m_fpgaDIO->writeI2CDataToSend(data, &localStatus);
+		if (sendSize > sizeof(data)) m_module->m_fpgaDIO->writeI2CConfig_DataToSendHigh(dataHigh, &localStatus);
+		m_module->m_fpgaDIO->writeI2CConfig_BitwiseHandshake(m_compatibilityMode, &localStatus);
+		UINT8 transaction = m_module->m_fpgaDIO->readI2CStatus_Transaction(&localStatus);
+		m_module->m_fpgaDIO->strobeI2CStart(&localStatus);
+		while(transaction == m_module->m_fpgaDIO->readI2CStatus_Transaction(&localStatus)) taskDelay(1);
+		while(!m_module->m_fpgaDIO->readI2CStatus_Done(&localStatus)) taskDelay(1);
+		aborted = m_module->m_fpgaDIO->readI2CStatus_Aborted(&localStatus);
+		if (receiveSize > 0) data = m_module->m_fpgaDIO->readI2CDataReceived(&localStatus);
+		if (receiveSize > sizeof(data)) dataHigh = m_module->m_fpgaDIO->readI2CStatus_DataReceivedHigh(&localStatus);
 	}
+	wpi_setError(localStatus);
 
 	for(i=0; i<receiveSize && i<sizeof(data); i++)
 	{
@@ -149,12 +159,12 @@ bool I2C::Read(UINT8 registerAddress, UINT8 count, UINT8 *buffer)
 {
 	if (count < 1 || count > 7)
 	{
-		wpi_fatal(I2CByteCountError);
+		wpi_setWPIErrorWithContext(ParameterOutOfRange, "count");
 		return true;
 	}
 	if (buffer == NULL)
 	{
-		wpi_fatal(NullParameter);
+		wpi_setWPIErrorWithContext(NullParameter, "buffer");
 		return true;
 	}
 

@@ -17,6 +17,7 @@ const float Servo::kMinServoAngle;
  */
 void Servo::InitServo()
 {
+	// TODO: compute the appropriate values based on digital loop timing
 	SetBounds(245, 0, 0, 0, 11);
 	SetPeriodMultiplier(kPeriodMultiplier_4X);
 }
@@ -34,10 +35,10 @@ Servo::Servo(UINT32 channel) : SafePWM(channel)
 /**
  * Constructor that specifies the digital module.
  *
- * @param slot The slot in the chassis that the digital module is plugged into.
- * @param channel The PWM channel on the digital module to which the servo is attached.
+ * @param moduleNumber The digital module (1 or 2).
+ * @param channel The PWM channel on the digital module to which the servo is attached (1..10).
  */
-Servo::Servo(UINT32 slot, UINT32 channel) : SafePWM(slot, channel)
+Servo::Servo(UINT8 moduleNumber, UINT32 channel) : SafePWM(moduleNumber, channel)
 {
 	InitServo();
 }
