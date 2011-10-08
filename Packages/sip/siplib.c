@@ -1,7 +1,7 @@
 /*
  * SIP library code.
  *
- * Copyright (c) 2010 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2011 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -564,7 +564,7 @@ static PyObject *getScopeDict(sipTypeDef *td, PyObject *mod_dict,
         sipExportedModuleDef *client);
 static PyObject *createContainerType(sipContainerDef *cod, sipTypeDef *td,
         PyObject *bases, PyObject *metatype, PyObject *mod_dict,
-        sipExportedModuleDef *client);
+        PyObject *type_dict, sipExportedModuleDef *client);
 static int createClassType(sipExportedModuleDef *client, sipClassTypeDef *ctd,
         PyObject *mod_dict);
 static int createMappedType(sipExportedModuleDef *client,
@@ -577,7 +577,7 @@ static PyObject *unpickle_enum(PyObject *, PyObject *args);
 static int setReduce(PyTypeObject *type, PyMethodDef *pickler);
 static int createEnumType(sipExportedModuleDef *client, sipEnumTypeDef *etd,
         PyObject *mod_dict);
-static PyObject *createTypeDict(PyObject *mname);
+static PyObject *createTypeDict(sipExportedModuleDef *em);
 static sipExportedModuleDef *getTypeModule(const sipEncodedTypeDef *enc,
         sipExportedModuleDef *em);
 static sipTypeDef *getGeneratedType(const sipEncodedTypeDef *enc,
@@ -605,6 +605,7 @@ static PyObject *cast(PyObject *self, PyObject *args);
 static PyObject *callDtor(PyObject *self, PyObject *args);
 static PyObject *dumpWrapper(PyObject *self, PyObject *args);
 static PyObject *isDeleted(PyObject *self, PyObject *args);
+static PyObject *isPyCreated(PyObject *self, PyObject *args);
 static PyObject *isPyOwned(PyObject *self, PyObject *args);
 static PyObject *setDeleted(PyObject *self, PyObject *args);
 static PyObject *setTraceMask(PyObject *self, PyObject *args);
@@ -691,6 +692,7 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
         {"dump", dumpWrapper, METH_VARARGS, NULL},
         {"getapi", sipGetAPI, METH_VARARGS, NULL},
         {"isdeleted", isDeleted, METH_VARARGS, NULL},
+        {"ispycreated", isPyCreated, METH_VARARGS, NULL},
         {"ispyowned", isPyOwned, METH_VARARGS, NULL},
         {"setapi", sipSetAPI, METH_VARARGS, NULL},
         {"setdeleted", setDeleted, METH_VARARGS, NULL},
@@ -912,8 +914,8 @@ static PyObject *dumpWrapper(PyObject *self, PyObject *args)
         printf("    Reference count: %d\n", Py_REFCNT(sw));
 #endif
         printf("    Address of wrapped object: %p\n", sip_api_get_address(sw));
+        printf("    Created by: %s\n", (sipIsDerived(sw) ? "Python" : "C/C++"));
         printf("    To be destroyed by: %s\n", (sipIsPyOwned(sw) ? "Python" : "C/C++"));
-        printf("    Derived class?: %s\n", (sipIsDerived(sw) ? "yes" : "no"));
 
         if (PyObject_TypeCheck((PyObject *)sw, (PyTypeObject *)&sipWrapper_Type))
         {
@@ -1082,6 +1084,25 @@ static PyObject *isDeleted(PyObject *self, PyObject *args)
         return NULL;
 
     res = (sip_api_get_address(sw) == NULL ? Py_True : Py_False);
+
+    Py_INCREF(res);
+    return res;
+}
+
+
+/*
+ * Check if an instance was created by Python.
+ */
+static PyObject *isPyCreated(PyObject *self, PyObject *args)
+{
+    sipSimpleWrapper *sw;
+    PyObject *res;
+
+    if (!PyArg_ParseTuple(args, "O!:ispycreated", &sipSimpleWrapper_Type, &sw))
+        return NULL;
+
+    /* sipIsDerived() is a misnomer. */
+    res = (sipIsDerived(sw) ? Py_True : Py_False);
 
     Py_INCREF(res);
     return res;
@@ -2457,9 +2478,9 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
             case 'o':
                 {
 #if defined(HAVE_LONG_LONG)
-                    unsigned PY_LONG_LONG v = PyLong_AsUnsignedLongLong(arg);
+                    unsigned PY_LONG_LONG v = PyLong_AsUnsignedLongLongMask(arg);
 #else
-                    unsigned long v = PyLong_AsUnsignedLong(arg);
+                    unsigned long v = PyLong_AsUnsignedLongMask(arg);
 #endif
 
                     if (PyErr_Occurred())
@@ -2746,6 +2767,12 @@ static unsigned long sip_api_long_as_unsigned_long(PyObject *o)
     {
         long v = PyInt_AsLong(o);
 
+        /*
+         * Strictly speaking this should be changed to be consistent with the
+         * use of PyLong_AsUnsignedLongMask().  However as it's such an old
+         * version of Python we choose to leave it as it is.
+         */
+
         if (v < 0)
         {
             PyErr_SetString(PyExc_OverflowError,
@@ -2758,7 +2785,13 @@ static unsigned long sip_api_long_as_unsigned_long(PyObject *o)
     }
 #endif
 
-    return PyLong_AsUnsignedLong(o);
+    /*
+     * Note that we now ignore any overflow so that (for example) a negative
+     * integer will be converted to an unsigned as C/C++ would do.  We don't
+     * bother to check for overflow when converting to small C/C++ types (short
+     * etc.) so at least this is consistent.
+     */
+    return PyLong_AsUnsignedLongMask(o);
 }
 
 
@@ -2790,9 +2823,18 @@ static int sip_api_parse_kwd_args(PyObject **parseErrp, PyObject *sipArgs,
     int ok;
     va_list va;
 
-    /* Initialise the return of any unused keyword arguments. */
     if (unused != NULL)
+    {
+        /* Initialise the return of any unused keyword arguments. */
         *unused = NULL;
+    }
+    else if (sipKwdArgs != NULL && kwdlist == NULL)
+    {
+        /* __init__ methods avoid the normal Python checks. */
+        PyErr_SetString(PyExc_TypeError,
+                "keyword arguments are not supported");
+        return FALSE;
+    }
 
     va_start(va, fmt);
     ok = parseKwdArgs(parseErrp, sipArgs, sipKwdArgs, kwdlist, unused, fmt,
@@ -3050,7 +3092,8 @@ static void add_failure(PyObject **parseErrp, sipParseFailure *failure)
 
 
 /*
- * Parse a pair of arguments to a C/C++ function without any side effects.
+ * Parse one or a pair of arguments to a C/C++ function without any side
+ * effects.
  */
 static int sip_api_parse_pair(PyObject **parseErrp, PyObject *sipArg0,
         PyObject *sipArg1, const char *fmt, ...)
@@ -3064,7 +3107,7 @@ static int sip_api_parse_pair(PyObject **parseErrp, PyObject *sipArg0,
     if (*parseErrp != NULL && !PyList_Check(*parseErrp))
         return FALSE;
 
-    if ((args = PyTuple_New(2)) == NULL)
+    if ((args = PyTuple_New(sipArg1 != NULL ? 2 : 1)) == NULL)
     {
         /* Stop all parsing and indicate an exception has been raised. */
         Py_XDECREF(*parseErrp);
@@ -3077,8 +3120,11 @@ static int sip_api_parse_pair(PyObject **parseErrp, PyObject *sipArg0,
     Py_INCREF(sipArg0);
     PyTuple_SET_ITEM(args, 0, sipArg0);
 
-    Py_INCREF(sipArg1);
-    PyTuple_SET_ITEM(args, 1, sipArg1);
+    if (sipArg1 != NULL)
+    {
+        Py_INCREF(sipArg1);
+        PyTuple_SET_ITEM(args, 1, sipArg1);
+    }
 
     /*
      * The first pass checks all the types and does conversions that are cheap
@@ -4273,9 +4319,9 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
                 if (arg != NULL)
                 {
 #if defined(HAVE_LONG_LONG)
-                    unsigned PY_LONG_LONG v = PyLong_AsUnsignedLongLong(arg);
+                    unsigned PY_LONG_LONG v = PyLong_AsUnsignedLongLongMask(arg);
 #else
-                    unsigned long v = PyLong_AsUnsignedLong(arg);
+                    unsigned long v = PyLong_AsUnsignedLongMask(arg);
 #endif
 
                     if (PyErr_Occurred())
@@ -5310,9 +5356,9 @@ static PyObject *getScopeDict(sipTypeDef *td, PyObject *mod_dict,
  */
 static PyObject *createContainerType(sipContainerDef *cod, sipTypeDef *td,
         PyObject *bases, PyObject *metatype, PyObject *mod_dict,
-        sipExportedModuleDef *client)
+        PyObject *type_dict, sipExportedModuleDef *client)
 {
-    PyObject *py_type, *scope_dict, *typedict, *name, *args;
+    PyObject *py_type, *scope_dict, *name, *args;
 
     /* Get the dictionary to place the type in. */
     if (cod->cod_scope.sc_flag)
@@ -5320,10 +5366,6 @@ static PyObject *createContainerType(sipContainerDef *cod, sipTypeDef *td,
         scope_dict = mod_dict;
     }
     else if ((scope_dict = getScopeDict(getGeneratedType(&cod->cod_scope, client), mod_dict, client)) == NULL)
-        goto reterr;
-
-    /* Create the type dictionary. */
-    if ((typedict = createTypeDict(client->em_nameobj)) == NULL)
         goto reterr;
 
     /* Create an object corresponding to the type name. */
@@ -5334,13 +5376,13 @@ static PyObject *createContainerType(sipContainerDef *cod, sipTypeDef *td,
 #endif
 
     if (name == NULL)
-        goto reldict;
+        goto reterr;
 
     /* Create the type by calling the metatype. */
 #if PY_VERSION_HEX >= 0x02040000
-    args = PyTuple_Pack(3, name, bases, typedict);
+    args = PyTuple_Pack(3, name, bases, type_dict);
 #else
-    args = Py_BuildValue("OOO", name, bases, typedict);
+    args = Py_BuildValue("OOO", name, bases, type_dict);
 #endif
 
     if (args == NULL)
@@ -5361,7 +5403,6 @@ static PyObject *createContainerType(sipContainerDef *cod, sipTypeDef *td,
 
     Py_DECREF(args);
     Py_DECREF(name);
-    Py_DECREF(typedict);
 
     return py_type;
 
@@ -5376,9 +5417,6 @@ relargs:
 relname:
     Py_DECREF(name);
 
-reldict:
-    Py_DECREF(typedict);
-
 reterr:
     return NULL;
 }
@@ -5390,7 +5428,7 @@ reterr:
 static int createClassType(sipExportedModuleDef *client, sipClassTypeDef *ctd,
         PyObject *mod_dict)
 {
-    PyObject *bases, *metatype, *py_type;
+    PyObject *bases, *metatype, *py_type, *type_dict;
     sipEncodedTypeDef *sup;
     int i;
 
@@ -5471,8 +5509,25 @@ static int createClassType(sipExportedModuleDef *client, sipClassTypeDef *ctd,
     else
         metatype = (PyObject *)Py_TYPE(PyTuple_GET_ITEM(bases, 0));
 
-    if ((py_type = createContainerType(&ctd->ctd_container, (sipTypeDef *)ctd, bases, metatype, mod_dict, client)) == NULL)
+    /* Create the type dictionary and populate it with any non-lazy methods. */
+    if ((type_dict = createTypeDict(client)) == NULL)
         goto relbases;
+
+    if (sipTypeHasNonlazyMethod(&ctd->ctd_base))
+    {
+        PyMethodDef *pmd = ctd->ctd_container.cod_methods;
+
+        for (i = 0; i < ctd->ctd_container.cod_nrmethods; ++i)
+        {
+            if (isNonlazyMethod(pmd) && addMethod(type_dict, pmd) < 0)
+                goto reldict;
+
+            ++pmd;
+        }
+    }
+
+    if ((py_type = createContainerType(&ctd->ctd_container, (sipTypeDef *)ctd, bases, metatype, mod_dict, type_dict, client)) == NULL)
+        goto reldict;
 
     /* Handle the pickle function. */
     if (ctd->ctd_pickle != NULL)
@@ -5485,23 +5540,9 @@ static int createClassType(sipExportedModuleDef *client, sipClassTypeDef *ctd,
             goto reltype;
     }
 
-    /* Handle any non-lazy methods if the type has one. */
-    if (sipTypeHasNonlazyMethod(&ctd->ctd_base))
-    {
-        PyMethodDef *pmd = ctd->ctd_container.cod_methods;
-        PyObject *dict = ((PyTypeObject *)py_type)->tp_dict;
-
-        for (i = 0; i < ctd->ctd_container.cod_nrmethods; ++i)
-        {
-            if (isNonlazyMethod(pmd) && addMethod(dict, pmd) < 0)
-                goto reltype;
-
-            ++pmd;
-        }
-    }
-
     /* We can now release our references. */
     Py_DECREF(bases);
+    Py_DECREF(type_dict);
 
     return 0;
 
@@ -5509,6 +5550,9 @@ static int createClassType(sipExportedModuleDef *client, sipClassTypeDef *ctd,
 
 reltype:
     Py_DECREF(py_type);
+
+reldict:
+    Py_DECREF(type_dict);
 
 relbases:
     Py_DECREF(bases);
@@ -5525,7 +5569,7 @@ reterr:
 static int createMappedType(sipExportedModuleDef *client,
         sipMappedTypeDef *mtd, PyObject *mod_dict)
 {
-    PyObject *bases;
+    PyObject *bases, *type_dict;
 
     /* Handle the trivial case where we have already been initialised. */
     if (mtd->mtd_base.td_module != NULL)
@@ -5538,15 +5582,23 @@ static int createMappedType(sipExportedModuleDef *client,
     if ((bases = getDefaultBases()) == NULL)
         goto reterr;
 
-    if (createContainerType(&mtd->mtd_container, (sipTypeDef *)mtd, bases, (PyObject *)&sipWrapperType_Type, mod_dict, client) == NULL)
+    /* Create the type dictionary. */
+    if ((type_dict = createTypeDict(client)) == NULL)
         goto relbases;
+
+    if (createContainerType(&mtd->mtd_container, (sipTypeDef *)mtd, bases, (PyObject *)&sipWrapperType_Type, mod_dict, type_dict, client) == NULL)
+        goto reldict;
 
     /* We can now release our references. */
     Py_DECREF(bases);
+    Py_DECREF(type_dict);
 
     return 0;
 
     /* Unwind after an error. */
+
+reldict:
+    Py_DECREF(type_dict);
 
 relbases:
     Py_DECREF(bases);
@@ -5783,7 +5835,7 @@ static int createEnumType(sipExportedModuleDef *client, sipEnumTypeDef *etd,
         PyObject *mod_dict)
 {
     static PyObject *bases = NULL;
-    PyObject *name, *typedict, *args, *dict;
+    PyObject *name, *type_dict, *args, *dict;
     PyTypeObject *py_type;
 
     etd->etd_base.td_module = client;
@@ -5820,17 +5872,17 @@ static int createEnumType(sipExportedModuleDef *client, sipEnumTypeDef *etd,
         goto reterr;
 
     /* Create the type dictionary. */
-    if ((typedict = createTypeDict(client->em_nameobj)) == NULL)
+    if ((type_dict = createTypeDict(client)) == NULL)
         goto relname;
 
     /* Create the type by calling the metatype. */
 #if PY_VERSION_HEX >= 0x02040000
-    args = PyTuple_Pack(3, name, bases, typedict);
+    args = PyTuple_Pack(3, name, bases, type_dict);
 #else
-    args = Py_BuildValue("OOO", name, bases, typedict);
+    args = Py_BuildValue("OOO", name, bases, type_dict);
 #endif
 
-    Py_DECREF(typedict);
+    Py_DECREF(type_dict);
 
     if (args == NULL)
         goto relname;
@@ -5871,10 +5923,9 @@ reterr:
 
 
 /*
- * Create a type dictionary for dynamic type being created in the module with
- * the specified name.
+ * Create a type dictionary for dynamic type being created in a module.
  */
-static PyObject *createTypeDict(PyObject *mname)
+static PyObject *createTypeDict(sipExportedModuleDef *em)
 {
     static PyObject *mstr = NULL;
     PyObject *dict;
@@ -5887,7 +5938,7 @@ static PyObject *createTypeDict(PyObject *mname)
         return NULL;
 
     /* We need to set the module name as an attribute for dynamic types. */
-    if (PyDict_SetItem(dict, mstr, mname) < 0)
+    if (PyDict_SetItem(dict, mstr, em->em_nameobj) < 0)
     {
         Py_DECREF(dict);
         return NULL;
@@ -5988,8 +6039,21 @@ static int getSelfFromArgs(sipTypeDef *td, PyObject *args, int argnr,
  */
 static int isNonlazyMethod(PyMethodDef *pmd)
 {
-    return (strcmp(pmd->ml_name, "__enter__") == 0 ||
-            strcmp(pmd->ml_name, "__exit__") == 0);
+    static const char *lazy[] = {
+        "__getattribute__",
+        "__getattr__",
+        "__enter__",
+        "__exit__",
+        NULL
+    };  
+
+    const char **l;
+
+    for (l = lazy; *l != NULL; ++l)
+        if (strcmp(pmd->ml_name, *l) == 0)
+            return TRUE;
+
+    return FALSE;
 }
 
 
@@ -6712,11 +6776,11 @@ static PyObject *detail_FromFailure(PyObject *failure_obj)
         {
 #if PY_MAJOR_VERSION >= 3
             detail = PyUnicode_FromFormat(
-                    "keyword argument '%s' has unexpected type '%s'",
+                    "argument '%s' has unexpected type '%s'",
                     failure->arg_name, Py_TYPE(failure->detail_obj)->tp_name);
 #else
             detail = PyString_FromFormat(
-                    "keyword argument '%s' has unexpected type '%s'",
+                    "argument '%s' has unexpected type '%s'",
                     failure->arg_name, Py_TYPE(failure->detail_obj)->tp_name);
 #endif
         }
@@ -7537,65 +7601,75 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
 
     for (i = 0; i < PyTuple_GET_SIZE(mro); ++i)
     {
-        PyObject *cls_dict;
+        PyObject *cls_dict, *cls_attr;
 
         cls = PyTuple_GET_ITEM(mro, i);
 
 #if PY_MAJOR_VERSION >= 3
         cls_dict = ((PyTypeObject *)cls)->tp_dict;
 #else
-        // Allow for classic classes as mixins.
+        /* Allow for classic classes as mixins. */
         if (PyClass_Check(cls))
             cls_dict = ((PyClassObject *)cls)->cl_dict;
         else
             cls_dict = ((PyTypeObject *)cls)->tp_dict;
 #endif
 
-        if (cls_dict != NULL && (reimp = PyDict_GetItem(cls_dict, mname_obj)) != NULL)
+        /*
+         * Check any possible reimplementation is not the wrapped C++ method or
+         * a default special method implementation..
+         */
+        if (cls_dict != NULL && (cls_attr = PyDict_GetItem(cls_dict, mname_obj)) != NULL && Py_TYPE(cls_attr) != &sipMethodDescr_Type && Py_TYPE(cls_attr) != &PyWrapperDescr_Type)
         {
-            /*
-             * Check any reimplementation is Python code and is not the wrapped
-             * C++ method.
-             */
-            if (PyMethod_Check(reimp))
-            {
-                /* It's already a method but make sure it is bound. */
-                if (PyMethod_GET_SELF(reimp) != NULL)
-                {
-                    Py_INCREF(reimp);
-                }
-                else
-                {
-#if PY_MAJOR_VERSION >= 3
-                    reimp = PyMethod_New(PyMethod_GET_FUNCTION(reimp),
-                            (PyObject *)sipSelf);
-#else
-                    reimp = PyMethod_New(PyMethod_GET_FUNCTION(reimp),
-                            (PyObject *)sipSelf, PyMethod_GET_CLASS(reimp));
-#endif
-                }
-
-                break;
-            }
-
-            if (PyFunction_Check(reimp))
-            {
-#if PY_MAJOR_VERSION >= 3
-                reimp = PyMethod_New(reimp, (PyObject *)sipSelf);
-#else
-                reimp = PyMethod_New(reimp, (PyObject *)sipSelf, cls);
-#endif
-
-                break;
-            }
-
-            reimp = NULL;
+            reimp = cls_attr;
+            break;
         }
     }
 
     Py_DECREF(mname_obj);
 
-    if (reimp == NULL)
+    if (reimp != NULL)
+    {
+        /*
+         * Emulate the behaviour of a descriptor to make sure we return a bound
+         * method.
+         */
+        if (PyMethod_Check(reimp))
+        {
+            /* It's already a method but make sure it is bound. */
+            if (PyMethod_GET_SELF(reimp) != NULL)
+            {
+                Py_INCREF(reimp);
+            }
+            else
+            {
+#if PY_MAJOR_VERSION >= 3
+                reimp = PyMethod_New(PyMethod_GET_FUNCTION(reimp),
+                        (PyObject *)sipSelf);
+#else
+                reimp = PyMethod_New(PyMethod_GET_FUNCTION(reimp),
+                        (PyObject *)sipSelf, PyMethod_GET_CLASS(reimp));
+#endif
+            }
+        }
+        else if (PyFunction_Check(reimp))
+        {
+#if PY_MAJOR_VERSION >= 3
+            reimp = PyMethod_New(reimp, (PyObject *)sipSelf);
+#else
+            reimp = PyMethod_New(reimp, (PyObject *)sipSelf, cls);
+#endif
+        }
+        else
+        {
+            /*
+             * We don't know what it is so just return and assume that an
+             * appropriate exception will be raised later on.
+             */
+            Py_INCREF(reimp);
+        }
+    }
+    else
     {
         /* Use the fast track in future. */
         *pymc = 1;
@@ -8256,9 +8330,15 @@ static void sip_api_call_hook(const char *hookname)
     if ((dictofmods = PyImport_GetModuleDict()) == NULL)
         return;
  
+#if PY_MAJOR_VERSION >= 3
+    /* Get the builtins module. */
+    if ((mod = PyDict_GetItemString(dictofmods, "builtins")) == NULL)
+        return;
+#else
     /* Get the __builtin__ module. */
     if ((mod = PyDict_GetItemString(dictofmods, "__builtin__")) == NULL)
         return;
+#endif
  
     /* Get it's dictionary. */
     if ((dict = PyModule_GetDict(mod)) == NULL)
@@ -8795,6 +8875,9 @@ static PyObject *sipSimpleWrapper_new(sipWrapperType *wt, PyObject *args,
         return NULL;
     }
 
+    if (add_all_lazy_attrs(wt->type) < 0)
+        return NULL;
+
     if (sipTypeIsMapped(td))
         cod = &((sipMappedTypeDef *)td)->mtd_container;
     else
@@ -9146,9 +9229,9 @@ static void sipSimpleWrapper_releasebuffer(sipSimpleWrapper *self,
     const sipClassTypeDef *ctd;
 
     if ((ptr = getPtrTypeDef(self, &ctd)) == NULL)
-        return -1;
+        return;
 
-    return ctd->ctd_releasebuffer((PyObject *)self, ptr, buf);
+    ctd->ctd_releasebuffer((PyObject *)self, ptr, buf);
 }
 #endif
 
@@ -9359,31 +9442,6 @@ static PyObject *slot_richcompare(PyObject *self, PyObject *arg, int op)
 
 
 /*
- * The instance getattro slot.
- */
-static PyObject *sipSimpleWrapper_getattro(PyObject *self, PyObject *name)
-{
-    if (add_all_lazy_attrs(((sipWrapperType *)Py_TYPE(self))->type) < 0)
-        return NULL;
-
-    return PyObject_GenericGetAttr(self, name);
-}
-
-
-/*
- * The instance setattro slot.
- */
-static int sipSimpleWrapper_setattro(PyObject *self, PyObject *name,
-        PyObject *value)
-{
-    if (add_all_lazy_attrs(((sipWrapperType *)Py_TYPE(self))->type) < 0)
-        return -1;
-
-    return PyObject_GenericSetAttr(self, name, value);
-}
-
-
-/*
  * The __dict__ getter.
  */
 static PyObject *sipSimpleWrapper_get_dict(PyObject *self, void *closure)
@@ -9467,8 +9525,8 @@ sipWrapperType sipSimpleWrapper_Type = {
             0,              /* tp_hash */
             0,              /* tp_call */
             0,              /* tp_str */
-            sipSimpleWrapper_getattro,  /* tp_getattro */
-            sipSimpleWrapper_setattro,  /* tp_setattro */
+            0,              /* tp_getattro */
+            0,              /* tp_setattro */
             0,              /* tp_as_buffer */
             Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC,  /* tp_flags */
             0,              /* tp_doc */
@@ -9965,6 +10023,10 @@ static void addTypeSlots(PyHeapTypeObject *heap_to, sipPySlotDef *slots)
 
         case next_slot:
             to->tp_iternext = (iternextfunc)f;
+            break;
+
+        case setattr_slot:
+            to->tp_setattro = (setattrofunc)f;
             break;
         }
 }
@@ -10637,7 +10699,11 @@ static int convertToWCharArray(PyObject *obj, wchar_t **ap, SIP_SSIZE_T *aszp)
     if ((wc = sip_api_malloc(ulen * sizeof (wchar_t))) == NULL)
         return -1;
 
+#if PY_VERSION_HEX >= 0x03020000
+    ulen = PyUnicode_AsWideChar(obj, wc, ulen);
+#else
     ulen = PyUnicode_AsWideChar((PyUnicodeObject *)obj, wc, ulen);
+#endif
 
     if (ulen < 0)
     {
@@ -10688,7 +10754,11 @@ static int convertToWChar(PyObject *obj, wchar_t *ap)
     if (PyUnicode_GET_SIZE(obj) != 1)
         return -1;
 
+#if PY_VERSION_HEX >= 0x03020000
+    if (PyUnicode_AsWideChar(obj, ap, 1) != 1)
+#else
     if (PyUnicode_AsWideChar((PyUnicodeObject *)obj, ap, 1) != 1)
+#endif
         return -1;
 
     return 0;
@@ -10744,7 +10814,11 @@ static int convertToWCharString(PyObject *obj, wchar_t **ap)
     if ((wc = sip_api_malloc((ulen + 1) * sizeof (wchar_t))) == NULL)
         return -1;
 
+#if PY_VERSION_HEX >= 0x03020000
+    ulen = PyUnicode_AsWideChar(obj, wc, ulen);
+#else
     ulen = PyUnicode_AsWideChar((PyUnicodeObject *)obj, wc, ulen);
+#endif
 
     if (ulen < 0)
     {
