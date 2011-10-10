@@ -27,10 +27,11 @@ dist: all
 	# RobotPy-Core distribution
 	-mkdir -p $(dist)/RobotPy-Core/robot/ni-rt/system
 	-mkdir -p $(dist)/RobotPy-Core/robot/lib/python3.1/lib-dynload
+	-mkdir -p $(dist)/RobotPy-Core/robot/lib/python3.1/site-packages
 
 	cp README-Core.txt $(dist)/RobotPy-Core/
 	cp -R py $(dist)/RobotPy-Core/robot/py
-	cp -R RobotPy/Python/Lib $(dist)/RobotPy-Core/robot/lib/python3.1
+	cp -R RobotPy/Python/Lib/* $(dist)/RobotPy-Core/robot/lib/python3.1/
 	cp RobotPy/PPC603gnu/RobotPy/NonDebug/RobotPy.out $(dist)/RobotPy-Core/robot/ni-rt/system/FRC_UserProgram.out
 
 	cp Modules/*/*.out $(dist)/RobotPy-Core/robot/lib/python3.1/lib-dynload
