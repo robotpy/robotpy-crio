@@ -182,7 +182,7 @@ if __name__ == '__main__':
     robot_host = None
     
     if len(args) == 1:
-        robot_host = args[1]
+        robot_host = args[0]
     elif len(args) != 0:
         parser.error("Invalid arguments passed")
 
