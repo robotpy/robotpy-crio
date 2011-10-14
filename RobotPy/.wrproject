@@ -26,8 +26,7 @@
             <listAttribute key="BLD::Info|Incl|PPC603gnu">
                 <stringAttribute value="-I$(WIND_BASE)/target/h"/>
                 <stringAttribute value="-I$(WIND_BASE)/target/h/wrn/coreip"/>
-                <stringAttribute value="-I$(WIND_BASE)/target/h/WPILib"/>
-                <stringAttribute value="-I$(WIND_BASE)/target/h/WPILib/CInterfaces"/>
+                <stringAttribute value="-I$(PRJ_ROOT_DIR)/../Packages/wpilib/WPILib"/>
                 <stringAttribute value="-I$(PRJ_ROOT_DIR)/Python/Include"/>
                 <stringAttribute value="-I$(PRJ_ROOT_DIR)/Python"/>
                 <stringAttribute value="-I$(PRJ_ROOT_DIR)"/>

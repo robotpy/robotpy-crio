@@ -188,7 +188,7 @@ PROJECT_OBJECTS += sip_nivisionThresholdData.o
 #PROJECT_OBJECTS += sip_nivisionUserPointSymbol.o
 PROJECT_OBJECTS += sip_nivisionView3DOptions.o
 
-ADDED_INCLUDES = -I../sip -I. -I../wpilib/WPILib
+ADDED_INCLUDES = -I../sip -I. -I../wpilib -I../wpilib/WPILib
 ADDED_CFLAGS = -D'SVN_REV="2242"'
 ADDED_C++FLAGS = -D'SVN_REV="2242"'
 
