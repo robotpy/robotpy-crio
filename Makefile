@@ -61,11 +61,19 @@ dist: all
 	# RobotPy-Utilities distribution
 	cp -R utilities $(dist)/RobotPy-Utilities
 
+	# RobotPy distribution (everything)
+	-mkdir $(dist)/RobotPy
+	cp -R $(dist)/RobotPy-Core/* $(dist)/RobotPy/
+	cp -R $(dist)/RobotPy-WPILib/* $(dist)/RobotPy/
+	cp -R $(dist)/RobotPy-Utilities/* $(dist)/RobotPy/
+
 	# Include the installer with the dist
 	cp utilities/installer/install.py $(dist)/RobotPy-Core
 	cp utilities/installer/install.py $(dist)/RobotPy-WPILib
+	cp utilities/installer/install.py $(dist)/RobotPy
 
 	# Zip it up
 	cd $(dist) && zip -r -9 -q RobotPy-Core-$(version).zip RobotPy-Core 
 	cd $(dist) && zip -r -9 -q RobotPy-WPILib-$(version).zip RobotPy-WPILib
 	cd $(dist) && zip -r -9 -q RobotPy-Utilities-$(version).zip RobotPy-Utilities
+	cd $(dist) && zip -r -9 -q RobotPy-$(version).zip RobotPy
