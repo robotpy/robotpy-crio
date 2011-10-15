@@ -2,7 +2,7 @@
 
 
 /*
-   __version__ 67616.
+   __version__ 82163.
 
    This module must be committed separately after each AST grammar change;
    The __version__ number is set to the revision number of the commit
@@ -527,7 +527,7 @@ static PyTypeObject* make_type(char *type, PyTypeObject* base, char**fields, int
         }
         PyTuple_SET_ITEM(fnames, i, field);
     }
-    result = PyObject_CallFunction((PyObject*)&PyType_Type, "U(O){sOss}",
+    result = PyObject_CallFunction((PyObject*)&PyType_Type, "s(O){sOss}",
                     type, base, "_fields", fnames, "__module__", "_ast");
     Py_DECREF(fnames);
     return (PyTypeObject*)result;
@@ -537,8 +537,9 @@ static int add_attributes(PyTypeObject* type, char**attrs, int num_fields)
 {
     int i, result;
     PyObject *s, *l = PyTuple_New(num_fields);
-    if (!l) return 0;
-    for(i = 0; i < num_fields; i++) {
+    if (!l)
+        return 0;
+    for (i = 0; i < num_fields; i++) {
         s = PyUnicode_FromString(attrs[i]);
         if (!s) {
             Py_DECREF(l);
@@ -599,8 +600,23 @@ static int obj2ast_object(PyObject* obj, PyObject** out, PyArena* arena)
     return 0;
 }
 
-#define obj2ast_identifier obj2ast_object
-#define obj2ast_string obj2ast_object
+static int obj2ast_identifier(PyObject* obj, PyObject** out, PyArena* arena)
+{
+    if (!PyUnicode_CheckExact(obj) && obj != Py_None) {
+        PyErr_SetString(PyExc_TypeError, "AST identifier must be of type str");
+        return 1;
+    }
+    return obj2ast_object(obj, out, arena);
+}
+
+static int obj2ast_string(PyObject* obj, PyObject** out, PyArena* arena)
+{
+    if (!PyUnicode_CheckExact(obj) && !PyBytes_CheckExact(obj)) {
+        PyErr_SetString(PyExc_TypeError, "AST string must be of type str");
+        return 1;
+    }
+    return obj2ast_object(obj, out, arena);
+}
 
 static int obj2ast_int(PyObject* obj, int* out, PyArena* arena)
 {
@@ -1332,11 +1348,6 @@ ImportFrom(identifier module, asdl_seq * names, int level, int lineno, int
            col_offset, PyArena *arena)
 {
         stmt_ty p;
-        if (!module) {
-                PyErr_SetString(PyExc_ValueError,
-                                "field module is required for ImportFrom");
-                return NULL;
-        }
         p = (stmt_ty)PyArena_Malloc(arena, sizeof(*p));
         if (!p)
                 return NULL;
@@ -3378,9 +3389,9 @@ failed:
 int
 obj2ast_mod(PyObject* obj, mod_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
+        PyObject *tmp = NULL;
 
         if (obj == Py_None) {
                 *out = NULL;
@@ -3518,10 +3529,8 @@ obj2ast_mod(PyObject* obj, mod_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of mod, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
+        PyErr_Format(PyExc_TypeError, "expected some sort of mod, but got %R", obj);
+        failed:
         Py_XDECREF(tmp);
         return 1;
 }
@@ -3529,9 +3538,9 @@ failed:
 int
 obj2ast_stmt(PyObject* obj, stmt_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
+        PyObject *tmp = NULL;
         int lineno;
         int col_offset;
 
@@ -4547,8 +4556,7 @@ obj2ast_stmt(PyObject* obj, stmt_ty* out, PyArena* arena)
                         Py_XDECREF(tmp);
                         tmp = NULL;
                 } else {
-                        PyErr_SetString(PyExc_TypeError, "required field \"module\" missing from ImportFrom");
-                        return 1;
+                        module = NULL;
                 }
                 if (PyObject_HasAttrString(obj, "names")) {
                         int res;
@@ -4717,10 +4725,8 @@ obj2ast_stmt(PyObject* obj, stmt_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of stmt, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
+        PyErr_Format(PyExc_TypeError, "expected some sort of stmt, but got %R", obj);
+        failed:
         Py_XDECREF(tmp);
         return 1;
 }
@@ -4728,9 +4734,9 @@ failed:
 int
 obj2ast_expr(PyObject* obj, expr_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
+        PyObject *tmp = NULL;
         int lineno;
         int col_offset;
 
@@ -5835,10 +5841,8 @@ obj2ast_expr(PyObject* obj, expr_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of expr, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
+        PyErr_Format(PyExc_TypeError, "expected some sort of expr, but got %R", obj);
+        failed:
         Py_XDECREF(tmp);
         return 1;
 }
@@ -5846,7 +5850,6 @@ failed:
 int
 obj2ast_expr_context(PyObject* obj, expr_context_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
         isinstance = PyObject_IsInstance(obj, (PyObject *)Load_type);
@@ -5898,20 +5901,16 @@ obj2ast_expr_context(PyObject* obj, expr_context_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of expr_context, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
-        Py_XDECREF(tmp);
+        PyErr_Format(PyExc_TypeError, "expected some sort of expr_context, but got %R", obj);
         return 1;
 }
 
 int
 obj2ast_slice(PyObject* obj, slice_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
+        PyObject *tmp = NULL;
 
         if (obj == Py_None) {
                 *out = NULL;
@@ -6023,10 +6022,8 @@ obj2ast_slice(PyObject* obj, slice_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of slice, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
+        PyErr_Format(PyExc_TypeError, "expected some sort of slice, but got %R", obj);
+        failed:
         Py_XDECREF(tmp);
         return 1;
 }
@@ -6034,7 +6031,6 @@ failed:
 int
 obj2ast_boolop(PyObject* obj, boolop_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
         isinstance = PyObject_IsInstance(obj, (PyObject *)And_type);
@@ -6054,18 +6050,13 @@ obj2ast_boolop(PyObject* obj, boolop_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of boolop, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
-        Py_XDECREF(tmp);
+        PyErr_Format(PyExc_TypeError, "expected some sort of boolop, but got %R", obj);
         return 1;
 }
 
 int
 obj2ast_operator(PyObject* obj, operator_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
         isinstance = PyObject_IsInstance(obj, (PyObject *)Add_type);
@@ -6165,18 +6156,13 @@ obj2ast_operator(PyObject* obj, operator_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of operator, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
-        Py_XDECREF(tmp);
+        PyErr_Format(PyExc_TypeError, "expected some sort of operator, but got %R", obj);
         return 1;
 }
 
 int
 obj2ast_unaryop(PyObject* obj, unaryop_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
         isinstance = PyObject_IsInstance(obj, (PyObject *)Invert_type);
@@ -6212,18 +6198,13 @@ obj2ast_unaryop(PyObject* obj, unaryop_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of unaryop, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
-        Py_XDECREF(tmp);
+        PyErr_Format(PyExc_TypeError, "expected some sort of unaryop, but got %R", obj);
         return 1;
 }
 
 int
 obj2ast_cmpop(PyObject* obj, cmpop_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
         isinstance = PyObject_IsInstance(obj, (PyObject *)Eq_type);
@@ -6307,11 +6288,7 @@ obj2ast_cmpop(PyObject* obj, cmpop_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of cmpop, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
-        Py_XDECREF(tmp);
+        PyErr_Format(PyExc_TypeError, "expected some sort of cmpop, but got %R", obj);
         return 1;
 }
 
@@ -6382,9 +6359,9 @@ failed:
 int
 obj2ast_excepthandler(PyObject* obj, excepthandler_ty* out, PyArena* arena)
 {
-        PyObject* tmp = NULL;
         int isinstance;
 
+        PyObject *tmp = NULL;
         int lineno;
         int col_offset;
 
@@ -6478,10 +6455,8 @@ obj2ast_excepthandler(PyObject* obj, excepthandler_ty* out, PyArena* arena)
                 return 0;
         }
 
-        tmp = PyObject_Repr(obj);
-        if (tmp == NULL) goto failed;
-        PyErr_Format(PyExc_TypeError, "expected some sort of excepthandler, but got %.400s", PyBytes_AS_STRING(tmp));
-failed:
+        PyErr_Format(PyExc_TypeError, "expected some sort of excepthandler, but got %R", obj);
+        failed:
         Py_XDECREF(tmp);
         return 1;
 }
@@ -6779,7 +6754,7 @@ PyInit__ast(void)
             NULL;
         if (PyModule_AddIntConstant(m, "PyCF_ONLY_AST", PyCF_ONLY_AST) < 0)
                 return NULL;
-        if (PyModule_AddStringConstant(m, "__version__", "67616") < 0)
+        if (PyModule_AddStringConstant(m, "__version__", "82163") < 0)
                 return NULL;
         if (PyDict_SetItemString(d, "mod", (PyObject*)mod_type) < 0) return
             NULL;

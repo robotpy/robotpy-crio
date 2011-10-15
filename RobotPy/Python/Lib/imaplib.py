@@ -22,7 +22,13 @@ Public functions:       Internaldate2tuple
 
 __version__ = "2.58"
 
-import binascii, random, re, socket, subprocess, sys, time
+import binascii, errno, random, re, socket, subprocess, sys, time
+
+try:
+    import ssl
+    HAVE_SSL = True
+except ImportError:
+    HAVE_SSL = False
 
 __all__ = ["IMAP4", "IMAP4_stream", "Internaldate2tuple",
            "Int2AP", "ParseFlags", "Time2Internaldate"]
@@ -71,6 +77,7 @@ Commands = {
         'SETANNOTATION':('AUTH', 'SELECTED'),
         'SETQUOTA':     ('AUTH', 'SELECTED'),
         'SORT':         ('SELECTED',),
+        'STARTTLS':     ('NONAUTH',),
         'STATUS':       ('AUTH', 'SELECTED'),
         'STORE':        ('SELECTED',),
         'SUBSCRIBE':    ('AUTH', 'SELECTED'),
@@ -147,8 +154,6 @@ class IMAP4:
     class abort(error): pass        # Service errors - close and retry
     class readonly(abort): pass     # Mailbox status changed to READ-ONLY
 
-    mustquote = re.compile(br"[^\w!#$%&'*+,.:;<=>?^`|~-]", re.ASCII)
-
     def __init__(self, host = '', port = IMAP4_PORT):
         self.debug = Debug
         self.state = 'LOGOUT'
@@ -158,11 +163,23 @@ class IMAP4:
         self.continuation_response = '' # Last continuation response
         self.is_readonly = False        # READ-ONLY desired state
         self.tagnum = 0
+        self._tls_established = False
 
         # Open socket to server.
 
         self.open(host, port)
 
+        try:
+            self._connect()
+        except Exception:
+            try:
+                self.shutdown()
+            except socket.error:
+                pass
+            raise
+
+
+    def _connect(self):
         # Create unique tag for this session,
         # and compile tagged response matcher.
 
@@ -190,13 +207,7 @@ class IMAP4:
         else:
             raise self.error(self.welcome)
 
-        typ, dat = self.capability()
-        if dat == [None]:
-            raise self.error('no CAPABILITY response from server')
-        dat = str(dat[-1], "ASCII")
-        dat = dat.upper()
-        self.capabilities = tuple(dat.split())
-
+        self._get_capabilities()
         if __debug__:
             if self.debug >= 3:
                 self._mesg('CAPABILITIES: %r' % (self.capabilities,))
@@ -262,7 +273,14 @@ class IMAP4:
     def shutdown(self):
         """Close I/O established in "open"."""
         self.file.close()
-        self.sock.close()
+        try:
+            self.sock.shutdown(socket.SHUT_RDWR)
+        except socket.error as e:
+            # The server might already have closed the connection
+            if e.errno != errno.ENOTCONN:
+                raise
+        finally:
+            self.sock.close()
 
 
     def socket(self):
@@ -706,6 +724,30 @@ class IMAP4:
         return self._untagged_response(typ, dat, name)
 
 
+    def starttls(self, ssl_context=None):
+        name = 'STARTTLS'
+        if not HAVE_SSL:
+            raise self.error('SSL support missing')
+        if self._tls_established:
+            raise self.abort('TLS session already established')
+        if name not in self.capabilities:
+            raise self.abort('TLS not supported by server')
+        # Generate a default SSL context if none was passed.
+        if ssl_context is None:
+            ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
+            # SSLv2 considered harmful.
+            ssl_context.options |= ssl.OP_NO_SSLv2
+        typ, dat = self._simple_command(name)
+        if typ == 'OK':
+            self.sock = ssl_context.wrap_socket(self.sock)
+            self.file = self.sock.makefile('rb')
+            self._tls_established = True
+            self._get_capabilities()
+        else:
+            raise self.error("Couldn't establish TLS session")
+        return self._untagged_response(typ, dat, name)
+
+
     def status(self, mailbox, names):
         """Request named status conditions for mailbox.
 
@@ -765,7 +807,7 @@ class IMAP4:
                               ', '.join(Commands[command])))
         name = 'UID'
         typ, dat = self._simple_command(name, command, *args)
-        if command in ('SEARCH', 'SORT'):
+        if command in ('SEARCH', 'SORT', 'THREAD'):
             name = command
         else:
             name = 'FETCH'
@@ -819,7 +861,7 @@ class IMAP4:
     def _check_bye(self):
         bye = self.untagged_responses.get('BYE')
         if bye:
-            raise self.abort(bye[-1])
+            raise self.abort(bye[-1].decode('ascii', 'replace'))
 
 
     def _command(self, name, *args):
@@ -846,7 +888,6 @@ class IMAP4:
             if arg is None: continue
             if isinstance(arg, str):
                 arg = bytes(arg, "ASCII")
-            #data = data + b' ' + self._checkquote(arg)
             data = data + b' ' + arg
 
         literal = self.literal
@@ -901,17 +942,29 @@ class IMAP4:
 
 
     def _command_complete(self, name, tag):
-        self._check_bye()
+        # BYE is expected after LOGOUT
+        if name != 'LOGOUT':
+            self._check_bye()
         try:
             typ, data = self._get_tagged_response(tag)
         except self.abort as val:
             raise self.abort('command: %s => %s' % (name, val))
         except self.error as val:
             raise self.error('command: %s => %s' % (name, val))
-        self._check_bye()
+        if name != 'LOGOUT':
+            self._check_bye()
         if typ == 'BAD':
             raise self.error('%s command error: %s %s' % (name, typ, data))
         return typ, data
+
+
+    def _get_capabilities(self):
+        typ, dat = self.capability()
+        if dat == [None]:
+            raise self.error('no CAPABILITY response from server')
+        dat = str(dat[-1], "ASCII")
+        dat = dat.upper()
+        self.capabilities = tuple(dat.split())
 
 
     def _get_response(self):
@@ -1055,24 +1108,12 @@ class IMAP4:
         return tag
 
 
-    def _checkquote(self, arg):
-
-        # Must quote command args if non-alphanumeric chars present,
-        # and not already quoted.
-
-        if len(arg) >= 2 and (arg[0],arg[-1]) in (('(',')'),('"','"')):
-            return arg
-        if arg and self.mustquote.search(arg) is None:
-            return arg
-        return self._quote(arg)
-
-
     def _quote(self, arg):
 
-        arg = arg.replace(b'\\', b'\\\\')
-        arg = arg.replace(b'"', b'\\"')
+        arg = arg.replace('\\', '\\\\')
+        arg = arg.replace('"', '\\"')
 
-        return b'"' + arg + b'"'
+        return '"' + arg + '"'
 
 
     def _simple_command(self, name, *args):
@@ -1130,12 +1171,8 @@ class IMAP4:
                 n -= 1
 
 
+if HAVE_SSL:
 
-try:
-    import ssl
-except ImportError:
-    pass
-else:
     class IMAP4_SSL(IMAP4):
 
         """IMAP4 client class over SSL connection
@@ -1271,13 +1308,14 @@ class _Authenticator:
 
 
 
-Mon2num = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
-        'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
+Mon2num = {b'Jan': 1, b'Feb': 2, b'Mar': 3, b'Apr': 4, b'May': 5, b'Jun': 6,
+           b'Jul': 7, b'Aug': 8, b'Sep': 9, b'Oct': 10, b'Nov': 11, b'Dec': 12}
 
 def Internaldate2tuple(resp):
-    """Convert IMAP4 INTERNALDATE to UT.
+    """Parse an IMAP4 INTERNALDATE string.
 
-    Returns Python time module tuple.
+    Return corresponding local time.  The return value is a
+    time.struct_time tuple or None if the string has wrong format.
     """
 
     mo = InternalDate.match(resp)
@@ -1298,7 +1336,7 @@ def Internaldate2tuple(resp):
     # INTERNALDATE timezone must be subtracted to get UT
 
     zone = (zoneh*60 + zonem)*60
-    if zonen == '-':
+    if zonen == b'-':
         zone = -zone
 
     tt = (year, mon, day, hour, min, sec, -1, -1, -1)
@@ -1344,9 +1382,14 @@ def ParseFlags(resp):
 
 def Time2Internaldate(date_time):
 
-    """Convert 'date_time' to IMAP4 INTERNALDATE representation.
+    """Convert date_time to IMAP4 INTERNALDATE representation.
 
-    Return string in form: '"DD-Mmm-YYYY HH:MM:SS +HHMM"'
+    Return string in form: '"DD-Mmm-YYYY HH:MM:SS +HHMM"'.  The
+    date_time argument can be a number (int or float) represening
+    seconds since epoch (as returned by time.time()), a 9-tuple
+    representing local time (as returned by time.localtime()), or a
+    double-quoted string.  In the last case, it is assumed to already
+    be in the correct format.
     """
 
     if isinstance(date_time, (int, float)):

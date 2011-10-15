@@ -1,10 +1,10 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 """Python interface for the 'lsprof' profiler.
    Compatible with the 'profile' module.
 """
 
-__all__ = ["run", "runctx", "help", "Profile"]
+__all__ = ["run", "runctx", "Profile"]
 
 import _lsprof
 
@@ -36,7 +36,7 @@ def run(statement, filename=None, sort=-1):
             result = prof.print_stats(sort)
     return result
 
-def runctx(statement, globals, locals, filename=None):
+def runctx(statement, globals, locals, filename=None, sort=-1):
     """Run statement under profiler, supplying your own globals and locals,
     optionally saving results in filename.
 
@@ -53,13 +53,8 @@ def runctx(statement, globals, locals, filename=None):
         if filename is not None:
             prof.dump_stats(filename)
         else:
-            result = prof.print_stats()
+            result = prof.print_stats(sort)
     return result
-
-# Backwards compatibility.
-def help():
-    print("Documentation for the profile/cProfile modules can be found ")
-    print("in the Python Library Reference, section 'The Python Profiler'.")
 
 # ____________________________________________________________
 
@@ -169,7 +164,8 @@ def main():
     parser.add_option('-o', '--outfile', dest="outfile",
         help="Save stats to <outfile>", default=None)
     parser.add_option('-s', '--sort', dest="sort",
-        help="Sort order when printing to stdout, based on pstats.Stats class", default=-1)
+        help="Sort order when printing to stdout, based on pstats.Stats class",
+        default=-1)
 
     if not sys.argv[1:]:
         parser.print_usage()
@@ -178,14 +174,18 @@ def main():
     (options, args) = parser.parse_args()
     sys.argv[:] = args
 
-    if (len(sys.argv) > 0):
-        sys.path.insert(0, os.path.dirname(sys.argv[0]))
-        fp = open(sys.argv[0])
-        try:
-            script = fp.read()
-        finally:
-            fp.close()
-        run('exec(%r)' % script, options.outfile, options.sort)
+    if len(args) > 0:
+        progname = args[0]
+        sys.path.insert(0, os.path.dirname(progname))
+        with open(progname, 'rb') as fp:
+            code = compile(fp.read(), progname, 'exec')
+        globs = {
+            '__file__': progname,
+            '__name__': '__main__',
+            '__package__': None,
+            '__cached__': None,
+        }
+        runctx(code, globs, None, options.outfile, options.sort)
     else:
         parser.print_usage()
     return parser

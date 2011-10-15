@@ -38,6 +38,13 @@ __all__ = [x for x in dir(token) if x[0] != '_'] + ["tokenize",
            "generate_tokens", "untokenize"]
 del token
 
+try:
+    bytes
+except NameError:
+    # Support bytes type in Python <= 2.5, so 2to3 turns itself into
+    # valid Python 3 code.
+    bytes = str
+
 def group(*choices): return '(' + '|'.join(choices) + ')'
 def any(*choices): return group(*choices) + '*'
 def maybe(*choices): return group(*choices) + '?'
@@ -253,19 +260,21 @@ def detect_encoding(readline):
     in.
 
     It detects the encoding from the presence of a utf-8 bom or an encoding
-    cookie as specified in pep-0263. If both a bom and a cookie are present,
-    but disagree, a SyntaxError will be raised. If the encoding cookie is an
-    invalid charset, raise a SyntaxError.
+    cookie as specified in pep-0263. If both a bom and a cookie are present, but
+    disagree, a SyntaxError will be raised. If the encoding cookie is an invalid
+    charset, raise a SyntaxError.  Note that if a utf-8 bom is found,
+    'utf-8-sig' is returned.
 
     If no encoding is specified, then the default of 'utf-8' will be returned.
     """
     bom_found = False
     encoding = None
+    default = 'utf-8'
     def read_or_stop():
         try:
             return readline()
         except StopIteration:
-            return b''
+            return bytes()
 
     def find_cookie(line):
         try:
@@ -287,17 +296,16 @@ def detect_encoding(readline):
             if codec.name != 'utf-8':
                 # This behaviour mimics the Python interpreter
                 raise SyntaxError('encoding problem: utf-8')
-            else:
-                # Allow it to be properly encoded and decoded.
-                encoding = 'utf-8-sig'
+            encoding += '-sig'
         return encoding
 
     first = read_or_stop()
     if first.startswith(BOM_UTF8):
         bom_found = True
         first = first[3:]
+        default = 'utf-8-sig'
     if not first:
-        return 'utf-8', []
+        return default, []
 
     encoding = find_cookie(first)
     if encoding:
@@ -305,13 +313,13 @@ def detect_encoding(readline):
 
     second = read_or_stop()
     if not second:
-        return 'utf-8', [first]
+        return default, [first]
 
     encoding = find_cookie(second)
     if encoding:
         return encoding, [first, second]
 
-    return 'utf-8', [first, second]
+    return default, [first, second]
 
 def untokenize(iterable):
     """Transform tokens back into Python source code.

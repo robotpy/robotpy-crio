@@ -5,7 +5,7 @@ import re
 import sys
 import struct
 
-from json.scanner import make_scanner
+from json import scanner
 try:
     from _json import scanstring as c_scanstring
 except ImportError:
@@ -147,10 +147,14 @@ WHITESPACE_STR = ' \t\n\r'
 
 
 def JSONObject(s_and_end, strict, scan_once, object_hook, object_pairs_hook,
-        _w=WHITESPACE.match, _ws=WHITESPACE_STR):
+               memo=None, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
     s, end = s_and_end
     pairs = []
     pairs_append = pairs.append
+    # Backwards compatibility
+    if memo is None:
+        memo = {}
+    memo_get = memo.setdefault
     # Use a slice to prevent IndexError from being raised, the following
     # check will raise a more specific ValueError if the string is empty
     nextchar = s[end:end + 1]
@@ -161,12 +165,19 @@ def JSONObject(s_and_end, strict, scan_once, object_hook, object_pairs_hook,
             nextchar = s[end:end + 1]
         # Trivial empty object
         if nextchar == '}':
+            if object_pairs_hook is not None:
+                result = object_pairs_hook(pairs)
+                return result, end
+            pairs = {}
+            if object_hook is not None:
+                pairs = object_hook(pairs)
             return pairs, end + 1
         elif nextchar != '"':
             raise ValueError(errmsg("Expecting property name", s, end))
     end += 1
     while True:
         key, end = scanstring(s, end, strict)
+        key = memo_get(key, key)
         # To skip some function call overhead we optimize the fast paths where
         # the JSON key separator is ": " or just ":".
         if s[end:end + 1] != ':':
@@ -214,7 +225,7 @@ def JSONObject(s_and_end, strict, scan_once, object_hook, object_pairs_hook,
         pairs = object_hook(pairs)
     return pairs, end
 
-def JSONArray(s_and_end, scan_once, context, _w=WHITESPACE.match):
+def JSONArray(s_and_end, scan_once, _w=WHITESPACE.match, _ws=WHITESPACE_STR):
     s, end = s_and_end
     values = []
     nextchar = s[end:end + 1]
@@ -263,9 +274,9 @@ class JSONDecoder(object):
     +---------------+-------------------+
     | array         | list              |
     +---------------+-------------------+
-    | string        | unicode           |
+    | string        | str               |
     +---------------+-------------------+
-    | number (int)  | int, long         |
+    | number (int)  | int               |
     +---------------+-------------------+
     | number (real) | float             |
     +---------------+-------------------+
@@ -289,6 +300,15 @@ class JSONDecoder(object):
         place of the given ``dict``.  This can be used to provide custom
         deserializations (e.g. to support JSON-RPC class hinting).
 
+        ``object_pairs_hook``, if specified will be called with the result of
+        every JSON object decoded with an ordered list of pairs.  The return
+        value of ``object_pairs_hook`` will be used instead of the ``dict``.
+        This feature can be used to implement custom decoders that rely on the
+        order that the key and value pairs are decoded (for example,
+        collections.OrderedDict will remember the order of insertion). If
+        ``object_hook`` is also defined, the ``object_pairs_hook`` takes
+        priority.
+
         ``parse_float``, if specified, will be called with the string
         of every JSON float to be decoded. By default this is equivalent to
         float(num_str). This can be used to use another datatype or parser
@@ -304,6 +324,11 @@ class JSONDecoder(object):
         This can be used to raise an exception if invalid JSON numbers
         are encountered.
 
+        If ``strict`` is false (true is the default), then control
+        characters will be allowed inside strings.  Control characters in
+        this context are those with character codes in the 0-31 range,
+        including ``'\\t'`` (tab), ``'\\n'``, ``'\\r'`` and ``'\\0'``.
+
         """
         self.object_hook = object_hook
         self.parse_float = parse_float or float
@@ -314,12 +339,13 @@ class JSONDecoder(object):
         self.parse_object = JSONObject
         self.parse_array = JSONArray
         self.parse_string = scanstring
-        self.scan_once = make_scanner(self)
+        self.memo = {}
+        self.scan_once = scanner.make_scanner(self)
 
 
     def decode(self, s, _w=WHITESPACE.match):
-        """Return the Python representation of ``s`` (a ``str`` or ``unicode``
-        instance containing a JSON document)
+        """Return the Python representation of ``s`` (a ``str`` instance
+        containing a JSON document).
 
         """
         obj, end = self.raw_decode(s, idx=_w(s, 0).end())
@@ -329,8 +355,8 @@ class JSONDecoder(object):
         return obj
 
     def raw_decode(self, s, idx=0):
-        """Decode a JSON document from ``s`` (a ``str`` or ``unicode``
-        beginning with a JSON document) and return a 2-tuple of the Python
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
         representation and the index in ``s`` where the document ended.
 
         This can be used to decode a JSON document from a string that may

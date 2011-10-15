@@ -55,31 +55,43 @@ ImportError exception, it is silently ignored.
 import sys
 import os
 import builtins
+import traceback
 
 # Prefixes for site-packages; add additional prefixes like /usr/local here
 PREFIXES = [sys.prefix, sys.exec_prefix]
 # Enable per user site-packages directory
 # set it to False to disable the feature or True to force the feature
 ENABLE_USER_SITE = None
+
 # for distutils.commands.install
+# These values are initialized by the getuserbase() and getusersitepackages()
+# functions, through the main() function when Python starts.
 USER_SITE = None
 USER_BASE = None
 
 
 def makepath(*paths):
-    dir = os.path.abspath(os.path.join(*paths))
+    dir = os.path.join(*paths)
+    try:
+        dir = os.path.abspath(dir)
+    except OSError:
+        pass
     return dir, os.path.normcase(dir)
 
 
-def abs__file__():
-    """Set all module' __file__ attribute to an absolute path"""
+def abs_paths():
+    """Set all module __file__ and __cached__ attributes to an absolute path"""
     for m in set(sys.modules.values()):
         if hasattr(m, '__loader__'):
             continue   # don't mess with a PEP 302-supplied __file__
         try:
             m.__file__ = os.path.abspath(m.__file__)
-        except AttributeError:
-            continue
+        except (AttributeError, OSError):
+            pass
+        try:
+            m.__cached__ = os.path.abspath(m.__cached__)
+        except (AttributeError, OSError):
+            pass
 
 
 def removeduppaths():
@@ -99,18 +111,6 @@ def removeduppaths():
             known_paths.add(dircase)
     sys.path[:] = L
     return known_paths
-
-# XXX This should not be part of site.py, since it is needed even when
-# using the -S option for Python.  See http://www.python.org/sf/586680
-def addbuilddir():
-    """Append ./build/lib.<platform> in case we're running in the build dir
-    (especially for Guido :-)"""
-    from distutils.util import get_platform
-    s = "build/lib.%s-%.3s" % (get_platform(), sys.version)
-    if hasattr(sys, 'gettotalrefcount'):
-        s += '-pydebug'
-    s = os.path.join(os.path.dirname(sys.path[-1]), s)
-    sys.path.append(s)
 
 
 def _init_pathinfo():
@@ -142,17 +142,26 @@ def addpackage(sitedir, name, known_paths):
     except IOError:
         return
     with f:
-        for line in f:
+        for n, line in enumerate(f):
             if line.startswith("#"):
                 continue
-            if line.startswith(("import ", "import\t")):
-                exec(line)
-                continue
-            line = line.rstrip()
-            dir, dircase = makepath(sitedir, line)
-            if not dircase in known_paths and os.path.exists(dir):
-                sys.path.append(dir)
-                known_paths.add(dircase)
+            try:
+                if line.startswith(("import ", "import\t")):
+                    exec(line)
+                    continue
+                line = line.rstrip()
+                dir, dircase = makepath(sitedir, line)
+                if not dircase in known_paths and os.path.exists(dir):
+                    sys.path.append(dir)
+                    known_paths.add(dircase)
+            except Exception as err:
+                print("Error processing line {:d} of {}:\n".format(n+1, fullname),
+                      file=sys.stderr)
+                for record in traceback.format_exception(*sys.exc_info()):
+                    for line in record.splitlines():
+                        print('  '+line, file=sys.stderr)
+                print("\nRemainder of file ignored", file=sys.stderr)
+                break
     if reset:
         known_paths = None
     return known_paths
@@ -303,8 +312,10 @@ def setBEGINLIBPATH():
 
 
 def setquit():
-    """Define new built-ins 'quit' and 'exit'.
-    These are simply strings that display a hint on how to exit.
+    """Define new builtins 'quit' and 'exit'.
+
+    These are objects which make the interpreter exit when called.
+    The repr of each object contains a hint at how it works.
 
     """
     if os.sep == ':':
@@ -416,7 +427,7 @@ def setcopyright():
 
 
 class _Helper(object):
-    """Define the built-in 'help'.
+    """Define the builtin 'help'.
     This is a wrapper around pydoc.help (with a twist).
 
     """
@@ -446,25 +457,6 @@ def aliasmbcs():
                 encodings._cache[enc] = encodings._unknown
                 encodings.aliases.aliases[enc] = 'mbcs'
 
-def setencoding():
-    """Set the string encoding used by the Unicode implementation.  The
-    default is 'ascii', but if you're willing to experiment, you can
-    change this."""
-    encoding = "ascii" # Default value set by _PyUnicode_Init()
-    if 0:
-        # Enable to support locale aware default string encodings.
-        import locale
-        loc = locale.getdefaultlocale()
-        if loc[1]:
-            encoding = loc[1]
-    if 0:
-        # Enable to switch off string to Unicode coercion and implicit
-        # Unicode to string conversion.
-        encoding = "undefined"
-    if encoding != "ascii":
-        # On Non-Unicode builds this will raise an AttributeError...
-        sys.setdefaultencoding(encoding) # Needs Python Unicode build !
-
 
 def execsitecustomize():
     """Run custom site specific code, if available."""
@@ -474,11 +466,12 @@ def execsitecustomize():
         pass
     except Exception as err:
         if os.environ.get("PYTHONVERBOSE"):
-            raise
-        sys.stderr.write(
-            "Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"
-            "%s: %s\n" %
-            (err.__class__.__name__, err))
+            sys.excepthook(*sys.exc_info())
+        else:
+            sys.stderr.write(
+                "Error in sitecustomize; set PYTHONVERBOSE for traceback:\n"
+                "%s: %s\n" %
+                (err.__class__.__name__, err))
 
 
 def execusercustomize():
@@ -487,16 +480,21 @@ def execusercustomize():
         import usercustomize
     except ImportError:
         pass
+    except Exception as err:
+        if os.environ.get("PYTHONVERBOSE"):
+            sys.excepthook(*sys.exc_info())
+        else:
+            sys.stderr.write(
+                "Error in usercustomize; set PYTHONVERBOSE for traceback:\n"
+                "%s: %s\n" %
+                (err.__class__.__name__, err))
 
 
 def main():
     global ENABLE_USER_SITE
 
-    abs__file__()
+    abs_paths()
     known_paths = removeduppaths()
-    if (os.name == "posix" and sys.path and
-        os.path.basename(sys.path[-1]) == "Modules"):
-        addbuilddir()
     if ENABLE_USER_SITE is None:
         ENABLE_USER_SITE = check_enableusersite()
     known_paths = addusersitepackages(known_paths)
@@ -507,15 +505,9 @@ def main():
     setcopyright()
     sethelper()
     aliasmbcs()
-    setencoding()
     execsitecustomize()
     if ENABLE_USER_SITE:
         execusercustomize()
-    # Remove sys.setdefaultencoding() so that users cannot change the
-    # encoding after initialization.  The test for presence is needed when
-    # this module is run as a script, because this code is executed twice.
-    if hasattr(sys, "setdefaultencoding"):
-        del sys.setdefaultencoding
 
 main()
 

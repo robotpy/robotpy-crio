@@ -5,12 +5,12 @@
 #define Py_PYCONFIG_H
 
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* Define for AIX if your compiler is a genuine IBM xlC/xlC_r and you want
    support for AIX C++ shared extension modules. */
 #undef AIX_GENUINE_CPLUSPLUS
-
-/* Define this if you have AtheOS threads. */
-#undef ATHEOS_THREADS
 
 /* Define if you have the Mach cthreads package */
 #undef C_THREADS
@@ -30,12 +30,18 @@
 /* Define if --enable-ipv6 is specified */
 #undef ENABLE_IPV6
 
+/* Define if flock needs to be linked with bsd library. */
+#undef FLOCK_NEEDS_LIBBSD
+
 /* Define if getpgrp() must be called as getpgrp(0). */
 #undef GETPGRP_HAVE_ARG
 
 /* Define if gettimeofday() does not have second (timezone) argument This is
    the case on Motorola V4 (R40V4.2) */
 #undef GETTIMEOFDAY_NO_TZ
+
+/* Define to 1 if you have the `accept4' function. */
+#undef HAVE_ACCEPT4
 
 /* Define to 1 if you have the `acosh' function. */
 #undef HAVE_ACOSH
@@ -77,6 +83,9 @@
 /* Define if nice() returns success/failure instead of the new priority. */
 #undef HAVE_BROKEN_NICE
 
+/* Define if the system reports an invalid PIPE_BUF value. */
+#undef HAVE_BROKEN_PIPE_BUF
+
 /* Define if poll() sets errno on invalid file descriptors. */
 #undef HAVE_BROKEN_POLL
 
@@ -92,7 +101,7 @@
 /* Define this if you have the type _Bool. */
 #undef HAVE_C99_BOOL
 
-/* Define to 1 if you have the `chflags' function. */
+/* Define to 1 if you have the 'chflags' function. */
 #undef HAVE_CHFLAGS
 
 /* Define to 1 if you have the `chown' function. */
@@ -103,6 +112,9 @@
 
 /* Define to 1 if you have the `clock' function. */
 #define HAVE_CLOCK 1
+
+/* Define if the C compiler supports computed gotos. */
+#define HAVE_COMPUTED_GOTOS 1
 
 /* Define to 1 if you have the `confstr' function. */
 #undef HAVE_CONFSTR
@@ -178,6 +190,12 @@
 /* Define if you have the 'epoll' functions. */
 #undef HAVE_EPOLL
 
+/* Define to 1 if you have the `erf' function. */
+#undef HAVE_ERF
+
+/* Define to 1 if you have the `erfc' function. */
+#undef HAVE_ERFC
+
 /* Define to 1 if you have the <errno.h> header file. */
 #define HAVE_ERRNO_H 1
 
@@ -205,7 +223,7 @@
 /* Define to 1 if you have the `finite' function. */
 #undef HAVE_FINITE
 
-/* Define if you have the 'flock' function. */
+/* Define to 1 if you have the 'flock' function. */
 #undef HAVE_FLOCK
 
 /* Define to 1 if you have the `fork' function. */
@@ -243,6 +261,9 @@
 
 /* Define to 1 if you have the `gai_strerror' function. */
 #undef HAVE_GAI_STRERROR
+
+/* Define to 1 if you have the `gamma' function. */
+#undef HAVE_GAMMA
 
 /* Define if we can use gcc inline assembler to get and set x87 control word
    */
@@ -308,6 +329,12 @@
 /* Define to 1 if you have the `getpwent' function. */
 #undef HAVE_GETPWENT
 
+/* Define to 1 if you have the `getresgid' function. */
+#undef HAVE_GETRESGID
+
+/* Define to 1 if you have the `getresuid' function. */
+#undef HAVE_GETRESUID
+
 /* Define to 1 if you have the `getsid' function. */
 #undef HAVE_GETSID
 
@@ -341,6 +368,9 @@
 /* Define if you have the 'inet_pton' function. */
 #define HAVE_INET_PTON 1
 
+/* Define to 1 if you have the `initgroups' function. */
+#undef HAVE_INITGROUPS
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -365,7 +395,7 @@
    Solaris and Linux, the necessary defines are already defined.) */
 #undef HAVE_LARGEFILE_SUPPORT
 
-/* Define to 1 if you have the `lchflags' function. */
+/* Define to 1 if you have the 'lchflags' function. */
 #undef HAVE_LCHFLAGS
 
 /* Define to 1 if you have the `lchmod' function. */
@@ -373,6 +403,9 @@
 
 /* Define to 1 if you have the `lchown' function. */
 #undef HAVE_LCHOWN
+
+/* Define to 1 if you have the `lgamma' function. */
+#undef HAVE_LGAMMA
 
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
@@ -464,6 +497,9 @@
 /* Define to 1 if you have the `pause' function. */
 #undef HAVE_PAUSE
 
+/* Define if the OS supports pipe2() */
+#undef HAVE_PIPE2
+
 /* Define to 1 if you have the `plock' function. */
 #undef HAVE_PLOCK
 
@@ -478,9 +514,6 @@
 
 /* Define if your compiler supports function prototype */
 #define HAVE_PROTOTYPES 1
-
-/* Define if you have GNU PTH threads. */
-#undef HAVE_PTH
 
 /* Defined for Solaris 2.6 bug in pthread header. */
 #undef HAVE_PTHREAD_DESTRUCTOR
@@ -572,6 +605,12 @@
 /* Define to 1 if you have the `setregid' function. */
 #undef HAVE_SETREGID
 
+/* Define to 1 if you have the `setresgid' function. */
+#undef HAVE_SETRESGID
+
+/* Define to 1 if you have the `setresuid' function. */
+#undef HAVE_SETRESUID
+
 /* Define to 1 if you have the `setreuid' function. */
 #undef HAVE_SETREUID
 
@@ -610,6 +649,9 @@
 
 /* Define if you have the 'socketpair' function. */
 #undef HAVE_SOCKETPAIR
+
+/* Define to 1 if you have the <spawn.h> header file. */
+#undef HAVE_SPAWN_H
 
 /* Define if your compiler provides ssize_t */
 #define HAVE_SSIZE_T 1
@@ -651,25 +693,25 @@
 /* Define to 1 if you have the <stropts.h> header file. */
 #undef HAVE_STROPTS_H
 
-/* Define to 1 if `st_birthtime' is member of `struct stat'. */
+/* Define to 1 if `st_birthtime' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_BIRTHTIME
 
-/* Define to 1 if `st_blksize' is member of `struct stat'. */
+/* Define to 1 if `st_blksize' is a member of `struct stat'. */
 #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 
-/* Define to 1 if `st_blocks' is member of `struct stat'. */
+/* Define to 1 if `st_blocks' is a member of `struct stat'. */
 #define HAVE_STRUCT_STAT_ST_BLOCKS 1
 
-/* Define to 1 if `st_flags' is member of `struct stat'. */
+/* Define to 1 if `st_flags' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_FLAGS
 
-/* Define to 1 if `st_gen' is member of `struct stat'. */
+/* Define to 1 if `st_gen' is a member of `struct stat'. */
 #undef HAVE_STRUCT_STAT_ST_GEN
 
-/* Define to 1 if `st_rdev' is member of `struct stat'. */
+/* Define to 1 if `st_rdev' is a member of `struct stat'. */
 #define HAVE_STRUCT_STAT_ST_RDEV 1
 
-/* Define to 1 if `tm_zone' is member of `struct tm'. */
+/* Define to 1 if `tm_zone' is a member of `struct tm'. */
 #undef HAVE_STRUCT_TM_TM_ZONE
 
 /* Define to 1 if your `struct stat' has `st_blocks'. Deprecated, use
@@ -777,6 +819,9 @@
 /* Define to 1 if you have the <term.h> header file. */
 #undef HAVE_TERM_H
 
+/* Define to 1 if you have the `tgamma' function. */
+#undef HAVE_TGAMMA
+
 /* Define to 1 if you have the <thread.h> header file. */
 #undef HAVE_THREAD_H
 
@@ -836,6 +881,9 @@
    Include/unicodeobject.h). */
 #define HAVE_USABLE_WCHAR_T 1
 
+/* Define to 1 if you have the <util.h> header file. */
+#undef HAVE_UTIL_H
+
 /* Define to 1 if you have the `utimes' function. */
 #undef HAVE_UTIMES
 
@@ -876,6 +924,9 @@
 /* Define if you are using Mach cthreads directly under /include */
 #undef HURD_C_THREADS
 
+/* Define if log1p(-0.) is 0. rather than -0. */
+#undef LOG1P_DROPS_ZERO_SIGN
+
 /* Define if you are using Mach cthreads under mach / */
 #undef MACH_C_THREADS
 
@@ -897,13 +948,16 @@
 #define PACKAGE_NAME "python"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "python 3.1"
+#define PACKAGE_STRING "python 3.2"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "python-3.1.2"
+#define PACKAGE_TARNAME "python-3.2.2"
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL "http://www.python.org/"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.1.2"
+#define PACKAGE_VERSION "3.2.2"
 
 /* Define if POSIX semaphores aren't enabled on your system */
 #undef POSIX_SEMAPHORES_NOT_ENABLED
@@ -913,6 +967,9 @@
 
 /* Define as the preferred size in bits of long digits */
 #define PYLONG_BITS_IN_DIGIT 15
+
+/* Define to printf format modifier for long long type */
+#define PY_FORMAT_LONG_LONG "llu"
 
 /* Define to printf format modifier for Py_ssize_t */
 #define PY_FORMAT_SIZE_T ""
@@ -929,7 +986,7 @@
 /* Define as the size of the unicode type. */
 #define Py_UNICODE_SIZE 2
 
-/* Define as the return type of signal handlers (`int' or `void'). */
+/* assume C89 semantics that RETSIGTYPE is always void */
 #define RETSIGTYPE void
 
 /* Define if setpgrp() must be called as setpgrp(0, 0). */
@@ -963,13 +1020,13 @@
 /* The size of `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
 
-/* The number of bytes in an off_t. */
+/* The size of `off_t', as computed by sizeof. */
 #define SIZEOF_OFF_T SIZEOF_LONG
 
 /* The size of `pid_t', as computed by sizeof. */
 #define SIZEOF_PID_T SIZEOF_INT
 
-/* The number of bytes in a pthread_t. */
+/* The size of `pthread_t', as computed by sizeof. */
 #define SIZEOF_PTHREAD_T SIZEOF_LONG
 
 /* The size of `short', as computed by sizeof. */
@@ -978,7 +1035,7 @@
 /* The size of `size_t', as computed by sizeof. */
 #define SIZEOF_SIZE_T SIZEOF_INT
 
-/* The number of bytes in a time_t. */
+/* The size of `time_t', as computed by sizeof. */
 #define SIZEOF_TIME_T SIZEOF_LONG
 
 /* The size of `uintptr_t', as computed by sizeof. */
@@ -1014,15 +1071,36 @@
 /* Define if you want to use computed gotos in ceval.c. */
 #define USE_COMPUTED_GOTOS 1
 
+/* Define to use the C99 inline keyword. */
+#define USE_INLINE 1
+
+/* Enable extensions on AIX 3, Interix.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE 1
+#endif
+/* Enable threading extensions on Solaris.  */
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions on HP NonStop.  */
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
+
+
 /* Define if a va_list is an array of some kind */
 #undef VA_LIST_IS_ARRAY
 
 /* Define if you want SIGFPE handled (see Include/pyfpe.h). */
 #undef WANT_SIGFPE_HANDLER
-
-/* Define if you want wctype.h functions to be used instead of the one
-   supplied by Python itself. (see Include/unicodectype.h). */
-#undef WANT_WCTYPE_FUNCTIONS
 
 /* Define if WINDOW in curses.h offers a field _flags. */
 #undef WINDOW_HAS_FLAGS
@@ -1051,19 +1129,23 @@
 /* Define to profile with the Pentium timestamp counter */
 #undef WITH_TSC
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#define WORDS_BIGENDIAN 1
+/* Define if you want pymalloc to be disabled when running under valgrind */
+#undef WITH_VALGRIND
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  define WORDS_BIGENDIAN 1
+# endif
+#endif
 
 /* Define if arithmetic is subject to x87-style double rounding issue */
 #undef X87_DOUBLE_ROUNDING
-
-/* Define to 1 if on AIX 3.
-   System headers sometimes define this.
-   We just want to avoid a redefinition error message.  */
-#ifndef _ALL_SOURCE
-# undef _ALL_SOURCE
-#endif
 
 /* Define on OpenBSD to activate all library features */
 #undef _BSD_SOURCE
@@ -1083,14 +1165,27 @@
 /* This must be defined on some systems to enable large file support. */
 #undef _LARGEFILE_SOURCE
 
+/* This must be defined on AIX systems to enable large file support. */
+#undef _LARGE_FILES
+
+/* Define to 1 if on MINIX. */
+#undef _MINIX
+
 /* Define on NetBSD to activate all library features */
 #undef _NETBSD_SOURCE
 
 /* Define _OSF_SOURCE to get the makedev macro. */
 #undef _OSF_SOURCE
 
+/* Define to 2 if the system does not provide POSIX.1 features except with
+   this defined. */
+#undef _POSIX_1_SOURCE
+
 /* Define to activate features from IEEE Stds 1003.1-2001 */
 #undef _POSIX_C_SOURCE
+
+/* Define to 1 if you need to in order for `stat' and other things to work. */
+#undef _POSIX_SOURCE
 
 /* Define if you have POSIX threads, and your system does not define that. */
 #undef _POSIX_THREADS
@@ -1099,12 +1194,12 @@
 #undef _REENTRANT
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT32_T
 
 /* Define for Solaris 2.5.1 so the uint64_t typedef from <sys/synch.h>,
-   <pthread.h>, or <semaphore.h> is not used. If the typedef was allowed, the
+   <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the
    #define below would cause a syntax error. */
 #undef _UINT64_T
 
@@ -1122,9 +1217,6 @@
 # undef __CHAR_UNSIGNED__
 #endif
 
-/* Defined on Solaris to see additional function prototypes. */
-#undef __EXTENSIONS__
-
 /* Define to 'long' if <time.h> doesn't define. */
 #undef clock_t
 
@@ -1133,6 +1225,12 @@
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef gid_t
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#define inline __inline
+#endif
 
 /* Define to the type of a signed integer type of width exactly 32 bits if
    such a type exists and the standard includes do not define it. */

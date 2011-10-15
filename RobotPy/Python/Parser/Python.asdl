@@ -1,6 +1,6 @@
 -- ASDL's four builtin types are identifier, int, string, object
 
-module Python version "$Revision: 67616 $"
+module Python version "$Revision$"
 {
 	mod = Module(stmt* body)
 	    | Interactive(stmt* body)
@@ -17,7 +17,7 @@ module Python version "$Revision: 67616 $"
 			 expr? starargs,
 			 expr? kwargs,
 			 stmt* body,
-			 expr *decorator_list)
+			 expr* decorator_list)
 	      | Return(expr? value)
 
 	      | Delete(expr* targets)
@@ -36,7 +36,7 @@ module Python version "$Revision: 67616 $"
 	      | Assert(expr test, expr? msg)
 
 	      | Import(alias* names)
-	      | ImportFrom(identifier module, alias* names, int? level)
+	      | ImportFrom(identifier? module, alias* names, int? level)
 
 	      | Global(identifier* names)
 	      | Nonlocal(identifier* names)

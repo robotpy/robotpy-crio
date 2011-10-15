@@ -23,7 +23,7 @@ Misc variables:
 
 """
 
-__version__ = "$Revision: 73236 $"       # Code version
+__version__ = "$Revision$"       # Code version
 
 from types import FunctionType, BuiltinFunctionType
 from copyreg import dispatch_table
@@ -499,7 +499,7 @@ class _Pickler:
 
     def save_str(self, obj, pack=struct.pack):
         if self.bin:
-            encoded = obj.encode('utf-8')
+            encoded = obj.encode('utf-8', 'surrogatepass')
             n = len(encoded)
             self.write(BINUNICODE + pack("<i", n) + encoded)
         else:
@@ -966,7 +966,7 @@ class _Unpickler:
 
     def load_binunicode(self):
         len = mloads(b'i' + self.read(4))
-        self.append(str(self.read(len), 'utf-8'))
+        self.append(str(self.read(len), 'utf-8', 'surrogatepass'))
     dispatch[BINUNICODE[0]] = load_binunicode
 
     def load_short_binstring(self):
@@ -1034,19 +1034,15 @@ class _Unpickler:
     def _instantiate(self, klass, k):
         args = tuple(self.stack[k+1:])
         del self.stack[k:]
-        instantiated = False
-        if (not args and
-                isinstance(klass, type) and
-                not hasattr(klass, "__getinitargs__")):
-            value = _EmptyClass()
-            value.__class__ = klass
-            instantiated = True
-        if not instantiated:
+        if (args or not isinstance(klass, type) or
+            hasattr(klass, "__getinitargs__")):
             try:
                 value = klass(*args)
             except TypeError as err:
                 raise TypeError("in constructor for %s: %s" %
                                 (klass.__name__, str(err)), sys.exc_info()[2])
+        else:
+            value = klass.__new__(klass)
         self.append(value)
 
     def load_inst(self):
@@ -1239,14 +1235,7 @@ class _Unpickler:
         raise _Stop(value)
     dispatch[STOP[0]] = load_stop
 
-# Helper class for load_inst/load_obj
-
-class _EmptyClass:
-    pass
-
-# Encode/decode longs in linear time.
-
-import binascii as _binascii
+# Encode/decode longs.
 
 def encode_long(x):
     r"""Encode a long to a two's complement little-endian binary string.
@@ -1269,50 +1258,14 @@ def encode_long(x):
     b'\x7f'
     >>>
     """
-
     if x == 0:
         return b''
-    if x > 0:
-        ashex = hex(x)
-        assert ashex.startswith("0x")
-        njunkchars = 2 + ashex.endswith('L')
-        nibbles = len(ashex) - njunkchars
-        if nibbles & 1:
-            # need an even # of nibbles for unhexlify
-            ashex = "0x0" + ashex[2:]
-        elif int(ashex[2], 16) >= 8:
-            # "looks negative", so need a byte of sign bits
-            ashex = "0x00" + ashex[2:]
-    else:
-        # Build the 256's-complement:  (1L << nbytes) + x.  The trick is
-        # to find the number of bytes in linear time (although that should
-        # really be a constant-time task).
-        ashex = hex(-x)
-        assert ashex.startswith("0x")
-        njunkchars = 2 + ashex.endswith('L')
-        nibbles = len(ashex) - njunkchars
-        if nibbles & 1:
-            # Extend to a full byte.
-            nibbles += 1
-        nbits = nibbles * 4
-        x += 1 << nbits
-        assert x > 0
-        ashex = hex(x)
-        njunkchars = 2 + ashex.endswith('L')
-        newnibbles = len(ashex) - njunkchars
-        if newnibbles < nibbles:
-            ashex = "0x" + "0" * (nibbles - newnibbles) + ashex[2:]
-        if int(ashex[2], 16) < 8:
-            # "looks positive", so need a byte of sign bits
-            ashex = "0xff" + ashex[2:]
-
-    if ashex.endswith('L'):
-        ashex = ashex[2:-1]
-    else:
-        ashex = ashex[2:]
-    assert len(ashex) & 1 == 0, (x, ashex)
-    binary = _binascii.unhexlify(ashex)
-    return bytes(binary[::-1])
+    nbytes = (x.bit_length() >> 3) + 1
+    result = x.to_bytes(nbytes, byteorder='little', signed=True)
+    if x < 0 and nbytes > 1:
+        if result[-1] == 0xff and (result[-2] & 0x80) != 0:
+            result = result[:-1]
+    return result
 
 def decode_long(data):
     r"""Decode a long from a two's complement little-endian binary string.
@@ -1332,21 +1285,7 @@ def decode_long(data):
     >>> decode_long(b"\x7f")
     127
     """
-
-    nbytes = len(data)
-    if nbytes == 0:
-        return 0
-    ashex = _binascii.hexlify(data[::-1])
-    n = int(ashex, 16) # quadratic time before Python 2.3; linear now
-    if data[-1] >= 0x80:
-        n -= 1 << (nbytes * 8)
-    return n
-
-# Use the faster _pickle if possible
-try:
-    from _pickle import *
-except ImportError:
-    Pickler, Unpickler = _Pickler, _Unpickler
+    return int.from_bytes(data, byteorder='little', signed=True)
 
 # Shorthands
 
@@ -1371,10 +1310,38 @@ def loads(s, *, fix_imports=True, encoding="ASCII", errors="strict"):
     return Unpickler(file, fix_imports=fix_imports,
                      encoding=encoding, errors=errors).load()
 
+# Use the faster _pickle if possible
+try:
+    from _pickle import *
+except ImportError:
+    Pickler, Unpickler = _Pickler, _Unpickler
+
 # Doctest
 def _test():
     import doctest
     return doctest.testmod()
 
 if __name__ == "__main__":
-    _test()
+    import sys, argparse
+    parser = argparse.ArgumentParser(
+        description='display contents of the pickle files')
+    parser.add_argument(
+        'pickle_file', type=argparse.FileType('br'),
+        nargs='*', help='the pickle file')
+    parser.add_argument(
+        '-t', '--test', action='store_true',
+        help='run self-test suite')
+    parser.add_argument(
+        '-v', action='store_true',
+        help='run verbosely; only affects self-test run')
+    args = parser.parse_args()
+    if args.test:
+        _test()
+    else:
+        if not args.pickle_file:
+            parser.print_help()
+        else:
+            import pprint
+            for f in args.pickle_file:
+                obj = load(f)
+                pprint.pprint(obj)

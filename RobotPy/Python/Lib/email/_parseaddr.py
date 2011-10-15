@@ -64,8 +64,10 @@ def parsedate_tz(data):
     if len(data) == 4:
         s = data[3]
         i = s.find('+')
+        if i == -1:
+            i = s.find('-')
         if i > 0:
-            data[3:] = [s[:i], s[i+1:]]
+            data[3:] = [s[:i], s[i:]]
         else:
             data.append('') # Dummy tz
     if len(data) < 5:
@@ -107,6 +109,18 @@ def parsedate_tz(data):
         tss = int(tss)
     except ValueError:
         return None
+    # Check for a yy specified in two-digit format, then convert it to the
+    # appropriate four-digit format, according to the POSIX standard. RFC 822
+    # calls for a two-digit yy, but RFC 2822 (which obsoletes RFC 822)
+    # mandates a 4-digit yy. For more information, see the documentation for
+    # the time module.
+    if yy < 100:
+        # The year is between 1969 and 1999 (inclusive).
+        if yy > 68:
+            yy += 1900
+        # The year is between 2000 and 2068 (inclusive).
+        else:
+            yy += 2000
     tzoffset = None
     tz = tz.upper()
     if tz in _timezones:
@@ -148,7 +162,12 @@ def mktime_tz(data):
 
 
 def quote(str):
-    """Add quotes around a string."""
+    """Prepare string to be used in a quoted string.
+
+    Turns backslash and double quote characters into quoted pairs.  These
+    are the only characters that need to be quoted inside a quoted string.
+    Does not add the surrounding double quotes.
+    """
     return str.replace('\\', '\\\\').replace('"', '\\"')
 
 
@@ -182,14 +201,18 @@ class AddrlistClass:
         self.commentlist = []
 
     def gotonext(self):
-        """Parse up to the start of the next address."""
+        """Skip white space and extract comments."""
+        wslist = []
         while self.pos < len(self.field):
             if self.field[self.pos] in self.LWS + '\n\r':
+                if self.field[self.pos] not in '\n\r':
+                    wslist.append(self.field[self.pos])
                 self.pos += 1
             elif self.field[self.pos] == '(':
                 self.commentlist.append(self.getcomment())
             else:
                 break
+        return EMPTYSTRING.join(wslist)
 
     def getaddrlist(self):
         """Parse all addresses.
@@ -302,16 +325,24 @@ class AddrlistClass:
 
         self.gotonext()
         while self.pos < len(self.field):
+            preserve_ws = True
             if self.field[self.pos] == '.':
+                if aslist and not aslist[-1].strip():
+                    aslist.pop()
                 aslist.append('.')
                 self.pos += 1
+                preserve_ws = False
             elif self.field[self.pos] == '"':
-                aslist.append('"%s"' % self.getquote())
+                aslist.append('"%s"' % quote(self.getquote()))
             elif self.field[self.pos] in self.atomends:
+                if aslist and not aslist[-1].strip():
+                    aslist.pop()
                 break
             else:
                 aslist.append(self.getatom())
-            self.gotonext()
+            ws = self.gotonext()
+            if preserve_ws and ws:
+                aslist.append(ws)
 
         if self.pos >= len(self.field) or self.field[self.pos] != '@':
             return EMPTYSTRING.join(aslist)

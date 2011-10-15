@@ -77,7 +77,7 @@ str2uni(const char* s)
     if (dest != smallbuf)
         PyMem_Free(dest);
     return res2;
-}        
+}
 
 /* support functions for formatting floating point numbers */
 
@@ -242,29 +242,16 @@ PyLocale_strcoll(PyObject* self, PyObject* args)
 {
     PyObject *os1, *os2, *result = NULL;
     wchar_t *ws1 = NULL, *ws2 = NULL;
-    Py_ssize_t len1, len2;
-    
+
     if (!PyArg_ParseTuple(args, "UU:strcoll", &os1, &os2))
         return NULL;
     /* Convert the unicode strings to wchar[]. */
-    len1 = PyUnicode_GET_SIZE(os1) + 1;
-    ws1 = PyMem_MALLOC(len1 * sizeof(wchar_t));
-    if (!ws1) {
-        PyErr_NoMemory();
+    ws1 = PyUnicode_AsWideCharString(os1, NULL);
+    if (ws1 == NULL)
         goto done;
-    }
-    if (PyUnicode_AsWideChar((PyUnicodeObject*)os1, ws1, len1) == -1)
+    ws2 = PyUnicode_AsWideCharString(os2, NULL);
+    if (ws2 == NULL)
         goto done;
-    ws1[len1 - 1] = 0;
-    len2 = PyUnicode_GET_SIZE(os2) + 1;
-    ws2 = PyMem_MALLOC(len2 * sizeof(wchar_t));
-    if (!ws2) {
-        PyErr_NoMemory();
-        goto done;
-    }
-    if (PyUnicode_AsWideChar((PyUnicodeObject*)os2, ws2, len2) == -1)
-        goto done;
-    ws2[len2 - 1] = 0;
     /* Collate the strings. */
     result = PyLong_FromLong(wcscoll(ws1, ws2));
   done:
@@ -289,15 +276,15 @@ PyLocale_strxfrm(PyObject* self, PyObject* args)
     wchar_t *s, *buf = NULL;
     size_t n1, n2;
     PyObject *result = NULL;
-#ifndef HAVE_USABLE_WCHAR_T
+#if Py_UNICODE_SIZE != SIZEOF_WCHAR_T
     Py_ssize_t i;
 #endif
 
     if (!PyArg_ParseTuple(args, "u#:strxfrm", &s0, &n0))
         return NULL;
 
-#ifdef HAVE_USABLE_WCHAR_T
-    s = s0;
+#if Py_UNICODE_SIZE == SIZEOF_WCHAR_T
+    s = (wchar_t *) s0;
 #else
     s = PyMem_Malloc((n0+1)*sizeof(wchar_t));
     if (!s)
@@ -326,7 +313,7 @@ PyLocale_strxfrm(PyObject* self, PyObject* args)
     result = PyUnicode_FromWideChar(buf, n2);
  exit:
     if (buf) PyMem_Free(buf);
-#ifndef HAVE_USABLE_WCHAR_T
+#if Py_UNICODE_SIZE != SIZEOF_WCHAR_T
     PyMem_Free(s);
 #endif
     return result;
@@ -373,9 +360,9 @@ PyLocale_getdefaultlocale(PyObject* self)
 #ifdef HAVE_LANGINFO_H
 #define LANGINFO(X) {#X, X}
 static struct langinfo_constant{
-	char* name;
-	int value;
-} langinfo_constants[] = 
+    char* name;
+    int value;
+} langinfo_constants[] =
 {
     /* These constants should exist on any langinfo implementation */
     LANGINFO(DAY_1),
@@ -514,10 +501,10 @@ PyDoc_STRVAR(gettext__doc__,
 static PyObject*
 PyIntl_gettext(PyObject* self, PyObject *args)
 {
-	char *in;
-	if (!PyArg_ParseTuple(args, "s", &in))
-		return 0;
-	return str2uni(gettext(in));
+    char *in;
+    if (!PyArg_ParseTuple(args, "s", &in))
+        return 0;
+    return str2uni(gettext(in));
 }
 
 PyDoc_STRVAR(dgettext__doc__,
@@ -527,10 +514,10 @@ PyDoc_STRVAR(dgettext__doc__,
 static PyObject*
 PyIntl_dgettext(PyObject* self, PyObject *args)
 {
-	char *domain, *in;
-	if (!PyArg_ParseTuple(args, "zs", &domain, &in))
-		return 0;
-	return str2uni(dgettext(domain, in));
+    char *domain, *in;
+    if (!PyArg_ParseTuple(args, "zs", &domain, &in))
+        return 0;
+    return str2uni(dgettext(domain, in));
 }
 
 PyDoc_STRVAR(dcgettext__doc__,
@@ -540,11 +527,11 @@ PyDoc_STRVAR(dcgettext__doc__,
 static PyObject*
 PyIntl_dcgettext(PyObject *self, PyObject *args)
 {
-	char *domain, *msgid;
-	int category;
-	if (!PyArg_ParseTuple(args, "zsi", &domain, &msgid, &category))
-		return 0;
-	return str2uni(dcgettext(domain,msgid,category));
+    char *domain, *msgid;
+    int category;
+    if (!PyArg_ParseTuple(args, "zsi", &domain, &msgid, &category))
+        return 0;
+    return str2uni(dcgettext(domain,msgid,category));
 }
 
 PyDoc_STRVAR(textdomain__doc__,
@@ -554,15 +541,15 @@ PyDoc_STRVAR(textdomain__doc__,
 static PyObject*
 PyIntl_textdomain(PyObject* self, PyObject* args)
 {
-	char *domain;
-	if (!PyArg_ParseTuple(args, "z", &domain))
-		return 0;
-	domain = textdomain(domain);
-	if (!domain) {
-		PyErr_SetFromErrno(PyExc_OSError);
-		return NULL;
-	}
-	return str2uni(domain);
+    char *domain;
+    if (!PyArg_ParseTuple(args, "z", &domain))
+        return 0;
+    domain = textdomain(domain);
+    if (!domain) {
+        PyErr_SetFromErrno(PyExc_OSError);
+        return NULL;
+    }
+    return str2uni(domain);
 }
 
 PyDoc_STRVAR(bindtextdomain__doc__,
@@ -572,19 +559,31 @@ PyDoc_STRVAR(bindtextdomain__doc__,
 static PyObject*
 PyIntl_bindtextdomain(PyObject* self,PyObject*args)
 {
-	char *domain, *dirname;
-	if (!PyArg_ParseTuple(args, "sz", &domain, &dirname))
-		return 0;
-	if (!strlen(domain)) {
-		PyErr_SetString(Error, "domain must be a non-empty string");
-		return 0;
-	}
-	dirname = bindtextdomain(domain, dirname);
-	if (!dirname) {
-		PyErr_SetFromErrno(PyExc_OSError);
-		return NULL;
-	}
-	return str2uni(dirname);
+    char *domain, *dirname, *current_dirname;
+    PyObject *dirname_obj, *dirname_bytes = NULL, *result;
+    if (!PyArg_ParseTuple(args, "sO", &domain, &dirname_obj))
+        return 0;
+    if (!strlen(domain)) {
+        PyErr_SetString(Error, "domain must be a non-empty string");
+        return 0;
+    }
+    if (dirname_obj != Py_None) {
+        if (!PyUnicode_FSConverter(dirname_obj, &dirname_bytes))
+            return NULL;
+        dirname = PyBytes_AsString(dirname_bytes);
+    } else {
+        dirname_bytes = NULL;
+        dirname = NULL;
+    }
+    current_dirname = bindtextdomain(domain, dirname);
+    if (current_dirname == NULL) {
+        Py_XDECREF(dirname_bytes);
+        PyErr_SetFromErrno(PyExc_OSError);
+        return NULL;
+    }
+    result = str2uni(current_dirname);
+    Py_XDECREF(dirname_bytes);
+    return result;
 }
 
 #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
@@ -595,32 +594,32 @@ PyDoc_STRVAR(bind_textdomain_codeset__doc__,
 static PyObject*
 PyIntl_bind_textdomain_codeset(PyObject* self,PyObject*args)
 {
-	char *domain,*codeset;
-	if (!PyArg_ParseTuple(args, "sz", &domain, &codeset))
-		return NULL;
-	codeset = bind_textdomain_codeset(domain, codeset);
-	if (codeset)
-		return str2uni(codeset);
-	Py_RETURN_NONE;
+    char *domain,*codeset;
+    if (!PyArg_ParseTuple(args, "sz", &domain, &codeset))
+        return NULL;
+    codeset = bind_textdomain_codeset(domain, codeset);
+    if (codeset)
+        return str2uni(codeset);
+    Py_RETURN_NONE;
 }
 #endif
 
 #endif
 
 static struct PyMethodDef PyLocale_Methods[] = {
-  {"setlocale", (PyCFunction) PyLocale_setlocale, 
+  {"setlocale", (PyCFunction) PyLocale_setlocale,
    METH_VARARGS, setlocale__doc__},
-  {"localeconv", (PyCFunction) PyLocale_localeconv, 
+  {"localeconv", (PyCFunction) PyLocale_localeconv,
    METH_NOARGS, localeconv__doc__},
 #ifdef HAVE_WCSCOLL
-  {"strcoll", (PyCFunction) PyLocale_strcoll, 
+  {"strcoll", (PyCFunction) PyLocale_strcoll,
    METH_VARARGS, strcoll__doc__},
 #endif
 #ifdef HAVE_WCSXFRM
-  {"strxfrm", (PyCFunction) PyLocale_strxfrm, 
+  {"strxfrm", (PyCFunction) PyLocale_strxfrm,
    METH_VARARGS, strxfrm__doc__},
 #endif
-#if defined(MS_WINDOWS) 
+#if defined(MS_WINDOWS)
   {"_getdefaultlocale", (PyCFunction) PyLocale_getdefaultlocale, METH_NOARGS},
 #endif
 #ifdef HAVE_LANGINFO_H
@@ -642,21 +641,21 @@ static struct PyMethodDef PyLocale_Methods[] = {
   {"bind_textdomain_codeset",(PyCFunction)PyIntl_bind_textdomain_codeset,
    METH_VARARGS, bind_textdomain_codeset__doc__},
 #endif
-#endif  
+#endif
   {NULL, NULL}
 };
 
 
 static struct PyModuleDef _localemodule = {
-	PyModuleDef_HEAD_INIT,
-	"_locale",
-	locale__doc__,
-	-1,
-	PyLocale_Methods,
-	NULL,
-	NULL,
-	NULL,
-	NULL
+    PyModuleDef_HEAD_INIT,
+    "_locale",
+    locale__doc__,
+    -1,
+    PyLocale_Methods,
+    NULL,
+    NULL,
+    NULL,
+    NULL
 };
 
 PyMODINIT_FUNC
@@ -669,7 +668,7 @@ PyInit__locale(void)
 
     m = PyModule_Create(&_localemodule);
     if (m == NULL)
-    	return NULL;
+    return NULL;
 
     d = PyModule_GetDict(m);
 
@@ -712,14 +711,14 @@ PyInit__locale(void)
 
 #ifdef HAVE_LANGINFO_H
     for (i = 0; langinfo_constants[i].name; i++) {
-	    PyModule_AddIntConstant(m, langinfo_constants[i].name,
-				    langinfo_constants[i].value);
+        PyModule_AddIntConstant(m, langinfo_constants[i].name,
+                                langinfo_constants[i].value);
     }
 #endif
     return m;
 }
 
-/* 
+/*
 Local variables:
 c-basic-offset: 4
 indent-tabs-mode: nil

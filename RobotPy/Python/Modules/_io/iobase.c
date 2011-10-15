@@ -35,7 +35,8 @@ PyDoc_STRVAR(iobase_doc,
     "Even though IOBase does not declare read, readinto, or write because\n"
     "their signatures will vary, implementations and clients should\n"
     "consider those methods part of the interface. Also, implementations\n"
-    "may raise a IOError when operations they do not support are called.\n"
+    "may raise UnsupportedOperation when operations they do not support are\n"
+    "called.\n"
     "\n"
     "The basic type used for binary data read from or written to a file is\n"
     "bytes. bytearrays are accepted too, and in some cases (such as\n"
@@ -49,7 +50,7 @@ PyDoc_STRVAR(iobase_doc,
     "stream.\n"
     "\n"
     "IOBase also supports the :keyword:`with` statement. In this example,\n"
-    "fp is closed after the suite of the with statment is complete:\n"
+    "fp is closed after the suite of the with statement is complete:\n"
     "\n"
     "with open('spam.txt', 'r') as fp:\n"
     "    fp.write('Spam and eggs!')\n");
@@ -183,11 +184,7 @@ iobase_close(PyObject *self, PyObject *args)
     res = PyObject_CallMethodObjArgs(self, _PyIO_str_flush, NULL);
     PyObject_SetAttrString(self, "__IOBase_closed", Py_True);
     if (res == NULL) {
-        /* If flush() fails, just give up */
-        if (PyErr_ExceptionMatches(PyExc_IOError))
-            PyErr_Clear();
-        else
-            return NULL;
+        return NULL;
     }
     Py_XDECREF(res);
     Py_RETURN_NONE;
@@ -304,7 +301,7 @@ iobase_dealloc(iobase *self)
 PyDoc_STRVAR(iobase_seekable_doc,
     "Return whether object supports random access.\n"
     "\n"
-    "If False, seek(), tell() and truncate() will raise IOError.\n"
+    "If False, seek(), tell() and truncate() will raise UnsupportedOperation.\n"
     "This method may need to do a test seek().");
 
 static PyObject *
@@ -321,7 +318,7 @@ _PyIOBase_check_seekable(PyObject *self, PyObject *args)
         return NULL;
     if (res != Py_True) {
         Py_CLEAR(res);
-        PyErr_SetString(PyExc_IOError, "File or stream is not seekable.");
+        iobase_unsupported("File or stream is not seekable.");
         return NULL;
     }
     if (args == Py_True) {
@@ -333,7 +330,7 @@ _PyIOBase_check_seekable(PyObject *self, PyObject *args)
 PyDoc_STRVAR(iobase_readable_doc,
     "Return whether object was opened for reading.\n"
     "\n"
-    "If False, read() will raise IOError.");
+    "If False, read() will raise UnsupportedOperation.");
 
 static PyObject *
 iobase_readable(PyObject *self, PyObject *args)
@@ -350,7 +347,7 @@ _PyIOBase_check_readable(PyObject *self, PyObject *args)
         return NULL;
     if (res != Py_True) {
         Py_CLEAR(res);
-        PyErr_SetString(PyExc_IOError, "File or stream is not readable.");
+        iobase_unsupported("File or stream is not readable.");
         return NULL;
     }
     if (args == Py_True) {
@@ -362,7 +359,7 @@ _PyIOBase_check_readable(PyObject *self, PyObject *args)
 PyDoc_STRVAR(iobase_writable_doc,
     "Return whether object was opened for writing.\n"
     "\n"
-    "If False, read() will raise IOError.");
+    "If False, write() will raise UnsupportedOperation.");
 
 static PyObject *
 iobase_writable(PyObject *self, PyObject *args)
@@ -379,7 +376,7 @@ _PyIOBase_check_writable(PyObject *self, PyObject *args)
         return NULL;
     if (res != Py_True) {
         Py_CLEAR(res);
-        PyErr_SetString(PyExc_IOError, "File or stream is not writable.");
+        iobase_unsupported("File or stream is not writable.");
         return NULL;
     }
     if (args == Py_True) {
@@ -780,9 +777,9 @@ rawiobase_read(PyObject *self, PyObject *args)
         return NULL;
 
     res = PyObject_CallMethodObjArgs(self, _PyIO_str_readinto, b, NULL);
-    if (res == NULL) {
+    if (res == NULL || res == Py_None) {
         Py_DECREF(b);
-        return NULL;
+        return res;
     }
 
     n = PyNumber_AsSsize_t(res, PyExc_ValueError);
@@ -817,6 +814,14 @@ rawiobase_readall(PyObject *self, PyObject *args)
         if (!data) {
             Py_DECREF(chunks);
             return NULL;
+        }
+        if (data == Py_None) {
+            if (PyList_GET_SIZE(chunks) == 0) {
+                Py_DECREF(chunks);
+                return data;
+            }
+            Py_DECREF(data);
+            break;
         }
         if (!PyBytes_Check(data)) {
             Py_DECREF(chunks);

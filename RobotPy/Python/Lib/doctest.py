@@ -92,10 +92,15 @@ __all__ = [
 ]
 
 import __future__
-
-import sys, traceback, inspect, linecache, os, re
-import unittest, difflib, pdb, tempfile
-import warnings
+import difflib
+import inspect
+import linecache
+import os
+import pdb
+import re
+import sys
+import traceback
+import unittest
 from io import StringIO
 from collections import namedtuple
 
@@ -214,7 +219,8 @@ def _load_testfile(filename, package, module_relative, encoding):
                 # get_data() opens files as 'rb', so one must do the equivalent
                 # conversion as universal newlines would do.
                 return file_contents.replace(os.linesep, '\n'), filename
-    return open(filename, encoding=encoding).read(), filename
+    with open(filename, encoding=encoding) as f:
+        return f.read(), filename
 
 def _indent(s, indent=4):
     """
@@ -317,7 +323,10 @@ class _OutputRedirectingPdb(pdb.Pdb):
     def __init__(self, out):
         self.__out = out
         self.__debugger_used = False
-        pdb.Pdb.__init__(self, stdout=out)
+        # do not play signal games in the pdb
+        pdb.Pdb.__init__(self, stdout=out, nosigint=True)
+        # still use input() to get user input
+        self.use_rawinput = 1
 
     def set_trace(self, frame=None):
         self.__debugger_used = True
@@ -1207,7 +1216,7 @@ class DocTestRunner:
         # Process each example.
         for examplenum, example in enumerate(test.examples):
 
-            # If REPORT_ONLY_FIRST_FAILURE is set, then supress
+            # If REPORT_ONLY_FIRST_FAILURE is set, then suppress
             # reporting after the first failure.
             quiet = (self.optionflags & REPORT_ONLY_FIRST_FAILURE and
                      failures > 0)
@@ -1277,9 +1286,9 @@ class DocTestRunner:
 
                 # Another chance if they didn't care about the detail.
                 elif self.optionflags & IGNORE_EXCEPTION_DETAIL:
-                    m1 = re.match(r'[^:]*:', example.exc_msg)
-                    m2 = re.match(r'[^:]*:', exc_msg)
-                    if m1 and m2 and check(m1.group(0), m2.group(0),
+                    m1 = re.match(r'(?:[^:]*\.)?([^:]*:)', example.exc_msg)
+                    m2 = re.match(r'(?:[^:]*\.)?([^:]*:)', exc_msg)
+                    if m1 and m2 and check(m1.group(1), m2.group(1),
                                            self.optionflags):
                         outcome = SUCCESS
 
@@ -1317,7 +1326,7 @@ class DocTestRunner:
         self.tries += t
 
     __LINECACHE_FILENAME_RE = re.compile(r'<doctest '
-                                         r'(?P<name>[\w\.]+)'
+                                         r'(?P<name>.+)'
                                          r'\[(?P<examplenum>\d+)\]>$')
     def __patched_linecache_getlines(self, filename, module_globals=None):
         m = self.__LINECACHE_FILENAME_RE.match(filename)
@@ -1379,12 +1388,17 @@ class DocTestRunner:
         self.save_linecache_getlines = linecache.getlines
         linecache.getlines = self.__patched_linecache_getlines
 
+        # Make sure sys.displayhook just prints the value to stdout
+        save_displayhook = sys.displayhook
+        sys.displayhook = sys.__displayhook__
+
         try:
             return self.__run(test, compileflags, out)
         finally:
             sys.stdout = save_stdout
             pdb.set_trace = save_set_trace
             linecache.getlines = self.save_linecache_getlines
+            sys.displayhook = save_displayhook
             if clear_globs:
                 test.globs.clear()
                 import builtins
@@ -1779,7 +1793,7 @@ def testmod(m=None, name=None, globs=None, verbose=None,
 
     Return (#failures, #tests).
 
-    See doctest.__doc__ for an overview.
+    See help(doctest) for an overview.
 
     Optional keyword arg "name" gives the name of the module; by default
     use m.__name__.
@@ -2124,7 +2138,7 @@ class DocTestCase(unittest.TestCase):
            caller can catch the errors and initiate post-mortem debugging.
 
            The DocTestCase provides a debug method that raises
-           UnexpectedException errors if there is an unexepcted
+           UnexpectedException errors if there is an unexpected
            exception:
 
              >>> test = DocTestParser().get_doctest('>>> raise KeyError\n42',
@@ -2199,6 +2213,19 @@ class DocTestCase(unittest.TestCase):
     def shortDescription(self):
         return "Doctest: " + self._dt_test.name
 
+class SkipDocTestCase(DocTestCase):
+    def __init__(self):
+        DocTestCase.__init__(self, None)
+
+    def setUp(self):
+        self.skipTest("DocTestSuite will not work with -O2 and above")
+
+    def test_skip(self):
+        pass
+
+    def shortDescription(self):
+        return "Skipping tests from %s" % module.__name__
+
 def DocTestSuite(module=None, globs=None, extraglobs=None, test_finder=None,
                  **options):
     """
@@ -2241,13 +2268,20 @@ def DocTestSuite(module=None, globs=None, extraglobs=None, test_finder=None,
 
     module = _normalize_module(module)
     tests = test_finder.find(module, globs=globs, extraglobs=extraglobs)
-    if not tests:
+
+    if not tests and sys.flags.optimize >=2:
+        # Skip doctests when running with -O2
+        suite = unittest.TestSuite()
+        suite.addTest(SkipDocTestCase())
+        return suite
+    elif not tests:
         # Why do we want to do this? Because it reveals a bug that might
         # otherwise be hidden.
         raise ValueError(module, "has no tests")
 
     tests.sort()
     suite = unittest.TestSuite()
+
     for test in tests:
         if len(test.examples) == 0:
             continue
@@ -2480,36 +2514,21 @@ def debug_script(src, pm=False, globs=None):
     "Debug a test script.  `src` is the script, as a string."
     import pdb
 
-    # Note that tempfile.NameTemporaryFile() cannot be used.  As the
-    # docs say, a file so created cannot be opened by name a second time
-    # on modern Windows boxes, and exec() needs to open and read it.
-    srcfilename = tempfile.mktemp(".py", "doctestdebug")
-    f = open(srcfilename, 'w')
-    f.write(src)
-    f.close()
+    if globs:
+        globs = globs.copy()
+    else:
+        globs = {}
 
-    try:
-        if globs:
-            globs = globs.copy()
-        else:
-            globs = {}
-
-        if pm:
-            try:
-                exec(open(srcfilename).read(), globs, globs)
-            except:
-                print(sys.exc_info()[1])
-                pdb.post_mortem(sys.exc_info()[2])
-        else:
-            fp = open(srcfilename)
-            try:
-                script = fp.read()
-            finally:
-                fp.close()
-            pdb.run("exec(%r)" % script, globs, globs)
-
-    finally:
-        os.remove(srcfilename)
+    if pm:
+        try:
+            exec(src, globs, globs)
+        except:
+            print(sys.exc_info()[1])
+            p = pdb.Pdb(nosigint=True)
+            p.reset()
+            p.interaction(None, sys.exc_info()[2])
+    else:
+        pdb.Pdb(nosigint=True).run("exec(%r)" % src, globs, globs)
 
 def debug(module, name, pm=False):
     """Debug a single doctest docstring.

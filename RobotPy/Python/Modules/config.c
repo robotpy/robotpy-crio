@@ -30,6 +30,9 @@ extern PyObject* PyInit__sre(void);
 extern PyObject* PyInit__codecs(void);
 extern PyObject* PyInit__weakref(void);
 extern PyObject* PyInit__functools(void);
+extern PyObject* PyInit_operator(void);
+extern PyObject* PyInit__collections(void);
+extern PyObject* PyInit_itertools(void);
 extern PyObject* PyInit__locale(void);
 extern PyObject* PyInit__io(void);
 extern PyObject* PyInit_zipimport(void);
@@ -53,6 +56,9 @@ struct _inittab _PyImport_Inittab[] = {
 	{"_codecs", PyInit__codecs},
 	{"_weakref", PyInit__weakref},
 	{"_functools", PyInit__functools},
+	{"operator", PyInit_operator},
+	{"_collections", PyInit__collections},
+	{"itertools", PyInit_itertools},
 	{"_locale", PyInit__locale},
 	{"_io", PyInit__io},
 	{"zipimport", PyInit_zipimport},

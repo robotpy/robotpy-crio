@@ -168,6 +168,7 @@ class BaseServer:
     - verify_request(request, client_address)
     - server_close()
     - process_request(request, client_address)
+    - shutdown_request(request)
     - close_request(request)
     - handle_error()
 
@@ -197,7 +198,7 @@ class BaseServer:
         self.server_address = server_address
         self.RequestHandlerClass = RequestHandlerClass
         self.__is_shut_down = threading.Event()
-        self.__serving = False
+        self.__shutdown_request = False
 
     def server_activate(self):
         """Called by constructor to activate the server.
@@ -214,17 +215,19 @@ class BaseServer:
         self.timeout. If you need to do periodic tasks, do them in
         another thread.
         """
-        self.__serving = True
         self.__is_shut_down.clear()
-        while self.__serving:
-            # XXX: Consider using another file descriptor or
-            # connecting to the socket to wake this up instead of
-            # polling. Polling reduces our responsiveness to a
-            # shutdown request and wastes cpu at all other times.
-            r, w, e = select.select([self], [], [], poll_interval)
-            if r:
-                self._handle_request_noblock()
-        self.__is_shut_down.set()
+        try:
+            while not self.__shutdown_request:
+                # XXX: Consider using another file descriptor or
+                # connecting to the socket to wake this up instead of
+                # polling. Polling reduces our responsiveness to a
+                # shutdown request and wastes cpu at all other times.
+                r, w, e = select.select([self], [], [], poll_interval)
+                if self in r:
+                    self._handle_request_noblock()
+        finally:
+            self.__shutdown_request = False
+            self.__is_shut_down.set()
 
     def shutdown(self):
         """Stops the serve_forever loop.
@@ -233,7 +236,7 @@ class BaseServer:
         serve_forever() is running in another thread, or it will
         deadlock.
         """
-        self.__serving = False
+        self.__shutdown_request = True
         self.__is_shut_down.wait()
 
     # The distinction between handling, getting, processing and
@@ -281,7 +284,7 @@ class BaseServer:
                 self.process_request(request, client_address)
             except:
                 self.handle_error(request, client_address)
-                self.close_request(request)
+                self.shutdown_request(request)
 
     def handle_timeout(self):
         """Called if no new request arrives within self.timeout.
@@ -305,7 +308,7 @@ class BaseServer:
 
         """
         self.finish_request(request, client_address)
-        self.close_request(request)
+        self.shutdown_request(request)
 
     def server_close(self):
         """Called to clean-up the server.
@@ -318,6 +321,10 @@ class BaseServer:
     def finish_request(self, request, client_address):
         """Finish one request by instantiating RequestHandlerClass."""
         self.RequestHandlerClass(request, client_address, self)
+
+    def shutdown_request(self, request):
+        """Called to shutdown and close an individual request."""
+        self.close_request(request)
 
     def close_request(self, request):
         """Called to clean up an individual request."""
@@ -359,6 +366,7 @@ class TCPServer(BaseServer):
     - handle_timeout()
     - verify_request(request, client_address)
     - process_request(request, client_address)
+    - shutdown_request(request)
     - close_request(request)
     - handle_error()
 
@@ -443,6 +451,16 @@ class TCPServer(BaseServer):
         """
         return self.socket.accept()
 
+    def shutdown_request(self, request):
+        """Called to shutdown and close an individual request."""
+        try:
+            #explicitly shutdown.  socket.close() merely releases
+            #the socket and waits for GC to perform the actual close.
+            request.shutdown(socket.SHUT_WR)
+        except socket.error:
+            pass #some platforms may raise ENOTCONN here
+        self.close_request(request)
+
     def close_request(self, request):
         """Called to clean up an individual request."""
         request.close()
@@ -465,6 +483,10 @@ class UDPServer(TCPServer):
     def server_activate(self):
         # No need to call listen() for UDP.
         pass
+
+    def shutdown_request(self, request):
+        # No need to shutdown anything.
+        self.close_request(request)
 
     def close_request(self, request):
         # No need to close anything.
@@ -527,16 +549,17 @@ class ForkingMixIn:
                 self.active_children = []
             self.active_children.append(pid)
             self.close_request(request)
-            return
         else:
             # Child process.
             # This must never return, hence os._exit()!
             try:
                 self.finish_request(request, client_address)
+                self.shutdown_request(request)
                 os._exit(0)
             except:
                 try:
                     self.handle_error(request, client_address)
+                    self.shutdown_request(request)
                 finally:
                     os._exit(1)
 
@@ -556,10 +579,10 @@ class ThreadingMixIn:
         """
         try:
             self.finish_request(request, client_address)
-            self.close_request(request)
+            self.shutdown_request(request)
         except:
             self.handle_error(request, client_address)
-            self.close_request(request)
+            self.shutdown_request(request)
 
     def process_request(self, request, client_address):
         """Start a new thread to process the request."""
@@ -611,8 +634,10 @@ class BaseRequestHandler:
         self.client_address = client_address
         self.server = server
         self.setup()
-        self.handle()
-        self.finish()
+        try:
+            self.handle()
+        finally:
+            self.finish()
 
     def setup(self):
         pass
@@ -646,8 +671,20 @@ class StreamRequestHandler(BaseRequestHandler):
     rbufsize = -1
     wbufsize = 0
 
+    # A timeout to apply to the request socket, if not None.
+    timeout = None
+
+    # Disable nagle algorithm for this socket, if True.
+    # Use only when wbufsize != 0, to avoid small packets.
+    disable_nagle_algorithm = False
+
     def setup(self):
         self.connection = self.request
+        if self.timeout is not None:
+            self.connection.settimeout(self.timeout)
+        if self.disable_nagle_algorithm:
+            self.connection.setsockopt(socket.IPPROTO_TCP,
+                                       socket.TCP_NODELAY, True)
         self.rfile = self.connection.makefile('rb', self.rbufsize)
         self.wfile = self.connection.makefile('wb', self.wbufsize)
 

@@ -61,11 +61,15 @@ whose size is determined when the object is allocated.
 #define Py_REF_DEBUG
 #endif
 
+#if defined(Py_LIMITED_API) && defined(Py_REF_DEBUG)
+#error Py_LIMITED_API is incompatible with Py_DEBUG, Py_TRACE_REFS, and Py_REF_DEBUG
+#endif
+
 #ifdef Py_TRACE_REFS
 /* Define pointers to support a doubly-linked list of all live heap objects. */
-#define _PyObject_HEAD_EXTRA		\
-	struct _object *_ob_next;	\
-	struct _object *_ob_prev;
+#define _PyObject_HEAD_EXTRA            \
+    struct _object *_ob_next;           \
+    struct _object *_ob_prev;
 
 #define _PyObject_EXTRA_INIT 0, 0,
 
@@ -75,14 +79,14 @@ whose size is determined when the object is allocated.
 #endif
 
 /* PyObject_HEAD defines the initial segment of every PyObject. */
-#define PyObject_HEAD		        PyObject ob_base;
+#define PyObject_HEAD                   PyObject ob_base;
 
-#define PyObject_HEAD_INIT(type)	\
-	{ _PyObject_EXTRA_INIT		\
-	1, type },
+#define PyObject_HEAD_INIT(type)        \
+    { _PyObject_EXTRA_INIT              \
+    1, type },
 
-#define PyVarObject_HEAD_INIT(type, size)	\
-	{ PyObject_HEAD_INIT(type) size },
+#define PyVarObject_HEAD_INIT(type, size)       \
+    { PyObject_HEAD_INIT(type) size },
 
 /* PyObject_VAR_HEAD defines the initial segment of all variable-size
  * container objects.  These end with a declaration of an array with 1
@@ -99,19 +103,19 @@ whose size is determined when the object is allocated.
  * in addition, be cast to PyVarObject*.
  */
 typedef struct _object {
-	_PyObject_HEAD_EXTRA
-	Py_ssize_t ob_refcnt;
-	struct _typeobject *ob_type;
+    _PyObject_HEAD_EXTRA
+    Py_ssize_t ob_refcnt;
+    struct _typeobject *ob_type;
 } PyObject;
 
 typedef struct {
-	PyObject ob_base;
-	Py_ssize_t ob_size; /* Number of items in variable part */
+    PyObject ob_base;
+    Py_ssize_t ob_size; /* Number of items in variable part */
 } PyVarObject;
 
-#define Py_REFCNT(ob)		(((PyObject*)(ob))->ob_refcnt)
-#define Py_TYPE(ob)		(((PyObject*)(ob))->ob_type)
-#define Py_SIZE(ob)		(((PyVarObject*)(ob))->ob_size)
+#define Py_REFCNT(ob)           (((PyObject*)(ob))->ob_refcnt)
+#define Py_TYPE(ob)             (((PyObject*)(ob))->ob_type)
+#define Py_SIZE(ob)             (((PyVarObject*)(ob))->ob_size)
 
 /*
 Type objects contain a string containing the type name (to help somewhat
@@ -139,29 +143,29 @@ typedef int(*ssizeobjargproc)(PyObject *, Py_ssize_t, PyObject *);
 typedef int(*ssizessizeobjargproc)(PyObject *, Py_ssize_t, Py_ssize_t, PyObject *);
 typedef int(*objobjargproc)(PyObject *, PyObject *, PyObject *);
 
-
+#ifndef Py_LIMITED_API
 /* buffer interface */
 typedef struct bufferinfo {
-	void *buf;   
-	PyObject *obj;        /* owned reference */
-	Py_ssize_t len;
-	Py_ssize_t itemsize;  /* This is Py_ssize_t so it can be 
-			         pointed to by strides in simple case.*/
-	int readonly;
-	int ndim;
-	char *format;
-	Py_ssize_t *shape;
-	Py_ssize_t *strides;
-	Py_ssize_t *suboffsets;
-	Py_ssize_t smalltable[2];  /* static store for shape and strides of
-				      mono-dimensional buffers. */
-	void *internal;
+    void *buf;
+    PyObject *obj;        /* owned reference */
+    Py_ssize_t len;
+    Py_ssize_t itemsize;  /* This is Py_ssize_t so it can be
+                             pointed to by strides in simple case.*/
+    int readonly;
+    int ndim;
+    char *format;
+    Py_ssize_t *shape;
+    Py_ssize_t *strides;
+    Py_ssize_t *suboffsets;
+    Py_ssize_t smalltable[2];  /* static store for shape and strides of
+                                  mono-dimensional buffers. */
+    void *internal;
 } Py_buffer;
 
 typedef int (*getbufferproc)(PyObject *, Py_buffer *, int);
 typedef void (*releasebufferproc)(PyObject *, Py_buffer *);
 
-        /* Flags for getting buffers */
+    /* Flags for getting buffers */
 #define PyBUF_SIMPLE 0
 #define PyBUF_WRITABLE 0x0001
 /*  we used to include an E, backwards compatible alias  */
@@ -189,76 +193,77 @@ typedef void (*releasebufferproc)(PyObject *, Py_buffer *);
 
 #define PyBUF_READ  0x100
 #define PyBUF_WRITE 0x200
-#define PyBUF_SHADOW 0x400
 
 /* End buffer interface */
+#endif /* Py_LIMITED_API */
 
 typedef int (*objobjproc)(PyObject *, PyObject *);
 typedef int (*visitproc)(PyObject *, void *);
 typedef int (*traverseproc)(PyObject *, visitproc, void *);
 
+#ifndef Py_LIMITED_API
 typedef struct {
-	/* Number implementations must check *both*
-	   arguments for proper type and implement the necessary conversions
-	   in the slot functions themselves. */
+    /* Number implementations must check *both*
+       arguments for proper type and implement the necessary conversions
+       in the slot functions themselves. */
 
-	binaryfunc nb_add;
-	binaryfunc nb_subtract;
-	binaryfunc nb_multiply;
-	binaryfunc nb_remainder;
-	binaryfunc nb_divmod;
-	ternaryfunc nb_power;
-	unaryfunc nb_negative;
-	unaryfunc nb_positive;
-	unaryfunc nb_absolute;
-	inquiry nb_bool;
-	unaryfunc nb_invert;
-	binaryfunc nb_lshift;
-	binaryfunc nb_rshift;
-	binaryfunc nb_and;
-	binaryfunc nb_xor;
-	binaryfunc nb_or;
-	unaryfunc nb_int;
-	void *nb_reserved;  /* the slot formerly known as nb_long */
-	unaryfunc nb_float;
+    binaryfunc nb_add;
+    binaryfunc nb_subtract;
+    binaryfunc nb_multiply;
+    binaryfunc nb_remainder;
+    binaryfunc nb_divmod;
+    ternaryfunc nb_power;
+    unaryfunc nb_negative;
+    unaryfunc nb_positive;
+    unaryfunc nb_absolute;
+    inquiry nb_bool;
+    unaryfunc nb_invert;
+    binaryfunc nb_lshift;
+    binaryfunc nb_rshift;
+    binaryfunc nb_and;
+    binaryfunc nb_xor;
+    binaryfunc nb_or;
+    unaryfunc nb_int;
+    void *nb_reserved;  /* the slot formerly known as nb_long */
+    unaryfunc nb_float;
 
-	binaryfunc nb_inplace_add;
-	binaryfunc nb_inplace_subtract;
-	binaryfunc nb_inplace_multiply;
-	binaryfunc nb_inplace_remainder;
-	ternaryfunc nb_inplace_power;
-	binaryfunc nb_inplace_lshift;
-	binaryfunc nb_inplace_rshift;
-	binaryfunc nb_inplace_and;
-	binaryfunc nb_inplace_xor;
-	binaryfunc nb_inplace_or;
+    binaryfunc nb_inplace_add;
+    binaryfunc nb_inplace_subtract;
+    binaryfunc nb_inplace_multiply;
+    binaryfunc nb_inplace_remainder;
+    ternaryfunc nb_inplace_power;
+    binaryfunc nb_inplace_lshift;
+    binaryfunc nb_inplace_rshift;
+    binaryfunc nb_inplace_and;
+    binaryfunc nb_inplace_xor;
+    binaryfunc nb_inplace_or;
 
-	binaryfunc nb_floor_divide;
-	binaryfunc nb_true_divide;
-	binaryfunc nb_inplace_floor_divide;
-	binaryfunc nb_inplace_true_divide;
+    binaryfunc nb_floor_divide;
+    binaryfunc nb_true_divide;
+    binaryfunc nb_inplace_floor_divide;
+    binaryfunc nb_inplace_true_divide;
 
-	unaryfunc nb_index;
+    unaryfunc nb_index;
 } PyNumberMethods;
 
 typedef struct {
-	lenfunc sq_length;
-	binaryfunc sq_concat;
-	ssizeargfunc sq_repeat;
-	ssizeargfunc sq_item;
-	void *was_sq_slice;
-	ssizeobjargproc sq_ass_item;
-	void *was_sq_ass_slice;
-	objobjproc sq_contains;
+    lenfunc sq_length;
+    binaryfunc sq_concat;
+    ssizeargfunc sq_repeat;
+    ssizeargfunc sq_item;
+    void *was_sq_slice;
+    ssizeobjargproc sq_ass_item;
+    void *was_sq_ass_slice;
+    objobjproc sq_contains;
 
-	binaryfunc sq_inplace_concat;
-	ssizeargfunc sq_inplace_repeat;
+    binaryfunc sq_inplace_concat;
+    ssizeargfunc sq_inplace_repeat;
 } PySequenceMethods;
 
 typedef struct {
-	lenfunc mp_length;
-	binaryfunc mp_subscript;
-	objobjargproc mp_ass_subscript;
+    lenfunc mp_length;
+    binaryfunc mp_subscript;
+    objobjargproc mp_ass_subscript;
 } PyMappingMethods;
 
 
@@ -266,16 +271,23 @@ typedef struct {
      getbufferproc bf_getbuffer;
      releasebufferproc bf_releasebuffer;
 } PyBufferProcs;
+#endif /* Py_LIMITED_API */
 
 typedef void (*freefunc)(void *);
 typedef void (*destructor)(PyObject *);
+#ifndef Py_LIMITED_API
+/* We can't provide a full compile-time check that limited-API
+   users won't implement tp_print. However, not defining printfunc
+   and making tp_print of a different function pointer type
+   should at least cause a warning in most cases. */
 typedef int (*printfunc)(PyObject *, FILE *, int);
+#endif
 typedef PyObject *(*getattrfunc)(PyObject *, char *);
 typedef PyObject *(*getattrofunc)(PyObject *, PyObject *);
 typedef int (*setattrfunc)(PyObject *, char *, PyObject *);
 typedef int (*setattrofunc)(PyObject *, PyObject *, PyObject *);
 typedef PyObject *(*reprfunc)(PyObject *);
-typedef long (*hashfunc)(PyObject *);
+typedef Py_hash_t (*hashfunc)(PyObject *);
 typedef PyObject *(*richcmpfunc) (PyObject *, PyObject *, int);
 typedef PyObject *(*getiterfunc) (PyObject *);
 typedef PyObject *(*iternextfunc) (PyObject *);
@@ -285,143 +297,168 @@ typedef int (*initproc)(PyObject *, PyObject *, PyObject *);
 typedef PyObject *(*newfunc)(struct _typeobject *, PyObject *, PyObject *);
 typedef PyObject *(*allocfunc)(struct _typeobject *, Py_ssize_t);
 
+#ifdef Py_LIMITED_API
+typedef struct _typeobject PyTypeObject; /* opaque */
+#else
 typedef struct _typeobject {
-	PyObject_VAR_HEAD
-	const char *tp_name; /* For printing, in format "<module>.<name>" */
-	Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
+    PyObject_VAR_HEAD
+    const char *tp_name; /* For printing, in format "<module>.<name>" */
+    Py_ssize_t tp_basicsize, tp_itemsize; /* For allocation */
 
-	/* Methods to implement standard operations */
+    /* Methods to implement standard operations */
 
-	destructor tp_dealloc;
-	printfunc tp_print;
-	getattrfunc tp_getattr;
-	setattrfunc tp_setattr;
-	void *tp_reserved; /* formerly known as tp_compare */
-	reprfunc tp_repr;
+    destructor tp_dealloc;
+    printfunc tp_print;
+    getattrfunc tp_getattr;
+    setattrfunc tp_setattr;
+    void *tp_reserved; /* formerly known as tp_compare */
+    reprfunc tp_repr;
 
-	/* Method suites for standard classes */
+    /* Method suites for standard classes */
 
-	PyNumberMethods *tp_as_number;
-	PySequenceMethods *tp_as_sequence;
-	PyMappingMethods *tp_as_mapping;
+    PyNumberMethods *tp_as_number;
+    PySequenceMethods *tp_as_sequence;
+    PyMappingMethods *tp_as_mapping;
 
-	/* More standard operations (here for binary compatibility) */
+    /* More standard operations (here for binary compatibility) */
 
-	hashfunc tp_hash;
-	ternaryfunc tp_call;
-	reprfunc tp_str;
-	getattrofunc tp_getattro;
-	setattrofunc tp_setattro;
+    hashfunc tp_hash;
+    ternaryfunc tp_call;
+    reprfunc tp_str;
+    getattrofunc tp_getattro;
+    setattrofunc tp_setattro;
 
-	/* Functions to access object as input/output buffer */
-	PyBufferProcs *tp_as_buffer;
+    /* Functions to access object as input/output buffer */
+    PyBufferProcs *tp_as_buffer;
 
-	/* Flags to define presence of optional/expanded features */
-	long tp_flags;
+    /* Flags to define presence of optional/expanded features */
+    long tp_flags;
 
-	const char *tp_doc; /* Documentation string */
+    const char *tp_doc; /* Documentation string */
 
-	/* Assigned meaning in release 2.0 */
-	/* call function for all accessible objects */
-	traverseproc tp_traverse;
+    /* Assigned meaning in release 2.0 */
+    /* call function for all accessible objects */
+    traverseproc tp_traverse;
 
-	/* delete references to contained objects */
-	inquiry tp_clear;
+    /* delete references to contained objects */
+    inquiry tp_clear;
 
-	/* Assigned meaning in release 2.1 */
-	/* rich comparisons */
-	richcmpfunc tp_richcompare;
+    /* Assigned meaning in release 2.1 */
+    /* rich comparisons */
+    richcmpfunc tp_richcompare;
 
-	/* weak reference enabler */
-	Py_ssize_t tp_weaklistoffset;
+    /* weak reference enabler */
+    Py_ssize_t tp_weaklistoffset;
 
-	/* Iterators */
-	getiterfunc tp_iter;
-	iternextfunc tp_iternext;
+    /* Iterators */
+    getiterfunc tp_iter;
+    iternextfunc tp_iternext;
 
-	/* Attribute descriptor and subclassing stuff */
-	struct PyMethodDef *tp_methods;
-	struct PyMemberDef *tp_members;
-	struct PyGetSetDef *tp_getset;
-	struct _typeobject *tp_base;
-	PyObject *tp_dict;
-	descrgetfunc tp_descr_get;
-	descrsetfunc tp_descr_set;
-	Py_ssize_t tp_dictoffset;
-	initproc tp_init;
-	allocfunc tp_alloc;
-	newfunc tp_new;
-	freefunc tp_free; /* Low-level free-memory routine */
-	inquiry tp_is_gc; /* For PyObject_IS_GC */
-	PyObject *tp_bases;
-	PyObject *tp_mro; /* method resolution order */
-	PyObject *tp_cache;
-	PyObject *tp_subclasses;
-	PyObject *tp_weaklist;
-	destructor tp_del;
+    /* Attribute descriptor and subclassing stuff */
+    struct PyMethodDef *tp_methods;
+    struct PyMemberDef *tp_members;
+    struct PyGetSetDef *tp_getset;
+    struct _typeobject *tp_base;
+    PyObject *tp_dict;
+    descrgetfunc tp_descr_get;
+    descrsetfunc tp_descr_set;
+    Py_ssize_t tp_dictoffset;
+    initproc tp_init;
+    allocfunc tp_alloc;
+    newfunc tp_new;
+    freefunc tp_free; /* Low-level free-memory routine */
+    inquiry tp_is_gc; /* For PyObject_IS_GC */
+    PyObject *tp_bases;
+    PyObject *tp_mro; /* method resolution order */
+    PyObject *tp_cache;
+    PyObject *tp_subclasses;
+    PyObject *tp_weaklist;
+    destructor tp_del;
 
-	/* Type attribute cache version tag. Added in version 2.6 */
-	unsigned int tp_version_tag;
+    /* Type attribute cache version tag. Added in version 2.6 */
+    unsigned int tp_version_tag;
 
 #ifdef COUNT_ALLOCS
-	/* these must be last and never explicitly initialized */
-	Py_ssize_t tp_allocs;
-	Py_ssize_t tp_frees;
-	Py_ssize_t tp_maxalloc;
-	struct _typeobject *tp_prev;
-	struct _typeobject *tp_next;
+    /* these must be last and never explicitly initialized */
+    Py_ssize_t tp_allocs;
+    Py_ssize_t tp_frees;
+    Py_ssize_t tp_maxalloc;
+    struct _typeobject *tp_prev;
+    struct _typeobject *tp_next;
 #endif
 } PyTypeObject;
+#endif
 
+typedef struct{
+    int slot;    /* slot id, see below */
+    void *pfunc; /* function pointer */
+} PyType_Slot;
 
+typedef struct{
+    const char* name;
+    int basicsize;
+    int itemsize;
+    int flags;
+    PyType_Slot *slots; /* terminated by slot==0. */
+} PyType_Spec;
+
+PyAPI_FUNC(PyObject*) PyType_FromSpec(PyType_Spec*);
+
+#ifndef Py_LIMITED_API
 /* The *real* layout of a type object when allocated on the heap */
 typedef struct _heaptypeobject {
-	/* Note: there's a dependency on the order of these members
-	   in slotptr() in typeobject.c . */
-	PyTypeObject ht_type;
-	PyNumberMethods as_number;
-	PyMappingMethods as_mapping;
-	PySequenceMethods as_sequence; /* as_sequence comes after as_mapping,
-					  so that the mapping wins when both
-					  the mapping and the sequence define
-					  a given operator (e.g. __getitem__).
-					  see add_operators() in typeobject.c . */
-	PyBufferProcs as_buffer;
-	PyObject *ht_name, *ht_slots;
-	/* here are optional user slots, followed by the members. */
+    /* Note: there's a dependency on the order of these members
+       in slotptr() in typeobject.c . */
+    PyTypeObject ht_type;
+    PyNumberMethods as_number;
+    PyMappingMethods as_mapping;
+    PySequenceMethods as_sequence; /* as_sequence comes after as_mapping,
+                                      so that the mapping wins when both
+                                      the mapping and the sequence define
+                                      a given operator (e.g. __getitem__).
+                                      see add_operators() in typeobject.c . */
+    PyBufferProcs as_buffer;
+    PyObject *ht_name, *ht_slots;
+    /* here are optional user slots, followed by the members. */
 } PyHeapTypeObject;
 
 /* access macro to the members which are floating "behind" the object */
 #define PyHeapType_GET_MEMBERS(etype) \
     ((PyMemberDef *)(((char *)etype) + Py_TYPE(etype)->tp_basicsize))
-
+#endif
 
 /* Generic type check */
 PyAPI_FUNC(int) PyType_IsSubtype(PyTypeObject *, PyTypeObject *);
 #define PyObject_TypeCheck(ob, tp) \
-	(Py_TYPE(ob) == (tp) || PyType_IsSubtype(Py_TYPE(ob), (tp)))
+    (Py_TYPE(ob) == (tp) || PyType_IsSubtype(Py_TYPE(ob), (tp)))
 
 PyAPI_DATA(PyTypeObject) PyType_Type; /* built-in 'type' */
 PyAPI_DATA(PyTypeObject) PyBaseObject_Type; /* built-in 'object' */
 PyAPI_DATA(PyTypeObject) PySuper_Type; /* built-in 'super' */
 
+PyAPI_FUNC(long) PyType_GetFlags(PyTypeObject*);
+
 #define PyType_Check(op) \
-	PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_TYPE_SUBCLASS)
+    PyType_FastSubclass(Py_TYPE(op), Py_TPFLAGS_TYPE_SUBCLASS)
 #define PyType_CheckExact(op) (Py_TYPE(op) == &PyType_Type)
 
 PyAPI_FUNC(int) PyType_Ready(PyTypeObject *);
 PyAPI_FUNC(PyObject *) PyType_GenericAlloc(PyTypeObject *, Py_ssize_t);
 PyAPI_FUNC(PyObject *) PyType_GenericNew(PyTypeObject *,
-					       PyObject *, PyObject *);
+                                               PyObject *, PyObject *);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) _PyType_Lookup(PyTypeObject *, PyObject *);
 PyAPI_FUNC(PyObject *) _PyObject_LookupSpecial(PyObject *, char *, PyObject **);
+#endif
 PyAPI_FUNC(unsigned int) PyType_ClearCache(void);
 PyAPI_FUNC(void) PyType_Modified(PyTypeObject *);
 
 /* Generic operations on objects */
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(int) PyObject_Print(PyObject *, FILE *, int);
 PyAPI_FUNC(void) _Py_BreakPoint(void);
 PyAPI_FUNC(void) _PyObject_Dump(PyObject *);
+#endif
 PyAPI_FUNC(PyObject *) PyObject_Repr(PyObject *);
 PyAPI_FUNC(PyObject *) PyObject_Str(PyObject *);
 PyAPI_FUNC(PyObject *) PyObject_ASCII(PyObject *);
@@ -434,19 +471,31 @@ PyAPI_FUNC(int) PyObject_HasAttrString(PyObject *, const char *);
 PyAPI_FUNC(PyObject *) PyObject_GetAttr(PyObject *, PyObject *);
 PyAPI_FUNC(int) PyObject_SetAttr(PyObject *, PyObject *, PyObject *);
 PyAPI_FUNC(int) PyObject_HasAttr(PyObject *, PyObject *);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject **) _PyObject_GetDictPtr(PyObject *);
+#endif
 PyAPI_FUNC(PyObject *) PyObject_SelfIter(PyObject *);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) _PyObject_NextNotImplemented(PyObject *);
+#endif
 PyAPI_FUNC(PyObject *) PyObject_GenericGetAttr(PyObject *, PyObject *);
 PyAPI_FUNC(int) PyObject_GenericSetAttr(PyObject *,
-					      PyObject *, PyObject *);
-PyAPI_FUNC(long) PyObject_Hash(PyObject *);
-PyAPI_FUNC(long) PyObject_HashNotImplemented(PyObject *);
+                                              PyObject *, PyObject *);
+PyAPI_FUNC(Py_hash_t) PyObject_Hash(PyObject *);
+PyAPI_FUNC(Py_hash_t) PyObject_HashNotImplemented(PyObject *);
 PyAPI_FUNC(int) PyObject_IsTrue(PyObject *);
 PyAPI_FUNC(int) PyObject_Not(PyObject *);
 PyAPI_FUNC(int) PyCallable_Check(PyObject *);
 
 PyAPI_FUNC(void) PyObject_ClearWeakRefs(PyObject *);
+
+/* Same as PyObject_Generic{Get,Set}Attr, but passing the attributes
+   dict as the last parameter. */
+PyAPI_FUNC(PyObject *)
+_PyObject_GenericGetAttrWithDict(PyObject *, PyObject *, PyObject *);
+PyAPI_FUNC(int)
+_PyObject_GenericSetAttrWithDict(PyObject *, PyObject *,
+                                 PyObject *, PyObject *);
 
 
 /* PyObject_Dir(obj) acts like Python builtins.dir(obj), returning a
@@ -462,14 +511,16 @@ PyAPI_FUNC(int) Py_ReprEnter(PyObject *);
 PyAPI_FUNC(void) Py_ReprLeave(PyObject *);
 
 /* Helpers for hash functions */
-PyAPI_FUNC(long) _Py_HashDouble(double);
-PyAPI_FUNC(long) _Py_HashPointer(void*);
+#ifndef Py_LIMITED_API
+PyAPI_FUNC(Py_hash_t) _Py_HashDouble(double);
+PyAPI_FUNC(Py_hash_t) _Py_HashPointer(void*);
+#endif
 
 /* Helper for passing objects to printf and the like */
 #define PyObject_REPR(obj) _PyUnicode_AsString(PyObject_Repr(obj))
 
 /* Flag bits for printing: */
-#define Py_PRINT_RAW	1	/* No string quotes etc. */
+#define Py_PRINT_RAW    1       /* No string quotes etc. */
 
 /*
 `Type flags (tp_flags)
@@ -524,22 +575,26 @@ given type object has a specified feature.
 #define Py_TPFLAGS_IS_ABSTRACT (1L<<20)
 
 /* These flags are used to determine if a type is a subclass. */
-#define Py_TPFLAGS_INT_SUBCLASS		(1L<<23)
-#define Py_TPFLAGS_LONG_SUBCLASS	(1L<<24)
-#define Py_TPFLAGS_LIST_SUBCLASS	(1L<<25)
-#define Py_TPFLAGS_TUPLE_SUBCLASS	(1L<<26)
-#define Py_TPFLAGS_BYTES_SUBCLASS	(1L<<27)
-#define Py_TPFLAGS_UNICODE_SUBCLASS	(1L<<28)
-#define Py_TPFLAGS_DICT_SUBCLASS	(1L<<29)
-#define Py_TPFLAGS_BASE_EXC_SUBCLASS	(1L<<30)
-#define Py_TPFLAGS_TYPE_SUBCLASS	(1L<<31)
+#define Py_TPFLAGS_INT_SUBCLASS         (1L<<23)
+#define Py_TPFLAGS_LONG_SUBCLASS        (1L<<24)
+#define Py_TPFLAGS_LIST_SUBCLASS        (1L<<25)
+#define Py_TPFLAGS_TUPLE_SUBCLASS       (1L<<26)
+#define Py_TPFLAGS_BYTES_SUBCLASS       (1L<<27)
+#define Py_TPFLAGS_UNICODE_SUBCLASS     (1L<<28)
+#define Py_TPFLAGS_DICT_SUBCLASS        (1L<<29)
+#define Py_TPFLAGS_BASE_EXC_SUBCLASS    (1L<<30)
+#define Py_TPFLAGS_TYPE_SUBCLASS        (1L<<31)
 
 #define Py_TPFLAGS_DEFAULT  ( \
-                             Py_TPFLAGS_HAVE_STACKLESS_EXTENSION | \
-                             Py_TPFLAGS_HAVE_VERSION_TAG | \
-                            0)
+                 Py_TPFLAGS_HAVE_STACKLESS_EXTENSION | \
+                 Py_TPFLAGS_HAVE_VERSION_TAG | \
+                0)
 
+#ifdef Py_LIMITED_API
+#define PyType_HasFeature(t,f)  ((PyType_GetFlags(t) & (f)) != 0)
+#else
 #define PyType_HasFeature(t,f)  (((t)->tp_flags & (f)) != 0)
+#endif
 #define PyType_FastSubclass(t,f)  PyType_HasFeature(t,f)
 
 
@@ -589,32 +644,32 @@ environment the global variable trick is not safe.)
 #ifdef Py_REF_DEBUG
 PyAPI_DATA(Py_ssize_t) _Py_RefTotal;
 PyAPI_FUNC(void) _Py_NegativeRefcount(const char *fname,
-					    int lineno, PyObject *op);
+                                            int lineno, PyObject *op);
 PyAPI_FUNC(PyObject *) _PyDict_Dummy(void);
 PyAPI_FUNC(PyObject *) _PySet_Dummy(void);
 PyAPI_FUNC(Py_ssize_t) _Py_GetRefTotal(void);
-#define _Py_INC_REFTOTAL	_Py_RefTotal++
-#define _Py_DEC_REFTOTAL	_Py_RefTotal--
-#define _Py_REF_DEBUG_COMMA	,
-#define _Py_CHECK_REFCNT(OP)					\
-{	if (((PyObject*)OP)->ob_refcnt < 0)				\
-		_Py_NegativeRefcount(__FILE__, __LINE__,	\
-				     (PyObject *)(OP));		\
+#define _Py_INC_REFTOTAL        _Py_RefTotal++
+#define _Py_DEC_REFTOTAL        _Py_RefTotal--
+#define _Py_REF_DEBUG_COMMA     ,
+#define _Py_CHECK_REFCNT(OP)                                    \
+{       if (((PyObject*)OP)->ob_refcnt < 0)                             \
+                _Py_NegativeRefcount(__FILE__, __LINE__,        \
+                                     (PyObject *)(OP));         \
 }
 #else
 #define _Py_INC_REFTOTAL
 #define _Py_DEC_REFTOTAL
 #define _Py_REF_DEBUG_COMMA
-#define _Py_CHECK_REFCNT(OP)	/* a semicolon */;
+#define _Py_CHECK_REFCNT(OP)    /* a semicolon */;
 #endif /* Py_REF_DEBUG */
 
 #ifdef COUNT_ALLOCS
 PyAPI_FUNC(void) inc_count(PyTypeObject *);
 PyAPI_FUNC(void) dec_count(PyTypeObject *);
-#define _Py_INC_TPALLOCS(OP)	inc_count(Py_TYPE(OP))
-#define _Py_INC_TPFREES(OP)	dec_count(Py_TYPE(OP))
-#define _Py_DEC_TPFREES(OP)	Py_TYPE(OP)->tp_frees--
-#define _Py_COUNT_ALLOCS_COMMA	,
+#define _Py_INC_TPALLOCS(OP)    inc_count(Py_TYPE(OP))
+#define _Py_INC_TPFREES(OP)     dec_count(Py_TYPE(OP))
+#define _Py_DEC_TPFREES(OP)     Py_TYPE(OP)->tp_frees--
+#define _Py_COUNT_ALLOCS_COMMA  ,
 #else
 #define _Py_INC_TPALLOCS(OP)
 #define _Py_INC_TPFREES(OP)
@@ -635,30 +690,34 @@ PyAPI_FUNC(void) _Py_AddToAllObjects(PyObject *, int force);
 /* Without Py_TRACE_REFS, there's little enough to do that we expand code
  * inline.
  */
-#define _Py_NewReference(op) (				\
-	_Py_INC_TPALLOCS(op) _Py_COUNT_ALLOCS_COMMA	\
-	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA		\
-	Py_REFCNT(op) = 1)
+#define _Py_NewReference(op) (                          \
+    _Py_INC_TPALLOCS(op) _Py_COUNT_ALLOCS_COMMA         \
+    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA               \
+    Py_REFCNT(op) = 1)
 
 #define _Py_ForgetReference(op) _Py_INC_TPFREES(op)
 
-#define _Py_Dealloc(op) (				\
-	_Py_INC_TPFREES(op) _Py_COUNT_ALLOCS_COMMA	\
-	(*Py_TYPE(op)->tp_dealloc)((PyObject *)(op)))
+#ifdef Py_LIMITED_API
+PyAPI_FUNC(void) _Py_Dealloc(PyObject *);
+#else
+#define _Py_Dealloc(op) (                               \
+    _Py_INC_TPFREES(op) _Py_COUNT_ALLOCS_COMMA          \
+    (*Py_TYPE(op)->tp_dealloc)((PyObject *)(op)))
+#endif
 #endif /* !Py_TRACE_REFS */
 
-#define Py_INCREF(op) (				\
-	_Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA	\
-	((PyObject*)(op))->ob_refcnt++)
+#define Py_INCREF(op) (                         \
+    _Py_INC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
+    ((PyObject*)(op))->ob_refcnt++)
 
-#define Py_DECREF(op)					\
-	do {						\
-	    if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA	\
-		--((PyObject*)(op))->ob_refcnt != 0)	\
-		    _Py_CHECK_REFCNT(op)		\
-	    else					\
-		_Py_Dealloc((PyObject *)(op));		\
-        } while (0)
+#define Py_DECREF(op)                                   \
+    do {                                                \
+        if (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA       \
+        --((PyObject*)(op))->ob_refcnt != 0)            \
+            _Py_CHECK_REFCNT(op)                        \
+        else                                            \
+        _Py_Dealloc((PyObject *)(op));                  \
+    } while (0)
 
 /* Safely decref `op` and set `op` to NULL, especially useful in tp_clear
  * and tp_dealloc implementatons.
@@ -694,14 +753,14 @@ PyAPI_FUNC(void) _Py_AddToAllObjects(PyObject *, int force);
  * Python integers aren't currently weakly referencable.  Best practice is
  * to use Py_CLEAR() even if you can't think of a reason for why you need to.
  */
-#define Py_CLEAR(op)				\
-        do {                            	\
-                if (op) {			\
-                        PyObject *_py_tmp = (PyObject *)(op);	\
-                        (op) = NULL;		\
-                        Py_DECREF(_py_tmp);	\
-                }				\
-        } while (0)
+#define Py_CLEAR(op)                            \
+    do {                                        \
+        if (op) {                               \
+            PyObject *_py_tmp = (PyObject *)(op);               \
+            (op) = NULL;                        \
+            Py_DECREF(_py_tmp);                 \
+        }                                       \
+    } while (0)
 
 /* Macros to use in case the object pointer may be NULL: */
 #define Py_XINCREF(op) do { if ((op) == NULL) ; else Py_INCREF(op); } while (0)
@@ -813,13 +872,13 @@ bracketing the body of its tp_dealloc function with a pair of macros:
 static void
 mytype_dealloc(mytype *p)
 {
-        ... declarations go here ...
+    ... declarations go here ...
 
- 	PyObject_GC_UnTrack(p);	   // must untrack first
-	Py_TRASHCAN_SAFE_BEGIN(p)
-	... The body of the deallocator goes here, including all calls ...
-	... to Py_DECREF on contained objects.                         ...
-	Py_TRASHCAN_SAFE_END(p)
+    PyObject_GC_UnTrack(p);        // must untrack first
+    Py_TRASHCAN_SAFE_BEGIN(p)
+    ... The body of the deallocator goes here, including all calls ...
+    ... to Py_DECREF on contained objects.                         ...
+    Py_TRASHCAN_SAFE_END(p)
 }
 
 CAUTION:  Never return from the middle of the body!  If the body needs to
@@ -849,16 +908,16 @@ PyAPI_DATA(PyObject *) _PyTrash_delete_later;
 #define PyTrash_UNWIND_LEVEL 50
 
 #define Py_TRASHCAN_SAFE_BEGIN(op) \
-	if (_PyTrash_delete_nesting < PyTrash_UNWIND_LEVEL) { \
-		++_PyTrash_delete_nesting;
-		/* The body of the deallocator is here. */
+    if (_PyTrash_delete_nesting < PyTrash_UNWIND_LEVEL) { \
+        ++_PyTrash_delete_nesting;
+        /* The body of the deallocator is here. */
 #define Py_TRASHCAN_SAFE_END(op) \
-		--_PyTrash_delete_nesting; \
-		if (_PyTrash_delete_later && _PyTrash_delete_nesting <= 0) \
-			_PyTrash_destroy_chain(); \
-	} \
-	else \
-		_PyTrash_deposit_object((PyObject*)op);
+        --_PyTrash_delete_nesting; \
+        if (_PyTrash_delete_later && _PyTrash_delete_nesting <= 0) \
+            _PyTrash_destroy_chain(); \
+    } \
+    else \
+        _PyTrash_deposit_object((PyObject*)op);
 
 #ifdef __cplusplus
 }

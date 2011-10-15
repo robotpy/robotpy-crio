@@ -16,7 +16,6 @@ import sys
 import warnings
 from io import StringIO
 
-
 HUGE = 0x7FFFFFFF  # maximum repeat count, default max
 
 _type_reprs = {}
@@ -29,7 +28,6 @@ def type_repr(type_num):
         for name, val in python_symbols.__dict__.items():
             if type(val) == int: _type_reprs[val] = name
     return _type_reprs.setdefault(type_num, type_num)
-
 
 class Base(object):
 
@@ -47,6 +45,7 @@ class Base(object):
     parent = None  # Parent node pointer, or None
     children = ()  # Tuple of subnodes
     was_changed = False
+    was_checked = False
 
     def __new__(cls, *args, **kwds):
         """Constructor that prevents Base from being instantiated."""
@@ -213,6 +212,16 @@ class Base(object):
                     return None
                 return self.parent.children[i-1]
 
+    def leaves(self):
+        for child in self.children:
+            for x in child.leaves():
+                yield x
+
+    def depth(self):
+        if self.parent is None:
+            return 0
+        return 1 + self.parent.depth()
+
     def get_suffix(self):
         """
         Return the string immediately following the invocant node. This is
@@ -227,12 +236,14 @@ class Base(object):
         def __str__(self):
             return str(self).encode("ascii")
 
-
 class Node(Base):
 
     """Concrete implementation for interior nodes."""
 
-    def __init__(self, type, children, context=None, prefix=None):
+    def __init__(self,type, children,
+                 context=None,
+                 prefix=None,
+                 fixers_applied=None):
         """
         Initializer.
 
@@ -249,6 +260,10 @@ class Node(Base):
             ch.parent = self
         if prefix is not None:
             self.prefix = prefix
+        if fixers_applied:
+            self.fixers_applied = fixers_applied[:]
+        else:
+            self.fixers_applied = None
 
     def __repr__(self):
         """Return a canonical string representation."""
@@ -273,7 +288,8 @@ class Node(Base):
 
     def clone(self):
         """Return a cloned (deep) copy of self."""
-        return Node(self.type, [ch.clone() for ch in self.children])
+        return Node(self.type, [ch.clone() for ch in self.children],
+                    fixers_applied=self.fixers_applied)
 
     def post_order(self):
         """Return a post-order iterator for the tree."""
@@ -286,11 +302,10 @@ class Node(Base):
         """Return a pre-order iterator for the tree."""
         yield self
         for child in self.children:
-            for node in child.post_order():
+            for node in child.pre_order():
                 yield node
 
-    @property
-    def prefix(self):
+    def _prefix_getter(self):
         """
         The whitespace and comments preceding this node in the input.
         """
@@ -298,10 +313,11 @@ class Node(Base):
             return ""
         return self.children[0].prefix
 
-    @prefix.setter
-    def prefix(self, prefix):
+    def _prefix_setter(self, prefix):
         if self.children:
             self.children[0].prefix = prefix
+
+    prefix = property(_prefix_getter, _prefix_setter)
 
     def set_child(self, i, child):
         """
@@ -341,7 +357,10 @@ class Leaf(Base):
     lineno = 0    # Line where this token starts in the input
     column = 0    # Column where this token tarts in the input
 
-    def __init__(self, type, value, context=None, prefix=None):
+    def __init__(self, type, value,
+                 context=None,
+                 prefix=None,
+                 fixers_applied=[]):
         """
         Initializer.
 
@@ -355,6 +374,7 @@ class Leaf(Base):
         self.value = value
         if prefix is not None:
             self._prefix = prefix
+        self.fixers_applied = fixers_applied[:]
 
     def __repr__(self):
         """Return a canonical string representation."""
@@ -380,7 +400,11 @@ class Leaf(Base):
     def clone(self):
         """Return a cloned (deep) copy of self."""
         return Leaf(self.type, self.value,
-                    (self.prefix, (self.lineno, self.column)))
+                    (self.prefix, (self.lineno, self.column)),
+                    fixers_applied=self.fixers_applied)
+
+    def leaves(self):
+        yield self
 
     def post_order(self):
         """Return a post-order iterator for the tree."""
@@ -390,18 +414,17 @@ class Leaf(Base):
         """Return a pre-order iterator for the tree."""
         yield self
 
-    @property
-    def prefix(self):
+    def _prefix_getter(self):
         """
         The whitespace and comments preceding this token in the input.
         """
         return self._prefix
 
-    @prefix.setter
-    def prefix(self, prefix):
+    def _prefix_setter(self, prefix):
         self.changed()
         self._prefix = prefix
 
+    prefix = property(_prefix_getter, _prefix_setter)
 
 def convert(gr, raw_node):
     """
@@ -635,8 +658,8 @@ class WildcardPattern(BasePattern):
             content: optional sequence of subsequences of patterns;
                      if absent, matches one node;
                      if present, each subsequence is an alternative [*]
-            min: optinal minumum number of times to match, default 0
-            max: optional maximum number of times tro match, default HUGE
+            min: optional minimum number of times to match, default 0
+            max: optional maximum number of times to match, default HUGE
             name: optional name assigned to this match
 
         [*] Thus, if content is [[a, b, c], [d, e], [f, g, h]] this is
@@ -720,9 +743,11 @@ class WildcardPattern(BasePattern):
         else:
             # The reason for this is that hitting the recursion limit usually
             # results in some ugly messages about how RuntimeErrors are being
-            # ignored.
-            save_stderr = sys.stderr
-            sys.stderr = StringIO()
+            # ignored. We only have to do this on CPython, though, because other
+            # implementations don't have this nasty bug in the first place.
+            if hasattr(sys, "getrefcount"):
+                save_stderr = sys.stderr
+                sys.stderr = StringIO()
             try:
                 for count, r in self._recursive_matches(nodes, 0):
                     if self.name:
@@ -736,7 +761,8 @@ class WildcardPattern(BasePattern):
                         r[self.name] = nodes[:count]
                     yield count, r
             finally:
-                sys.stderr = save_stderr
+                if hasattr(sys, "getrefcount"):
+                    sys.stderr = save_stderr
 
     def _iterative_matches(self, nodes):
         """Helper to iteratively yield the matches."""

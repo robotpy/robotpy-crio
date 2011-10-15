@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 # Copyright 1994 by Lance Ellinghouse
 # Cathedral City, California Republic, United States of America.
@@ -44,40 +44,47 @@ def encode(in_file, out_file, name=None, mode=None):
     #
     # If in_file is a pathname open it and change defaults
     #
-    if in_file == '-':
-        in_file = sys.stdin.buffer
-    elif isinstance(in_file, str):
+    opened_files = []
+    try:
+        if in_file == '-':
+            in_file = sys.stdin.buffer
+        elif isinstance(in_file, str):
+            if name is None:
+                name = os.path.basename(in_file)
+            if mode is None:
+                try:
+                    mode = os.stat(in_file).st_mode
+                except AttributeError:
+                    pass
+            in_file = open(in_file, 'rb')
+            opened_files.append(in_file)
+        #
+        # Open out_file if it is a pathname
+        #
+        if out_file == '-':
+            out_file = sys.stdout.buffer
+        elif isinstance(out_file, str):
+            out_file = open(out_file, 'wb')
+            opened_files.append(out_file)
+        #
+        # Set defaults for name and mode
+        #
         if name is None:
-            name = os.path.basename(in_file)
+            name = '-'
         if mode is None:
-            try:
-                mode = os.stat(in_file).st_mode
-            except AttributeError:
-                pass
-        in_file = open(in_file, 'rb')
-    #
-    # Open out_file if it is a pathname
-    #
-    if out_file == '-':
-        out_file = sys.stdout.buffer
-    elif isinstance(out_file, str):
-        out_file = open(out_file, 'wb')
-    #
-    # Set defaults for name and mode
-    #
-    if name is None:
-        name = '-'
-    if mode is None:
-        mode = 0o666
-    #
-    # Write the data
-    #
-    out_file.write(('begin %o %s\n' % ((mode & 0o777), name)).encode("ascii"))
-    data = in_file.read(45)
-    while len(data) > 0:
-        out_file.write(binascii.b2a_uu(data))
+            mode = 0o666
+        #
+        # Write the data
+        #
+        out_file.write(('begin %o %s\n' % ((mode & 0o777), name)).encode("ascii"))
         data = in_file.read(45)
-    out_file.write(b' \nend\n')
+        while len(data) > 0:
+            out_file.write(binascii.b2a_uu(data))
+            data = in_file.read(45)
+        out_file.write(b' \nend\n')
+    finally:
+        for f in opened_files:
+            f.close()
 
 
 def decode(in_file, out_file=None, mode=None, quiet=False):
@@ -85,66 +92,70 @@ def decode(in_file, out_file=None, mode=None, quiet=False):
     #
     # Open the input file, if needed.
     #
+    opened_files = []
     if in_file == '-':
         in_file = sys.stdin.buffer
     elif isinstance(in_file, str):
         in_file = open(in_file, 'rb')
-    #
-    # Read until a begin is encountered or we've exhausted the file
-    #
-    while True:
-        hdr = in_file.readline()
-        if not hdr:
-            raise Error('No valid begin line found in input file')
-        if not hdr.startswith(b'begin'):
-            continue
-        hdrfields = hdr.split(b' ', 2)
-        if len(hdrfields) == 3 and hdrfields[0] == b'begin':
+        opened_files.append(in_file)
+
+    try:
+        #
+        # Read until a begin is encountered or we've exhausted the file
+        #
+        while True:
+            hdr = in_file.readline()
+            if not hdr:
+                raise Error('No valid begin line found in input file')
+            if not hdr.startswith(b'begin'):
+                continue
+            hdrfields = hdr.split(b' ', 2)
+            if len(hdrfields) == 3 and hdrfields[0] == b'begin':
+                try:
+                    int(hdrfields[1], 8)
+                    break
+                except ValueError:
+                    pass
+        if out_file is None:
+            # If the filename isn't ASCII, what's up with that?!?
+            out_file = hdrfields[2].rstrip(b' \t\r\n\f').decode("ascii")
+            if os.path.exists(out_file):
+                raise Error('Cannot overwrite existing file: %s' % out_file)
+        if mode is None:
+            mode = int(hdrfields[1], 8)
+        #
+        # Open the output file
+        #
+        if out_file == '-':
+            out_file = sys.stdout.buffer
+        elif isinstance(out_file, str):
+            fp = open(out_file, 'wb')
             try:
-                int(hdrfields[1], 8)
-                break
-            except ValueError:
+                os.path.chmod(out_file, mode)
+            except AttributeError:
                 pass
-    if out_file is None:
-        # If the filename isn't ASCII, what's up with that?!?
-        out_file = hdrfields[2].rstrip(b' \t\r\n\f').decode("ascii")
-        if os.path.exists(out_file):
-            raise Error('Cannot overwrite existing file: %s' % out_file)
-    if mode is None:
-        mode = int(hdrfields[1], 8)
-    #
-    # Open the output file
-    #
-    opened = False
-    if out_file == '-':
-        out_file = sys.stdout.buffer
-    elif isinstance(out_file, str):
-        fp = open(out_file, 'wb')
-        try:
-            os.path.chmod(out_file, mode)
-        except AttributeError:
-            pass
-        out_file = fp
-        opened = True
-    #
-    # Main decoding loop
-    #
-    s = in_file.readline()
-    while s and s.strip(b' \t\r\n\f') != b'end':
-        try:
-            data = binascii.a2b_uu(s)
-        except binascii.Error as v:
-            # Workaround for broken uuencoders by /Fredrik Lundh
-            nbytes = (((s[0]-32) & 63) * 4 + 5) // 3
-            data = binascii.a2b_uu(s[:nbytes])
-            if not quiet:
-                sys.stderr.write("Warning: %s\n" % v)
-        out_file.write(data)
+            out_file = fp
+            opened_files.append(out_file)
+        #
+        # Main decoding loop
+        #
         s = in_file.readline()
-    if not s:
-        raise Error('Truncated input file')
-    if opened:
-        out_file.close()
+        while s and s.strip(b' \t\r\n\f') != b'end':
+            try:
+                data = binascii.a2b_uu(s)
+            except binascii.Error as v:
+                # Workaround for broken uuencoders by /Fredrik Lundh
+                nbytes = (((s[0]-32) & 63) * 4 + 5) // 3
+                data = binascii.a2b_uu(s[:nbytes])
+                if not quiet:
+                    sys.stderr.write("Warning: %s\n" % v)
+            out_file.write(data)
+            s = in_file.readline()
+        if not s:
+            raise Error('Truncated input file')
+    finally:
+        for f in opened_files:
+            f.close()
 
 def test():
     """uuencode/uudecode main program"""

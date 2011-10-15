@@ -78,7 +78,7 @@ def quoteattr(data, entities={}):
 
 class XMLGenerator(handler.ContentHandler):
 
-    def __init__(self, out=None, encoding="iso-8859-1"):
+    def __init__(self, out=None, encoding="iso-8859-1", short_empty_elements=False):
         if out is None:
             import sys
             out = sys.stdout
@@ -88,6 +88,8 @@ class XMLGenerator(handler.ContentHandler):
         self._current_context = self._ns_contexts[-1]
         self._undeclared_ns_maps = []
         self._encoding = encoding
+        self._short_empty_elements = short_empty_elements
+        self._pending_start_element = False
 
     def _write(self, text):
         if isinstance(text, str):
@@ -98,6 +100,12 @@ class XMLGenerator(handler.ContentHandler):
     def _qname(self, name):
         """Builds a qualified name from a (ns_url, localname) pair"""
         if name[0]:
+            # Per http://www.w3.org/XML/1998/namespace, The 'xml' prefix is
+            # bound by definition to http://www.w3.org/XML/1998/namespace.  It
+            # does not need to be declared and will not usually be found in
+            # self._current_context.
+            if 'http://www.w3.org/XML/1998/namespace' == name[0]:
+                return 'xml:' + name[1]
             # The name is in a non-empty namespace
             prefix = self._current_context[name[0]]
             if prefix:
@@ -105,6 +113,11 @@ class XMLGenerator(handler.ContentHandler):
                 return prefix + ":" + name[1]
         # Return the unqualified name
         return name[1]
+
+    def _finish_pending_start_element(self,endElement=False):
+        if self._pending_start_element:
+            self._write('>')
+            self._pending_start_element = False
 
     # ContentHandler methods
 
@@ -122,15 +135,24 @@ class XMLGenerator(handler.ContentHandler):
         del self._ns_contexts[-1]
 
     def startElement(self, name, attrs):
+        self._finish_pending_start_element()
         self._write('<' + name)
         for (name, value) in attrs.items():
             self._write(' %s=%s' % (name, quoteattr(value)))
-        self._write('>')
+        if self._short_empty_elements:
+            self._pending_start_element = True
+        else:
+            self._write(">")
 
     def endElement(self, name):
-        self._write('</%s>' % name)
+        if self._pending_start_element:
+            self._write('/>')
+            self._pending_start_element = False
+        else:
+            self._write('</%s>' % name)
 
     def startElementNS(self, name, qname, attrs):
+        self._finish_pending_start_element()
         self._write('<' + self._qname(name))
 
         for prefix, uri in self._undeclared_ns_maps:
@@ -142,18 +164,30 @@ class XMLGenerator(handler.ContentHandler):
 
         for (name, value) in attrs.items():
             self._write(' %s=%s' % (self._qname(name), quoteattr(value)))
-        self._write('>')
+        if self._short_empty_elements:
+            self._pending_start_element = True
+        else:
+            self._write(">")
 
     def endElementNS(self, name, qname):
-        self._write('</%s>' % self._qname(name))
+        if self._pending_start_element:
+            self._write('/>')
+            self._pending_start_element = False
+        else:
+            self._write('</%s>' % self._qname(name))
 
     def characters(self, content):
-        self._write(escape(content))
+        if content:
+            self._finish_pending_start_element()
+            self._write(escape(content))
 
     def ignorableWhitespace(self, content):
-        self._write(content)
+        if content:
+            self._finish_pending_start_element()
+            self._write(content)
 
     def processingInstruction(self, target, data):
+        self._finish_pending_start_element()
         self._write('<?%s %s?>' % (target, data))
 
 

@@ -6,7 +6,7 @@
 */
 
 
-/* Defines for Python 2.6 compatability */
+/* Defines for Python 2.6 compatibility */
 #if PY_VERSION_HEX < 0x03000000
 #define PyLong_FromSsize_t _PyLong_FromSsize_t
 #endif
@@ -373,6 +373,8 @@ FieldNameIterator_next(FieldNameIterator *self, int *is_attribute,
         if (_FieldNameIterator_item(self, name) == 0)
             return 0;
         *name_idx = get_integer(name);
+        if (*name_idx == -1 && PyErr_Occurred())
+            return 0;
         break;
     default:
         /* Invalid character follows ']' */
@@ -429,6 +431,8 @@ field_name_split(STRINGLIB_CHAR *ptr, Py_ssize_t len, SubString *first,
 
     /* see if "first" is an integer, in which case it's used as an index */
     *first_idx = get_integer(first);
+    if (*first_idx == -1 && PyErr_Occurred())
+        return 0;
 
     field_name_is_empty = first->ptr >= first->end;
 
@@ -495,15 +499,28 @@ get_field_object(SubString *input, PyObject *args, PyObject *kwargs,
         PyObject *key = SubString_new_object(&first);
         if (key == NULL)
             goto error;
-        if ((kwargs == NULL) || (obj = PyDict_GetItem(kwargs, key)) == NULL) {
+
+        /* Use PyObject_GetItem instead of PyDict_GetItem because this
+           code is no longer just used with kwargs. It might be passed
+           a non-dict when called through format_map. */
+        if ((kwargs == NULL) || (obj = PyObject_GetItem(kwargs, key)) == NULL) {
             PyErr_SetObject(PyExc_KeyError, key);
             Py_DECREF(key);
             goto error;
         }
         Py_DECREF(key);
-        Py_INCREF(obj);
     }
     else {
+        /* If args is NULL, we have a format string with a positional field
+           with only kwargs to retrieve it from. This can only happen when
+           used with format_map(), where positional arguments are not
+           allowed. */
+        if (args == NULL) {
+            PyErr_SetString(PyExc_ValueError, "Format string contains "
+                            "positional fields");
+            goto error;
+        }
+
         /* look up in args */
         obj = PySequence_GetItem(args, index);
         if (obj == NULL)
@@ -563,36 +580,36 @@ render_field(PyObject *fieldobj, SubString *format_spec, OutputString *output)
     PyObject *format_spec_object = NULL;
     PyObject *(*formatter)(PyObject *, STRINGLIB_CHAR *, Py_ssize_t) = NULL;
     STRINGLIB_CHAR* format_spec_start = format_spec->ptr ?
-	    format_spec->ptr : NULL;
+            format_spec->ptr : NULL;
     Py_ssize_t format_spec_len = format_spec->ptr ?
-	    format_spec->end - format_spec->ptr : 0;
+            format_spec->end - format_spec->ptr : 0;
 
     /* If we know the type exactly, skip the lookup of __format__ and just
        call the formatter directly. */
     if (PyUnicode_CheckExact(fieldobj))
-	formatter = _PyUnicode_FormatAdvanced;
+        formatter = _PyUnicode_FormatAdvanced;
     else if (PyLong_CheckExact(fieldobj))
-	formatter =_PyLong_FormatAdvanced;
+        formatter =_PyLong_FormatAdvanced;
     else if (PyFloat_CheckExact(fieldobj))
-	formatter = _PyFloat_FormatAdvanced;
+        formatter = _PyFloat_FormatAdvanced;
 
     /* XXX: for 2.6, convert format_spec to the appropriate type
        (unicode, str) */
 
     if (formatter) {
-	/* we know exactly which formatter will be called when __format__ is
-	   looked up, so call it directly, instead. */
-	result = formatter(fieldobj, format_spec_start, format_spec_len);
+        /* we know exactly which formatter will be called when __format__ is
+           looked up, so call it directly, instead. */
+        result = formatter(fieldobj, format_spec_start, format_spec_len);
     }
     else {
-	/* We need to create an object out of the pointers we have, because
-	   __format__ takes a string/unicode object for format_spec. */
-	format_spec_object = STRINGLIB_NEW(format_spec_start,
-					   format_spec_len);
-	if (format_spec_object == NULL)
-	    goto done;
+        /* We need to create an object out of the pointers we have, because
+           __format__ takes a string/unicode object for format_spec. */
+        format_spec_object = STRINGLIB_NEW(format_spec_start,
+                                           format_spec_len);
+        if (format_spec_object == NULL)
+            goto done;
 
-	result = PyObject_Format(fieldobj, format_spec_object);
+        result = PyObject_Format(fieldobj, format_spec_object);
     }
     if (result == NULL)
         goto done;
@@ -605,11 +622,11 @@ render_field(PyObject *fieldobj, SubString *format_spec, OutputString *output)
     /* Convert result to our type.  We could be str, and result could
        be unicode */
     {
-	PyObject *tmp = STRINGLIB_TOSTR(result);
-	if (tmp == NULL)
-	    goto done;
-	Py_DECREF(result);
-	result = tmp;
+        PyObject *tmp = STRINGLIB_TOSTR(result);
+        if (tmp == NULL)
+            goto done;
+        Py_DECREF(result);
+        result = tmp;
     }
 #endif
 
@@ -844,17 +861,17 @@ do_conversion(PyObject *obj, STRINGLIB_CHAR conversion)
         return STRINGLIB_TOASCII(obj);
 #endif
     default:
-	if (conversion > 32 && conversion < 127) {
-		/* It's the ASCII subrange; casting to char is safe
-		   (assuming the execution character set is an ASCII
-		   superset). */
-        	PyErr_Format(PyExc_ValueError,
+        if (conversion > 32 && conversion < 127) {
+                /* It's the ASCII subrange; casting to char is safe
+                   (assuming the execution character set is an ASCII
+                   superset). */
+                PyErr_Format(PyExc_ValueError,
                      "Unknown conversion specifier %c",
                      (char)conversion);
-	} else
-		PyErr_Format(PyExc_ValueError,
-		     "Unknown conversion specifier \\x%x",
-		     (unsigned int)conversion);
+        } else
+                PyErr_Format(PyExc_ValueError,
+                     "Unknown conversion specifier \\x%x",
+                     (unsigned int)conversion);
         return NULL;
     }
 }
@@ -1035,6 +1052,11 @@ do_string_format(PyObject *self, PyObject *args, PyObject *kwargs)
     return build_string(&input, args, kwargs, recursion_depth, &auto_number);
 }
 
+static PyObject *
+do_string_format_map(PyObject *self, PyObject *obj)
+{
+    return do_string_format(self, NULL, obj);
+}
 
 
 /************************************************************************/
@@ -1119,7 +1141,7 @@ formatteriter_next(formatteriterobject *it)
             Py_INCREF(conversion_str);
         }
         else
-	    conversion_str = STRINGLIB_NEW(&conversion, 1);
+            conversion_str = STRINGLIB_NEW(&conversion, 1);
         if (conversion_str == NULL)
             goto done;
 
@@ -1135,39 +1157,39 @@ formatteriter_next(formatteriterobject *it)
 }
 
 static PyMethodDef formatteriter_methods[] = {
-    {NULL,		NULL}		/* sentinel */
+    {NULL,              NULL}           /* sentinel */
 };
 
 static PyTypeObject PyFormatterIter_Type = {
     PyVarObject_HEAD_INIT(&PyType_Type, 0)
-    "formatteriterator",		/* tp_name */
-    sizeof(formatteriterobject),	/* tp_basicsize */
-    0,					/* tp_itemsize */
+    "formatteriterator",                /* tp_name */
+    sizeof(formatteriterobject),        /* tp_basicsize */
+    0,                                  /* tp_itemsize */
     /* methods */
-    (destructor)formatteriter_dealloc,	/* tp_dealloc */
-    0,					/* tp_print */
-    0,					/* tp_getattr */
-    0,					/* tp_setattr */
-    0,					/* tp_reserved */
-    0,					/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    0,					/* tp_hash */
-    0,					/* tp_call */
-    0,					/* tp_str */
-    PyObject_GenericGetAttr,		/* tp_getattro */
-    0,					/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,			/* tp_flags */
-    0,					/* tp_doc */
-    0,					/* tp_traverse */
-    0,					/* tp_clear */
-    0,					/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    PyObject_SelfIter,			/* tp_iter */
-    (iternextfunc)formatteriter_next,	/* tp_iternext */
-    formatteriter_methods,		/* tp_methods */
+    (destructor)formatteriter_dealloc,  /* tp_dealloc */
+    0,                                  /* tp_print */
+    0,                                  /* tp_getattr */
+    0,                                  /* tp_setattr */
+    0,                                  /* tp_reserved */
+    0,                                  /* tp_repr */
+    0,                                  /* tp_as_number */
+    0,                                  /* tp_as_sequence */
+    0,                                  /* tp_as_mapping */
+    0,                                  /* tp_hash */
+    0,                                  /* tp_call */
+    0,                                  /* tp_str */
+    PyObject_GenericGetAttr,            /* tp_getattro */
+    0,                                  /* tp_setattro */
+    0,                                  /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,                 /* tp_flags */
+    0,                                  /* tp_doc */
+    0,                                  /* tp_traverse */
+    0,                                  /* tp_clear */
+    0,                                  /* tp_richcompare */
+    0,                                  /* tp_weaklistoffset */
+    PyObject_SelfIter,                  /* tp_iter */
+    (iternextfunc)formatteriter_next,   /* tp_iternext */
+    formatteriter_methods,              /* tp_methods */
     0,
 };
 
@@ -1176,9 +1198,14 @@ static PyTypeObject PyFormatterIter_Type = {
    describing the parsed elements.  It's a wrapper around
    stringlib/string_format.h's MarkupIterator */
 static PyObject *
-formatter_parser(STRINGLIB_OBJECT *self)
+formatter_parser(PyObject *ignored, STRINGLIB_OBJECT *self)
 {
     formatteriterobject *it;
+
+    if (!PyUnicode_Check(self)) {
+        PyErr_Format(PyExc_TypeError, "expected str, got %s", Py_TYPE(self)->tp_name);
+        return NULL;
+    }
 
     it = PyObject_New(formatteriterobject, &PyFormatterIter_Type);
     if (it == NULL)
@@ -1268,39 +1295,39 @@ fieldnameiter_next(fieldnameiterobject *it)
 }
 
 static PyMethodDef fieldnameiter_methods[] = {
-    {NULL,		NULL}		/* sentinel */
+    {NULL,              NULL}           /* sentinel */
 };
 
 static PyTypeObject PyFieldNameIter_Type = {
     PyVarObject_HEAD_INIT(&PyType_Type, 0)
-    "fieldnameiterator",		/* tp_name */
-    sizeof(fieldnameiterobject),	/* tp_basicsize */
-    0,					/* tp_itemsize */
+    "fieldnameiterator",                /* tp_name */
+    sizeof(fieldnameiterobject),        /* tp_basicsize */
+    0,                                  /* tp_itemsize */
     /* methods */
-    (destructor)fieldnameiter_dealloc,	/* tp_dealloc */
-    0,					/* tp_print */
-    0,					/* tp_getattr */
-    0,					/* tp_setattr */
-    0,					/* tp_reserved */
-    0,					/* tp_repr */
-    0,					/* tp_as_number */
-    0,					/* tp_as_sequence */
-    0,					/* tp_as_mapping */
-    0,					/* tp_hash */
-    0,					/* tp_call */
-    0,					/* tp_str */
-    PyObject_GenericGetAttr,		/* tp_getattro */
-    0,					/* tp_setattro */
-    0,					/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,			/* tp_flags */
-    0,					/* tp_doc */
-    0,					/* tp_traverse */
-    0,					/* tp_clear */
-    0,					/* tp_richcompare */
-    0,					/* tp_weaklistoffset */
-    PyObject_SelfIter,			/* tp_iter */
-    (iternextfunc)fieldnameiter_next,	/* tp_iternext */
-    fieldnameiter_methods,		/* tp_methods */
+    (destructor)fieldnameiter_dealloc,  /* tp_dealloc */
+    0,                                  /* tp_print */
+    0,                                  /* tp_getattr */
+    0,                                  /* tp_setattr */
+    0,                                  /* tp_reserved */
+    0,                                  /* tp_repr */
+    0,                                  /* tp_as_number */
+    0,                                  /* tp_as_sequence */
+    0,                                  /* tp_as_mapping */
+    0,                                  /* tp_hash */
+    0,                                  /* tp_call */
+    0,                                  /* tp_str */
+    PyObject_GenericGetAttr,            /* tp_getattro */
+    0,                                  /* tp_setattro */
+    0,                                  /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,                 /* tp_flags */
+    0,                                  /* tp_doc */
+    0,                                  /* tp_traverse */
+    0,                                  /* tp_clear */
+    0,                                  /* tp_richcompare */
+    0,                                  /* tp_weaklistoffset */
+    PyObject_SelfIter,                  /* tp_iter */
+    (iternextfunc)fieldnameiter_next,   /* tp_iternext */
+    fieldnameiter_methods,              /* tp_methods */
     0};
 
 /* unicode_formatter_field_name_split is used to implement
@@ -1311,7 +1338,7 @@ static PyTypeObject PyFieldNameIter_Type = {
    field_name_split.  The iterator it returns is a
    FieldNameIterator */
 static PyObject *
-formatter_field_name_split(STRINGLIB_OBJECT *self)
+formatter_field_name_split(PyObject *ignored, STRINGLIB_OBJECT *self)
 {
     SubString first;
     Py_ssize_t first_idx;
@@ -1319,6 +1346,11 @@ formatter_field_name_split(STRINGLIB_OBJECT *self)
 
     PyObject *first_obj = NULL;
     PyObject *result = NULL;
+
+    if (!PyUnicode_Check(self)) {
+        PyErr_Format(PyExc_TypeError, "expected str, got %s", Py_TYPE(self)->tp_name);
+        return NULL;
+    }
 
     it = PyObject_New(fieldnameiterobject, &PyFieldNameIter_Type);
     if (it == NULL)

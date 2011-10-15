@@ -23,7 +23,8 @@ inet_aton() -- convert IP addr string (123.45.67.89) to 32-bit packed format
 inet_ntoa() -- convert 32-bit packed format IP to string (123.45.67.89)
 socket.getdefaulttimeout() -- get the default timeout value
 socket.setdefaulttimeout() -- set the default timeout value
-create_connection() -- connects to an address, with an optional timeout
+create_connection() -- connects to an address, with an optional timeout and
+                       optional source address.
 
  [*] not available on all platforms!
 
@@ -48,9 +49,13 @@ from _socket import *
 import os, sys, io
 
 try:
-    from errno import EBADF
+    import errno
 except ImportError:
-    EBADF = 9
+    errno = None
+EBADF = getattr(errno, 'EBADF', 9)
+EINTR = getattr(errno, 'EINTR', 4)
+EAGAIN = getattr(errno, 'EAGAIN', 11)
+EWOULDBLOCK = getattr(errno, 'EWOULDBLOCK', 11)
 
 __all__ = ["getfqdn", "create_connection"]
 __all__.extend(os._get_exports_list(_socket))
@@ -90,13 +95,20 @@ class socket(_socket.socket):
         self._io_refs = 0
         self._closed = False
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        if not self._closed:
+            self.close()
+
     def __repr__(self):
         """Wrap __repr__() to reveal the real class name."""
         s = _socket.socket.__repr__(self)
         if s.startswith("<socket object"):
             s = "<%s.%s%s%s" % (self.__class__.__module__,
                                 self.__class__.__name__,
-                                (self._closed and " [closed] ") or "",
+                                getattr(self, '_closed', False) and " [closed] " or "",
                                 s[7:])
         return s
 
@@ -118,10 +130,16 @@ class socket(_socket.socket):
         For IP sockets, the address info is a pair (hostaddr, port).
         """
         fd, addr = self._accept()
-        return socket(self.family, self.type, self.proto, fileno=fd), addr
+        sock = socket(self.family, self.type, self.proto, fileno=fd)
+        # Issue #7995: if no default timeout is set and the listening
+        # socket had a (non-zero) timeout, force the new socket in blocking
+        # mode to override platform-specific socket flags inheritance.
+        if getdefaulttimeout() is None and self.gettimeout():
+            sock.setblocking(True)
+        return sock, addr
 
     def makefile(self, mode="r", buffering=None, *,
-                 encoding=None, newline=None):
+                 encoding=None, errors=None, newline=None):
         """makefile(...) -> an I/O stream connected to the socket
 
         The arguments are as for io.open() after the filename,
@@ -159,7 +177,7 @@ class socket(_socket.socket):
             buffer = io.BufferedWriter(raw, buffering)
         if binary:
             return buffer
-        text = io.TextIOWrapper(buffer, encoding, newline)
+        text = io.TextIOWrapper(buffer, encoding, errors, newline)
         text.mode = mode
         return text
 
@@ -169,10 +187,12 @@ class socket(_socket.socket):
         if self._closed:
             self.close()
 
-    def _real_close(self):
-        _socket.socket.close(self)
+    def _real_close(self, _ss=_socket.socket):
+        # This function should not reference any globals. See issue #808164.
+        _ss.close(self)
 
     def close(self):
+        # This function should not reference any globals. See issue #808164.
         self._closed = True
         if self._io_refs <= 0:
             self._real_close()
@@ -187,6 +207,29 @@ def fromfd(fd, family, type, proto=0):
     return socket(family, type, proto, nfd)
 
 
+if hasattr(_socket, "socketpair"):
+
+    def socketpair(family=None, type=SOCK_STREAM, proto=0):
+        """socketpair([family[, type[, proto]]]) -> (socket object, socket object)
+
+        Create a pair of socket objects from the sockets returned by the platform
+        socketpair() function.
+        The arguments are the same as for socket() except the default family is
+        AF_UNIX if defined on the platform; otherwise, the default is AF_INET.
+        """
+        if family is None:
+            try:
+                family = AF_UNIX
+            except NameError:
+                family = AF_INET
+        a, b = _socket.socketpair(family, type, proto)
+        a = socket(family, type, proto, a.detach())
+        b = socket(family, type, proto, b.detach())
+        return a, b
+
+
+_blocking_errnos = { EAGAIN, EWOULDBLOCK }
+
 class SocketIO(io.RawIOBase):
 
     """Raw I/O implementation for stream sockets.
@@ -194,6 +237,13 @@ class SocketIO(io.RawIOBase):
     This class supports the makefile() method on sockets.  It provides
     the raw I/O interface on top of a socket object.
     """
+
+    # One might wonder why not let FileIO do the job instead.  There are two
+    # main reasons why FileIO is not adapted:
+    # - it wouldn't work under Windows (where you can't used read() and
+    #   write() on a socket handle)
+    # - it wouldn't work with socket timeouts (FileIO would ignore the
+    #   timeout and consider the socket non-blocking)
 
     # XXX More docs
 
@@ -207,45 +257,86 @@ class SocketIO(io.RawIOBase):
         self._mode = mode
         self._reading = "r" in mode
         self._writing = "w" in mode
+        self._timeout_occurred = False
 
     def readinto(self, b):
+        """Read up to len(b) bytes into the writable buffer *b* and return
+        the number of bytes read.  If the socket is non-blocking and no bytes
+        are available, None is returned.
+
+        If *b* is non-empty, a 0 return value indicates that the connection
+        was shutdown at the other end.
+        """
         self._checkClosed()
         self._checkReadable()
-        return self._sock.recv_into(b)
+        if self._timeout_occurred:
+            raise IOError("cannot read from timed out object")
+        while True:
+            try:
+                return self._sock.recv_into(b)
+            except timeout:
+                self._timeout_occurred = True
+                raise
+            except error as e:
+                n = e.args[0]
+                if n == EINTR:
+                    continue
+                if n in _blocking_errnos:
+                    return None
+                raise
 
     def write(self, b):
+        """Write the given bytes or bytearray object *b* to the socket
+        and return the number of bytes written.  This can be less than
+        len(b) if not all data could be written.  If the socket is
+        non-blocking and no bytes could be written None is returned.
+        """
         self._checkClosed()
         self._checkWritable()
-        return self._sock.send(b)
+        try:
+            return self._sock.send(b)
+        except error as e:
+            # XXX what about EINTR?
+            if e.args[0] in _blocking_errnos:
+                return None
+            raise
 
     def readable(self):
+        """True if the SocketIO is open for reading.
+        """
         return self._reading and not self.closed
 
     def writable(self):
+        """True if the SocketIO is open for writing.
+        """
         return self._writing and not self.closed
 
     def fileno(self):
+        """Return the file descriptor of the underlying socket.
+        """
         self._checkClosed()
         return self._sock.fileno()
 
     @property
     def name(self):
-        return self.fileno()
+        if not self.closed:
+            return self.fileno()
+        else:
+            return -1
 
     @property
     def mode(self):
         return self._mode
 
     def close(self):
+        """Close the SocketIO object.  This doesn't close the underlying
+        socket, except if all references to it have disappeared.
+        """
         if self.closed:
             return
         io.RawIOBase.close(self)
         self._sock._decref_socketios()
         self._sock = None
-
-    def __del__(self):
-        if not self.closed:
-            self._sock._decref_socketios()
 
 
 def getfqdn(name=''):
@@ -276,7 +367,8 @@ def getfqdn(name=''):
 
 _GLOBAL_DEFAULT_TIMEOUT = object()
 
-def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT):
+def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,
+                      source_address=None):
     """Connect to *address* and return the socket object.
 
     Convenience function.  Connect to *address* (a 2-tuple ``(host,
@@ -284,11 +376,13 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT):
     *timeout* parameter will set the timeout on the socket instance
     before attempting to connect.  If no *timeout* is supplied, the
     global default timeout setting returned by :func:`getdefaulttimeout`
-    is used.
+    is used.  If *source_address* is set it must be a tuple of (host, port)
+    for the socket to bind as a source address before making the connection.
+    An host of '' or port 0 tells the OS to use the default.
     """
 
-    msg = "getaddrinfo returns an empty list"
     host, port = address
+    err = None
     for res in getaddrinfo(host, port, 0, SOCK_STREAM):
         af, socktype, proto, canonname, sa = res
         sock = None
@@ -296,12 +390,17 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT):
             sock = socket(af, socktype, proto)
             if timeout is not _GLOBAL_DEFAULT_TIMEOUT:
                 sock.settimeout(timeout)
+            if source_address:
+                sock.bind(source_address)
             sock.connect(sa)
             return sock
 
-        except error as err:
-            msg = err
+        except error as _:
+            err = _
             if sock is not None:
                 sock.close()
 
-    raise error(msg)
+    if err is not None:
+        raise err
+    else:
+        raise error("getaddrinfo returns an empty list")

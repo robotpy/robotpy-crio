@@ -32,6 +32,9 @@ def _get_colon(path):
 # Normalize the case of a pathname.  Dummy in Posix, but <s>.lower() here.
 
 def normcase(path):
+    if not isinstance(path, (bytes, str)):
+        raise TypeError("normcase() argument must be str or bytes, "
+                        "not '{}'".format(path.__class__.__name__))
     return path.lower()
 
 
@@ -172,7 +175,11 @@ def normpath(s):
 def abspath(path):
     """Return an absolute path."""
     if not isabs(path):
-        path = join(os.getcwd(), path)
+        if isinstance(path, bytes):
+            cwd = os.getcwdb()
+        else:
+            cwd = os.getcwd()
+        path = join(cwd, path)
     return normpath(path)
 
 # realpath is a no-op on systems without islink support
@@ -189,7 +196,10 @@ def realpath(path):
     path = components[0] + colon
     for c in components[1:]:
         path = join(path, c)
-        path = Carbon.File.FSResolveAliasFile(path, 1)[0].as_pathname()
+        try:
+            path = Carbon.File.FSResolveAliasFile(path, 1)[0].as_pathname()
+        except Carbon.File.Error:
+            pass
     return path
 
-supports_unicode_filenames = False
+supports_unicode_filenames = True

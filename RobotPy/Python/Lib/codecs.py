@@ -374,6 +374,11 @@ class StreamWriter(Codec):
         """
         pass
 
+    def seek(self, offset, whence=0):
+        self.stream.seek(offset, whence)
+        if whence == 0 and offset == 0:
+            self.reset()
+
     def __getattr__(self, name,
                     getattr=getattr):
 
@@ -390,6 +395,8 @@ class StreamWriter(Codec):
 ###
 
 class StreamReader(Codec):
+
+    charbuffertype = str
 
     def __init__(self, stream, errors='strict'):
 
@@ -412,9 +419,8 @@ class StreamReader(Codec):
         self.stream = stream
         self.errors = errors
         self.bytebuffer = b""
-        # For str->str decoding this will stay a str
-        # For str->unicode decoding the first read will promote it to unicode
-        self.charbuffer = ""
+        self._empty_charbuffer = self.charbuffertype()
+        self.charbuffer = self._empty_charbuffer
         self.linebuffer = None
 
     def decode(self, input, errors='strict'):
@@ -450,7 +456,7 @@ class StreamReader(Codec):
         """
         # If we have lines cached, first merge them back into characters
         if self.linebuffer:
-            self.charbuffer = "".join(self.linebuffer)
+            self.charbuffer = self._empty_charbuffer.join(self.linebuffer)
             self.linebuffer = None
 
         # read until we get the required number of characters (if available)
@@ -493,7 +499,7 @@ class StreamReader(Codec):
         if chars < 0:
             # Return everything we've got
             result = self.charbuffer
-            self.charbuffer = ""
+            self.charbuffer = self._empty_charbuffer
         else:
             # Return the first chars characters
             result = self.charbuffer[:chars]
@@ -524,7 +530,7 @@ class StreamReader(Codec):
             return line
 
         readsize = size or 72
-        line = ""
+        line = self._empty_charbuffer
         # If size is given, we call read() only once
         while True:
             data = self.read(readsize, firstline=True)
@@ -532,7 +538,8 @@ class StreamReader(Codec):
                 # If we're at a "\r" read one extra character (which might
                 # be a "\n") to get a proper line ending. If the stream is
                 # temporarily exhausted we return the wrong line ending.
-                if data.endswith("\r"):
+                if (isinstance(data, str) and data.endswith("\r")) or \
+                   (isinstance(data, bytes) and data.endswith(b"\r")):
                     data += self.read(size=1, chars=1)
 
             line += data
@@ -558,7 +565,8 @@ class StreamReader(Codec):
                 line0withoutend = lines[0].splitlines(False)[0]
                 if line0withend != line0withoutend: # We really have a line end
                     # Put the rest back together and keep it until the next call
-                    self.charbuffer = "".join(lines[1:]) + self.charbuffer
+                    self.charbuffer = self._empty_charbuffer.join(lines[1:]) + \
+                                      self.charbuffer
                     if keepends:
                         line = line0withend
                     else:
@@ -569,7 +577,7 @@ class StreamReader(Codec):
                 if line and not keepends:
                     line = line.splitlines(False)[0]
                 break
-            if readsize<8000:
+            if readsize < 8000:
                 readsize *= 2
         return line
 
@@ -598,7 +606,7 @@ class StreamReader(Codec):
 
         """
         self.bytebuffer = b""
-        self.charbuffer = ""
+        self.charbuffer = self._empty_charbuffer
         self.linebuffer = None
 
     def seek(self, offset, whence=0):
@@ -606,8 +614,8 @@ class StreamReader(Codec):
 
             Resets the codec buffers used for keeping state.
         """
-        self.reset()
         self.stream.seek(offset, whence)
+        self.reset()
 
     def __next__(self):
 
@@ -698,6 +706,12 @@ class StreamReaderWriter:
 
         self.reader.reset()
         self.writer.reset()
+
+    def seek(self, offset, whence=0):
+        self.stream.seek(offset, whence)
+        self.reader.reset()
+        if whence == 0 and offset == 0:
+            self.writer.reset()
 
     def __getattr__(self, name,
                     getattr=getattr):

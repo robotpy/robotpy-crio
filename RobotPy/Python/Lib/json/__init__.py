@@ -31,7 +31,7 @@ Encoding basic Python object hierarchies::
 Compact encoding::
 
     >>> import json
-    >>> json.dumps([1,2,3,{'4': 5, '6': 7}], separators=(',',':'))
+    >>> json.dumps([1,2,3,{'4': 5, '6': 7}], separators=(',', ':'))
     '[1,2,3,{"4":5,"6":7}]'
 
 Pretty printing::
@@ -125,14 +125,12 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     ``.write()``-supporting file-like object).
 
     If ``skipkeys`` is true then ``dict`` keys that are not basic types
-    (``str``, ``unicode``, ``int``, ``float``, ``bool``, ``None``) will be
-    skipped instead of raising a ``TypeError``.
+    (``str``, ``int``, ``float``, ``bool``, ``None``) will be skipped
+    instead of raising a ``TypeError``.
 
-    If ``ensure_ascii`` is false, then the some chunks written to ``fp``
-    may be ``unicode`` instances, subject to normal Python ``str`` to
-    ``unicode`` coercion rules. Unless ``fp.write()`` explicitly
-    understands ``unicode`` (as in ``codecs.getwriter()``) this is likely
-    to cause an error.
+    If ``ensure_ascii`` is false, then the strings written to ``fp`` can
+    contain non-ASCII characters if they appear in strings contained in
+    ``obj``. Otherwise, all such characters are escaped in JSON strings.
 
     If ``check_circular`` is false, then the circular reference check
     for container types will be skipped and a circular reference will
@@ -157,7 +155,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
-    the ``cls`` kwarg.
+    the ``cls`` kwarg; otherwise ``JSONEncoder`` is used.
 
     """
     # cached encoder
@@ -185,12 +183,12 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     """Serialize ``obj`` to a JSON formatted ``str``.
 
     If ``skipkeys`` is false then ``dict`` keys that are not basic types
-    (``str``, ``unicode``, ``int``, ``float``, ``bool``, ``None``) will be
-    skipped instead of raising a ``TypeError``.
+    (``str``, ``int``, ``float``, ``bool``, ``None``) will be skipped
+    instead of raising a ``TypeError``.
 
-    If ``ensure_ascii`` is false, then the return value will be a
-    ``unicode`` instance subject to normal Python ``str`` to ``unicode``
-    coercion rules instead of being escaped to an ASCII ``str``.
+    If ``ensure_ascii`` is false, then the return value can contain non-ASCII
+    characters if they appear in strings contained in ``obj``. Otherwise, all
+    such characters are escaped in JSON strings.
 
     If ``check_circular`` is false, then the circular reference check
     for container types will be skipped and a circular reference will
@@ -215,7 +213,7 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
-    the ``cls`` kwarg.
+    the ``cls`` kwarg; otherwise ``JSONEncoder`` is used.
 
     """
     # cached encoder
@@ -246,8 +244,16 @@ def load(fp, cls=None, object_hook=None, parse_float=None,
     ``object_hook`` will be used instead of the ``dict``. This feature
     can be used to implement custom decoders (e.g. JSON-RPC class hinting).
 
+    ``object_pairs_hook`` is an optional function that will be called with the
+    result of any object literal decoded with an ordered list of pairs.  The
+    return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+    This feature can be used to implement custom decoders that rely on the
+    order that the key and value pairs are decoded (for example,
+    collections.OrderedDict will remember the order of insertion). If
+    ``object_hook`` is also defined, the ``object_pairs_hook`` takes priority.
+
     To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
-    kwarg.
+    kwarg; otherwise ``JSONDecoder`` is used.
 
     """
     return loads(fp.read(),
@@ -266,6 +272,14 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
     ``object_hook`` will be used instead of the ``dict``. This feature
     can be used to implement custom decoders (e.g. JSON-RPC class hinting).
 
+    ``object_pairs_hook`` is an optional function that will be called with the
+    result of any object literal decoded with an ordered list of pairs.  The
+    return value of ``object_pairs_hook`` will be used instead of the ``dict``.
+    This feature can be used to implement custom decoders that rely on the
+    order that the key and value pairs are decoded (for example,
+    collections.OrderedDict will remember the order of insertion). If
+    ``object_hook`` is also defined, the ``object_pairs_hook`` takes priority.
+
     ``parse_float``, if specified, will be called with the string
     of every JSON float to be decoded. By default this is equivalent to
     float(num_str). This can be used to use another datatype or parser
@@ -282,7 +296,9 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
     are encountered.
 
     To use a custom ``JSONDecoder`` subclass, specify it with the ``cls``
-    kwarg.
+    kwarg; otherwise ``JSONDecoder`` is used.
+
+    The ``encoding`` argument is ignored and deprecated.
 
     """
     if (cls is None and object_hook is None and

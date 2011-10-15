@@ -268,6 +268,14 @@ class Node(xml.dom.Node):
         self.previousSibling = None
         self.nextSibling = None
 
+    # A Node is its own context manager, to ensure that an unlink() call occurs.
+    # This is similar to how a file object works.
+    def __enter__(self):
+        return self
+
+    def __exit__(self, et, ev, tb):
+        self.unlink()
+
 defproperty(Node, "firstChild", doc="First child node, or None.")
 defproperty(Node, "lastChild",  doc="Last child node, or None.")
 defproperty(Node, "localName",  doc="Namespace-local name of this node.")
@@ -293,9 +301,10 @@ def _in_document(node):
 
 def _write_data(writer, data):
     "Writes datachars to writer."
-    data = data.replace("&", "&amp;").replace("<", "&lt;")
-    data = data.replace("\"", "&quot;").replace(">", "&gt;")
-    writer.write(data)
+    if data:
+        data = data.replace("&", "&amp;").replace("<", "&lt;"). \
+                    replace("\"", "&quot;").replace(">", "&gt;")
+        writer.write(data)
 
 def _get_elements_by_tagName_helper(parent, name, rc):
     for node in parent.childNodes:
@@ -912,6 +921,10 @@ class Childless:
         raise xml.dom.NotFoundErr(
             self.nodeName + " nodes do not have children")
 
+    def normalize(self):
+        # For childless nodes, normalize() has nothing to do.
+        pass
+
     def replaceChild(self, newChild, oldChild):
         raise xml.dom.HierarchyRequestErr(
             self.nodeName + " nodes do not have children")
@@ -1358,11 +1371,9 @@ class Notation(Identified, Childless, Node):
 class DOMImplementation(DOMImplementationLS):
     _features = [("core", "1.0"),
                  ("core", "2.0"),
-                 ("core", "3.0"),
                  ("core", None),
                  ("xml", "1.0"),
                  ("xml", "2.0"),
-                 ("xml", "3.0"),
                  ("xml", None),
                  ("ls-load", "3.0"),
                  ("ls-load", None),
@@ -1465,7 +1476,7 @@ class ElementInfo(object):
         return False
 
     def isId(self, aname):
-        """Returns true iff the named attribte is a DTD-style ID."""
+        """Returns true iff the named attribute is a DTD-style ID."""
         return False
 
     def isIdNS(self, namespaceURI, localName):
@@ -1894,7 +1905,7 @@ def _clone_node(node, deep, newOwnerDocument):
                     e._call_user_data_handler(operation, n, entity)
     else:
         # Note the cloning of Document and DocumentType nodes is
-        # implemenetation specific.  minidom handles those cases
+        # implementation specific.  minidom handles those cases
         # directly in the cloneNode() methods.
         raise xml.dom.NotSupportedErr("Cannot clone node %s" % repr(node))
 

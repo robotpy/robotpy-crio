@@ -1,3 +1,4 @@
+#ifndef Py_LIMITED_API
 #ifndef PYCTYPE_H
 #define PYCTYPE_H
 
@@ -11,6 +12,9 @@
 
 extern const unsigned int _Py_ctype_table[256];
 
+/* Unlike their C counterparts, the following macros are not meant to
+ * handle an int with any of the values [EOF, 0-UCHAR_MAX]. The argument
+ * must be a signed/unsigned char. */
 #define Py_ISLOWER(c)  (_Py_ctype_table[Py_CHARMASK(c)] & PY_CTF_LOWER)
 #define Py_ISUPPER(c)  (_Py_ctype_table[Py_CHARMASK(c)] & PY_CTF_UPPER)
 #define Py_ISALPHA(c)  (_Py_ctype_table[Py_CHARMASK(c)] & PY_CTF_ALPHA)
@@ -26,3 +30,4 @@ extern const unsigned char _Py_ctype_toupper[256];
 #define Py_TOUPPER(c) (_Py_ctype_toupper[Py_CHARMASK(c)])
 
 #endif /* !PYCTYPE_H */
+#endif /* !Py_LIMITED_API */

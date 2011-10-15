@@ -77,9 +77,9 @@ class JSONEncoder(object):
     +-------------------+---------------+
     | list, tuple       | array         |
     +-------------------+---------------+
-    | str, unicode      | string        |
+    | str               | string        |
     +-------------------+---------------+
-    | int, long, float  | number        |
+    | int, float        | number        |
     +-------------------+---------------+
     | True              | true          |
     +-------------------+---------------+
@@ -102,12 +102,12 @@ class JSONEncoder(object):
         """Constructor for JSONEncoder, with sensible defaults.
 
         If skipkeys is false, then it is a TypeError to attempt
-        encoding of keys that are not str, int, long, float or None.  If
+        encoding of keys that are not str, int, float or None.  If
         skipkeys is True, such items are simply skipped.
 
         If ensure_ascii is true, the output is guaranteed to be str
-        objects with all incoming unicode characters escaped.  If
-        ensure_ascii is false, the output will be unicode object.
+        objects with all incoming non-ASCII characters escaped.  If
+        ensure_ascii is false, the output can contain non-ASCII characters.
 
         If check_circular is true, then lists, dicts, and custom encoded
         objects will be checked for circular references during encoding to
@@ -233,7 +233,7 @@ class JSONEncoder(object):
 
 
         if (_one_shot and c_make_encoder is not None
-                and not self.indent):
+                and self.indent is None):
             _iterencode = c_make_encoder(
                 markers, self.default, _encoder, self.indent,
                 self.key_separator, self.item_separator, self.sort_keys,
@@ -259,6 +259,9 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         tuple=tuple,
     ):
 
+    if _indent is not None and not isinstance(_indent, str):
+        _indent = ' ' * _indent
+
     def _iterencode_list(lst, _current_indent_level):
         if not lst:
             yield '[]'
@@ -271,7 +274,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         buf = '['
         if _indent is not None:
             _current_indent_level += 1
-            newline_indent = '\n' + (' ' * (_indent * _current_indent_level))
+            newline_indent = '\n' + _indent * _current_indent_level
             separator = _item_separator + newline_indent
             buf += newline_indent
         else:
@@ -307,7 +310,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                     yield chunk
         if newline_indent is not None:
             _current_indent_level -= 1
-            yield '\n' + (' ' * (_indent * _current_indent_level))
+            yield '\n' + _indent * _current_indent_level
         yield ']'
         if markers is not None:
             del markers[markerid]
@@ -324,7 +327,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         yield '{'
         if _indent is not None:
             _current_indent_level += 1
-            newline_indent = '\n' + (' ' * (_indent * _current_indent_level))
+            newline_indent = '\n' + _indent * _current_indent_level
             item_separator = _item_separator + newline_indent
             yield newline_indent
         else:
@@ -383,7 +386,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                     yield chunk
         if newline_indent is not None:
             _current_indent_level -= 1
-            yield '\n' + (' ' * (_indent * _current_indent_level))
+            yield '\n' + _indent * _current_indent_level
         yield '}'
         if markers is not None:
             del markers[markerid]
@@ -397,7 +400,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             yield 'true'
         elif o is False:
             yield 'false'
-        elif isinstance(o, (int, int)):
+        elif isinstance(o, int):
             yield str(o)
         elif isinstance(o, float):
             yield _floatstr(o)

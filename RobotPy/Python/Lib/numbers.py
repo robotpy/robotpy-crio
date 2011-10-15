@@ -60,7 +60,7 @@ class Complex(Number):
 
     @abstractproperty
     def imag(self):
-        """Retrieve the real component of this number.
+        """Retrieve the imaginary component of this number.
 
         This should subclass Real.
         """
@@ -189,7 +189,7 @@ class Real(Complex):
         raise NotImplementedError
 
     @abstractmethod
-    def __round__(self, ndigits:"Integral"=None):
+    def __round__(self, ndigits=None):
         """Rounds self to ndigits decimal places, defaulting to 0.
 
         If ndigits is omitted or None, returns an Integral, otherwise
@@ -303,7 +303,7 @@ class Integral(Rational):
         raise NotImplementedError
 
     def __index__(self):
-        """index(self)"""
+        """someobject[self]"""
         return int(self)
 
     @abstractmethod

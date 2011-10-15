@@ -20,7 +20,7 @@ __all__ = [ "QUOTE_MINIMAL", "QUOTE_ALL", "QUOTE_NONNUMERIC", "QUOTE_NONE",
             "unregister_dialect", "__version__", "DictReader", "DictWriter" ]
 
 class Dialect:
-    """Describe an Excel dialect.
+    """Describe a CSV dialect.
 
     This must be subclassed (see csv.excel).  Valid attributes are:
     delimiter, quotechar, escapechar, doublequote, skipinitialspace,
@@ -64,6 +64,16 @@ class excel_tab(excel):
     """Describe the usual properties of Excel-generated TAB-delimited files."""
     delimiter = '\t'
 register_dialect("excel-tab", excel_tab)
+
+class unix_dialect(Dialect):
+    """Describe the usual properties of Unix-generated CSV files."""
+    delimiter = ','
+    quotechar = '"'
+    doublequote = True
+    skipinitialspace = False
+    lineterminator = '\n'
+    quoting = QUOTE_ALL
+register_dialect("unix", unix_dialect)
 
 
 class DictReader:
@@ -126,6 +136,10 @@ class DictWriter:
                              % extrasaction)
         self.extrasaction = extrasaction
         self.writer = writer(f, dialect, *args, **kwds)
+
+    def writeheader(self):
+        header = dict(zip(self.fieldnames, self.fieldnames))
+        self.writerow(header)
 
     def _dict_to_list(self, rowdict):
         if self.extrasaction == "raise":
@@ -270,7 +284,7 @@ class Sniffer:
         an all or nothing approach, so we allow for small variations in this
         number.
           1) build a table of the frequency of each character on every line.
-          2) build a table of freqencies of this frequency (meta-frequency?),
+          2) build a table of frequencies of this frequency (meta-frequency?),
              e.g.  'x occurred 5 times in 10 rows, 6 times in 1000 rows,
              7 times in 2 rows'
           3) use the mode of the meta-frequency to determine the /expected/

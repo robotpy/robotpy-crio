@@ -62,7 +62,7 @@ def unix_getpass(prompt='Password: ', stream=None):
         try:
             old = termios.tcgetattr(fd)     # a copy to save
             new = old[:]
-            new[3] &= ~(termios.ECHO|termios.ISIG)  # 3 == 'lflags'
+            new[3] &= ~termios.ECHO  # 3 == 'lflags'
             tcsetattr_flags = termios.TCSAFLUSH
             if hasattr(termios, 'TCSASOFT'):
                 tcsetattr_flags |= termios.TCSASOFT
@@ -166,12 +166,7 @@ except (ImportError, AttributeError):
     try:
         import msvcrt
     except ImportError:
-        try:
-            from EasyDialogs import AskPassword
-        except ImportError:
-            getpass = fallback_getpass
-        else:
-            getpass = AskPassword
+        getpass = fallback_getpass
     else:
         getpass = win_getpass
 else:

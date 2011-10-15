@@ -1,11 +1,13 @@
 
 /* Token types */
-
+#ifndef Py_LIMITED_API
 #ifndef Py_TOKEN_H
 #define Py_TOKEN_H
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#undef TILDE   /* Prevent clash of our definition with system macro. Ex AIX, ioctl.h */
 
 #define ENDMARKER	0
 #define NAME		1
@@ -83,3 +85,4 @@ PyAPI_FUNC(int) PyToken_ThreeChars(int, int, int);
 }
 #endif
 #endif /* !Py_TOKEN_H */
+#endif /* Py_LIMITED_API */
