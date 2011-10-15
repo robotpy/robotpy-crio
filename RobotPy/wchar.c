@@ -38,7 +38,86 @@
 #include "wchar.h"
 #include <ctype.h>
 #include <string.h>
+#include <errno.h>
 
+
+size_t
+mbstowcs(wchar_t *pwcs, const char *s, size_t n)
+{
+        size_t cnt;
+        wchar_t r;
+
+        if (s == NULL) {
+                errno = EINVAL;
+                return (-1);
+        }
+
+        if (pwcs == NULL) {
+                /* Convert and count only, do not store. */
+                cnt = 0;
+                while ((r = (wchar_t)(*s)) != 0) {
+                        s++;
+                        cnt++;
+                }
+                return (cnt);
+        }
+
+        /* Convert, store and count characters. */
+        cnt = 0;
+        while (n-- > 0) {
+                *pwcs = (wchar_t)(*s);
+                if (*pwcs++ == L'\0')
+                        break;
+                s++;
+                ++cnt;
+        }
+
+        return (cnt);
+}
+
+size_t
+wcstombs(char *s, const wchar_t *pwcs, size_t n)
+{
+        size_t cnt;
+	int nb;
+
+        if (pwcs == NULL) {
+                errno = EINVAL;
+                return (-1);
+        }
+
+        cnt = 0;
+
+        if (s == NULL) {
+                /* Convert and count only, do not store. */
+                while (*pwcs != L'\0') {
+                        if ((char)(*pwcs++) == 0) {
+                                errno = EILSEQ;
+                                return (-1);
+                        }
+                        cnt++;
+                }
+                return (cnt);
+        }
+
+        /* Convert, store and count characters. */
+        nb = n;
+        while (nb > 0) {
+                if (*pwcs == L'\0') {
+                        *s = '\0';
+                        break;
+                }
+                if ((*s = (char)(*pwcs++)) == 0) {
+                        errno = EILSEQ;
+                        return (-1);
+                }
+                cnt++;
+                nb--;
+                s++;
+        }
+
+        return (cnt);
+}
 
 size_t
 wcslen (const wchar_t *s)
