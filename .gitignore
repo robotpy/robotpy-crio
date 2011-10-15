@@ -1,5 +1,6 @@
 
 *.sw?
+*.pyc
 /RobotPy/PPC603gnu
 /Modules/*/ctdt.*
 /Modules/*/*.d
@@ -33,3 +34,4 @@
 /Packages/vision2009/*.cpp
 /Packages/vision2009/*.h
 /dist
+
