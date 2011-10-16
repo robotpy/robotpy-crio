@@ -15,6 +15,13 @@
 
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+size_t Py_mbstowcs(wchar_t *pwcs, const char *s, size_t n);
+size_t Py_wcstombs(char *s, const wchar_t *pwcs, size_t n);
+
 /* Emulated wcscat - Appends a string. */
 wchar_t *wcscat (wchar_t *destination, const wchar_t *source);
 
@@ -76,5 +83,9 @@ wchar_t *wcscpy (wchar_t *, const wchar_t *);
 int wcscmp (const wchar_t *, const wchar_t *);
 
 int wcsncmp (const wchar_t *, const wchar_t *, size_t len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ACE_OS_NS_STDIO_H */
