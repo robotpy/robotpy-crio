@@ -42,8 +42,8 @@ RobotTask()
 	//Py_VerboseFlag = 2;
 	Py_SetProgramName(L"./RobotPy");
 	Py_SetPythonHome(L"/c/");
-	PyEval_InitThreads();
 	Py_Initialize();
+	PyEval_InitThreads();
 	puts("starting " ROBOTPY_BOOT);
 	if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
 	{
