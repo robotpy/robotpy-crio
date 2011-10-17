@@ -1180,16 +1180,5 @@
 #define STRICT_SYSV_CURSES /* Don't use ncurses extensions */
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-size_t Py_mbstowcs(wchar_t *pwcs, const char *s, size_t n);
-size_t Py_wcstombs(char *s, const wchar_t *pwcs, size_t n);
-#ifdef __cplusplus
-}
-#endif
-#define mbstowcs(pwcs, s, n) Py_mbstowcs(pwcs, s, n)
-#define wcstombs(s, pwcs, n) Py_wcstombs(s, pwcs, n)
-
 #endif /*Py_PYCONFIG_H*/
 
