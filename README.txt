@@ -24,18 +24,47 @@ Features
 *  RobotPy provides access to the WPILib class library.
 *  You don't need to use WindRiver (unless you're rebuilding RobotPy itself).
 
-Installation from Source
-==========================
+Installation from Source (Advanced Users Only)
+==============================================
 
-To build the interpreter and loadable modules: Run Start|Programs|Wind River|
-VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
-CD to the directory where you cloned the git repository.  Run "make dist".
+To build the interpreter and loadable modules, you must perform steps 1-3
+at least once after cloning the RobotPy source from git
 
-Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
-where XXYY is your team number).  Copy the ``dist\RobotPy-Core\robot`` and
-``dist\RobotPy-WPILib\robot`` directory trees to the root (top level)
-directory on the robot.  Alternatively, install.py can be run in each of
-these directories to do this for you.
+Step 1: Install Python 
+
+    Python 2.6.6 is known to work. Ensure that you add your python installation
+    directory to your PATH variable.
+    
+    Note: This step is required for SIP installation
+
+Step 2: Install SIP v4.x:
+
+    http://www.riverbankcomputing.com/static/Docs/sip4/installation.html
+
+    Note: Installation of SIP requires Visual Studio or MinGW installed,
+    see the build instructions for more details.
+    
+Step 3: Use SIP to generate the CPP wrappers needed for build
+    
+    Run Packages\sip_all.bat to generate the wrappers
+    
+    Note: These scripts assume that SIP is in your %PATH% variable. SIP
+    is installed by default into your python directory, so you should
+    check your system
+    
+Step 4: Build RobotPy
+
+    Run Start|Programs|Wind River|
+    VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
+    CD to the directory where you cloned the git repository.  Run "make dist".
+    
+Step 5: Robot Installation
+    
+    Connect to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``,
+    where XXYY is your team number).  Copy the ``dist\RobotPy-Core\robot`` and
+    ``dist\RobotPy-WPILib\robot`` directory trees to the root (top level)
+    directory on the robot.  Alternatively, install.py can be run in each of
+    these directories to do this for you.
 
 Technical Overview
 ====================
