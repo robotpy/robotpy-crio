@@ -9,7 +9,8 @@ if "%_my_%" == "" goto notfound
 
 rem Using the shell script version (calling Git) ...
 set _gitbin_=%_my_:*REG_SZ=%
-for /f "tokens=* delims= " %%a in ("%_gitbin_%") do set _gitbin_=%%a
+for /f "tokens=*" %%a in ("%_gitbin_%") do set _gitbin_=%%a
+echo %_gitbin_%
 "%_gitbin_%\sh" VERSION-GEN.sh "%_gitbin_%"
 exit /b
 
