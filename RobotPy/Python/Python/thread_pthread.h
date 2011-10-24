@@ -613,7 +613,7 @@ PyThread_delete_key(int key)
 void
 PyThread_delete_key_value(int key)
 {
-    pthread_setspecific(key, NULL);
+    pthread_setspecific(key, (void*)(-1));
 }
 
 int
@@ -623,14 +623,17 @@ PyThread_set_key_value(int key, void *value)
     void *oldValue = pthread_getspecific(key);
     if (oldValue != NULL)
         return 0;
-    fail = pthread_setspecific(key, value);
+    fail = pthread_setspecific(key, value == NULL ? (void*)(-1) : value);
     return fail ? -1 : 0;
 }
 
 void *
 PyThread_get_key_value(int key)
 {
-    return pthread_getspecific(key);
+    void *rv = pthread_getspecific(key);
+    if (rv == (void*)(-1))
+        rv = NULL;
+    return rv;
 }
 
 void
