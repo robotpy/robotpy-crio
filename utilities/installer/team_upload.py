@@ -47,7 +47,10 @@ class RobotCodeInstaller(object):
         self.ftp = ftplib.FTP(robot_host, username, password, '', timeout)
 
     def close(self):
-        self.ftp.quit()
+        try:
+            self.ftp.quit()
+        except Exception:
+            pass # ignore this error
 
     def upload_directory( self, remote_root, local_root, recursive=True, verbose=False, skip_special=True ):
         '''
@@ -173,15 +176,20 @@ if __name__ == '__main__':
 
     installer = None
 
-    response = input('Upload code to robot for team %d? ' % my_team_number ).strip().lower()
+    if sys.version_info[0] < 3:
+        response = str(raw_input( 'Upload code to robot for team %d? ' % my_team_number  )).strip().lower()
+    else:
+        response = str(input( 'Upload code to robot for team %d? ' % my_team_number  )).strip().lower()
 
     if response != 'y' and response != 'yes':
-        print(response)
+        print("Not uploading code")
         wait()
         exit(1)
+        
+    robot_host = get_robot_host( my_team_number )
 
     try:
-        installer = RobotCodeInstaller( get_robot_host( my_team_number ) )
+        installer = RobotCodeInstaller( robot_host )
     except Exception as e:
         print("Could not connect to robot FTP server %s: %s" % (robot_host, e))
         wait()
