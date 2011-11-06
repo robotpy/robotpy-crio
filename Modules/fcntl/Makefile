@@ -1,4 +1,4 @@
-PROJECT_TARGET = fcntl.out
+PROJECT_TARGET = fcntl.pyd
 PROJECT_OBJECTS = fcntlmodule.o
 
 include ../../mk/module.mk

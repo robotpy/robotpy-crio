@@ -5,7 +5,7 @@
 /Modules/*/ctdt.*
 /Modules/*/*.d
 /Modules/*/*.o
-/Modules/*/*.out
+/Modules/*/*.pyd
 /Modules/pyexpat/expat/*.d
 /Modules/pyexpat/expat/*.o
 /Modules/readline/readline/config.log
@@ -18,7 +18,7 @@
 /Packages/*/ctdt.*
 /Packages/*/*.d
 /Packages/*/*.o
-/Packages/*/*.out
+/Packages/*/*.pyd
 /Packages/wpilib/*.cpp
 /Packages/wpilib/*.h
 /Packages/wpilib/CANJaguar/*.d

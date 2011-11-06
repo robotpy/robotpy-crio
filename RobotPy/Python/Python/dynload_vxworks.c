@@ -10,8 +10,8 @@
 #include <sysSymTbl.h>
 
 const struct filedescr _PyImport_DynLoadFiletab[] = {
-        {".out", "rb", C_EXTENSION},
-        {"module.out", "rb", C_EXTENSION},
+        {".pyd", "rb", C_EXTENSION},
+        {"module.pyd", "rb", C_EXTENSION},
 	{0, 0}
 };
 

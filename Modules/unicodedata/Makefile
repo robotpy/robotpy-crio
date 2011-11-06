@@ -1,4 +1,4 @@
-PROJECT_TARGET = unicodedata.out
+PROJECT_TARGET = unicodedata.pyd
 PROJECT_OBJECTS = unicodedata.o
 
 include ../../mk/module.mk

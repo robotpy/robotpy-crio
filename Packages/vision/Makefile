@@ -1,4 +1,4 @@
-PROJECT_TARGET = _vision.out
+PROJECT_TARGET = _vision.pyd
 PROJECT_OBJECTS = sip_visioncmodule.o
 PROJECT_OBJECTS += sip_visionAxisCamera.o
 PROJECT_OBJECTS += sip_visionAxisCameraParams.o

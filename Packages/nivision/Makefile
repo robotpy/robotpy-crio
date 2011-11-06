@@ -1,4 +1,4 @@
-PROJECT_TARGET = _nivision.out
+PROJECT_TARGET = _nivision.pyd
 PROJECT_OBJECTS = sip_nivisioncmodule.o
 #PROJECT_OBJECTS += sip_nivisionAIMGradeReport.o
 #PROJECT_OBJECTS += sip_nivisionAVIInfo.o

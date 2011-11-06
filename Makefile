@@ -34,9 +34,9 @@ dist: all
 	cp -R RobotPy/Python/Lib/* $(dist)/RobotPy-Core/robot/lib/python3.2/
 	cp RobotPy/PPC603gnu/RobotPy/NonDebug/RobotPy.out $(dist)/RobotPy-Core/robot/ni-rt/system/FRC_UserProgram.out
 
-	cp Modules/*/*.out $(dist)/RobotPy-Core/robot/lib/python3.2/lib-dynload
+	cp Modules/*/*.pyd $(dist)/RobotPy-Core/robot/lib/python3.2/lib-dynload
 
-	cp Packages/sip/*.out $(dist)/RobotPy-Core/robot/lib/python3.2/site-packages
+	cp Packages/sip/*.pyd $(dist)/RobotPy-Core/robot/lib/python3.2/site-packages
 
 	# RobotPy-WPILib distribution
 	$(eval sitepackages := $(dist)/RobotPy-WPILib/robot/lib/python3.2/site-packages)
@@ -46,16 +46,16 @@ dist: all
 
 	cp -R samples $(dist)/RobotPy-WPILib/samples
 
-	cp Packages/wpilib/*.out $(sitepackages)
+	cp Packages/wpilib/*.pyd $(sitepackages)
 	cp Packages/wpilib/*.py $(sitepackages)
 
-	cp Packages/nivision/*.out $(sitepackages)
+	cp Packages/nivision/*.pyd $(sitepackages)
 	cp Packages/nivision/*.py $(sitepackages)
 
-	cp Packages/vision/*.out $(sitepackages)
+	cp Packages/vision/*.pyd $(sitepackages)
 	cp Packages/vision/*.py $(sitepackages)
 
-	cp Packages/vision2009/*.out $(sitepackages)
+	cp Packages/vision2009/*.pyd $(sitepackages)
 	cp Packages/vision2009/*.py $(sitepackages)
 
 	# RobotPy-Utilities distribution

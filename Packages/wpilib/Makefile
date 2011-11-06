@@ -1,4 +1,4 @@
-PROJECT_TARGET = _wpilib.out
+PROJECT_TARGET = _wpilib.pyd
 PROJECT_OBJECTS = sip_wpilibcmodule.o
 PROJECT_OBJECTS += sip_wpilibAccelerometer.o
 PROJECT_OBJECTS += sip_wpilibADXL345_I2C.o

@@ -1,4 +1,4 @@
-PROJECT_TARGET = _vision2009.out
+PROJECT_TARGET = _vision2009.pyd
 PROJECT_OBJECTS = sip_vision2009cmodule.o
 PROJECT_OBJECTS += sip_vision2009ColorReport.o
 PROJECT_OBJECTS += sip_vision2009ParticleAnalysisReport.o
