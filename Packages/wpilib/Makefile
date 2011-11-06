@@ -122,3 +122,6 @@ ADDED_CFLAGS = -D'SVN_REV="2259"'
 ADDED_C++FLAGS = -D'SVN_REV="2259"'
 
 include ../../mk/module.mk
+
+dist ::
+	cp *.py $(DISTDIR)/

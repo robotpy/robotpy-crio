@@ -1,4 +1,4 @@
-*************************************************
+﻿*************************************************
   RobotPy: Python for FRC cRIO Robot Controller
 *************************************************
 
@@ -18,11 +18,6 @@ Python, a powerful dynamic programming language.
 
 Installation
 ==============
-
-To write robot code, you'll want to install both the Core and WPILib
-distributions.  The Core distribution contains only the Python interpreter and
-standard libraries, while the WPILib distribution contains the Python WPILib
-library typically used for interfacing to robot functions.
 
 Unzip the release .zip to a temporary directory.
 

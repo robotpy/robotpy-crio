@@ -27,13 +27,17 @@ SUBDIRS += time
 SUBDIRS += unicodedata
 SUBDIRS += zlib
 
-.PHONY: all clean $(SUBDIRS)
+.PHONY: all clean dist $(SUBDIRS)
 
 all: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) -C $@
+	@$(MAKE) -C $@
 
 clean:: $(addsuffix -clean,$(SUBDIRS))
 %-clean::
-	$(MAKE) -C $* clean
+	@$(MAKE) -C $* clean
+
+dist:: $(addsuffix -dist,$(SUBDIRS))
+%-dist::
+	@$(MAKE) -C $* DISTDIR=$(DISTDIR)/robot/lib/python3.2/lib-dynload dist

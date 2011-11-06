@@ -74,3 +74,6 @@ main_all : $(PROJECT_TARGET)
 clean ::
 	-rm $(PROJECT_TARGET) $(PROJECT_OBJECTS)
 
+dist :: $(PROJECT_TARGET)
+	cp $(PROJECT_TARGET) $(DISTDIR)/
+	-cp *.py $(DISTDIR)/
