@@ -14,6 +14,9 @@ ADDED_INCLUDES = -I../sip -I../wpilib -I../wpilib/WPILib -I../wpilib/WPILib/CInt
 ADDED_CFLAGS = -D'SVN_REV="2142"'
 ADDED_C++FLAGS = -D'SVN_REV="2142"'
 
+dist ::
+	cp *.py $(DISTDIR)/
+
 include ../../mk/module.mk
 
 dist ::

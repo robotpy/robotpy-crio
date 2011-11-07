@@ -32,6 +32,9 @@ ADDED_INCLUDES = -I../sip -I. -I../vision2009 -I../wpilib -I../wpilib/WPILib -I.
 ADDED_CFLAGS = -D'SVN_REV="2242"'
 ADDED_C++FLAGS = -D'SVN_REV="2242"'
 
+dist ::
+	cp *.py $(DISTDIR)/
+
 include ../../mk/module.mk
 
 dist ::

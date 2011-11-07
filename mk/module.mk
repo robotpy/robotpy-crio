@@ -76,4 +76,3 @@ clean ::
 
 dist :: $(PROJECT_TARGET)
 	cp $(PROJECT_TARGET) $(DISTDIR)/
-	-cp *.py $(DISTDIR)/
