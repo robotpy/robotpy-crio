@@ -1766,6 +1766,11 @@ SimpleExtendsException(PyExc_Exception, SystemError,
     "Please report this to the Python maintainer, along with the traceback,\n"
     "the Python version, and the hardware/OS platform and version.");
 
+/*
+ *    SystemRestart extends BaseException
+ */
+SimpleExtendsException(PyExc_BaseException, SystemRestart,
+    "Restart the Python interpreter.");
 
 /*
  *    ReferenceError extends Exception
@@ -2012,6 +2017,7 @@ _PyExc_Init(void)
     PRE_INIT(OverflowError)
     PRE_INIT(ZeroDivisionError)
     PRE_INIT(SystemError)
+    PRE_INIT(SystemRestart)
     PRE_INIT(ReferenceError)
     PRE_INIT(BufferError)
     PRE_INIT(MemoryError)
@@ -2075,6 +2081,7 @@ _PyExc_Init(void)
     POST_INIT(OverflowError)
     POST_INIT(ZeroDivisionError)
     POST_INIT(SystemError)
+    POST_INIT(SystemRestart)
     POST_INIT(ReferenceError)
     POST_INIT(BufferError)
     POST_INIT(MemoryError)

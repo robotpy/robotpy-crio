@@ -8,5 +8,5 @@ clean:
 
 dist: all
 	cp -R Python/Lib/* $(DISTDIR)/robot/lib/python3.2/
-	cp PPC603gnu/RobotPy/NonDebug/RobotPy.out $(DISTDIR)/robot/ni-rt/system/FRC_UserProgram.out
+	cp PPC603gnu/RobotPy/NonDebug/RobotPy.out $(DISTDIR)/robot/ni-rt/system/
 

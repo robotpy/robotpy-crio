@@ -35,80 +35,53 @@
 
 #define ROBOTPY_BOOT "/c/py/boot.py"
 
-static void
-RobotTask()
-{
-	/* Initialize the Python interpreter.  Required. */
-	//Py_VerboseFlag = 2;
-	Py_SetProgramName(L"./RobotPy");
-	Py_SetPythonHome(L"/c/");
-	Py_Initialize();
-	PyEval_InitThreads();
-	puts("starting " ROBOTPY_BOOT);
-	if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
-	{
-		PyRun_SimpleFile(f, ROBOTPY_BOOT);
-		fclose(f);
-	}
-	else
-		puts("Could not open " ROBOTPY_BOOT);
-
-	puts(ROBOTPY_BOOT " ended; terminating program");
-	Py_Finalize();
-}
-
-INT32 robotTaskId = -1;
-
 extern "C" INT32
-FRC_UserProgram_StartupLibraryInit()
+RobotPy_Run()
 {
-	puts("RobotPy " ROBOTPY_VERSION);
-	// Check for startup code already running
-	INT32 oldId = taskNameToId("FRC_RobotTask");
-	if (oldId != ERROR)
+    puts("RobotPy " ROBOTPY_VERSION);
+
+    /* Initialize the Python interpreter.  Required. */
+    //Py_VerboseFlag = 2;
+    Py_SetProgramName(L"./RobotPy");
+    Py_SetPythonHome(L"/c/");
+    Py_Initialize();
+    PyEval_InitThreads();
+    puts("starting " ROBOTPY_BOOT);
+    if (FILE* f = fopen(ROBOTPY_BOOT, "r"))
+    {
+	PyObject *m = PyImport_AddModule("__main__");
+	if (m == NULL)
+	    goto hang;
+	PyObject *d = PyModule_GetDict(m);
+	if (PyDict_GetItemString(d, "__file__") == NULL) {
+	    PyObject *fn;
+	    fn = PyUnicode_DecodeFSDefault(ROBOTPY_BOOT);
+	    if (fn == NULL)
+		goto hang;
+	    if (PyDict_SetItemString(d, "__file__", fn) < 0) {
+		Py_DECREF(fn);
+		goto hang;
+	    }
+	    if (PyDict_SetItemString(d, "__cached__", Py_None) < 0)
+		goto hang;
+	    Py_DECREF(fn);
+	}
+        PyObject *v = PyRun_File(f, ROBOTPY_BOOT, Py_file_input, d, d);
+	fclose(f);
+	if (v == NULL && PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_SystemRestart))
 	{
-		// Find the startup code module.
-		char moduleName[256];
-		moduleNameFindBySymbolName("FRC_UserProgram_StartupLibraryInit", moduleName);
-		MODULE_ID startupModId = moduleFindByName(moduleName);
-		if (startupModId != NULL)
-		{
-			// Remove the startup code.
-			unldByModuleId(startupModId, 0);
-			printf("!!!   Error: Default code was still running... It was unloaded for you... Please try again.\n");
-			return 0;
-		}
-		// This case should no longer get hit.
-		printf("!!!   Error: Other robot code is still running... Unload it and then try again.\n");
-		return 0;
+	    puts(ROBOTPY_BOOT " signaled restart");
+	    Py_Finalize();
+	    return 0; // will force restart at outer layer
 	}
+	Py_DECREF(v);
+    }
+    else
+	puts("Could not open " ROBOTPY_BOOT);
 
-	// Let the framework know that we are starting a new user program so the Driver Station can disable.
-	FRC_NetworkCommunication_observeUserProgramStarting();
-
-	// Start robot task
-	// This is done to ensure that the C++ robot task is spawned with the floating point
-	// context save parameter.
-	robotTaskId = taskSpawn("FRC_RobotTask", 100, VX_FP_TASK, THREAD_STACK_SIZE,
-				(FUNCPTR)RobotTask, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-	if (robotTaskId == ERROR)
-		printf("error starting robot task: %s\n", strerror(errno));
-
-	return 0;
+hang:
+    puts(ROBOTPY_BOOT " ended; terminating program");
+    for (;;)
+	sleep(5);
 }
-
-class RobotTaskDeleter
-{
-public:
-	RobotTaskDeleter() {}
-	~RobotTaskDeleter() {
-		if (robotTaskId != -1)
-		{
-			taskDelete(robotTaskId);
-			robotTaskId = -1;
-		}
-	}
-};
-
-static RobotTaskDeleter g_robotTaskDeleter;
 

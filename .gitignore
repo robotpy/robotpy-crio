@@ -1,6 +1,10 @@
 
 *.sw?
 *.pyc
+/FRC_UserProgram/ctdt.*
+/FRC_UserProgram/*.d
+/FRC_UserProgram/*.o
+/FRC_UserProgram/*.out
 /RobotPy/PPC603gnu
 /Modules/*/ctdt.*
 /Modules/*/*.d

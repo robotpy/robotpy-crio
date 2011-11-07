@@ -1,4 +1,5 @@
 SUBDIRS =
+SUBDIRS += FRC_UserProgram
 SUBDIRS += RobotPy
 SUBDIRS += Modules
 SUBDIRS += Packages
