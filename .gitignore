@@ -35,7 +35,11 @@
 /Packages/nivision/*.h
 /Packages/vision/*.cpp
 /Packages/vision/*.h
+/Packages/vision/Vision/*.d
+/Packages/vision/Vision/*.o
 /Packages/vision2009/*.cpp
 /Packages/vision2009/*.h
+/Packages/vision2009/Vision2009/*.d
+/Packages/vision2009/Vision2009/*.o
 /dist
 
