@@ -1,4 +1,5 @@
 
+__pycache__
 *.sw?
 *.pyc
 /FRC_UserProgram/ctdt.*
@@ -41,5 +42,5 @@
 /Packages/vision2009/*.h
 /Packages/vision2009/Vision2009/*.d
 /Packages/vision2009/Vision2009/*.o
-/dist
+/RobotPy-*
 
