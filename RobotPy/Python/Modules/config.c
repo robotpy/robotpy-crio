@@ -45,6 +45,7 @@ extern PyObject* PyInit_imp(void);
 extern PyObject* PyInit_gc(void);
 extern PyObject* PyInit__ast(void);
 extern PyObject* _PyWarnings_Init(void);
+extern PyObject* PyInit__string(void);
 
 struct _inittab _PyImport_Inittab[] = {
 
@@ -84,6 +85,9 @@ struct _inittab _PyImport_Inittab[] = {
 
 	/* This lives in _warnings.c */
 	{"_warnings", _PyWarnings_Init},
+
+    /* This lives in Objects/unicodeobject.c */
+    {"_string", PyInit__string},
 
 	/* Sentinel */
 	{0, 0}
