@@ -40,6 +40,7 @@
 #include "pyconfig.h"
 #include "NetworkCommunication/FRCComm.h"
 #include "NetworkCommunication/symModuleLink.h"
+#include "NetworkCommunication/UsageReporting.h"
 
 static INT32 pythonTaskId;
 SEM_ID pythonTaskEnded;
@@ -161,6 +162,11 @@ FRC_UserProgram_StartupLibraryInit()
         printf("!!!   Error: Other robot code is still running... Unload it and then try again.\n");
         return 0;
     }
+
+    // Let the FMS know we're running Python.
+    FRC_NetworkCommunication_nUsageReporting_report(
+        nUsageReporting::kResourceType_Language,
+        nUsageReporting::kLanguage_Python, 0, 0);
 
     // Let the framework know that we are starting a new user program so the Driver Station can disable.
     FRC_NetworkCommunication_observeUserProgramStarting();
