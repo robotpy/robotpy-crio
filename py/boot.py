@@ -4,7 +4,7 @@ class RollbackImporter:
     def __init__(self):
         "Creates an instance and installs as the global importer"
         self.previousModules = sys.modules.copy()
-        
+
     def uninstall(self):
         newmodules = sys.modules.copy()
         for modname in newmodules.keys():
