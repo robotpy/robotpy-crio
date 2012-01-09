@@ -5,6 +5,7 @@ from Autonomous import *
 
 class MyRobot(wpilib.SimpleRobot):
     def __init__(self):
+        super().__init__()
         self.kicker = Kicker()
         self.auto = Autonomous(self.kicker)
 

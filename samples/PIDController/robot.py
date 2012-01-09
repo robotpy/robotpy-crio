@@ -7,7 +7,7 @@ analog = wpilib.AnalogChannel(1)
 
 class MotorOutput(wpilib.PIDOutput):
     def __init__(self, motor):
-        wpilib.PIDOutput.__init__(self)
+        super().__init__()
         self.motor = motor
 
     def PIDWrite(self, output):
@@ -15,7 +15,7 @@ class MotorOutput(wpilib.PIDOutput):
 
 class AnalogSource(wpilib.PIDSource):
     def __init__(self, analog):
-        wpilib.PIDSource.__init__(self)
+        super().__init__()
         self.analog = analog
 
     def PIDGet(self):
