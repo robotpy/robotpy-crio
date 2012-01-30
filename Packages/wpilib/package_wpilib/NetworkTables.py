@@ -63,11 +63,11 @@ class Buffer:
             self.WriteBytes(length, entry)
 
     def WriteDouble(self, entry):
-        self.formatDouble.pack_info(self.buffer, self.size, entry)
+        self.formatDouble.pack_into(self.buffer, self.size, entry)
         self.size += self.formatDouble.size
 
     def WriteInt(self, entry):
-        self.formatInt.pack_info(self.buffer, self.size, entry)
+        self.formatInt.pack_into(self.buffer, self.size, entry)
         self.size += self.formatInt.size
 
     def WriteId(self, id):
@@ -181,11 +181,11 @@ class Reader:
             return id
 
     def ReadInt(self):
-        raw = [self.Read() for x in range(Buffer.formatInt.size)]
+        raw = bytes(self.Read() for x in range(Buffer.formatInt.size))
         return Buffer.formatInt.unpack(raw)[0]
 
     def ReadDouble(self):
-        raw = [self.Read() for x in range(Buffer.formatDouble.size)]
+        raw = bytes(self.Read() for x in range(Buffer.formatDouble.size))
         return Buffer.formatDouble.unpack(raw)[0]
 
     def ReadConfirmations(self, useLastValue):
@@ -421,6 +421,22 @@ class IntegerEntry(Entry):
     def GetInt(self):
         return self.value
 
+class DoubleEntry(Entry):
+    def __init__(self, value):
+        super().__init__()
+        self.value = value
+
+    def GetType(self):
+        return kTypes_DOUBLE
+
+    def Encode(self, buffer):
+        super().Encode(buffer)
+        buffer.WriteByte(kDOUBLE)
+        buffer.WriteDouble(self.value)
+
+    def GetDouble(self):
+        return self.value
+
 class StringEntry(Entry):
     def __init__(self, value):
         super().__init__()
@@ -447,7 +463,7 @@ class TableEntry(Entry):
 
     def Encode(self, buffer):
         super().Encode(buffer)
-        value.EncodeName(buffer)
+        self.value.EncodeName(buffer)
 
     def GetTable(self):
         return self.value
