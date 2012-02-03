@@ -50,13 +50,15 @@ class SmartDashboard:
             else:
                 return v
 
-        def PutData(self, keyName, value):
+        def PutData(self, keyName=None, value=None):
             """Maps the specified key to the specified value in this table.
             The key can not be None.
             The value can be retrieved by calling the get method with a key
             that is equal to the original key.
             @param keyName the key
             @param value the value"""
+            if keyName is None and hasattr(value, "GetName"):
+                keyName = value.GetName()
             if keyName is None:
                 logging.error("NullParameter: keyName")
                 return
@@ -68,18 +70,6 @@ class SmartDashboard:
             t.PutSubTable("Data", value.GetTable())
             self.table[keyName] = t
             self.tablesToData[t] = value
-
-        def PutData(self, value):
-            """Maps the specified key (where the key is the name of the
-            {@link SmartDashboardNamedData} to the specified value in this
-            table.
-            The value can be retrieved by calling the get method with a key
-            that is equal to the original key.
-            @param value the value"""
-            if value is None:
-                logging.error("NullParameter: value")
-                return
-            self.PutData(value.GetName(), value)
 
         def GetData(self, keyName):
             """Returns the value at the specified key.
@@ -201,16 +191,16 @@ class SendablePIDController(PIDController):
         super().SetPID(p, i, d)
 
         if self.table is not None:
-            self.table[kP] = float(p)
-            self.table[kI] = float(i)
-            self.table[kD] = float(d)
+            self.table[self.kP] = float(p)
+            self.table[self.kI] = float(i)
+            self.table[self.kD] = float(d)
 
     def Enable(self):
         """Begin running the PIDController"""
         super().Enable()
 
         if self.table is not None:
-            self.table[kEnabled] = True
+            self.table[self.kEnabled] = True
 
     def Disable(self):
         """Stop running the PIDController, this sets the output to zero before
@@ -218,7 +208,7 @@ class SendablePIDController(PIDController):
         super().Disable()
 
         if self.table is not None:
-            self.table[kEnabled] = False
+            self.table[self.kEnabled] = False
 
     #
     # SmartDashboardData interface
@@ -230,11 +220,11 @@ class SendablePIDController(PIDController):
         if self.table is None:
             self.table = NetworkTable()
 
-            self.table[kP] = self.GetP()
-            self.table[kI] = self.GetI()
-            self.table[kD] = self.GetD()
-            self.table[kSetpoint] = self.GetSetpoint()
-            self.table[kEnabled] = self.IsEnabled()
+            self.table[self.kP] = self.GetP()
+            self.table[self.kI] = self.GetI()
+            self.table[self.kD] = self.GetD()
+            self.table[self.kSetpoint] = self.GetSetpoint()
+            self.table[self.kEnabled] = self.IsEnabled()
 
             self.table.AddChangeListenerAny(self)
         return self.table
@@ -243,13 +233,13 @@ class SendablePIDController(PIDController):
     # NetworkTableChangeListener interface
     #
     def ValueChanged(self, table, name, type):
-        if name == kP or name == kI or name == kD:
-            super().SetPID(table.GetDouble(kP), table.GetDouble(kI),
-                    table.GetDouble(kD))
-        elif name == kSetpoint:
-            super().SetSetpoint(table.GetDouble(kSetpoint))
-        elif name == kEnabled:
-            if table.GetBoolean(kEnabled):
+        if name == self.kP or name == self.kI or name == self.kD:
+            super().SetPID(table.GetDouble(self.kP), table.GetDouble(self.kI),
+                    table.GetDouble(self.kD))
+        elif name == self.kSetpoint:
+            super().SetSetpoint(table.GetDouble(self.kSetpoint))
+        elif name == self.kEnabled:
+            if table.GetBoolean(self.kEnabled):
                 super().Enable()
             else:
                 super().Disable()
