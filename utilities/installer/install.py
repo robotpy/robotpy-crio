@@ -46,10 +46,120 @@ class RobotCodeInstaller(object):
         self.ftp = ftplib.FTP(robot_host, username, password, '', timeout)
 
     def close(self):
-        self.ftp.quit()
-
-    def upload_directory( self, remote_root, local_root, recursive=True, verbose=False, skip_special=True ):
         '''
+            Closes the connection
+        '''
+        self.ftp.quit()
+        
+    def create_remote_directory( self, remote_dir, verbose=True ):
+        '''
+            Creates a directory on the server. If the parent paths do not
+            exist, this function creates those paths as well. 
+        
+            remote_dir      Path on remote server
+        '''
+        
+        path = remote_dir.replace('\\','/').split('/')
+       
+        for idx in range(1,len(path)+1):
+            
+            rpath = '/'.join( path[:idx] )
+        
+            if self._create_and_list_remote_path( rpath, verbose ) is None:
+                return False
+            
+        return True
+        
+    def delete_remote( self, remote_item, verbose=True ):
+        '''
+            Recursively deletes a directory or file. Ignores errors, since the 
+            installer doesn't really care.. 
+        '''
+        
+        try:
+            files = self.ftp.nlst( remote_item )
+        except ftplib.Error as e:
+            return
+        
+        # see if this is actually a file
+        if len(files) == 1 and files[0] == remote_item:
+            try:
+                self.ftp.delete( remote_item )
+                if verbose:
+                    print( 'DELETE %s' % remote_item )
+            except ftplib.Error as e:
+                sys.stderr.write( 'ERROR deleting file %s: %s' % (remote_item, e ))
+        
+        else:
+            for file in files:
+                fn = file[len(remote_item)+1:]
+                if fn == '.' or fn == '..':
+                    continue
+                    
+                self.delete_remote( file, verbose )
+        
+            try:                
+                self.ftp.rmd( remote_item )
+                if verbose:
+                    print( 'RMDIR %s' % remote_item )
+            except ftplib.Error as e:
+                sys.stderr.write( 'ERROR deleting directory %s: %s' % (remote_item, e ))
+                
+
+    def upload_file( self, remote_dir, local_dir, filename, verbose=True ):
+        '''
+            Uploads a single file to the remote server. Does not check
+            to see if the remote directory exists. You should call 
+            create_remote_directory() before calling this function.
+        
+            Parameters: 
+            
+                remote_dir:
+                    The remote directory to upload files to. Absolute path, 
+                    unless you previously called set_current_directory(). 
+
+                local_dir:
+                    The local directory to upload files from. Absolute or relative
+                    path. 
+
+                filename:
+                    The name of the file to upload
+                
+                verbose:
+                    Set to true to output the name of each file as it is
+                    being uploaded
+                    
+            Returns:
+                True if successful, False if not successful. Errors are
+                printed out to stderr
+        '''
+        
+        lfn = os.path.join( local_dir, filename )
+        rfn = remote_dir + '/' + filename
+        
+        # upload the file already!
+        with open(lfn, 'rb') as stor_file:
+            try:
+                self.ftp.storbinary( 'STOR ' + rfn, stor_file )
+
+                if verbose:
+                    print( 'STOR ' + rfn )
+                else:
+                    sys.stdout.write('.')
+                    sys.stdout.flush()
+            except ftplib.Error as msg:
+                sys.stderr.write("ERROR writing %s: %s\n" % (rfn, msg ))
+                return False
+            except IOError as msg:
+                sys.stderr.write("ERROR reading from %s: %s\n" % (lfn, msg))
+                return False
+                
+        return True
+        
+    def upload_directory( self, remote_dir, local_dir, recursive=True, verbose=False, skip_special=True ):
+        '''
+            Uploads the contents of a local directory to the remote server.
+        
             Parameters:
 
                 remote_root:
@@ -69,25 +179,17 @@ class RobotCodeInstaller(object):
                     Don't upload .pyc, .git, .svn, .hg directories
         '''
 
-        # save cwd
-        cwd = os.path.abspath( os.getcwd() )
+        if remote_dir[-1] != '/':
+            remote_dir += '/'
 
-        if not os.path.isdir( local_root ):
-            print("ERROR: Local root directory %s does not exist" % local_root )
+        if not os.path.isdir( local_dir ):
+            sys.stderr.write("ERROR: Local root directory %s does not exist\n" % local_dir )
             return False
 
-        os.chdir( local_root )
+        for root, dirs, files in os.walk( local_dir ):
 
-        try:
-            self.ftp.cwd( remote_root )
-        except ftplib.error_perm as msg:
-            print("ERROR: Accessing remote directory %s failed: %s" % (remote_root, msg))
-            return False
-
-        has_error = False
-
-        for root, dirs, files in os.walk( '.' ):
-
+            remote_root = remote_dir + root[len(local_dir)+1:].replace( '\\', '/' )
+        
             # skip .svn, .git, .hg directories
             if skip_special:
                 for d in dirs[:]:
@@ -98,68 +200,59 @@ class RobotCodeInstaller(object):
             if verbose:
                 sys.stdout.write('\n')
 
-            remote_files = []
+            remote_files = self._create_and_list_remote_path( remote_root, verbose )
+            if remote_files is None:
+                return False
 
-            try:
-                remote_files = self.ftp.nlst( root )
-            except ftplib.error_perm:
-                # directory must not exist, right?
-                try:
-                    self.ftp.mkd( root )
-                    if verbose:
-                        print( 'MKDIR ' + root )
-                except ftplib.error_perm as msg:
-                    print("ERROR: Creating directory %s failed: %s" % (root, msg))
-                    break
+            # if there is a __pycache__ directory, delete it
+            if len(files) > 0:
+                self.delete_remote( remote_root + '/' + '__pycache__', verbose )
 
-            for fn in files:
+            for filename in files:
 
-                filename = os.path.join( root, fn )
-                r, ext = os.path.splitext( fn )
+                r, ext = os.path.splitext( filename )
 
                 # if this accidentally got in there, don't upload it
                 if skip_special and ext == '.pyc':
                     continue
+                    
+                pyc_file = remote_root + '/' + r + '.pyc'
 
                 # for each py file, delete a pyc file associated with it
-                if ext == '.py' and (r + '.pyc') in remote_files:
-                    try:
-                        self.ftp.delete( r + '.pyc' )
-                        if verbose:
-                            print('DELETE ' + r + '.pyc')
-                    except Exception:
-                        pass
-
-                # upload the file already!
-                with open(filename, 'rb') as stor_file:
-                    try:
-                        #
-                        self.ftp.storbinary( 'STOR ' + filename, stor_file )
-
-                        if verbose:
-                            print( 'STOR ' + filename )
-                        else:
-                            sys.stdout.write('.')
-                            sys.stdout.flush()
-                    except ftplib.error_perm as msg:
-                        print("ERROR writing %s: %s" % (filename, msg ))
-                        has_error = True
-                        break
-                    except IOError as msg:
-                        print("ERROR reading from %s: %s" % (filename, msg))
-                        has_error = True
-                        break
+                if ext == '.py' and pyc_file in remote_files:
+                    self.delete_remote( pyc_file )
+                        
+                if not self.upload_file( remote_root, root, filename, verbose=verbose ):
+                    return False
 
             sys.stdout.write('\n')
 
-            if has_error or not recursive:
+            if not recursive:
                 break
 
-        # restore local cwd
-        os.chdir( cwd )
         return True
-
-
+        
+    def _create_and_list_remote_path( self, rpath, verbose ):
+        # internal function: returns the contents of a remote
+        # directory, if the directory does not exist it creates
+        # the path
+    
+        try:
+            return self.ftp.nlst( rpath )
+        except ftplib.Error:
+            # directory must not exist, right?
+            try:
+                self.ftp.mkd( rpath )
+                if verbose:
+                    print( 'MKDIR ' + rpath )
+                return []
+                
+            except ftplib.Error as msg:
+                sys.stderr.write("ERROR: Creating directory %s failed: %s\n" % (rpath, msg))
+                return None
+                
+        
+    
 
 if __name__ == '__main__':
 
@@ -209,7 +302,7 @@ if __name__ == '__main__':
     try:
         installer = RobotCodeInstaller( robot_host )
     except Exception as e:
-        print("Could not connect to robot FTP server %s: %s" % (robot_host, e))
+        sys.stderr.write("Could not connect to robot FTP server %s: %s\n" % (robot_host, e))
         exit(1)
 
     installer.upload_directory( options.remote_root, options.local_root, verbose=options.verbose )
