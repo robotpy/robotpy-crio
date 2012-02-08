@@ -6,6 +6,7 @@
 
 #include "Task.h"
 
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 #include <errnoLib.h>
 #include <string.h>
@@ -17,7 +18,7 @@ const INT32 Task::kInvalidTaskID;
 
 /**
  * Create but don't launch a task.
- * @param name The name of the task.  "FRC" will be prepended to the task name.
+ * @param name The name of the task.  "FRC_" will be prepended to the task name.
  * @param function The address of the function to run as the new task.
  * @param priority The VxWorks priority for the task.
  * @param stackSize The size of the stack for the task
@@ -31,6 +32,10 @@ Task::Task(const char* name, FUNCPTR function, INT32 priority, UINT32 stackSize)
 	m_taskName = new char[strlen(name) + 5];
 	strcpy(m_taskName, "FRC_");
 	strcpy(m_taskName+4, name);
+
+	static INT32 instances = 0;
+	instances++;
+	nUsageReporting::report(nUsageReporting::kResourceType_Task, instances, 0, m_taskName);
 }
 
 Task::~Task()

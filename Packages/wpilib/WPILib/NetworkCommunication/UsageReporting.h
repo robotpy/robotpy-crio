@@ -68,6 +68,36 @@ namespace nUsageReporting
 
         kFramework_Iterative = 1,
         kFramework_Simple = 2,
+
+        kRobotDrive_ArcadeStandard = 1,
+        kRobotDrive_ArcadeButtonSpin = 2,
+        kRobotDrive_ArcadeRatioCurve = 3,
+        kRobotDrive_Tank = 4,
+        kRobotDrive_MecanumPolar = 5,
+        kRobotDrive_MecanumCartesian = 6,
+
+        kDriverStationCIO_Analog = 1,
+        kDriverStationCIO_DigitalIn = 2,
+        kDriverStationCIO_DigitalOut = 3,
+
+        kDriverStationEIO_Acceleration = 1,
+        kDriverStationEIO_AnalogIn = 2,
+        kDriverStationEIO_AnalogOut = 3,
+        kDriverStationEIO_Button = 4,
+        kDriverStationEIO_LED = 5,
+        kDriverStationEIO_DigitalIn = 6,
+        kDriverStationEIO_DigitalOut = 7,
+        kDriverStationEIO_FixedDigitalOut = 8,
+        kDriverStationEIO_PWM = 9,
+        kDriverStationEIO_Encoder = 10,
+        kDriverStationEIO_TouchSlider = 11,
+
+        kADXL345_SPI = 1,
+        kADXL345_I2C = 1,
+
+        kCommand_Scheduler = 1,
+
+        kSmartDashboard_Instance = 1,
     } tInstances;
 
     /**

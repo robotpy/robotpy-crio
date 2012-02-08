@@ -494,9 +494,9 @@ void NetworkTable::ProcessTransaction(bool confirmed, NetworkTables::NetworkQueu
 			std::auto_ptr<NetworkTables::Entry>((NetworkTables::Entry *)data.first);
 		std::auto_ptr<NetworkTables::Entry> oldEntry = entry->GetKey()->SetEntry(entry);
 		if (oldEntry.get() == NULL)
-			m_hasAdded->Offer(entry.get());
+			m_hasAdded->Offer(data.first);
 		else	// TODO: Filter unchanged values
-			m_hasChanged->Offer(entry.get());
+			m_hasChanged->Offer(data.first);
 	}
 	while (!m_hasAdded->IsEmpty())
 	{

@@ -6,6 +6,7 @@
 
 #include "SerialPort.h"
 
+#include "NetworkCommunication/UsageReporting.h"
 #include "visa/visa.h"
 
 //static ViStatus _VI_FUNCH ioCompleteHandler (ViSession vi, ViEventType eventType, ViEvent event, ViAddr userHandle);
@@ -54,6 +55,8 @@ SerialPort::SerialPort(UINT32 baudRate, UINT8 dataBits, SerialPort::Parity parit
 
 	//viInstallHandler(m_portHandle, VI_EVENT_IO_COMPLETION, ioCompleteHandler, this);
 	//viEnableEvent(m_portHandle, VI_EVENT_IO_COMPLETION, VI_HNDLR, VI_NULL);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_SerialPort, 0);
 }
 
 /**

@@ -9,6 +9,7 @@
 #include "ChipObject/tSPI.h"
 #include "DigitalInput.h"
 #include "DigitalOutput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
 
@@ -159,6 +160,10 @@ void SPI::Init(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *miso)
 	}
 
 	m_ss = NULL;
+
+	static INT32 instances = 0;
+	instances++;
+	nUsageReporting::report(nUsageReporting::kResourceType_SPI, instances);
 }
 
 /**

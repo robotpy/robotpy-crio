@@ -6,6 +6,7 @@
 
 #include "Encoder.h"
 #include "DigitalInput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -61,11 +62,14 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 	case k1X:
 	case k2X:
 		m_counter = new Counter(m_encodingType, m_aSource, m_bSource, reverseDirection);
+		m_index = m_counter->GetIndex();
 		break;
 	}
 	m_distancePerPulse = 1.0;
 	m_pidSource = kDistance;
 	wpi_setError(localStatus);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Encoder, m_index, encodingType);
 }
 
 /**

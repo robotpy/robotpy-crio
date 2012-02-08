@@ -7,6 +7,7 @@
 #include "Relay.h"
 
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -46,6 +47,8 @@ void Relay::InitRelay (UINT8 moduleNumber)
 			CloneError(relayChannels);
 			return;
 		}
+
+		nUsageReporting::report(nUsageReporting::kResourceType_Relay, m_channel, moduleNumber - 1);
 	}
 	if (m_direction == kBothDirections || m_direction == kReverseOnly)
 	{
@@ -55,6 +58,8 @@ void Relay::InitRelay (UINT8 moduleNumber)
 			CloneError(relayChannels);
 			return;
 		}
+
+		nUsageReporting::report(nUsageReporting::kResourceType_Relay, m_channel + 128, moduleNumber - 1);
 	}
 	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->SetRelayForward(m_channel, false);

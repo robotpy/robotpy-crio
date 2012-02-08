@@ -7,6 +7,7 @@
 #include "Vision/AxisCamera.h"
 
 #include <string.h>
+#include "NetworkCommunication/UsageReporting.h"
 #include "Synchronized.h"
 #include "Vision/PCVideoServer.h"
 #include "WPIErrors.h"
@@ -35,6 +36,10 @@ AxisCamera::AxisCamera(const char *ipAddress)
 	, m_videoServer(NULL)
 {
 	m_protectedImageSem = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
+
+#if JAVA_CAMERA_LIB != 1
+	nUsageReporting::report(nUsageReporting::kResourceType_AxisCamera, ipAddress == NULL ? 1 : 2);
+#endif
 
 	if (!StatusIsFatal())
 		m_imageStreamTask.Start((int)this); 

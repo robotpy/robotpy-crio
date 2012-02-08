@@ -5,6 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "DoubleSolenoid.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 
 /**
@@ -47,6 +48,9 @@ void DoubleSolenoid::InitSolenoid()
 	}
 	m_forwardMask = 1 << (m_forwardChannel - 1);
 	m_reverseMask = 1 << (m_reverseChannel - 1);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_forwardChannel, m_moduleNumber - 1);
+	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_reverseChannel, m_moduleNumber - 1);
 }
 
 /**

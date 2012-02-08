@@ -13,9 +13,10 @@
 #include <inetLib.h>
 #include <sockLib.h>
 
-#include "Vision/AxisCamera.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Task.h"
 #include "Timer.h"
+#include "Vision/AxisCamera.h"
 #include "WPIErrors.h"
 
 /**
@@ -223,6 +224,9 @@ int PCVideoServer::ServerTask()
 			continue;
 		}
 		//TODO: check camera error
+
+		// Report usage when there is actually a connection.
+		nUsageReporting::report(nUsageReporting::kResourceType_PCVideoServer, 0);
 
 		int numBytes = 0;
 		int imageDataSize = 0;

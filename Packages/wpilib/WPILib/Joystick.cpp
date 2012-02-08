@@ -6,6 +6,7 @@
 
 #include "Joystick.h"
 #include "DriverStation.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 #include <math.h>
 
@@ -41,6 +42,8 @@ Joystick::Joystick(UINT32 port)
 	
 	m_buttons[kTriggerButton] = kDefaultTriggerButton;
 	m_buttons[kTopButton] = kDefaultTopButton;
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Joystick, port);
 }
 
 /**

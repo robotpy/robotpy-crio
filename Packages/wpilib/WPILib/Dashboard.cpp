@@ -6,6 +6,7 @@
 
 #include "Dashboard.h"
 #include "DriverStation.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
 #include <strLib.h>
@@ -300,6 +301,13 @@ INT32 Dashboard::Finalize()
 	{
 		wpi_setWPIError(MismatchedComplexTypeClose);
 		return 0;
+	}
+
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_Dashboard, 0);
+		reported = true;
 	}
 
 	Synchronized sync(m_statusDataSemaphore);

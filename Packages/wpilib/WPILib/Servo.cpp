@@ -6,6 +6,8 @@
 
 #include "Servo.h"
 
+#include "NetworkCommunication/UsageReporting.h"
+
 const float Servo::kMaxServoAngle;
 const float Servo::kMinServoAngle;
 
@@ -20,6 +22,8 @@ void Servo::InitServo()
 	// TODO: compute the appropriate values based on digital loop timing
 	SetBounds(245, 0, 0, 0, 11);
 	SetPeriodMultiplier(kPeriodMultiplier_4X);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Servo, GetChannel(), GetModuleNumber() - 1);
 }
 
 /**

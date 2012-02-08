@@ -67,6 +67,7 @@ public:
 	void SetUpdateWhenEmpty(bool enabled);
 	bool GetStopped();
 	bool GetDirection();
+	UINT32 GetIndex() {return m_index;}
 private:
 	void InitCounter(Mode mode = kTwoPulse);
 

@@ -14,6 +14,13 @@
 
 #define kNumSkeletons 1
 
+/**
+ * Handles raw data input from the FRC Kinect Server
+ * when used with a Kinect device connected to the Driver Station.
+ * Each time a value is requested the most recent value is returned.
+ * See Getting Started with Microsoft Kinect for FRC and the Kinect
+ * for Windows SDK API reference for more information
+ */
 class Kinect : public SensorBase
 {
 public:

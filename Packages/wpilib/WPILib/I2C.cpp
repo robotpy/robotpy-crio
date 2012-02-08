@@ -6,6 +6,7 @@
 
 #include "I2C.h"
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
 #include <taskLib.h>
@@ -29,6 +30,10 @@ I2C::I2C(DigitalModule *module, UINT8 deviceAddress)
 		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	}
 	m_objCount++;
+
+	const char *cm = NULL;
+	if (m_compatibilityMode) cm = "C";
+	nUsageReporting::report(nUsageReporting::kResourceType_I2C, deviceAddress, module->GetNumber() - 1, cm);
 }
 
 /**

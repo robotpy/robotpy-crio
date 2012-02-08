@@ -7,6 +7,7 @@
 #include "SimpleRobot.h"
 
 #include "DriverStation.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Timer.h"
 
 SimpleRobot::SimpleRobot()
@@ -82,6 +83,8 @@ void SimpleRobot::RobotMain()
  */
 void SimpleRobot::StartCompetition()
 {
+	nUsageReporting::report(nUsageReporting::kResourceType_Framework, nUsageReporting::kFramework_Simple);
+
 	RobotMain();
 	
 	if (!m_robotMainOverridden)

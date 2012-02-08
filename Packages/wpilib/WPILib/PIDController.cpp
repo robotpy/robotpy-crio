@@ -5,6 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "PIDController.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Notifier.h"
 #include "PIDSource.h"
 #include "PIDOutput.h"
@@ -28,17 +29,16 @@ PIDController::PIDController(float Kp, float Ki, float Kd,
 	m_semaphore = semBCreate(SEM_Q_PRIORITY, SEM_FULL);
 
 	m_controlLoop = new Notifier(PIDController::CallCalculate, this);
-	
-	
+
 	m_P = Kp;
 	m_I = Ki;
 	m_D = Kd;
 	m_maximumOutput = 1.0;
 	m_minimumOutput = -1.0;
-	
+
 	m_maximumInput = 0;
 	m_minimumInput = 0;
-	
+
 	m_continuous = false;
 	m_enabled = false;
 	m_setpoint = 0;
@@ -48,12 +48,16 @@ PIDController::PIDController(float Kp, float Ki, float Kd,
 	m_tolerance = .05;
 
 	m_result = 0;
-	
+
 	m_pidInput = source;
 	m_pidOutput = output;
 	m_period = period;
 
 	m_controlLoop->StartPeriodic(m_period);
+
+	static INT32 instances = 0;
+	instances++;
+	nUsageReporting::report(nUsageReporting::kResourceType_PIDController, instances);
 }
 
 /**

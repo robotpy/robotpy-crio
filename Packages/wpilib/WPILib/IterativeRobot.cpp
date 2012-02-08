@@ -7,6 +7,7 @@
 #include "IterativeRobot.h"
 
 #include "DriverStation.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include <taskLib.h>
 
 const double IterativeRobot::kDefaultPeriod;
@@ -87,6 +88,8 @@ double IterativeRobot::GetLoopsPerSec()
  */
 void IterativeRobot::StartCompetition()
 {
+	nUsageReporting::report(nUsageReporting::kResourceType_Framework, nUsageReporting::kFramework_Iterative);
+
 	// first and one-time initialization
 	RobotInit();
 

@@ -5,7 +5,9 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Victor.h"
+
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 
 /**
  * Common initialization code called by all constructors.
@@ -29,6 +31,8 @@ void Victor::InitVictor()
 	SetBounds(210, 138, 132, 126, 56);
 	SetPeriodMultiplier(kPeriodMultiplier_2X);
 	SetRaw(m_centerPwm);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Victor, GetChannel(), GetModuleNumber() - 1);
 }
 
 /**

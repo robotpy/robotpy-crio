@@ -10,6 +10,13 @@
 #include "ErrorBase.h"
 #include "GenericHID.h"
 
+/**
+ * Handles input from the Joystick data sent by the FRC Kinect Server
+ * when used with a Kinect device connected to the Driver Station.
+ * Each time a value is requested the most recent value is returned.
+ * Default gestures embedded in the FRC Kinect Server are described
+ * in the document Getting Started with Microsoft Kinect for FRC.
+ */
 class KinectStick : public GenericHID, public ErrorBase
 {
 public:

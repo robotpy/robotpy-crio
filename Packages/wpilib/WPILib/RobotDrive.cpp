@@ -10,6 +10,7 @@
 #include "GenericHID.h"
 #include "Joystick.h"
 #include "Jaguar.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Utility.h"
 #include "WPIErrors.h"
 #include <math.h>
@@ -57,7 +58,7 @@ RobotDrive::RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel)
 	{
 		m_invertedMotors[i] = 1;
 	}
-	Drive(0, 0);
+	SetLeftRightMotorOutputs(0.0, 0.0);
 	m_deleteSpeedControllers = true;
 }
 
@@ -83,7 +84,7 @@ RobotDrive::RobotDrive(UINT32 frontLeftMotor, UINT32 rearLeftMotor,
 	{
 		m_invertedMotors[i] = 1;
 	}
-	Drive(0, 0);
+	SetLeftRightMotorOutputs(0.0, 0.0);
 	m_deleteSpeedControllers = true;
 }
 
@@ -199,6 +200,12 @@ RobotDrive::~RobotDrive()
 void RobotDrive::Drive(float outputMagnitude, float curve)
 {
 	float leftOutput, rightOutput;
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_RobotDrive, GetNumMotors(), nUsageReporting::kRobotDrive_ArcadeRatioCurve);
+		reported = true;
+	}
 
 	if (curve < 0)
 	{
@@ -281,6 +288,13 @@ void RobotDrive::TankDrive(GenericHID &leftStick, UINT32 leftAxis,
  */
 void RobotDrive::TankDrive(float leftValue, float rightValue)
 {
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_RobotDrive, GetNumMotors(), nUsageReporting::kRobotDrive_Tank);
+		reported = true;
+	}
+
 	// square the inputs (while preserving the sign) to increase fine control while permitting full power
 	leftValue = Limit(leftValue);
 	rightValue = Limit(rightValue);
@@ -384,6 +398,13 @@ void RobotDrive::ArcadeDrive(GenericHID &moveStick, UINT32 moveAxis,
  */
 void RobotDrive::ArcadeDrive(float moveValue, float rotateValue, bool squaredInputs)
 {
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_RobotDrive, GetNumMotors(), nUsageReporting::kRobotDrive_ArcadeStandard);
+		reported = true;
+	}
+
 	// local variables to hold the computed PWM values for the motors
 	float leftMotorOutput;
 	float rightMotorOutput;
@@ -459,6 +480,13 @@ void RobotDrive::ArcadeDrive(float moveValue, float rotateValue, bool squaredInp
  */
 void RobotDrive::MecanumDrive_Cartesian(float x, float y, float rotation, float gyroAngle)
 {
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_RobotDrive, GetNumMotors(), nUsageReporting::kRobotDrive_MecanumCartesian);
+		reported = true;
+	}
+
 	double xIn = x;
 	double yIn = y;
 	// Negate y for the joystick.
@@ -501,6 +529,13 @@ void RobotDrive::MecanumDrive_Cartesian(float x, float y, float rotation, float 
  */
 void RobotDrive::MecanumDrive_Polar(float magnitude, float direction, float rotation)
 {
+	static bool reported = false;
+	if (!reported)
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_RobotDrive, GetNumMotors(), nUsageReporting::kRobotDrive_MecanumPolar);
+		reported = true;
+	}
+
 	// Normalized for full power along the Cartesian axes.
 	magnitude = Limit(magnitude) * sqrt(2.0);
 	// The rollers are at 45 degree angles.

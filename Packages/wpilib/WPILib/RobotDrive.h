@@ -92,6 +92,15 @@ protected:
 	MotorSafetyHelper *m_safetyHelper;
 	
 private:
+	INT32 GetNumMotors()
+	{
+		int motors = 0;
+		if (m_frontLeftMotor) motors++;
+		if (m_frontRightMotor) motors++;
+		if (m_rearLeftMotor) motors++;
+		if (m_rearRightMotor) motors++;
+		return motors;
+	}
 	DISALLOW_COPY_AND_ASSIGN(RobotDrive);
 };
 

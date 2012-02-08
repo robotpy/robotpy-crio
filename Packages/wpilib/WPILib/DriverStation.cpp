@@ -9,6 +9,7 @@
 #include "Synchronized.h"
 #include "Timer.h"
 #include "NetworkCommunication/FRCComm.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "MotorSafetyHelper.h"
 #include "Utility.h"
 #include "WPIErrors.h"
@@ -303,6 +304,13 @@ float DriverStation::GetAnalogIn(UINT32 channel)
 	if (channel < 1 || channel > 4)
 		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 4");
 
+	static UINT8 reported_mask = 0;
+	if (!(reported_mask & (1 >> channel)))
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_DriverStationCIO, channel, nUsageReporting::kDriverStationCIO_Analog);
+		reported_mask |= (1 >> channel);
+	}
+
 	switch (channel)
 	{
 	case 1:
@@ -328,6 +336,13 @@ bool DriverStation::GetDigitalIn(UINT32 channel)
 	if (channel < 1 || channel > 8)
 		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
 
+	static UINT8 reported_mask = 0;
+	if (!(reported_mask & (1 >> channel)))
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_DriverStationCIO, channel, nUsageReporting::kDriverStationCIO_DigitalIn);
+		reported_mask |= (1 >> channel);
+	}
+
 	return ((m_controlData->dsDigitalIn >> (channel-1)) & 0x1) ? true : false;
 }
 
@@ -344,6 +359,13 @@ void DriverStation::SetDigitalOut(UINT32 channel, bool value)
 {
 	if (channel < 1 || channel > 8)
 		wpi_setWPIErrorWithContext(ParameterOutOfRange, "channel must be between 1 and 8");
+
+	static UINT8 reported_mask = 0;
+	if (!(reported_mask & (1 >> channel)))
+	{
+		nUsageReporting::report(nUsageReporting::kResourceType_DriverStationCIO, channel, nUsageReporting::kDriverStationCIO_DigitalOut);
+		reported_mask |= (1 >> channel);
+	}
 
 	m_digitalOut &= ~(0x1 << (channel-1));
 	m_digitalOut |= ((UINT8)value << (channel-1));

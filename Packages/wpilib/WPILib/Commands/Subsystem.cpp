@@ -141,7 +141,7 @@ void Subsystem::ConfirmCommand()
 
 std::string Subsystem::GetName()
 {
-	return "Subsystem";
+	return m_name;
 }
 
 std::string Subsystem::GetType()

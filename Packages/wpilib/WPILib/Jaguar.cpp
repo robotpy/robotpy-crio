@@ -6,6 +6,7 @@
 
 
 #include "Jaguar.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "DigitalModule.h"
 
 /**
@@ -26,6 +27,8 @@ void Jaguar::InitJaguar()
 	SetBounds(251, 135, 128, 120, 4);
 	SetPeriodMultiplier(kPeriodMultiplier_1X);
 	SetRaw(m_centerPwm);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Jaguar, GetChannel(), GetModuleNumber() - 1);
 }
 
 /**

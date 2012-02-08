@@ -9,6 +9,7 @@
 #include "ChipObject/NiFpga.h"
 #include "CAN/JaguarCANDriver.h"
 #include "CAN/can_proto.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 #include <stdio.h>
 
@@ -66,6 +67,8 @@ void CANJaguar::InitCANJaguar()
 		break;
 	}
 	m_safetyHelper = new MotorSafetyHelper(this);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_CANJaguar, m_deviceNumber, m_controlMode);
 }
 
 /**
@@ -769,6 +772,8 @@ void CANJaguar::ChangeControlMode(ControlMode controlMode)
 
 	// Update the local mode
 	m_controlMode = controlMode;
+
+	nUsageReporting::report(nUsageReporting::kResourceType_CANJaguar, m_deviceNumber, m_controlMode);
 }
 
 /**

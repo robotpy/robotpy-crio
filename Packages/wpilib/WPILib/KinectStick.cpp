@@ -9,6 +9,7 @@
 #include "DriverStation.h"
 #include "Joystick.h"
 #include "NetworkCommunication/FRCComm.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Utility.h"
 #include "WPIErrors.h"
 
@@ -32,11 +33,16 @@ KinectStick::KinectStick(int id)
 		return;
 	}
 	m_id = id;
+
+	nUsageReporting::report(nUsageReporting::kResourceType_KinectStick, id);
 }
 
 /**
- * Get the X joystick value
- * This is not supported in the default gestures and always returns 0
+ * Get the X value of the KinectStick. This axis
+ * is unimplemented in the default gestures but can
+ * be populated by teams editing the Kinect Server.
+ * @param hand Unused
+ * @return The X value of the KinectStick
  */
 float KinectStick::GetX(JoystickHand hand)
 {
@@ -44,9 +50,10 @@ float KinectStick::GetX(JoystickHand hand)
 }
 
 /**
- * Get the joystick Y value
- * @param hand
- * @returns The floating point representation of the Y value
+ * Get the Y value of the KinectStick. This axis
+ * represents arm angle in the default gestures
+ * @param hand Unused
+ * @return The Y value of the KinectStick
  */
 float KinectStick::GetY(JoystickHand hand)
 {
@@ -54,8 +61,11 @@ float KinectStick::GetY(JoystickHand hand)
 }
 
 /**
- * Get the Z joystick value
- * This is not supported in the default gestures and always returns 0
+ * Get the Z value of the KinectStick. This axis
+ * is unimplemented in the default gestures but can
+ * be populated by teams editing the Kinect Server.
+ * @param hand Unused
+ * @return The Z value of the KinectStick
  */
 float KinectStick::GetZ()
 {
@@ -63,8 +73,10 @@ float KinectStick::GetZ()
 }
 
 /**
- * Get the Twist joystick value
- * This is not supported in the default gestures and always returns 0
+ * Get the Twist value of the KinectStick. This axis
+ * is unimplemented in the default gestures but can
+ * be populated by teams editing the Kinect Server.
+ * @return The Twist value of the KinectStick
  */
 float KinectStick::GetTwist()
 {
@@ -72,8 +84,10 @@ float KinectStick::GetTwist()
 }
 
 /**
- * Get the Throttle joystick value
- * This is not supported in the default gestures and always returns 0
+ * Get the Throttle value of the KinectStick. This axis
+ * is unimplemented in the default gestures but can
+ * be populated by teams editing the Kinect Server.
+ * @return The Throttle value of the KinectStick
  */
 float KinectStick::GetThrottle()
 {
@@ -81,8 +95,10 @@ float KinectStick::GetThrottle()
 }
 
 /**
- * Get the joystick axis value by axis number
- * This is only supported for X in the default gestures and all others always returns 0
+ * Get the value of the KinectStick axis.
+ *
+ * @param axis The axis to read [1-6].
+ * @return The value of the axis
  */
 float KinectStick::GetRawAxis(UINT32 axis)
 {
@@ -94,9 +110,10 @@ float KinectStick::GetRawAxis(UINT32 axis)
 }
 
 /**
- * Get the trigger value for the joystick
- * @param hand
- * @returns true if the triger is pressed
+ * Get the button value for the button set as the default trigger
+ *
+ * @param hand Unused
+ * @return The state of the button.
  */
 bool KinectStick::GetTrigger(JoystickHand hand)
 {
@@ -104,21 +121,37 @@ bool KinectStick::GetTrigger(JoystickHand hand)
 }
 
 /**
- * Get the top button value for the joystick
- * @param hand
- * @returns true if the top button is pressed
+ * Get the button value for the button set as the default top
+ *
+ * @param hand Unused
+ * @return The state of the button.
  */
 bool KinectStick::GetTop(JoystickHand hand)
 {
 	return GetRawButton(kTopMask);
 }
 
+/**
+ * Get the button value for the button set as the default bumper (button 4)
+ *
+ * @param hand Unused
+ * @return The state of the button.
+ */
 bool KinectStick::GetBumper(JoystickHand hand)
 {
 	// TODO: Should this even be in GenericHID?  Is 4 an appropriate mask value (button 3)?
 	return GetRawButton(4);
 }
 
+/**
+ * Get the button value for buttons 1 through 12. The default gestures
+ * implement only 9 buttons.
+ *
+ * The appropriate button is returned as a boolean value.
+ *
+ * @param button The button number to be read.
+ * @return The state of the button.
+ */
 bool KinectStick::GetRawButton(UINT32 button)
 {
 	if (StatusIsFatal()) return false;

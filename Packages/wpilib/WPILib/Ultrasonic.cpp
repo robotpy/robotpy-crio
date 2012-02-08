@@ -9,6 +9,7 @@
 #include "Counter.h"
 #include "DigitalInput.h"
 #include "DigitalOutput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Timer.h"
 #include "Utility.h"
 #include "WPIErrors.h"
@@ -71,6 +72,10 @@ void Ultrasonic::Initialize()
 	m_counter->Start();
 	m_enabled = true; // make it available for round robin scheduling
 	SetAutomaticMode(originalMode);
+
+	static int instances = 0;
+	instances++;
+	nUsageReporting::report(nUsageReporting::kResourceType_Ultrasonic, instances);
 }
 
 /**

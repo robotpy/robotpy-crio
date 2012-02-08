@@ -7,6 +7,11 @@
 #ifndef __SKELETON_H__
 #define __SKELETON_H__
 
+/**
+ * Represents Skeleton data from a Kinect device connected to the 
+ * Driver Station. See Getting Started with Microsoft Kinect for 
+ * FRC and the Kinect for Windows SDK API reference for more information
+ */
 class Skeleton
 {
 	friend class Kinect;

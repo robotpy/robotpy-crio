@@ -7,6 +7,7 @@
 #include "PWM.h"
 
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "Utility.h"
 #include "WPIErrors.h"
@@ -50,6 +51,8 @@ void PWM::InitPWM(UINT8 moduleNumber, UINT32 channel)
 	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->SetPWM(m_channel, kPwmDisabled);
 	m_eliminateDeadband = false;
+
+	nUsageReporting::report(nUsageReporting::kResourceType_PWM, channel, moduleNumber - 1);
 }
 
 /**

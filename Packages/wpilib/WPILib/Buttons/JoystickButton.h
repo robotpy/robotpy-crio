@@ -7,19 +7,19 @@
 #ifndef __JOYSTICK_BUTTON_H__
 #define __JOYSTICK_BUTTON_H__
 
-#include "Joystick.h"
+#include "GenericHID.h"
 #include "Buttons/Button.h"
 
 class JoystickButton : public Button
 {
 public:
-	JoystickButton(Joystick *joystick, int buttonNumber);
+	JoystickButton(GenericHID *joystick, int buttonNumber);
 	virtual ~JoystickButton() {}
 
 	virtual bool Get();
 
 private:
-	Joystick *m_joystick;
+	GenericHID *m_joystick;
 	int m_buttonNumber;
 };
 

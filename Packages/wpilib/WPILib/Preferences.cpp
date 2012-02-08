@@ -6,6 +6,7 @@
 
 #include "Preferences.h"
 
+#include "NetworkCommunication/UsageReporting.h"
 #include "NetworkTables/NetworkTable.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
@@ -39,12 +40,14 @@ Preferences::Preferences() :
 	m_fileOpStarted = semBCreate (SEM_Q_PRIORITY, SEM_EMPTY);
 	m_tableLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 
-    Synchronized sync(m_fileLock);
-    m_readTask.Start((UINT32)this);
+	Synchronized sync(m_fileLock);
+	m_readTask.Start((UINT32)this);
 	semTake(m_fileOpStarted, WAIT_FOREVER);
 
-    NetworkTable::GetTable(kTableName)->PutBoolean(kSaveField, false);
-    NetworkTable::GetTable(kTableName)->AddChangeListenerAny(this);
+	NetworkTable::GetTable(kTableName)->PutBoolean(kSaveField, false);
+	NetworkTable::GetTable(kTableName)->AddChangeListenerAny(this);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Preferences, 0);
 }
 
 Preferences::~Preferences()
@@ -214,12 +217,12 @@ void Preferences::PutString(const char *key, const char *value)
 		wpi_setWPIErrorWithContext(NullParameter, "value");
 		return;
 	}
-    if (std::string(value).find_first_of("\"") != std::string::npos)
-    {
+	if (std::string(value).find_first_of("\"") != std::string::npos)
+	{
 		wpi_setWPIErrorWithContext(ParameterOutOfRange, "value contains illegal characters");
-        return;
-    }
-    Put(key, value);
+		return;
+	}
+	Put(key, value);
 }
 
 /**
@@ -323,9 +326,9 @@ void Preferences::PutLong(const char *key, INT64 value)
  */
 void Preferences::Save()
 {
-    Synchronized sync(m_fileLock);
-    m_writeTask.Start((UINT32)this);
-    semTake(m_fileOpStarted, WAIT_FOREVER);
+	Synchronized sync(m_fileLock);
+	m_writeTask.Start((UINT32)this);
+	semTake(m_fileOpStarted, WAIT_FOREVER);
 }
 
 /**
@@ -335,7 +338,7 @@ void Preferences::Save()
  */
 bool Preferences::ContainsKey(const char *key)
 {
-    return !Get(key).empty();
+	return !Get(key).empty();
 }
 
 /**

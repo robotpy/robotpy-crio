@@ -7,6 +7,7 @@
 #include "Counter.h"
 #include "AnalogTrigger.h"
 #include "DigitalInput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -35,6 +36,8 @@ void Counter::InitCounter(Mode mode)
 	m_allocatedDownSource = false;
 	m_counter->writeTimerConfig_AverageSize(1, &localStatus);
 	wpi_setError(localStatus);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Counter, index, mode);
 }
 
 /**

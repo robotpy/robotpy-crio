@@ -6,6 +6,7 @@
 
 #include "SmartDashboard/SmartDashboard.h"
 
+#include "NetworkCommunication/UsageReporting.h"
 #include "NetworkTables/NetworkTable.h"
 #include "SmartDashboard/SmartDashboardData.h"
 #include "SmartDashboard/SmartDashboardNamedData.h"
@@ -24,6 +25,8 @@ SmartDashboard::SmartDashboard()
 {
 	AddToSingletonList();
 	m_table = NetworkTable::GetTable("SmartDashboard");
+
+	nUsageReporting::report(nUsageReporting::kResourceType_SmartDashboard, nUsageReporting::kSmartDashboard_Instance);
 }
 
 SmartDashboard::~SmartDashboard()

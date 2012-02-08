@@ -6,6 +6,7 @@
 
 #include "Compressor.h"
 #include "DigitalInput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Timer.h"
 #include "WPIErrors.h"
 
@@ -17,7 +18,7 @@
  * 
  * Do not call this function directly.
  */
-static void compressorChecker(Compressor *c)
+static void CompressorChecker(Compressor *c)
 {
 	while (1)
 	{
@@ -50,6 +51,8 @@ void Compressor::InitCompressor(UINT8 pressureSwitchModuleNumber,
 	m_pressureSwitch = new DigitalInput(pressureSwitchModuleNumber, pressureSwitchChannel);
 	m_relay = new Relay(compresssorRelayModuleNumber, compressorRelayChannel, Relay::kForwardOnly);
 
+	nUsageReporting::report(nUsageReporting::kResourceType_Compressor, 0);
+
 	if (!m_task.Start((INT32)this))
 	{
 		wpi_setWPIError(CompressorTaskError);
@@ -71,7 +74,7 @@ Compressor::Compressor(UINT8 pressureSwitchModuleNumber,
 		UINT32 pressureSwitchChannel,
 		UINT8 compresssorRelayModuleNumber,
 		UINT32 compressorRelayChannel)
-	: m_task ("Compressor", (FUNCPTR)compressorChecker)
+	: m_task ("Compressor", (FUNCPTR)CompressorChecker)
 {
 	InitCompressor(pressureSwitchModuleNumber,
 		pressureSwitchChannel,
@@ -90,7 +93,7 @@ Compressor::Compressor(UINT8 pressureSwitchModuleNumber,
  * @param compressorRelayChannel The relay channel that the compressor relay is attached to.
  */
 Compressor::Compressor(UINT32 pressureSwitchChannel, UINT32 compressorRelayChannel)
-	: m_task ("Compressor", (FUNCPTR)compressorChecker)
+	: m_task ("Compressor", (FUNCPTR)CompressorChecker)
 {
 	InitCompressor(GetDefaultDigitalModule(),
 			pressureSwitchChannel,

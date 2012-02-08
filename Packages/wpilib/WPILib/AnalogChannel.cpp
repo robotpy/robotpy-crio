@@ -6,6 +6,7 @@
 
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -54,6 +55,8 @@ void AnalogChannel::InitChannel(UINT8 moduleNumber, UINT32 channel)
 	{
 		m_accumulator = NULL;
 	}
+
+	nUsageReporting::report(nUsageReporting::kResourceType_AnalogChannel, channel, GetModuleNumber() - 1);
 }
 
 /**

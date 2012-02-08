@@ -6,6 +6,7 @@
 
 #include "DigitalInput.h"
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -36,6 +37,8 @@ void DigitalInput::InitDigitalInput(UINT8 moduleNumber, UINT32 channel)
 	m_channel = channel;
 	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->AllocateDIO(channel, true);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_DigitalInput, channel, moduleNumber - 1);
 }
 
 /**

@@ -8,6 +8,7 @@
 
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -35,6 +36,8 @@ void AnalogTrigger::InitTrigger(UINT8 moduleNumber, UINT32 channel)
 	m_trigger->writeSourceSelect_Channel(m_channel - 1, &localStatus);
 	m_trigger->writeSourceSelect_Module(moduleNumber - 1, &localStatus);
 	wpi_setError(localStatus);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_AnalogTrigger, m_channel, moduleNumber - 1);
 }
 
 /**

@@ -8,6 +8,7 @@
 
 #include "Buttons/ButtonScheduler.h"
 #include "Commands/Subsystem.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "NetworkTables/NetworkTable.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
@@ -27,6 +28,8 @@ Scheduler::Scheduler() :
 	m_tableLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 	m_buttonsLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 	m_additionsLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Command, nUsageReporting::kCommand_Scheduler);
 }
 
 Scheduler::~Scheduler()

@@ -7,6 +7,7 @@
 #include "Gyro.h"
 #include "AnalogChannel.h"
 #include "AnalogModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Timer.h"
 #include "WPIErrors.h"
 
@@ -52,14 +53,16 @@ void Gyro::InitGyro()
 	INT64 value;
 	UINT32 count;
 	m_analog->GetAccumulatorOutput(&value, &count);
-	
+
 	UINT32 center = (UINT32)((float)value / (float)count + .5);
 
 	m_offset = ((float)value / (float)count) - (float)center;
-	
+
 	m_analog->SetAccumulatorCenter(center);
 	m_analog->SetAccumulatorDeadband(0); ///< TODO: compute / parameterize this
 	m_analog->ResetAccumulator();
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Gyro, m_analog->GetChannel(), m_analog->GetModuleNumber() - 1);
 }
 
 /**

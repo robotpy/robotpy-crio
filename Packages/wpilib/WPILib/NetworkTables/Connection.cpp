@@ -97,11 +97,9 @@ void Connection::OfferTransaction(NetworkQueue *transaction)
 	it = transaction->GetQueueHead();
 	for (; !transaction->IsQueueEnd(it); it++)
 	{
-		// Re-offer as an auto_ptr if it was before
-		if (it->second)
-			m_queue->Offer(std::auto_ptr<Data>(it->first));
-		else
-			m_queue->Offer(it->first);
+		// We are always offering something from a transaction that has yet to be used locally...
+		// They will be cleaned up if necessary in the local use.
+		m_queue->Offer(it->first);
 	}
 	m_queue->Offer(m_transactionEnd);
 	semGive(m_dataAvailable);

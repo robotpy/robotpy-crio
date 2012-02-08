@@ -6,6 +6,7 @@
 
 #include "ADXL345_I2C.h"
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "I2C.h"
 
 const UINT8 ADXL345_I2C::kAddress;
@@ -32,6 +33,8 @@ ADXL345_I2C::ADXL345_I2C(UINT8 moduleNumber, ADXL345_I2C::DataFormat_Range range
 		m_i2c->Write(kPowerCtlRegister, kPowerCtl_Measure);
 		// Specify the data format to read
 		m_i2c->Write(kDataFormatRegister, kDataFormat_FullRes | (UINT8)range);
+
+		nUsageReporting::report(nUsageReporting::kResourceType_ADXL345, nUsageReporting::kADXL345_I2C, moduleNumber - 1);
 	}
 }
 

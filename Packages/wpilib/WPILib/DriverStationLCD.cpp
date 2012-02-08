@@ -6,6 +6,7 @@
 
 #include "DriverStationLCD.h"
 #include "NetworkCommunication/FRCComm.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
 #include <strLib.h>
@@ -31,6 +32,8 @@ DriverStationLCD::DriverStationLCD()
 	*((UINT16 *)m_textBuffer) = kFullDisplayTextCommand;
 
 	m_textBufferSemaphore = semMCreate(SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_DriverStationLCD, 0);
 
 	AddToSingletonList();
 }

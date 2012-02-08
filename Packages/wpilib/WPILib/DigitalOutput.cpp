@@ -6,6 +6,7 @@
 
 #include "DigitalOutput.h"
 #include "DigitalModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
 
@@ -35,6 +36,8 @@ void DigitalOutput::InitDigitalOutput(UINT8 moduleNumber, UINT32 channel)
 	m_pwmGenerator = ~0ul;
 	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->AllocateDIO(m_channel, false);
+
+	nUsageReporting::report(nUsageReporting::kResourceType_DigitalOutput, channel, moduleNumber - 1);
 }
 
 /**

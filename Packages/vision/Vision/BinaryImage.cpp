@@ -186,4 +186,37 @@ bool BinaryImage::CompareParticleSizes(ParticleAnalysisReport particle1, Particl
 	return particle1.particleToImagePercent > particle2.particleToImagePercent;
 }
 
+BinaryImage *BinaryImage::RemoveSmallObjects(bool connectivity8, int erosions)
+{
+	BinaryImage *result = new BinaryImage();
+	int success = imaqSizeFilter(result->GetImaqImage(), m_imaqImage, connectivity8, erosions, IMAQ_KEEP_LARGE, NULL);
+	wpi_setImaqErrorWithContext(success, "Error in RemoveSmallObjects");
+	return result;
+}
+
+BinaryImage *BinaryImage::RemoveLargeObjects(bool connectivity8, int erosions)
+{
+	BinaryImage *result = new BinaryImage();
+	int success = imaqSizeFilter(result->GetImaqImage(), m_imaqImage, connectivity8, erosions, IMAQ_KEEP_SMALL, NULL);
+	wpi_setImaqErrorWithContext(success, "Error in RemoveLargeObjects");
+	return result;
+}
+
+BinaryImage *BinaryImage::ConvexHull(bool connectivity8)
+{
+	BinaryImage *result = new BinaryImage();
+	int success = imaqConvexHull(result->GetImaqImage(), m_imaqImage, connectivity8);
+	wpi_setImaqErrorWithContext(success, "Error in convex hull operation");
+	return result;
+}
+
+BinaryImage *BinaryImage::ParticleFilter(ParticleFilterCriteria2 *criteria, int criteriaCount)
+{
+	BinaryImage *result = new BinaryImage();
+	int numParticles;
+	ParticleFilterOptions2 filterOptions = {0, 0, 0, 1};
+	int success = imaqParticleFilter4(result->GetImaqImage(), m_imaqImage, criteria, criteriaCount, &filterOptions, NULL, &numParticles);
+	wpi_setImaqErrorWithContext(success, "Error in particle filter operation");
+	return result;
+}
 

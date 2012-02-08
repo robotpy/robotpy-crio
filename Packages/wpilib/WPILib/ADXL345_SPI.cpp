@@ -7,6 +7,7 @@
 #include "ADXL345_SPI.h"
 #include "DigitalInput.h"
 #include "DigitalOutput.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "SPI.h"
 
 const UINT8 ADXL345_SPI::kPowerCtlRegister;
@@ -107,6 +108,8 @@ void ADXL345_SPI::Init(DigitalOutput *clk, DigitalOutput *mosi, DigitalInput *mi
 		// 8-bit address and 16-bit data
 		m_spi->SetBitsPerWord(24);
 		m_spi->ApplyConfig();
+
+		nUsageReporting::report(nUsageReporting::kResourceType_ADXL345, nUsageReporting::kADXL345_SPI);
 	}
 }
 

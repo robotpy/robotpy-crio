@@ -6,7 +6,7 @@
 
 #include "Buttons/JoystickButton.h"
 
-JoystickButton::JoystickButton(Joystick *joystick, int buttonNumber) :
+JoystickButton::JoystickButton(GenericHID *joystick, int buttonNumber) :
 	m_joystick(joystick),
 	m_buttonNumber(buttonNumber)
 {

@@ -6,6 +6,7 @@
 
 #include "Accelerometer.h"
 #include "AnalogModule.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 
 /**
@@ -15,6 +16,7 @@ void Accelerometer::InitAccelerometer()
 {
 	m_voltsPerG = 1.0;
 	m_zeroGVoltage = 2.5;
+	nUsageReporting::report(nUsageReporting::kResourceType_Accelerometer, m_analogChannel->GetChannel(), m_analogChannel->GetModuleNumber() - 1);
 }
 
 /**

@@ -6,6 +6,7 @@
 
 #include "AnalogTriggerOutput.h"
 #include "AnalogTrigger.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 
 /**
@@ -21,6 +22,7 @@ AnalogTriggerOutput::AnalogTriggerOutput(AnalogTrigger *trigger, AnalogTriggerOu
 	: m_trigger (trigger)
 	, m_outputType (outputType)
 {
+	nUsageReporting::report(nUsageReporting::kResourceType_AnalogTriggerOutput, trigger->GetIndex(), outputType);
 }
 
 AnalogTriggerOutput::~AnalogTriggerOutput()

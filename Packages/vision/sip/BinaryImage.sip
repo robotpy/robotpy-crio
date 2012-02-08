@@ -32,5 +32,9 @@ public:
 	int GetNumberParticles();
 	void GetParticleAnalysisReport(int particleNumber, ParticleAnalysisReport *par /Out/);
 	std::vector<ParticleAnalysisReport>* GetOrderedParticleAnalysisReports() /Factory/;
+    BinaryImage *RemoveSmallObjects(bool connectivity8, int erosions) /Factory/;
+	BinaryImage *RemoveLargeObjects(bool connectivity8, int erosions) /Factory/;
+	BinaryImage *ConvexHull(bool connectivity8) /Factory/;
+	BinaryImage *ParticleFilter(ParticleFilterCriteria2 *criteria, int criteriaCount) /Factory/;
 	virtual void Write(const char *fileName);
 };

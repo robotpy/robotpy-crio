@@ -27,6 +27,10 @@ public:
 	ParticleAnalysisReport GetParticleAnalysisReport(int particleNumber);
 	void GetParticleAnalysisReport(int particleNumber, ParticleAnalysisReport *par);
 	vector<ParticleAnalysisReport>* GetOrderedParticleAnalysisReports();
+	BinaryImage *RemoveSmallObjects(bool connectivity8, int erosions);
+	BinaryImage *RemoveLargeObjects(bool connectivity8, int erosions);
+	BinaryImage *ConvexHull(bool connectivity8);
+	BinaryImage *ParticleFilter(ParticleFilterCriteria2 *criteria, int criteriaCount);
 	virtual void Write(const char *fileName);
 private:
 	bool ParticleMeasurement(int particleNumber, MeasurementType whatToMeasure, int *result);

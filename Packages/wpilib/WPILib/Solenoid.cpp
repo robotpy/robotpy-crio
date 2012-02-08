@@ -5,6 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Solenoid.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 
 /**
@@ -33,6 +34,8 @@ void Solenoid::InitSolenoid()
 		CloneError(m_allocated);
 		return;
 	}
+
+	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_channel, m_moduleNumber - 1);
 }
 
 /**
