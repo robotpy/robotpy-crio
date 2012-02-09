@@ -1430,6 +1430,8 @@ enum WriteClassifierFileMode {
 typedef struct MultipleGeometicPattern_struct MultipleGeometricPattern;
 typedef struct Overlay_struct Overlay;
 
+/*
+XXX: cRIO-II only!
 struct CharSet {
 %TypeHeaderCode
 #include <WPILib/nivision.h>
@@ -1449,6 +1451,10 @@ struct CharSet {
 private:
     CharSet(const CharSet&);
 };
+*/
+
+/*
+XXX: cRIO-II only!
 
 struct ClassifierSession {
 %TypeHeaderCode
@@ -1469,6 +1475,7 @@ struct ClassifierSession {
 private:
     ClassifierSession(const ClassifierSession&);
 };
+*/
 
 struct Image {
 %TypeHeaderCode
@@ -5175,8 +5182,8 @@ ColorInformation* imaqLearnColor(const Image* image, const ROI* roi, ColorSensit
 //============================================================================
 //  Meter functions
 //============================================================================
-MeterArc* imaqGetMeterArc(int lightNeedle, MeterArcMode mode, const ROI* roi, PointFloat base, PointFloat start, PointFloat end) /Factory/;
-int       imaqReadMeter(const Image* image, const MeterArc* arcInfo, double* percentage /Out/, PointFloat* endOfNeedle /Out/);
+// XXX: cRIO-II only! MeterArc* imaqGetMeterArc(int lightNeedle, MeterArcMode mode, const ROI* roi, PointFloat base, PointFloat start, PointFloat end) /Factory/;
+// XXX: cRIO-II only! int       imaqReadMeter(const Image* image, const MeterArc* arcInfo, double* percentage /Out/, PointFloat* endOfNeedle /Out/);
 
 //============================================================================
 //  Barcode I/O functions
@@ -5285,12 +5292,12 @@ int         imaqWriteVisionFile(const Image* image, const char* fileName, const 
 //============================================================================
 //  Frequency Domain Analysis functions
 //============================================================================
-int imaqAttenuate(Image* dest, const Image* source, AttenuateMode highlow);
-int imaqConjugate(Image* dest, const Image* source);
-int imaqFFT(Image* dest, const Image* source);
-int imaqFlipFrequencies(Image* dest, const Image* source);
-int imaqInverseFFT(Image* dest, const Image* source);
-int imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float ratioToKeep);
+// XXX: cRIO-II only! int imaqAttenuate(Image* dest, const Image* source, AttenuateMode highlow);
+// XXX: cRIO-II only! int imaqConjugate(Image* dest, const Image* source);
+// XXX: cRIO-II only! int imaqFFT(Image* dest, const Image* source);
+// XXX: cRIO-II only! int imaqFlipFrequencies(Image* dest, const Image* source);
+// XXX: cRIO-II only! int imaqInverseFFT(Image* dest, const Image* source);
+// XXX: cRIO-II only! int imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float ratioToKeep);
 
 //============================================================================
 //  Pixel Manipulation functions
@@ -5298,20 +5305,20 @@ int imaqTruncate(Image* dest, const Image* source, TruncateMode highlow, float r
 //int    imaqArrayToComplexPlane(Image* dest, const Image* source, const float* newPixels, ComplexPlane plane);
 //TODO float* imaqComplexPlaneToArray(const Image* image, ComplexPlane plane, Rect rect, int* rows, int* columns);
 int    imaqExtractColorPlanes(const Image* image, ColorMode mode, Image* plane1, Image* plane2, Image* plane3);
-int    imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
+// XXX: cRIO-II only! int    imaqExtractComplexPlane(Image* dest, const Image* source, ComplexPlane plane);
 int    imaqFillImage(Image* image, PixelValue value, const Image* mask);
 //void*  imaqGetLine(const Image* image, Point start, Point end, int* numPoints);
 int    imaqGetPixel(const Image* image, Point pixel, PixelValue* value /Out/);
 int    imaqReplaceColorPlanes(Image* dest, const Image* source, ColorMode mode, const Image* plane1, const Image* plane2, const Image* plane3);
-int    imaqReplaceComplexPlane(Image* dest, const Image* source, const Image* newValues, ComplexPlane plane);
+// XXX: cRIO-II only! int    imaqReplaceComplexPlane(Image* dest, const Image* source, const Image* newValues, ComplexPlane plane);
 //int    imaqSetLine(Image* image, const void* array, int arraySize, Point start, Point end);
 int    imaqSetPixel(Image* image, Point coord, PixelValue value);
 
 //============================================================================
 //  LCD functions
 //============================================================================
-int        imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
-LCDReport* imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options) /Factory/;
+// XXX: cRIO-II only! int        imaqFindLCDSegments(ROI* roi, const Image* image, const LCDOptions* options);
+// XXX: cRIO-II only! LCDReport* imaqReadLCD(const Image* image, const ROI* roi, const LCDOptions* options) /Factory/;
 
 //============================================================================
 //  Regions of Interest Manipulation functions
@@ -5326,7 +5333,7 @@ int         imaqTransformROI2(ROI* roi, const CoordinateSystem* baseSystem, cons
 //  OCR functions
 //============================================================================
 /*
-CharSet*         imaqCreateCharSet() /Factory/;
+// XXX: cRIO-II only! CharSet*         imaqCreateCharSet() /Factory/;
 int              imaqDeleteChar(CharSet* set, int index);
 int              imaqGetCharCount(const CharSet* set);
 CharInfo2*       imaqGetCharInfo2(const CharSet* set, int index);
@@ -5345,7 +5352,7 @@ int              imaqWriteOCRFile(const char* fileName, const CharSet* set, cons
 int                            imaqAddClassifierSample(Image* image, ClassifierSession* session, const ROI* roi, const char* sampleClass, double* featureVector, unsigned int vectorSize);
 ClassifierReportAdvanced*      imaqAdvanceClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
 ClassifierReport*              imaqClassify(Image* image, const ClassifierSession* session, const ROI* roi, double* featureVector, unsigned int vectorSize);
-ClassifierSession*             imaqCreateClassifier(ClassifierType type);
+// XXX: cRIO-II only! ClassifierSession*             imaqCreateClassifier(ClassifierType type);
 int                            imaqDeleteClassifierSample(ClassifierSession* session, int index);
 ClassifierAccuracyReport*      imaqGetClassifierAccuracy(const ClassifierSession* session);
 ClassifierSampleInfo*          imaqGetClassifierSampleInfo(const ClassifierSession* session, int index, int* numSamples);
