@@ -82,28 +82,34 @@ class RobotCodeInstaller(object):
             return
         
         # see if this is actually a file
-        if len(files) == 1 and files[0] == remote_item:
+        if len(files) == 1 and files[0] == remote_item or remote_item.endswith( '/' + files[0] ):
             try:
                 self.ftp.delete( remote_item )
                 if verbose:
                     print( 'DELETE %s' % remote_item )
             except ftplib.Error as e:
-                sys.stderr.write( 'ERROR deleting file %s: %s' % (remote_item, e ))
+                sys.stderr.write( 'ERROR deleting file %s: %s\n' % (remote_item, e ))
         
         else:
-            for file in files:
-                fn = file[len(remote_item)+1:]
-                if fn == '.' or fn == '..':
+            for file_path in files:
+                
+                file = file_path
+                if file_path.startswith( remote_item ):
+                    file = file_path[len(remote_item)+1:]
+                else:
+                    file_path = remote_item + '/' + file_path
+                    
+                if file == '.' or file == '..':
                     continue
                     
-                self.delete_remote( file, verbose )
+                self.delete_remote( file_path, verbose )
         
             try:                
                 self.ftp.rmd( remote_item )
                 if verbose:
                     print( 'RMDIR %s' % remote_item )
             except ftplib.Error as e:
-                sys.stderr.write( 'ERROR deleting directory %s: %s' % (remote_item, e ))
+                sys.stderr.write( 'ERROR deleting directory %s: %s\n' % (remote_item, e ))
                 
 
     def upload_file( self, remote_dir, local_dir, filename, verbose=True ):
@@ -238,7 +244,15 @@ class RobotCodeInstaller(object):
         # the path
     
         try:
-            return self.ftp.nlst( rpath )
+            files = self.ftp.nlst( rpath )
+            
+            # some FTP servers do not return an absolute path. Some do. We want
+            # an absolute path here
+            if len(files) > 0 and not files[0].startswith( rpath + '/' ):
+                files = [ rpath + '/' + file for file in files ]
+            
+            return files
+            
         except ftplib.Error:
             # directory must not exist, right?
             try:
@@ -308,4 +322,3 @@ if __name__ == '__main__':
     installer.upload_directory( options.remote_root, options.local_root, verbose=options.verbose )
 
     installer.close()
-
