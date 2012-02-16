@@ -141,7 +141,7 @@ class RobotCodeInstaller(object):
         '''
         
         lfn = os.path.join( local_dir, filename )
-        rfn = remote_dir + '/' + filename
+        rfn = remote_dir + '/' + filename.replace( '\\', '/' )
         
         # upload the file already!
         with open(lfn, 'rb') as stor_file:
