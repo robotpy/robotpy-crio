@@ -43,6 +43,7 @@ PROJECT_OBJECTS += sip_wpilibMotorSafety.o
 PROJECT_OBJECTS += sip_wpilibMotorSafetyHelper.o
 PROJECT_OBJECTS += sip_wpilibnLoadOut.o
 PROJECT_OBJECTS += sip_wpilibnUsageReporting.o
+PROJECT_OBJECTS += sip_wpilibNotifier.o
 PROJECT_OBJECTS += sip_wpilibPIDController.o
 PROJECT_OBJECTS += sip_wpilibPIDOutput.o
 PROJECT_OBJECTS += sip_wpilibPIDSource.o
