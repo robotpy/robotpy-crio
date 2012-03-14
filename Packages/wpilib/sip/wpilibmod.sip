@@ -145,6 +145,7 @@ Watchdog *GetWatchdog();
 %Include Module.sip
 %Include MotorSafety.sip
 %Include MotorSafetyHelper.sip
+%Include Notifier.sip
 %Include PIDController.sip
 %Include PIDOutput.sip
 %Include PIDSource.sip

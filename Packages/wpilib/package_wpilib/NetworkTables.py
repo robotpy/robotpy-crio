@@ -1280,6 +1280,9 @@ class Connection:
             data.Encode(buffer)
             buffer.Flush(self.socket)
 
+    def IsConnected(self):
+        return self.connected
+
     def Close(self):
         if self.connected:
             self.connected = False
