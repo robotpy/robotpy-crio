@@ -368,7 +368,7 @@ class SendableChooser:
             id = str(self.count)
             self.count += 1
             self.ids[obj] = id
-            self.table[self.kCount] = count
+            self.table[self.kCount] = self.count
         self.choices[name] = obj
         self.table[id] = str(name)
 
