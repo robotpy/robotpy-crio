@@ -388,7 +388,7 @@ class SendableChooser:
         return the default.  If there is none selected and no default, then
         it will return {@code None}.
         @return the option selected"""
-        if kSelected in self.table:
+        if self.kSelected in self.table:
             return self.choices[self.table[self.kSelected]]
         else:
             return self.defaultChoice
