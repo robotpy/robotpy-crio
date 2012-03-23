@@ -82,7 +82,7 @@ class RobotCodeInstaller(object):
             return
         
         # see if this is actually a file
-        if len(files) == 1 and files[0] == remote_item or remote_item.endswith( '/' + files[0] ):
+        if len(files) == 1 and (files[0] == remote_item or remote_item.endswith( '/' + files[0] )):
             try:
                 self.ftp.delete( remote_item )
                 if verbose:
