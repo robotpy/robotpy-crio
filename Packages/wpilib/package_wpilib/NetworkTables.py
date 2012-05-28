@@ -1053,7 +1053,9 @@ class Connection:
             return
         with self.dataLock:
             if data.IsEntry() and data.GetType() == kTABLE:
-                data.GetTable().AddConnection(self)
+                table = data.GetTable()
+                if table is not None:
+                    table.AddConnection(self)
             self.queue.Offer(data)
             self.dataAvailable.notify()
 
