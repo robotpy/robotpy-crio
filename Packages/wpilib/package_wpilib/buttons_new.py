@@ -1,5 +1,5 @@
-from .NetworkTables import NetworkTable
-from .Commands import Scheduler
+from .network_tables import NetworkTable
+from .commands import Scheduler
 from .core import DriverStation
 
 class ButtonScheduler:

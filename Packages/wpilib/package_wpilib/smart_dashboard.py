@@ -1,5 +1,5 @@
 import logging
-from .NetworkTables import NetworkTable
+from .network_tables import NetworkTable
 import time
 from .core import PIDController, Gyro
 

@@ -1,5 +1,5 @@
-__all__ = ["Buttons", "Commands", "NetworkTable", "SmartDashboard"]
+__all__ = ["buttons", "commands", "network_table", "smart_dashboard"]
 
 from .core import *
-from .Preferences import *
+from .preferences import *
 

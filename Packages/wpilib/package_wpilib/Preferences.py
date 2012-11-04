@@ -1,6 +1,6 @@
 import threading
 import logging
-from .NetworkTables import NetworkTable
+from .network_tables import NetworkTable
 
 __all__ = ["Preferences"]
 

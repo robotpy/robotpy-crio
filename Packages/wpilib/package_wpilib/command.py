@@ -2,7 +2,7 @@ import logging
 import time
 import threading
 import sys
-from .NetworkTables import NetworkTable
+from .network_tables import NetworkTable
 from .core import DriverStation, PIDSource, PIDOutput
 
 class Scheduler:
@@ -946,7 +946,7 @@ class PIDCommand(Command, PIDOutput, PIDSource):
         self.max = sys.float_info.max   # The max setpoint value
         self.min = sys.float_info.min   # The min setpoint value
         # The internal PIDController
-        from SmartDashboard import SendablePIDController
+        from smart_dashboard import SendablePIDController
         self.controller = SendablePIDController(p, i, d, self, self, period)
 
     def _Initialize(self):
@@ -1025,7 +1025,7 @@ class PIDSubsystem(Subsystem, PIDOutput, PIDSource):
         self.max = sys.float_info.max   # The max setpoint value
         self.min = sys.float_info.min   # The min setpoint value
         # The internal PIDController
-        from SmartDashboard import SendablePIDController
+        from smart_dashboard import SendablePIDController
         self.controller = SendablePIDController(p, i, d, self, self, period)
 
     def Enable(self):
