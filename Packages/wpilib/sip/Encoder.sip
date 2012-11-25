@@ -21,14 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Encoder: SensorBase, CounterBase
+class Encoder: SensorBase, CounterBase, PIDSource
 {
 %TypeHeaderCode
 #include <WPILib/Encoder.h>
 %End
 
 public:
-    enum PIDSourceParameter {kDistance, kRate};
+	enum PIDSourceParameter {kDistance, kRate};
 
 	Encoder(UINT32 aChannel, UINT32 bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
 	Encoder(UINT8 aModuleNumber, UINT32 aChannel, UINT8 bModuleNumber, UINT32 _bChannel, bool reverseDirection=false, EncodingType encodingType = k4X);
@@ -50,7 +50,7 @@ public:
 	void SetMinRate(double minRate);
 	void SetDistancePerPulse(double distancePerPulse);
 	void SetReverseDirection(bool reverseDirection);
-    
-    void SetPIDSourceParameter(PIDSourceParameter pidSource);
+
+	void SetPIDSourceParameter(PIDSourceParameter pidSource);
 	double PIDGet();
 };

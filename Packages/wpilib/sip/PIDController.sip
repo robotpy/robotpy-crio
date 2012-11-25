@@ -31,15 +31,20 @@ public:
 	PIDController(float p, float i, float d,
 					PIDSource *source, PIDOutput *output,
 					float period = 0.05) /NewThread/;
+	PIDController(float p, float i, float d, float f,
+					PIDSource *source, PIDOutput *output,
+					float period = 0.05) /NewThread/;
 	virtual ~PIDController();
 	virtual float Get();
 	virtual void SetContinuous(bool continuous = true);
 	virtual void SetInputRange(float minimumInput, float maximumInput);
 	virtual void SetOutputRange(float mimimumOutput, float maximumOutput);
 	virtual void SetPID(float p, float i, float d);
+	virtual void SetPID(float p, float i, float d, float f);
 	virtual float GetP();
 	virtual float GetI();
 	virtual float GetD();
+	virtual float GetF();
 	
 	virtual void SetSetpoint(float setpoint);
 	virtual float GetSetpoint();
@@ -47,6 +52,8 @@ public:
 	virtual float GetError();
 	
 	virtual void SetTolerance(float percent);
+	virtual void SetAbsoluteTolerance(float absValue);
+	virtual void SetPercentTolerance(float percentValue);
 	virtual bool OnTarget();
 	
 	virtual void Enable();

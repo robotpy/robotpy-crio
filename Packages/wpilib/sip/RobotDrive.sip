@@ -45,9 +45,9 @@ public:
 	virtual ~RobotDrive();
 
 	void Drive(float outputMagnitude, float curve);
-	void TankDrive(GenericHID *leftStick, GenericHID *rightStick);
-	void TankDrive(GenericHID *leftStick, UINT32 leftAxis, GenericHID *rightStick, UINT32 rightAxis);
-	void TankDrive(float leftValue, float rightValue);
+	void TankDrive(GenericHID *leftStick, GenericHID *rightStick, bool squaredInputs = true);
+	void TankDrive(GenericHID *leftStick, UINT32 leftAxis, GenericHID *rightStick, UINT32 rightAxis, bool squaredInputs = true);
+	void TankDrive(float leftValue, float rightValue, bool squaredInputs = true);
 	void ArcadeDrive(GenericHID *stick, bool squaredInputs = true);
 	void ArcadeDrive(GenericHID *moveStick, UINT32 moveChannel, GenericHID *rotateStick, UINT32 rotateChannel, bool squaredInputs = true);
 	void ArcadeDrive(float moveValue, float rotateValue, bool squaredInputs = true);
