@@ -1,127 +1,324 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) FIRST 2011. All Rights Reserved.                             */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in $(WIND_BASE)/WPILib.  */
-/*----------------------------------------------------------------------------*/
+#ifndef _NETWORKTABLE_H_
+#define _NETWORKTABLE_H_
 
-#ifndef __NETWORK_TABLE_H__
-#define __NETWORK_TABLE_H__
+class NetworkTable;
+class NetworkTableKeyCache;
+class EntryCache;
 
-#include "ErrorBase.h"
 #include <map>
-#include <set>
-#include <vector>
+#include <string>
+#include "tables/ITable.h"
+#include "tables/IRemote.h"
+#include "networktables2/thread/NTThreadManager.h"
+#include "networktables2/NetworkTableEntry.h"
+#include "networktables2/util/StringCache.h"
+#include "networktables/NetworkTableProvider.h"
+#include "networktables/NetworkTableMode.h"
+#include "networktables2/thread/DefaultThreadManager.h"
+#include "networktables/NetworkTableConnectionListenerAdapter.h"
+#include "networktables/NetworkTableListenerAdapter.h"
+#include "tables/IRemoteConnectionListener.h"
 
-namespace NetworkTables
-{
-    class Buffer;
-    class Connection;
-    class Entry;
-    class Key;
-    class NetworkQueue;
-    class TableAssignment;
-    class TableEntry;
-}
 
-class NetworkTableChangeListener;
-class NetworkTableAdditionListener;
-class NetworkTableConnectionListener;
 
-class NetworkTable : public ErrorBase {
-	friend class NetworkTables::Connection;
-	friend class NetworkTables::Key;
-	friend class NetworkTables::TableAssignment;
-	friend class NetworkTables::TableEntry;
-public:
-	NetworkTable();
-	~NetworkTable();
-	static void Initialize();
-	static NetworkTable *GetTable(const char *tableName);
-	static NetworkTable *GetTable(int id);
-	std::vector<const char *> GetKeys();
-	void BeginTransaction();
-	void EndTransaction();
-	void AddChangeListener(const char *keyName, NetworkTableChangeListener *listener);
-	void AddChangeListenerAny(NetworkTableChangeListener *listener);
-	void RemoveChangeListener(const char *keyName, NetworkTableChangeListener *listener);
-	void RemoveChangeListenerAny(NetworkTableChangeListener *listener);
-	void AddAdditionListener(NetworkTableAdditionListener *listener);
-	void RemoveAdditionListener(NetworkTableAdditionListener *listener);
-	void AddConnectionListener(NetworkTableConnectionListener *listener, bool immediateNotify);
-	void RemoveConnectionListener(NetworkTableConnectionListener *listener);
-	bool IsConnected();
-	bool ContainsKey(const char *keyName);
-	NetworkTables::Entry *GetEntry(const char *keyName);
-	
-	int GetInt(const char *keyName);
-	bool GetBoolean(const char *keyName);
-	double GetDouble(const char *keyName);
-	int GetString(const char *keyName, char *value, int len);
-	std::string GetString(std::string keyName);
-	NetworkTable *GetSubTable(const char *keyName);
-	void PutInt(const char *keyName, int value);
-	void PutBoolean(const char *keyName, bool value);
-	void PutDouble(const char *keyName, double value);
-	void PutString(const char *keyName, const char *value);
-	void PutString(std::string keyName, std::string value);
-	void PutSubTable(const char *keyName, NetworkTable *value);
-	
+using namespace std;
+
+
+
+class NetworkTableKeyCache: public StringCache{
 private:
-	static UINT32 GrabId();
-	void ProcessTransaction(bool confirmed, NetworkTables::NetworkQueue *transaction);
-	UINT32 GetId() {return m_id;}
-	void AddConnection(NetworkTables::Connection *connection);
-	void RemoveConnection(NetworkTables::Connection *connection);
-	NetworkTables::Key *GetKey(const char *keyName);
-	void Put(const char *keyName, std::auto_ptr<NetworkTables::Entry> value);
-	void Send(NetworkTables::Entry *entry);
-	void Got(bool confirmed, NetworkTables::Key *key, std::auto_ptr<NetworkTables::Entry> value);
-	void AlertListeners(bool isNew, bool confirmed, const char *keyName, NetworkTables::Entry *value);
-	void EncodeName(NetworkTables::Buffer *buffer);
+	const std::string path;
 
-	/** The lock for data */
-	SEM_ID m_dataLock;
-	/** The actual data */
-	typedef std::map<std::string, NetworkTables::Key *> DataMap;
-	DataMap m_data;
-	/** The connections this table has */
-	std::set<NetworkTables::Connection *> m_connections;
-	/** The lock for listener modification */
-	SEM_ID m_listenerLock;
-	/** Set of NetworkingListeners who register for everything */
-	std::set<NetworkTableChangeListener *> m_listenToAllListeners;
-	/** Links names to NetworkingListeners */
-	typedef std::map<std::string, std::set<NetworkTableChangeListener *> > ListenersMap;
-	ListenersMap m_listeners;
-	/** Set of addition listeners */
-	std::set<NetworkTableAdditionListener *> m_additionListeners;
-	/** Set of connection listeners */
-	std::set<NetworkTableConnectionListener *> m_connectionListeners;
-	/** The id of this table */
-	UINT32 m_id;
-	/** The queue of the current transaction */
-	NetworkTables::NetworkQueue *m_transaction;
-	/** The number of times begin transaction has been called without a matching end transaction */
-	int m_transactionCount;
-	/** A list of values which need to be signaled */
-	NetworkTables::NetworkQueue *m_hasChanged;
-	/** A list of values which has been added */
-	NetworkTables::NetworkQueue *m_hasAdded;
+public: 
+	NetworkTableKeyCache(std::string path);
+	~NetworkTableKeyCache();
 
-	/** Links names to tables */
-	typedef std::map<std::string, NetworkTable *> TableNameMap;
-	static TableNameMap _tableNameMap;
-	/** Links ids to currently active NetworkingTables */
-	typedef std::map<UINT32, NetworkTable *> TableIdMap;
-	static TableIdMap _tableIdMap;
-	/** The currently available id */
-	static UINT32 _currentId;
-	/** Indicates that static variables are initialized */
-	static bool _initialized;
-	/** Protects access to static members */
-	static SEM_ID _staticMemberMutex;
-	/** Usage Guidelines... */
-	DISALLOW_COPY_AND_ASSIGN(NetworkTable);
+	std::string Calc(const std::string& key);
 };
 
-#endif // __NETWORK_TABLE_H__
+
+class EntryCache {
+private:
+	map<std::string, NetworkTableEntry*> cache;
+	std::string& path;
+public:
+	EntryCache(std::string& path);
+	~EntryCache();
+	
+	NetworkTableEntry* Get(std::string& key);
+};
+
+
+
+class NetworkTable : public ITable, IRemote {
+	
+private:
+	static DefaultThreadManager threadManager;
+	static NetworkTableProvider* staticProvider;
+	static NetworkTableMode* mode;
+	static int port;
+	static std::string ipAddress;
+	static ReentrantSemaphore STATIC_LOCK;
+	
+	
+	
+	std::string path;
+	EntryCache entryCache;
+	NetworkTableKeyCache absoluteKeyCache;
+	NetworkTableProvider& provider;
+	NetworkTableNode& node;
+	ReentrantSemaphore LOCK;
+	
+	
+	map<IRemoteConnectionListener*, NetworkTableConnectionListenerAdapter*> connectionListenerMap;
+	multimap<ITableListener*, ITableListener*> listenerMap;
+	
+	static void CheckInit();
+	
+	NetworkTableEntry* GetEntry(std::string key);
+	
+public:
+
+	static const char PATH_SEPARATOR_CHAR;
+	/**
+	 * The path separator for sub-tables and keys
+	 * 
+	 */
+	static const std::string PATH_SEPARATOR;
+	/**
+	 * The default port that network tables operates on
+	 */
+	static const int DEFAULT_PORT;
+	
+	/**
+	 * @throws IOException
+	 */
+	static void Initialize();
+	/**
+	 * set that network tables should be a server
+	 * This must be called before initalize or GetTable
+	 */
+	static void SetServerMode();
+	
+	/**
+	 * set the team the robot is configured for (this will set the ip address that network tables will connect to in client mode)
+	 * This must be called before initalize or GetTable
+	 * @param team the team number
+	 */
+	static void SetTeam(int team);
+	/**
+	 * @param address the adress that network tables will connect to in client mode
+	 */
+	static void SetIPAddress(const char* address);
+	/**
+	 * Gets the table with the specified key. If the table does not exist, a new table will be created.<br>
+	 * This will automatically initialize network tables if it has not been already
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the network table requested
+	 */
+	static NetworkTable* GetTable(std::string key);
+	
+
+	NetworkTable(std::string path, NetworkTableProvider& provider);
+	virtual ~NetworkTable();
+	
+	bool IsConnected();
+
+	bool IsServer();
+	
+	
+	
+	
+	
+	
+	
+	void AddConnectionListener(IRemoteConnectionListener* listener, bool immediateNotify);
+
+	void RemoveConnectionListener(IRemoteConnectionListener* listener);
+	
+
+	void AddTableListener(ITableListener* listener);
+
+	
+	void AddTableListener(ITableListener* listener, bool immediateNotify);
+	void AddTableListener(std::string key, ITableListener* listener, bool immediateNotify);
+	void AddSubTableListener(ITableListener* listener);
+
+	void RemoveTableListener(ITableListener* listener);
+	
+	
+
+	/**
+	 * Returns the table at the specified key. If there is no table at the
+	 * specified key, it will create a new table
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the networktable to be returned
+	 */
+	NetworkTable* GetSubTable(std::string key);
+
+
+	/**
+	 * Checks the table and tells if it contains the specified key
+	 * 
+	 * @param key
+	 *            the key to be checked
+	 */
+	bool ContainsKey(std::string key);
+        
+	bool ContainsSubTable(std::string key);
+
+	/**
+	 * Maps the specified key to the specified value in this table. The key can
+	 * not be null. The value can be retrieved by calling the get method with a
+	 * key that is equal to the original key.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 */
+	void PutNumber(std::string key, double value);
+
+	/**
+	 * Returns the key that the name maps to.
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the key
+	 * @throws TableKeyNotDefinedException
+	 *             if the specified key is null
+	 */
+	double GetNumber(std::string key);
+
+	/**
+	 * Returns the key that the name maps to. If the key is null, it will return
+	 * the default value
+	 * 
+	 * @param key
+	 *            the key name
+	 * @param defaultValue
+	 *            the default value if the key is null
+	 * @return the key
+	 */
+	double GetNumber(std::string key, double defaultValue);
+
+	/**
+	 * Maps the specified key to the specified value in this table. The key can
+	 * not be null. The value can be retrieved by calling the get method with a
+	 * key that is equal to the original key.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 */
+	void PutString(std::string key, std::string value);
+
+	/**
+	 * Returns the key that the name maps to.
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the key
+	 * @throws TableKeyNotDefinedException
+	 *             if the specified key is null
+	 */
+	std::string GetString(std::string key);
+
+	/**
+	 * Returns the key that the name maps to. If the key is null, it will return
+	 * the default value
+	 * 
+	 * @param key
+	 *            the key name
+	 * @param defaultValue
+	 *            the default value if the key is null
+	 * @return the key
+	 */
+	std::string GetString(std::string key, std::string defaultValue);
+
+	/**
+	 * Maps the specified key to the specified value in this table. The key can
+	 * not be null. The value can be retrieved by calling the get method with a
+	 * key that is equal to the original key.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param value
+	 *            the value
+	 */
+	void PutBoolean(std::string key, bool value);
+
+	/**
+	 * Returns the key that the name maps to.
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the key
+	 * @throws TableKeyNotDefinedException
+	 *             if the specified key is null
+	 */
+	bool GetBoolean(std::string key);
+
+	/**
+	 * Returns the key that the name maps to. If the key is null, it will return
+	 * the default value
+	 * 
+	 * @param key
+	 *            the key name
+	 * @param defaultValue
+	 *            the default value if the key is null
+	 * @return the key
+	 */
+	bool GetBoolean(std::string key, bool defaultValue);
+	
+
+	void PutValue(std::string key, NetworkTableEntryType* type, EntryValue value);
+	
+
+    void RetrieveValue(std::string key, ComplexData& externalValue);
+        
+	/**
+	 * Maps the specified key to the specified value in this table. The key can
+	 * not be null. The value can be retrieved by calling the get method with a
+	 * key that is equal to the original key.
+	 * 
+	 * @param key the key name
+	 * @param value the value to be put
+	 */
+	void PutValue(std::string key, ComplexData& value);
+	
+	/**
+	 * Returns the key that the name maps to.
+	 * NOTE: If the value is a double, it will return a Double object,
+	 * not a primitive.  To get the primitive, use GetDouble
+	 * 
+	 * @param key
+	 *            the key name
+	 * @return the key
+	 * @throws TableKeyNotDefinedException
+	 *             if the specified key is null
+	 */
+	EntryValue GetValue(std::string key);
+	
+	/**
+	 * Returns the key that the name maps to. If the key is null, it will return
+	 * the default value
+	 * NOTE: If the value is a double, it will return a Double object,
+	 * not a primitive.  To get the primitive, use GetDouble
+	 * 
+	 * @param key
+	 *            the key name
+	 * @param defaultValue
+	 *            the default value if the key is null
+	 * @return the key
+	 */
+	 EntryValue GetValue(std::string key, EntryValue defaultValue);
+
+};
+
+#endif

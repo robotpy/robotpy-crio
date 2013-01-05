@@ -50,3 +50,4 @@ void FRC_NetworkCommunication_observeUserProgramStarting();
 void FRC_NetworkCommunication_observeUserProgramDisabled();
 void FRC_NetworkCommunication_observeUserProgramAutonomous();
 void FRC_NetworkCommunication_observeUserProgramTeleop();
+void FRC_NetworkCommunication_observeUserProgramTest();

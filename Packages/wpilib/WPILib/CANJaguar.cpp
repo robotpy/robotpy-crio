@@ -1235,3 +1235,35 @@ void CANJaguar::StopMotor()
 	DisableControl();
 }
 
+void CANJaguar::ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew) {
+	Set(value.f);
+}
+
+void CANJaguar::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", Get());
+	}
+}
+
+void CANJaguar::StartLiveWindowMode() {
+	m_table->AddTableListener("Value", this, true);
+}
+
+void CANJaguar::StopLiveWindowMode() {
+	m_table->RemoveTableListener(this);
+}
+
+std::string CANJaguar::GetSmartDashboardType() {
+	return "Speed Controller";
+}
+
+void CANJaguar::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * CANJaguar::GetTable() {
+	return m_table;
+}
+
+

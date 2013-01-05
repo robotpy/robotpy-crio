@@ -185,3 +185,31 @@ double Gyro::PIDGet()
 {
 	return GetAngle();
 }
+
+void Gyro::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", GetAngle());
+	}
+}
+
+void Gyro::StartLiveWindowMode() {
+	
+}
+
+void Gyro::StopLiveWindowMode() {
+	
+}
+
+std::string Gyro::GetSmartDashboardType() {
+	return "Gyro";
+}
+
+void Gyro::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * Gyro::GetTable() {
+	return m_table;
+}
+

@@ -6,7 +6,6 @@
 
 #include "SmartDashboard/SendableChooser.h"
 
-#include "NetworkTables/NetworkTable.h"
 #include <stdio.h>
 
 static const char *kDefault = "default";
@@ -15,8 +14,6 @@ static const char *kSelected = "selected";
 
 SendableChooser::SendableChooser()
 {
-	m_table = new NetworkTable();
-	m_count = 0;
 }
 
 /**
@@ -32,17 +29,17 @@ void SendableChooser::AddObject(const char *name, void *object)
 	{
 		//idBuf is: 10 bytes for m_count and 1 for NULL term
 		char idBuf[11];
-		snprintf(idBuf, 11, "%d", m_count);
-		m_ids.insert(std::pair<void *, std::string>(object, idBuf));
-		m_table->PutString(idBuf, name);
-		m_count++;
-		m_table->PutInt(kCount, m_count);
+		//snprintf(idBuf, 11, "%d", m_ids.count());
+		//m_ids.insert(std::pair<void *, std::string>(object, idBuf));
+		//m_table->PutString(idBuf, name);
+		//m_count++;
+		//m_table->PutInt(kCount, m_count);
 	}
 	else
 	{
-		std::string id = m_ids[ret.first->second];
-		ret.first->second = object;
-		m_table->PutString(id, name);
+		//std::string id = m_ids[ret.first->second];
+		//ret.first->second = object;
+		//m_table->PutString(id, name);
 	}
 }
 
@@ -57,7 +54,7 @@ void SendableChooser::AddDefault(const char *name, void *object)
 {
 	m_defaultChoice = object;
 	AddObject(name, object);
-	m_table->PutString(kDefault, name);
+	//m_table->PutString(kDefault, name);
 }
 
 /**
@@ -67,5 +64,6 @@ void SendableChooser::AddDefault(const char *name, void *object)
  */
 void *SendableChooser::GetSelected()
 {
-	return m_table->ContainsKey(kSelected) ? m_choices[m_table->GetString(kSelected)] : m_defaultChoice;
+	return NULL;
+	//return m_table->ContainsKey(kSelected) ? m_choices[m_table->GetString(kSelected)] : m_defaultChoice;
 }

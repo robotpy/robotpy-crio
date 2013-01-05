@@ -23,6 +23,9 @@ class RobotBase:
     def IsOperatorControl(self):
         return IsOperatorControl()
 
+    def IsTest(self):
+        return IsTest()
+
     def IsNewDataAvailable(self):
         return IsNewDataAvailable()
 
@@ -40,8 +43,8 @@ class SimpleRobot(RobotBase):
     def RobotInit(self):
         """Robot-wide initialization code should go here.
         Programmers should override this method for default Robot-wide
-        initialization which will be called when the robot is first powered
-        on.  It will be called exactly 1 time."""
+        initialization which will be called each time the robot enters
+        the disabled state."""
         print("Default RobotInit() method... Overload me!")
 
     def Disabled(self):
@@ -53,23 +56,32 @@ class SimpleRobot(RobotBase):
     def Autonomous(self):
         """Autonomous should go here.
         Programmers should override this method to run code that should run
-        while the field is in the autonomous period."""
+        while the field is in the autonomous period. This will be called
+        once each time the robot enters the autonomous state."""
         print("Default Autonomous() method... Overload me!")
 
     def OperatorControl(self):
         """Operator control (tele-operated) code should go here.
         Programmers should override this method to run code that should run
-        while the field is in the Operator Control (tele-operated) period."""
+        while the field is in the Operator Control (tele-operated) period.
+        This is called once each time the robot enters the teleop state."""
         print("Default OperatorControl() method... Overload me!")
+
+    def Test(self):
+        """Test program should go here. Programmers should override this
+        method to run code that executes while the robot is in test mode.
+        This will be called once whenever the robot enters test mode."""
+        print("Default Test() method... Overload me!")
 
     def StartCompetition(self):
         """Start a competition.
         This code needs to track the order of the field starting to ensure
-        that everything happens in the right order. Repeatedly run the
-        correct method, either Autonomous or OperatorControl when the robot
-        is enabled. After running the correct method, wait for some state to
-        change, either the other mode starts or the robot is disabled. Then
-        go back and wait for the robot to be enabled again."""
+        that everything happens in the right order. Repeatedly run the correct
+        method, either Autonomous or OperatorControl or Test when the robot is
+        enabled. After running the correct method, wait for some state to
+        change, either the other mode starts or the robot is disabled. Then go
+        back and wait for the robot to be enabled again."""
+        SmartDashboard.init()
 
         if callable(getattr(self, "RobotMain", None)):
             self.RobotMain()
@@ -88,6 +100,12 @@ class SimpleRobot(RobotBase):
                 self.Autonomous()
                 self.ds.InAutonomous(False)
                 while self.IsAutonomous() and self.IsEnabled():
+                    self.ds.WaitForData()
+            elif self.IsTest():
+                self.ds.InTest(True)
+                self.Test()
+                self.ds.InTest(False)
+                while self.IsTest() and self.IsEnabled():
                     self.ds.WaitForData()
             else:
                 self.ds.InOperatorControl(True)
@@ -116,6 +134,8 @@ class IterativeRobot(RobotBase):
                            from another mode
      - TeleopInit()     -- called each and every time teleop is entered
                            from another mode
+     - TestInit()       -- called each and every time test is entered
+                           from another mode
 
     Periodic() functions -- each of these functions is called iteratively
     at the appropriate periodic rate (aka the "slow loop").  The default
@@ -125,13 +145,7 @@ class IterativeRobot(RobotBase):
      - DisabledPeriodic()
      - AutonomousPeriodic()
      - TeleopPeriodic()
-
-    Continuous() functions -- each of these functions is called repeatedly
-    as fast as possible.  These functions are generally discouraged and if
-    they are used, they should contain a Wait() of some type:
-     - DisabledContinuous()
-     - AutonomousContinuous()
-     - TeleopContinuous()
+     - TestPeriodic()
     """
 
     def __init__(self):
@@ -139,6 +153,7 @@ class IterativeRobot(RobotBase):
         self._disabledInitialized = False
         self._autonomousInitialized = False
         self._teleopInitialized = False
+        self._testInitialized = False
         self._period = 0.0
         self._mainLoopTimer = Timer()
         self.watchdog.SetEnabled(False)
@@ -202,10 +217,10 @@ class IterativeRobot(RobotBase):
                     # reset the initialization flags for the other modes
                     self._autonomousInitialized = False
                     self._teleopInitialized = False
+                    self._testInitialized = False
                 if self.NextPeriodReady():
                     FRC_NetworkCommunication_observeUserProgramDisabled()
                     self.DisabledPeriodic()
-                self.DisabledContinuous()
             elif self.IsAutonomous():
                 # call AutonomousInit() if we are now just entering
                 # autonomous mode from either a different mode or from
@@ -216,10 +231,25 @@ class IterativeRobot(RobotBase):
                     # reset the initialization flags for the other modes
                     self._disabledInitialized = False
                     self._teleopInitialized = False
+                    self._testInitialized = False
                 if self.NextPeriodReady():
                     FRC_NetworkCommunication_observeUserProgramAutonomous()
                     self.AutonomousPeriodic()
                 self.AutonomousContinuous()
+            elif self.IsTest():
+                # call TestInit() if we are now just entering
+                # test mode from either a different mode or from
+                # power-on
+                if not self._testInitialized:
+                    self.TestInit()
+                    self._testInitialized = True
+                    # reset the initialization flags for the other modes
+                    self._disabledInitialized = False
+                    self._autonomousInitialized = False
+                    self._teleopInitialized = False
+                if self.NextPeriodReady():
+                    FRC_NetworkCommunication_observeUserProgramTest()
+                    self.TestPeriodic()
             else:
                 # call TeleopInit() if we are now just entering teleop mode
                 # from either a different mode or from power-on
@@ -229,10 +259,12 @@ class IterativeRobot(RobotBase):
                     # reset the initialization flags for the other modes
                     self._disabledInitialized = False
                     self._autonomousInitialized = False
+                    self._testInitialized = False
                 if self.NextPeriodReady():
                     FRC_NetworkCommunication_observeUserProgramTeleop()
                     self.TeleopPeriodic()
-                self.TeleopContinuous()
+
+            self.ds.WaitForData()
 
     def NextPeriodReady(self):
         """Determine if the periodic functions should be called.
@@ -274,6 +306,12 @@ class IterativeRobot(RobotBase):
         be called each time the robot enters teleop mode."""
         print("Default TeleopInit() method... Overload me!")
 
+    def TestInit(self):
+        """Initialization code for test mode should go here.
+        Users should override this method for initialization code which will
+        be called each time the robot enters test mode."""
+        print("Default TestInit() method... Overload me!")
+
     def DisabledPeriodic(self):
         """Periodic code for disabled mode should go here.
         Users should override this method for code which will be called
@@ -302,33 +340,12 @@ class IterativeRobot(RobotBase):
             print("Default TeleopPeriodic() method... Overload me!")
         Wait(0.01)
 
-    def DisabledContinuous(self):
-        """Continuous code for disabled mode should go here.
+    def TestPeriodic(self):
+        """Periodic code for test mode should go here.
         Users should override this method for code which will be called
-        repeatedly as frequently as possible while the robot is in disabled
-        mode."""
-        if not hasattr(self.DisabledContinuous, "run"):
-            self.DisabledContinuous.run = True
-            print("Default DisabledContinuous() method... Overload me!")
-        self.ds.WaitForData()
-
-    def AutonomousContinuous(self):
-        """Continuous code for autonomous mode should go here.
-        Users should override this method for code which will be called
-        repeatedly as frequently as possible while the robot is in
-        autonomous mode."""
-        if not hasattr(self.AutonomousContinuous, "run"):
-            self.AutonomousContinuous.run = True
-            print("Default AutonomousContinuous() method... Overload me!")
-        self.ds.WaitForData()
-
-    def TeleopContinuous(self):
-        """Continuous code for teleop mode should go here.
-        Users should override this method for code which will be called
-        repeatedly as frequently as possible while the robot is in teleop
-        mode."""
-        if not hasattr(self.TeleopContinuous, "run"):
-            self.TeleopContinuous.run = True
-            print("Default TeleopContinuous() method... Overload me!")
-        self.ds.WaitForData()
+        periodically at a regular rate while the robot is in test mode."""
+        if not hasattr(self.TestPeriodic, "run"):
+            self.TestPeriodic.run = True
+            print("Default TestPeriodic() method... Overload me!")
+        Wait(0.01)
 

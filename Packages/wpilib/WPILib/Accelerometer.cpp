@@ -125,3 +125,29 @@ double Accelerometer::PIDGet()
 {
 	return GetAcceleration();
 }
+
+void Accelerometer::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", GetAcceleration());
+	}
+}
+
+void Accelerometer::StartLiveWindowMode() {
+}
+
+void Accelerometer::StopLiveWindowMode() {
+}
+
+std::string Accelerometer::GetSmartDashboardType() {
+	return "Accelerometer";
+}
+
+void Accelerometer::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * Accelerometer::GetTable() {
+	return m_table;
+}
+

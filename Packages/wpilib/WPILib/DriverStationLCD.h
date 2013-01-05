@@ -10,7 +10,8 @@
 #include "SensorBase.h"
 
 /**
- * Provide access to LCD on the Driver Station.
+ * Provide access to "LCD" on the Driver Station.
+ * This is the Messages box on the DS Operation tab.
  * 
  * Buffer the printed data locally and then send it
  * when UpdateLCD is called.

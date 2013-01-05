@@ -93,6 +93,11 @@ bool IsOperatorControl();
 	sipRes = MyRobotBase::getInstance().IsOperatorControl();
 %End
 
+bool IsTest();
+%MethodCode
+	sipRes = MyRobotBase::getInstance().IsTest();
+%End
+
 bool IsSystemActive();
 %MethodCode
 	sipRes = MyRobotBase::getInstance().IsSystemActive();
@@ -117,6 +122,7 @@ Watchdog *GetWatchdog();
 %Include AnalogTriggerOutput.sip
 %Include CANJaguar.sip
 %Include Compressor.sip
+%Include Controller.sip
 %Include Counter.sip
 %Include CounterBase.sip
 %Include Dashboard.sip
@@ -161,6 +167,7 @@ Watchdog *GetWatchdog();
 %Include SolenoidBase.sip
 %Include SPI.sip
 %Include SpeedController.sip
+%Include Talon.sip
 %Include Timer.sip
 %Include Ultrasonic.sip
 %Include UsageReporting.sip

@@ -432,3 +432,32 @@ double AnalogChannel::PIDGet()
 	if (StatusIsFatal()) return 0.0;
 	return GetAverageValue();
 }
+
+void AnalogChannel::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", GetAverageVoltage());
+	}
+}
+
+void AnalogChannel::StartLiveWindowMode() {
+	
+}
+
+void AnalogChannel::StopLiveWindowMode() {
+	
+}
+
+std::string AnalogChannel::GetSmartDashboardType() {
+	return "Analog Input";
+}
+
+void AnalogChannel::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * AnalogChannel::GetTable() {
+	return m_table;
+}
+
+

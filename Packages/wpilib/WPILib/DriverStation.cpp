@@ -46,6 +46,7 @@ DriverStation::DriverStation()
 	, m_userInDisabled(false)
 	, m_userInAutonomous(false)
 	, m_userInTeleop(false)
+	, m_userInTest(false)
 {
 	// Create a new semaphore
 	m_packetDataAvailableSem = semBCreate (SEM_Q_PRIORITY, SEM_EMPTY);
@@ -130,8 +131,10 @@ void DriverStation::Run()
 			FRC_NetworkCommunication_observeUserProgramDisabled();
 		if (m_userInAutonomous)
 			FRC_NetworkCommunication_observeUserProgramAutonomous();
-		if (m_userInTeleop)
-			FRC_NetworkCommunication_observeUserProgramTeleop();
+        if (m_userInTeleop)
+            FRC_NetworkCommunication_observeUserProgramTeleop();
+        if (m_userInTest)
+            FRC_NetworkCommunication_observeUserProgramTest();
 	}
 }
 
@@ -401,7 +404,12 @@ bool DriverStation::IsAutonomous()
 
 bool DriverStation::IsOperatorControl()
 {
-	return !m_controlData->autonomous;
+	return !(m_controlData->autonomous || m_controlData->test);
+}
+
+bool DriverStation::IsTest()
+{
+	return m_controlData->test;
 }
 
 /**

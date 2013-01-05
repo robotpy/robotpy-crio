@@ -328,3 +328,31 @@ Ultrasonic::DistanceUnit Ultrasonic::GetDistanceUnits()
 {
 	return m_units;
 }
+
+void Ultrasonic::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", GetRangeInches());
+	}
+}
+
+void Ultrasonic::StartLiveWindowMode() {
+	
+}
+
+void Ultrasonic::StopLiveWindowMode() {
+	
+}
+
+std::string Ultrasonic::GetSmartDashboardType() {
+	return "Ultrasonic";
+}
+
+void Ultrasonic::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * Ultrasonic::GetTable() {
+	return m_table;
+}
+

@@ -73,3 +73,30 @@ float HiTechnicCompass::GetAngle()
 	return (float)heading;
 }
 
+void HiTechnicCompass::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutNumber("Value", GetAngle());
+	}
+}
+
+void HiTechnicCompass::StartLiveWindowMode() {
+	
+}
+
+void HiTechnicCompass::StopLiveWindowMode() {
+	
+}
+
+std::string HiTechnicCompass::GetSmartDashboardType() {
+	return "HiTechnicCompass";
+}
+
+void HiTechnicCompass::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * HiTechnicCompass::GetTable() {
+	return m_table;
+}
+

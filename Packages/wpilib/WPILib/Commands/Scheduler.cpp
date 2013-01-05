@@ -9,27 +9,26 @@
 #include "Buttons/ButtonScheduler.h"
 #include "Commands/Subsystem.h"
 #include "NetworkCommunication/UsageReporting.h"
-#include "NetworkTables/NetworkTable.h"
 #include "Synchronized.h"
 #include "WPIErrors.h"
 #include <iostream>
 #include <set>
 #include <semLib.h>
+#include <algorithm>
 
 Scheduler *Scheduler::_instance = NULL;
 
 Scheduler::Scheduler() :
-	m_tableLock(NULL),
-	m_table(NULL),
 	m_buttonsLock(NULL),
 	m_additionsLock(NULL),
 	m_adding(false)
 {
-	m_tableLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 	m_buttonsLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 	m_additionsLock = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
 
 	nUsageReporting::report(nUsageReporting::kResourceType_Command, nUsageReporting::kCommand_Scheduler);
+	
+	m_enabled = true;
 }
 
 Scheduler::~Scheduler()
@@ -39,9 +38,6 @@ Scheduler::~Scheduler()
 
 	semTake(m_buttonsLock, WAIT_FOREVER);
 	semDelete(m_buttonsLock);
-
-	semTake(m_tableLock, WAIT_FOREVER);
-	semDelete(m_tableLock);
 }
 
 /**
@@ -55,9 +51,21 @@ Scheduler *Scheduler::GetInstance()
 	return _instance;
 }
 
+void Scheduler::SetEnabled(bool enabled) {
+	m_enabled = enabled;
+}
+
+/**
+ * Add a command to be scheduled later.
+ * In any pass through the scheduler, all commands are added to the additions list, then
+ * at the end of the pass, they are all scheduled.
+ * @param command The command to be scheduled
+ */
 void Scheduler::AddCommand(Command *command)
 {
 	Synchronized sync(m_additionsLock);
+	if (std::find(m_additions.begin(), m_additions.end(), command) != m_additions.end())
+		return;
 	m_additions.push_back(command);
 }
 
@@ -129,6 +137,8 @@ void Scheduler::Run()
 {
 	// Get button input (going backwards preserves button priority)
 	{
+		if (!m_enabled) return;
+
 		Synchronized sync(m_buttonsLock);
 		ButtonVector::reverse_iterator rButtonIter = m_buttons.rbegin();
 		for (; rButtonIter != m_buttons.rend(); rButtonIter++)
@@ -149,7 +159,7 @@ void Scheduler::Run()
 			Remove(command);
 		}
 	}
-
+/*
 	// Send the value over the table
 	if (m_table != NULL) {
 		int count = 0;
@@ -164,7 +174,7 @@ void Scheduler::Run()
 		}
 		m_table->PutInt("count", count);
 		m_table->EndTransaction();
-	}
+	}*/
 
 	// Add the new things
 	{
@@ -231,22 +241,8 @@ void Scheduler::Remove(Command *command)
 	command->Removed();
 }
 
-std::string Scheduler::GetName()
-{
-    return "Scheduler";
-}
-
-std::string Scheduler::GetType()
-{
-    return "Scheduler";
-}
-
-NetworkTable *Scheduler::GetTable()
-{
-	if (m_table == NULL)
-	{
-		m_table = new NetworkTable();
-		m_table->PutInt("count", 0);
+void Scheduler::RemoveAll() {
+	while(m_commands.size()>0){
+		Remove(*m_commands.begin());
 	}
-	return m_table;
 }

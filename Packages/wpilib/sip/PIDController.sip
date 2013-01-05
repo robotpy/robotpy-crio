@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class PIDController
+class PIDController : Controller
 {
 %TypeHeaderCode
 #include <WPILib/PIDController.h>

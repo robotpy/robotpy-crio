@@ -99,3 +99,38 @@ bool Solenoid::Get()
 	UINT8 value = GetAll() & ( 1 << (m_channel - 1));
 	return (value != 0);
 }
+
+
+void Solenoid::ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew) {
+	Set(value.b);
+}
+
+void Solenoid::UpdateTable() {
+	if (m_table != NULL) {
+		m_table->PutBoolean("Value", Get());
+	}
+}
+
+void Solenoid::StartLiveWindowMode() {
+	Set(false);
+	m_table->AddTableListener("Value", this, true);
+}
+
+void Solenoid::StopLiveWindowMode() {
+	Set(false);
+	m_table->RemoveTableListener(this);
+}
+
+std::string Solenoid::GetSmartDashboardType() {
+	return "Solenoid";
+}
+
+void Solenoid::InitTable(ITable *subTable) {
+	m_table = subTable;
+	UpdateTable();
+}
+
+ITable * Solenoid::GetTable() {
+	return m_table;
+}
+

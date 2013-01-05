@@ -7,10 +7,29 @@
 #ifndef SYNCHRONIZED_H
 #define SYNCHRONIZED_H
 
-#include "semLib.h"
+#include <semLib.h>
 
 #define CRITICAL_REGION(s) { Synchronized _sync(s);
 #define END_REGION }
+
+class ReentrantSemaphore
+{
+public:
+	explicit ReentrantSemaphore(){
+		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_INVERSION_SAFE | SEM_DELETE_SAFE);
+	};
+	~ReentrantSemaphore(){
+		semDelete(m_semaphore);
+	};
+	void take(){
+		semTake(m_semaphore, WAIT_FOREVER);
+	};
+	void give(){
+		semGive(m_semaphore);
+	};
+private:
+	SEM_ID m_semaphore;
+};
 
 /**
  * Provide easy support for critical regions.
@@ -26,8 +45,11 @@ class Synchronized
 {
 public:
 	explicit Synchronized(SEM_ID);
+	explicit Synchronized(ReentrantSemaphore&);
 	virtual ~Synchronized();
 private:
+	bool usingSem;
+	ReentrantSemaphore* m_sem;
 	SEM_ID m_semaphore;
 };
 

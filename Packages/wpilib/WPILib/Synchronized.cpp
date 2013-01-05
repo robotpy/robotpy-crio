@@ -16,8 +16,16 @@
  */
 Synchronized::Synchronized(SEM_ID semaphore)
 {
+	usingSem = false;
 	m_semaphore = semaphore;
 	semTake(m_semaphore, WAIT_FOREVER);
+}
+
+Synchronized::Synchronized(ReentrantSemaphore& sem)
+{
+	usingSem = true;
+	m_sem = &sem;
+	m_sem->take();
 }
 
 /**
@@ -27,5 +35,8 @@ Synchronized::Synchronized(SEM_ID semaphore)
  */
 Synchronized::~Synchronized()
 {
-	semGive(m_semaphore);
+	if(usingSem)
+		m_sem->give();
+	else
+		semGive(m_semaphore);
 }

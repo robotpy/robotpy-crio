@@ -8,7 +8,6 @@
 #include "Commands/CommandGroup.h"
 #include "Commands/Scheduler.h"
 #include "DriverStation.h"
-#include "NetworkTables/NetworkTable.h"
 #include "Timer.h"
 #include "WPIErrors.h"
 
@@ -27,7 +26,6 @@ void Command::InitCommand(const char *name, double timeout)
 	m_canceled = false;
 	m_runWhenDisabled = false;
 	m_parent = NULL;
-	m_table = NULL;
 	if (name == NULL)
 	{
 		// Don't have a way to find the subclass name like java, so use the address
@@ -39,6 +37,7 @@ void Command::InitCommand(const char *name, double timeout)
 	{
 		m_name = name;
 	}
+	m_table = NULL;	
 }
 
 /**
@@ -89,11 +88,10 @@ Command::Command(const char *name, double timeout)
 }
 
 Command::~Command()
-{
-	if (m_table != NULL)
-	{
+{//TODO deal with cleaning up all listeners
+	/*if (m_table != NULL){
 		m_table->RemoveChangeListener(kRunning, this);
-	}
+	}*/
 }
 
 /**
@@ -430,28 +428,36 @@ std::string Command::GetName()
 	return m_name;
 }
 
-std::string Command::GetType()
+std::string Command::GetSmartDashboardType()
 {
 	return "Command";
 }
 
-NetworkTable *Command::GetTable()
+void Command::InitTable(ITable* table)
 {
-	if (m_table == NULL)
-	{
-		m_table = new NetworkTable();
-		m_table->PutString(kName, GetName());
-		m_table->PutBoolean(kRunning, IsRunning());
-		m_table->PutBoolean(kIsParented, m_parent != NULL);
-		m_table->AddChangeListener(kRunning, this);
-	}
+    if(m_table!=NULL)
+    	m_table->RemoveTableListener(this);
+    m_table = table;
+    if(m_table!=NULL){
+    	m_table->PutString(kName, GetName());
+    	m_table->PutBoolean(kRunning, IsRunning());
+    	m_table->PutBoolean(kIsParented, m_parent != NULL);
+    	m_table->AddTableListener(kRunning, this, false);
+    }
+}
+
+ITable* Command::GetTable(){
 	return m_table;
 }
 
-void Command::ValueChanged(NetworkTable *table, const char *name, NetworkTables_Types type)
+void Command::ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew)
 {
-	if (table->GetBoolean(kRunning))
-		Start();
-	else
-		Cancel();
+	if (value.b){
+		if(!IsRunning())
+			Start();
+	}
+	else{
+		if(IsRunning())
+			Cancel();
+	}
 }

@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Victor : SafePWM, SpeedController, PIDOutput
+class Victor : SafePWM, SpeedController
 {
 %TypeHeaderCode
 #include <WPILib/Victor.h>

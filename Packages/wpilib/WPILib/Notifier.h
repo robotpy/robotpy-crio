@@ -20,7 +20,7 @@ public:
 	void StartSingle(double delay);
 	void StartPeriodic(double period);
 	void Stop();
-        void *GetParam() { return m_param; }
+	void *GetParam() { return m_param; }
 private:
 	static Notifier *timerQueueHead;
 	static SEM_ID queueSemaphore;

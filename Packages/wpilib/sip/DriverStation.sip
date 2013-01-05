@@ -50,6 +50,7 @@ public:
 	bool IsDisabled();
 	bool IsAutonomous();
 	bool IsOperatorControl();
+	bool IsTest();
 	bool IsNewControlData();
 	bool IsFMSAttached();
 
@@ -77,6 +78,7 @@ public:
 	void InDisabled(bool entering);
 	void InAutonomous(bool entering);
 	void InOperatorControl(bool entering);
+	void InTest(bool entering);
 
 protected:
 	DriverStation();

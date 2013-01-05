@@ -71,3 +71,8 @@ GearTooth::~GearTooth()
 {
 }
 
+
+std::string GearTooth::GetSmartDashboardType() {
+	return "GearTooth";
+}
+

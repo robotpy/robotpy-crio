@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class SpeedController
+class SpeedController : PIDOutput
 {
 %TypeHeaderCode
 #include <WPILib/SpeedController.h>
