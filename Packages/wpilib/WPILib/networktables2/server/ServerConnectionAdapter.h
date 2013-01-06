@@ -30,7 +30,7 @@ class ServerConnectionAdapter;
  * @author Mitchell
  *
  */
-class ServerConnectionAdapter : ConnectionAdapter, IncomingEntryReceiver, FlushableOutgoingEntryReceiver{
+class ServerConnectionAdapter : public ConnectionAdapter, public IncomingEntryReceiver, public FlushableOutgoingEntryReceiver{
 private:
 	ServerNetworkTableEntryStore& entryStore;
 	IncomingEntryReceiver& transactionReceiver;
