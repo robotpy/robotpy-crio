@@ -8,8 +8,6 @@
 #ifndef INCOMINGENTRYRECEIVER_H_
 #define INCOMINGENTRYRECEIVER_H_
 
-class IncomingEntryReceiver;
-
 #include "NetworkTableEntry.h"
 #include "tables/ITable.h"
 

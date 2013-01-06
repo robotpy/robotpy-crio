@@ -10,13 +10,13 @@
 typedef uint16_t EntryId;
 typedef uint16_t SequenceNumber;
 class NetworkTableEntry;
+class TableListenerManager;
 
 
 #include "connection/DataIOStream.h"
 #include "connection/NetworkTableConnection.h"
 #include "type/NetworkTableEntryType.h"
 #include "util/IllegalStateException.h"
-#include "AbstractNetworkTableEntryStore.h"
 #include <string>
 #include "tables/ITable.h"
 
