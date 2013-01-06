@@ -20,6 +20,7 @@ class PeriodicNTThread;
 
 
 class DefaultThreadManager : public NTThreadManager{
+public:
 	virtual NTThread* newBlockingPeriodicThread(PeriodicRunnable* r, const char* name);
 };
 
