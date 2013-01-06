@@ -50,7 +50,7 @@ public:
 
 
 
-class NetworkTable : public ITable, IRemote {
+class NetworkTable : public ITable, public IRemote {
 	
 private:
 	static DefaultThreadManager threadManager;
