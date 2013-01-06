@@ -32,6 +32,7 @@ PROJECT_OBJECTS += sip_wpilibGearTooth.o
 PROJECT_OBJECTS += sip_wpilibGenericHID.o
 PROJECT_OBJECTS += sip_wpilibGyro.o
 PROJECT_OBJECTS += sip_wpilibHiTechnicColorSensor.o
+PROJECT_OBJECTS += sip_wpilibHiTechnicColorSensorRGB.o
 PROJECT_OBJECTS += sip_wpilibHiTechnicCompass.o
 PROJECT_OBJECTS += sip_wpilibI2C.o
 PROJECT_OBJECTS += sip_wpilibInterruptableSensorBase.o
