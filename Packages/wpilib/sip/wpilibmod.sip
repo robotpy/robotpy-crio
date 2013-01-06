@@ -141,6 +141,7 @@ Watchdog *GetWatchdog();
 %Include GearTooth.sip
 %Include GenericHID.sip
 %Include Gyro.sip
+%Include HiTechnicColorSensor.sip
 %Include HiTechnicCompass.sip
 %Include I2C.sip
 %Include InterruptableSensorBase.sip

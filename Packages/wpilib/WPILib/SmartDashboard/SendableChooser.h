@@ -8,6 +8,7 @@
 #define __SENDABLE_CHOOSER_H__
 
 #include "SmartDashboard/Sendable.h"
+#include "tables/ITable.h"
 #include <map>
 #include <string>
 
@@ -23,7 +24,7 @@
  *
  * @see SmartDashboard
  */
-class SendableChooser
+class SendableChooser : public Sendable
 {
 public:
 	SendableChooser();
@@ -33,10 +34,14 @@ public:
 	void AddDefault(const char *name, void *object);
 	void *GetSelected();
 
+	virtual void InitTable(ITable* subtable);
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
 
 private:
-	void *m_defaultChoice;
+	std::string m_defaultChoice;
 	std::map<std::string, void *> m_choices;
+	ITable *m_table;
 };
 
 #endif

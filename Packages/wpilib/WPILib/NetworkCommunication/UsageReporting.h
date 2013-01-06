@@ -61,7 +61,10 @@ namespace nUsageReporting
         kResourceType_PCVideoServer,
         kResourceType_SmartDashboard,
         kResourceType_Talon,
-        kResourceType_NXTColorSensor,
+        kResourceType_HiTechnicColorSensor,
+        kResourceType_HiTechnicAccel,
+        kResourceType_HiTechnicCompass,
+        kResourceType_SRF08,
     } tResourceType;
 
     typedef enum
@@ -101,7 +104,7 @@ namespace nUsageReporting
         kDriverStationEIO_TouchSlider = 11,
 
         kADXL345_SPI = 1,
-        kADXL345_I2C = 1,
+        kADXL345_I2C = 2,
 
         kCommand_Scheduler = 1,
 

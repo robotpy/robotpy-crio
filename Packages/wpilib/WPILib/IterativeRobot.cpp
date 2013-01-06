@@ -11,6 +11,7 @@
 #include <taskLib.h>
 #include "SmartDashboard/SmartDashboard.h"
 #include "LiveWindow/LiveWindow.h"
+#include "networktables/NetworkTable.h"
 
 const double IterativeRobot::kDefaultPeriod;
 
@@ -96,6 +97,7 @@ void IterativeRobot::StartCompetition()
 	LiveWindow *lw = LiveWindow::GetInstance();
 	// first and one-time initialization
 	SmartDashboard::init();
+	NetworkTable::GetTable("LiveWindow")->GetSubTable("~STATUS~")->PutBoolean("LW Enabled", false);
 	RobotInit();
 
 	// loop forever, calling the appropriate mode-dependent function

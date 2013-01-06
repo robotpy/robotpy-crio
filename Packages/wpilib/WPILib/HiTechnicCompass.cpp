@@ -7,6 +7,7 @@
 #include "HiTechnicCompass.h"
 #include "DigitalModule.h"
 #include "I2C.h"
+#include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 
 const UINT8 HiTechnicCompass::kAddress;
@@ -41,6 +42,8 @@ HiTechnicCompass::HiTechnicCompass(UINT8 moduleNumber)
 		{
 			wpi_setWPIError(CompassTypeError);
 		}
+
+		nUsageReporting::report(nUsageReporting::kResourceType_HiTechnicCompass, moduleNumber - 1);
 	}
 }
 

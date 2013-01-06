@@ -38,7 +38,7 @@ DriverStation::DriverStation()
 	, m_dashboardLow(m_statusDataSemaphore)
 	, m_dashboardInUseHigh(&m_dashboardHigh)
 	, m_dashboardInUseLow(&m_dashboardLow)
-	, m_newControlData (false)
+	, m_newControlData(0)
 	, m_packetDataAvailableSem (0)
 	, m_enhancedIO()
 	, m_waitForDataSem(0)
@@ -50,6 +50,7 @@ DriverStation::DriverStation()
 {
 	// Create a new semaphore
 	m_packetDataAvailableSem = semBCreate (SEM_Q_PRIORITY, SEM_EMPTY);
+	m_newControlData = semBCreate (SEM_Q_FIFO, SEM_EMPTY);
 
 	// Register that semaphore with the network communications task.
 	// It will signal when new packet data is available. 
@@ -172,7 +173,7 @@ void DriverStation::GetData()
 		m_approxMatchTimeOffset = -1.0;
 	}
 	lastEnabled = IsEnabled();
-	m_newControlData = true;
+	semGive(m_newControlData);
 }
 
 /**
@@ -420,9 +421,7 @@ bool DriverStation::IsTest()
  */
 bool DriverStation::IsNewControlData()
 {
-	bool newData = m_newControlData;
-	m_newControlData = false;
-	return newData;
+	return semTake(m_newControlData, NO_WAIT) == 0;
 }
 
 /**

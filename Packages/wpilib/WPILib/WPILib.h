@@ -51,6 +51,7 @@
 #include "GenericHID.h"
 #include "Gyro.h"
 #include "HiTechnicCompass.h"
+#include "HiTechnicColorSensor.h"
 #include "I2C.h"
 #include "IterativeRobot.h"
 #include "InterruptableSensorBase.h"

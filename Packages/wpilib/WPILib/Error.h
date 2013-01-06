@@ -40,7 +40,7 @@ public:
 	static void EnableSuspendOnError(bool enable) { m_suspendOnErrorEnabled=enable; }
 
 private:
-	void Error::Report();
+	void Report();
 
 	Code m_code;
 	std::string m_message;

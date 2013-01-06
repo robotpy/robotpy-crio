@@ -30,10 +30,11 @@ public:
 
 	void UpdateLCD();
 	void Printf(Line line, INT32 startingColumn, const char *writeFmt, ...);
+	void VPrintf(Line line, INT32 startingColumn, const char *writeFmt, va_list args);
 	void PrintfLine(Line line, const char *writeFmt, ...);
+	void VPrintfLine(Line line, const char *writeFmt, va_list args);
  
 	void Clear();
-
 
 protected:
 	DriverStationLCD();

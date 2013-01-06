@@ -9,6 +9,7 @@
 
 #include "ChipObject.h"
 #include "ErrorBase.h"
+#include "Synchronized.h"
 
 typedef void (*TimerEventHandler)(void *param);
 
@@ -23,7 +24,7 @@ public:
 	void *GetParam() { return m_param; }
 private:
 	static Notifier *timerQueueHead;
-	static SEM_ID queueSemaphore;
+	static ReentrantSemaphore queueSemaphore;
 	static tAlarm *talarm;
 	static tInterruptManager *manager;
 	static int refcount;

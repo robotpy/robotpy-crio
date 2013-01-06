@@ -10,6 +10,7 @@
 #include "Resource.h"
 #include "SensorBase.h"
 #include "ChipObject.h"
+#include "Synchronized.h"
 
 /**
  * SolenoidBase class is the common base class for the Solenoid and
@@ -31,7 +32,7 @@ protected:
 private:
 	static tSolenoid *m_fpgaSolenoidModule; ///< FPGA Solenoid Module object.
 	static UINT32 m_refCount; ///< Reference count for the chip object.
-	static SEM_ID m_semaphore;
+	static ReentrantSemaphore m_semaphore;
 };
 
 #endif

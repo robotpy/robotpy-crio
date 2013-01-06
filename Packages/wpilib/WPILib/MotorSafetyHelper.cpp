@@ -8,14 +8,13 @@
 
 #include "DriverStation.h"
 #include "MotorSafety.h"
-#include "Synchronized.h"
 #include "Timer.h"
 #include "WPIErrors.h"
 
 #include <stdio.h>
 
 MotorSafetyHelper *MotorSafetyHelper::m_headHelper = NULL;
-SEM_ID MotorSafetyHelper::m_listMutex = NULL;
+ReentrantSemaphore MotorSafetyHelper::m_listMutex;
 
 /**
  * The constructor for a MotorSafetyHelper object.
@@ -28,8 +27,6 @@ SEM_ID MotorSafetyHelper::m_listMutex = NULL;
  */
 MotorSafetyHelper::MotorSafetyHelper(MotorSafety *safeObject)
 {
-	if (m_listMutex == NULL)
-		m_listMutex = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 	m_safeObject = safeObject;
 	m_enabled = false;
 	m_expiration = DEFAULT_SAFETY_EXPIRATION;
@@ -43,7 +40,7 @@ MotorSafetyHelper::MotorSafetyHelper(MotorSafety *safeObject)
 
 MotorSafetyHelper::~MotorSafetyHelper()
 {
-	semTake(m_listMutex, WAIT_FOREVER);
+	Synchronized sync(m_listMutex);
 	if (m_headHelper == this)
 	{
 		m_headHelper = m_nextHelper;
@@ -57,15 +54,6 @@ MotorSafetyHelper::~MotorSafetyHelper()
 		if (cur == this)
 			prev->m_nextHelper = cur->m_nextHelper;
 	}
-	if (m_headHelper == NULL)
-	{
-		semDelete(m_listMutex);
-		m_listMutex = NULL;
-	}
-	else
-	{
-		semGive(m_listMutex);
-	}
 }
 
 /*
@@ -74,6 +62,7 @@ MotorSafetyHelper::~MotorSafetyHelper()
  */
 void MotorSafetyHelper::Feed()
 {
+	Synchronized sync(m_syncMutex);
 	m_stopTime = Timer::GetFPGATimestamp() + m_expiration;
 }
 
@@ -83,6 +72,7 @@ void MotorSafetyHelper::Feed()
  */
 void MotorSafetyHelper::SetExpiration(float expirationTime)
 {
+	Synchronized sync(m_syncMutex);
 	m_expiration = expirationTime;
 }
 
@@ -92,6 +82,7 @@ void MotorSafetyHelper::SetExpiration(float expirationTime)
  */
 float MotorSafetyHelper::GetExpiration()
 {
+	Synchronized sync(m_syncMutex);
 	return m_expiration;
 }
 
@@ -101,6 +92,7 @@ float MotorSafetyHelper::GetExpiration()
  */
 bool MotorSafetyHelper::IsAlive()
 {
+	Synchronized sync(m_syncMutex);
 	return !m_enabled || m_stopTime > Timer::GetFPGATimestamp();
 }
 
@@ -114,6 +106,8 @@ void MotorSafetyHelper::Check()
 {
 	if (!m_enabled) return;
 	if (DriverStation::GetInstance()->IsDisabled()) return;
+
+	Synchronized sync(m_syncMutex);
 	if (m_stopTime < Timer::GetFPGATimestamp())
 	{
 		char buf[128];
@@ -132,6 +126,7 @@ void MotorSafetyHelper::Check()
  */
 void MotorSafetyHelper::SetSafetyEnabled(bool enabled)
 {
+	Synchronized sync(m_syncMutex);
 	m_enabled = enabled;
 }
 
@@ -142,6 +137,7 @@ void MotorSafetyHelper::SetSafetyEnabled(bool enabled)
  */
 bool MotorSafetyHelper::IsSafetyEnabled()
 {
+	Synchronized sync(m_syncMutex);
 	return m_enabled;
 }
 
@@ -150,7 +146,6 @@ bool MotorSafetyHelper::IsSafetyEnabled()
  * This static  method is called periodically to poll all the motors and stop any that have
  * timed out.
  */
-//TODO: these should be synchronized with the setting methods in case it's called from a different thread
 void MotorSafetyHelper::CheckMotors()
 {
 	Synchronized sync(m_listMutex);

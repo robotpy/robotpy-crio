@@ -31,6 +31,7 @@ PROJECT_OBJECTS += sip_wpilibErrorBase.o
 PROJECT_OBJECTS += sip_wpilibGearTooth.o
 PROJECT_OBJECTS += sip_wpilibGenericHID.o
 PROJECT_OBJECTS += sip_wpilibGyro.o
+PROJECT_OBJECTS += sip_wpilibHiTechnicColorSensor.o
 PROJECT_OBJECTS += sip_wpilibHiTechnicCompass.o
 PROJECT_OBJECTS += sip_wpilibI2C.o
 PROJECT_OBJECTS += sip_wpilibInterruptableSensorBase.o
@@ -167,6 +168,7 @@ PROJECT_OBJECTS += WPILib/Error.o
 PROJECT_OBJECTS += WPILib/ErrorBase.o
 PROJECT_OBJECTS += WPILib/GearTooth.o
 PROJECT_OBJECTS += WPILib/Gyro.o
+PROJECT_OBJECTS += WPILib/HiTechnicColorSensor.o
 PROJECT_OBJECTS += WPILib/HiTechnicCompass.o
 PROJECT_OBJECTS += WPILib/I2C.o
 PROJECT_OBJECTS += WPILib/InterruptableSensorBase.o
@@ -202,8 +204,8 @@ PROJECT_OBJECTS += WPILib/Victor.o
 PROJECT_OBJECTS += WPILib/Watchdog.o
 
 ADDED_INCLUDES = -I../sip -I./WPILib
-ADDED_CFLAGS = -D'SVN_REV="3564"'
-ADDED_C++FLAGS = -D'SVN_REV="3564"'
+ADDED_CFLAGS = -D'SVN_REV="3589"'
+ADDED_C++FLAGS = -D'SVN_REV="3589"'
 
 include ../../mk/module.mk
 

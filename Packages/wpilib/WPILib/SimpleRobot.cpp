@@ -11,6 +11,7 @@
 #include "Timer.h"
 #include "SmartDashboard/SmartDashboard.h"
 #include "LiveWindow/LiveWindow.h"
+#include "networktables/NetworkTable.h"
 
 SimpleRobot::SimpleRobot()
 	: m_robotMainOverridden (true)
@@ -102,7 +103,8 @@ void SimpleRobot::StartCompetition()
 	nUsageReporting::report(nUsageReporting::kResourceType_Framework, nUsageReporting::kFramework_Simple);
 
 	SmartDashboard::init();
-	
+	NetworkTable::GetTable("LiveWindow")->GetSubTable("~STATUS~")->PutBoolean("LW Enabled", false);
+
 	RobotMain();
 	
 	if (!m_robotMainOverridden)

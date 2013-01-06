@@ -6,9 +6,8 @@
 
 #include "SolenoidBase.h"
 
-#include "Synchronized.h"
-
-SEM_ID SolenoidBase::m_semaphore = NULL;
+// Needs to be global since the protected resource spans all Solenoid objects.
+ReentrantSemaphore SolenoidBase::m_semaphore;
 Resource *SolenoidBase::m_allocated = NULL;
 
 tSolenoid *SolenoidBase::m_fpgaSolenoidModule = NULL;
@@ -23,11 +22,10 @@ UINT32 SolenoidBase::m_refCount = 0;
 SolenoidBase::SolenoidBase(UINT8 moduleNumber)
 	: m_moduleNumber (moduleNumber)
 {
+	Synchronized sync(m_semaphore);
 	m_refCount++;
 	if (m_refCount == 1)
 	{
-		// Needs to be global since the protected resource spans all Solenoid objects.
-		m_semaphore = semMCreate(SEM_Q_PRIORITY | SEM_DELETE_SAFE | SEM_INVERSION_SAFE);
 		tRioStatusCode localStatus = NiFpga_Status_Success;
 		m_fpgaSolenoidModule = tSolenoid::create(&localStatus);
 		wpi_setError(localStatus);
@@ -39,14 +37,13 @@ SolenoidBase::SolenoidBase(UINT8 moduleNumber)
  */
 SolenoidBase::~SolenoidBase()
 {
+	Synchronized sync(m_semaphore);
 	if (CheckSolenoidModule(m_moduleNumber))
 	{
 		if (m_refCount == 1)
 		{
 			delete m_fpgaSolenoidModule;
 			m_fpgaSolenoidModule = NULL;
-			semDelete(m_semaphore);
-			m_semaphore = NULL;
 		}
 		m_refCount--;
 	}

@@ -8,6 +8,7 @@
 #define __MOTOR_SAFETY_HELPER__
 
 #include "ErrorBase.h"
+#include "Synchronized.h"
 #include <semLib.h>
 
 class MotorSafety;
@@ -29,10 +30,11 @@ private:
 	double m_expiration;			// the expiration time for this object
 	bool m_enabled;					// true if motor safety is enabled for this motor
 	double m_stopTime; 				// the FPGA clock value when this motor has expired
+	ReentrantSemaphore m_syncMutex;			// protect accesses to the state for this object
 	MotorSafety *m_safeObject;		// the object that is using the helper
 	MotorSafetyHelper *m_nextHelper; // next object in the list of MotorSafetyHelpers
 	static MotorSafetyHelper *m_headHelper; // the head of the list of MotorSafetyHelper objects
-	static SEM_ID m_listMutex;		// protect accesses to the list of helpers
+	static ReentrantSemaphore m_listMutex;	// protect accesses to the list of helpers
 };
 
 #endif

@@ -5,14 +5,13 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Notifier.h"
-#include "Synchronized.h"
 #include "Timer.h"
 #include "Utility.h"
 #include "WPIErrors.h"
 
 const UINT32 Notifier::kTimerInterruptNumber;
 Notifier *Notifier::timerQueueHead = NULL;
-SEM_ID Notifier::queueSemaphore = NULL;
+ReentrantSemaphore Notifier::queueSemaphore;
 tAlarm *Notifier::talarm = NULL;
 tInterruptManager *Notifier::manager = NULL;
 int Notifier::refcount = 0;
@@ -34,10 +33,6 @@ Notifier::Notifier(TimerEventHandler handler, void *param)
 	m_nextEvent = NULL;
 	m_queued = false;
 	m_handlerSemaphore = semBCreate(SEM_Q_PRIORITY, SEM_FULL);
-	if (queueSemaphore == NULL)
-	{
-		queueSemaphore = semBCreate(SEM_Q_PRIORITY, SEM_FULL);
-	}
 	tRioStatusCode localStatus = NiFpga_Status_Success;
 	{
 		Synchronized sync(queueSemaphore);
@@ -248,7 +243,7 @@ void Notifier::StartSingle(double delay)
 /**
  * Register for periodic event notification.
  * A timer event is queued for periodic event notification. Each time the interrupt
- * occurs, the event will be immedeatly requeued for the same time interval.
+ * occurs, the event will be immediately requeued for the same time interval.
  * @param period Period in seconds to call the handler starting one period after the call to this method.
  */
 void Notifier::StartPeriodic(double period)

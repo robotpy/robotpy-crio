@@ -118,7 +118,7 @@ private:
 	Dashboard m_dashboardLow;
 	DashboardBase* m_dashboardInUseHigh;  // the current dashboard packers in use
 	DashboardBase* m_dashboardInUseLow;
-	bool m_newControlData;
+	SEM_ID m_newControlData;
 	SEM_ID m_packetDataAvailableSem;
 	DriverStationEnhancedIO m_enhancedIO;
 	SEM_ID m_waitForDataSem;
