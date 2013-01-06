@@ -9,6 +9,7 @@
 #define WRITEMANAGER_H_
 
 
+class AbstractNetworkTableEntryStore;
 class WriteManager;
 
 
