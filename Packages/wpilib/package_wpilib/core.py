@@ -81,12 +81,16 @@ class SimpleRobot(RobotBase):
         enabled. After running the correct method, wait for some state to
         change, either the other mode starts or the robot is disabled. Then go
         back and wait for the robot to be enabled again."""
+        lw = LiveWindow.GetInstance()
+
         SmartDashboard.init()
+        NetworkTable.GetTable("LiveWindow").GetSubTable("~STATUS~").PutBoolean("LW Enabled", False)
 
         if callable(getattr(self, "RobotMain", None)):
             self.RobotMain()
             return
 
+        lw.SetEnabled(False)
         self.RobotInit()
         while True:
             if self.IsDisabled():
@@ -102,11 +106,13 @@ class SimpleRobot(RobotBase):
                 while self.IsAutonomous() and self.IsEnabled():
                     self.ds.WaitForData()
             elif self.IsTest():
+                lw.SetEnabled(True)
                 self.ds.InTest(True)
                 self.Test()
                 self.ds.InTest(False)
                 while self.IsTest() and self.IsEnabled():
                     self.ds.WaitForData()
+                lw.SetEnabled(False)
             else:
                 self.ds.InOperatorControl(True)
                 self.OperatorControl()
@@ -200,8 +206,11 @@ class IterativeRobot(RobotBase):
         primary (slow) loop that is called periodically, and a "fast loop"
         (a.k.a. "spin loop") that is called as fast as possible with no
         delay between calls."""
+        lw = LiveWindow.GetInstance()
 
         # first and one-time initialization
+        SmartDashboard.init()
+        NetworkTable.GetTable("LiveWindow").GetSubTable("~STATUS~").PutBoolean("LW Enabled", False)
         self.RobotInit()
 
         # loop forever, calling the appropriate mode-dependent function
@@ -212,6 +221,7 @@ class IterativeRobot(RobotBase):
                 # call DisabledInit() if we are now just entering disabled
                 # mode from either a different mode or from power-on
                 if not self._disabledInitialized:
+                    lw.SetEnabled(False)
                     self.DisabledInit()
                     self._disabledInitialized = True
                     # reset the initialization flags for the other modes
@@ -226,6 +236,7 @@ class IterativeRobot(RobotBase):
                 # autonomous mode from either a different mode or from
                 # power-on
                 if not self._autonomousInitialized:
+                    lw.SetEnabled(False)
                     self.AutonomousInit()
                     self._autonomousInitialized = True
                     # reset the initialization flags for the other modes
@@ -241,6 +252,7 @@ class IterativeRobot(RobotBase):
                 # test mode from either a different mode or from
                 # power-on
                 if not self._testInitialized:
+                    lw.SetEnabled(True)
                     self.TestInit()
                     self._testInitialized = True
                     # reset the initialization flags for the other modes
@@ -254,12 +266,14 @@ class IterativeRobot(RobotBase):
                 # call TeleopInit() if we are now just entering teleop mode
                 # from either a different mode or from power-on
                 if not self._teleopInitialized:
+                    lw.SetEnabled(False)
                     self.TeleopInit()
                     self._teleopInitialized = True
                     # reset the initialization flags for the other modes
                     self._disabledInitialized = False
                     self._autonomousInitialized = False
                     self._testInitialized = False
+                    Scheduler.GetInstance().SetEnabled(True)
                 if self.NextPeriodReady():
                     FRC_NetworkCommunication_observeUserProgramTeleop()
                     self.TeleopPeriodic()
