@@ -32,11 +32,11 @@ public:
 	virtual ~Trigger();
 	bool Grab();
 	virtual bool Get() = 0;
-	void WhenActive(Command *command);
-	void WhileActive(Command *command);
-	void WhenInactive(Command *command);
+	void WhenActive(Command *command /KeepReference/);
+	void WhileActive(Command *command /KeepReference/);
+	void WhenInactive(Command *command /KeepReference/);
 	
-	virtual void InitTable(ITable* table);
+	virtual void InitTable(ITable* table /KeepReference/);
 	virtual ITable* GetTable();
 	virtual std::string GetSmartDashboardType();
 };

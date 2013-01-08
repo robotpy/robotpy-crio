@@ -28,7 +28,7 @@ class PressedButtonScheduler : ButtonScheduler
 %End
 
 public:
-	PressedButtonScheduler(bool last, Trigger *button, Command *orders);
+	PressedButtonScheduler(bool last, Trigger *button /KeepReference/, Command *orders /KeepReference/);
 	virtual ~PressedButtonScheduler();
 	virtual void Execute();
 };

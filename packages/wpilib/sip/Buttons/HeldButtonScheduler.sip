@@ -28,7 +28,7 @@ class HeldButtonScheduler : ButtonScheduler
 %End
 
 public:
-	HeldButtonScheduler(bool last, Trigger *button, Command *orders);
+	HeldButtonScheduler(bool last, Trigger *button /KeepReference/, Command *orders /KeepReference/);
 	virtual ~HeldButtonScheduler();
 	virtual void Execute();
 };

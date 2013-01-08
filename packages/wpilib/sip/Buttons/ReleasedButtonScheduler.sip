@@ -28,7 +28,7 @@ class ReleasedButtonScheduler : ButtonScheduler
 %End
 
 public:
-	ReleasedButtonScheduler(bool last, Trigger *button, Command *orders);
+	ReleasedButtonScheduler(bool last, Trigger *button /KeepReference/, Command *orders /KeepReference/);
 	virtual ~ReleasedButtonScheduler();
 	virtual void Execute();
 };

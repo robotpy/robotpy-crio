@@ -28,7 +28,7 @@ class JoystickButton : Button
 %End
 
 public:
-	JoystickButton(GenericHID *joystick, int buttonNumber);
+	JoystickButton(GenericHID *joystick /KeepReference/, int buttonNumber);
 	virtual ~JoystickButton();
 
 	virtual bool Get();

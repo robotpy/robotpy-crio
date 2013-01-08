@@ -28,7 +28,7 @@ class Button : Trigger
 %End
 
 public:
-	virtual void WhenPressed(Command *command);
-	virtual void WhileHeld(Command *command);
-	virtual void WhenReleased(Command *command);
+	virtual void WhenPressed(Command *command /KeepReference/);
+	virtual void WhileHeld(Command *command /KeepReference/);
+	virtual void WhenReleased(Command *command /KeepReference/);
 };

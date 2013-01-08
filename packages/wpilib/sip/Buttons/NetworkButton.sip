@@ -29,7 +29,7 @@ class NetworkButton : Button
 
 public:
 	NetworkButton(const char *tableName, const char *field);
-	NetworkButton(ITable* table, const char *field);
+	NetworkButton(ITable* table /KeepReference/, const char *field);
 	virtual ~NetworkButton();
 
 	virtual bool Get();
