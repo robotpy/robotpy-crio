@@ -21,24 +21,15 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class JoystickButton : Button
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Buttons/JoystickButton.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	JoystickButton(GenericHID *joystick, int buttonNumber);
+	virtual ~JoystickButton();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	virtual bool Get();
 };

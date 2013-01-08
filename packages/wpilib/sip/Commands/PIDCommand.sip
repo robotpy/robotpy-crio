@@ -21,24 +21,41 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class PIDCommand : Command, PIDOutput, PIDSource
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/PIDCommand.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	PIDCommand(const char *name, double p, double i, double d);
+	PIDCommand(const char *name, double p, double i, double d, double period);
+	PIDCommand(const char *name, double p, double i, double d, double f, double perioid);
+	PIDCommand(double p, double i, double d);
+	PIDCommand(double p, double i, double d, double period);
+	PIDCommand(double p, double i, double d, double f, double period);
+	virtual ~PIDCommand();
+	
+	void SetSetpointRelative(double deltaSetpoint);
 
-	void Close();
+	// PIDOutput interface
+	virtual void PIDWrite(float output);
 
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
+	// PIDSource interface
+	virtual double PIDGet();
+protected:
+	PIDController *GetPIDController();
+	virtual void _Initialize();
+	virtual void _Interrupted();
+	virtual void _End();
+	void SetSetpoint(double setpoint);
+	double GetSetpoint();
+	double GetPosition();
 
-	bool IsConnected();
+	virtual double ReturnPIDInput() = 0;
+	virtual void UsePIDOutput(double output) = 0;
 
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+public:
+	virtual void InitTable(ITable* table);
+	virtual std::string GetSmartDashboardType();
 };

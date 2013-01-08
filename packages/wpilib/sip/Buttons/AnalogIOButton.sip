@@ -21,24 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class AnalogIOButton : Trigger
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Buttons/AnalogIOButton.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
-
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	AnalogIOButton(int port);
+	virtual ~AnalogIOButton();
+	virtual bool Get();
 };

@@ -21,24 +21,21 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class WaitUntilCommand : Command
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/WaitUntilCommand.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	WaitUntilCommand(double time);
+	WaitUntilCommand(const char *name, double time);
+	virtual ~WaitUntilCommand();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+protected:
+	virtual void Initialize();
+	virtual void Execute();
+	virtual bool IsFinished();
+	virtual void End();
+	virtual void Interrupted();
 };

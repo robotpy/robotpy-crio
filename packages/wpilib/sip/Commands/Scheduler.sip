@@ -21,24 +21,24 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class Scheduler : ErrorBase
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/Scheduler.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	static Scheduler *GetInstance();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
+	void AddCommand(Command* command);
+	void AddButton(ButtonScheduler* button);
+	void RegisterSubsystem(Subsystem *subsystem);
+	void Run();	
+	void Remove(Command *command);
+	void RemoveAll();
+	void SetEnabled(bool enabled);
 
 private:
-	NetworkTableServer(const NetworkTableServer&);
+	Scheduler();
+	virtual ~Scheduler();
 };

@@ -21,24 +21,22 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class Trigger : Sendable
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Buttons/Trigger.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
-
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	Trigger();
+	virtual ~Trigger();
+	bool Grab();
+	virtual bool Get() = 0;
+	void WhenActive(Command *command);
+	void WhileActive(Command *command);
+	void WhenInactive(Command *command);
+	
+	virtual void InitTable(ITable* table);
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
 };

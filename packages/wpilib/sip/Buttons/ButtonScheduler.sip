@@ -21,24 +21,15 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class ButtonScheduler
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Buttons/ButtonScheduler.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
-
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	ButtonScheduler(bool last, Trigger *button, Command *orders);
+	virtual ~ButtonScheduler();
+	virtual void Execute() = 0;
+	void Start();
 };

@@ -21,24 +21,32 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class CommandGroup : Command
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/CommandGroup.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	CommandGroup();
+	CommandGroup(const char *name);
+	virtual ~CommandGroup();
+	
+	void AddSequential(Command *command);
+	void AddSequential(Command *command, double timeout);
+	void AddParallel(Command *command);
+	void AddParallel(Command *command, double timeout);
+	bool IsInterruptible();
+	int GetSize();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+protected:
+	virtual void Initialize();
+	virtual void Execute();
+	virtual bool IsFinished();
+	virtual void End();
+	virtual void Interrupted();
+	virtual void _Initialize();
+	virtual void _Interrupted();
+	virtual void _Execute();
+	virtual void _End();
 };

@@ -21,24 +21,17 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class CommandGroupEntry
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/CommandGroupEntry.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	enum Sequence {kSequence_InSequence, kSequence_BranchPeer, kSequence_BranchChild};
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	CommandGroupEntry();
+	CommandGroupEntry(Command *command, Sequence state);
+	CommandGroupEntry(Command *command, Sequence state, double timeout);
+	bool IsTimedOut();
 };

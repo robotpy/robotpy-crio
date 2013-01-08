@@ -21,24 +21,25 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class Subsystem : ErrorBase, NamedSendable
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/Subsystem.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	Subsystem(const char *name);
+	virtual ~Subsystem();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+	void SetDefaultCommand(Command *command);
+	Command *GetDefaultCommand();
+	void SetCurrentCommand(Command *command);
+	Command *GetCurrentCommand();
+	virtual void InitDefaultCommand();
+	
+public:
+	virtual std::string GetName();
+	virtual void InitTable(ITable* table);
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
 };

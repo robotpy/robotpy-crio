@@ -21,24 +21,47 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
+class Command : ErrorBase, NamedSendable, ITableListener
 {
 %TypeHeaderCode
-#include <WPILib/networktables2/server/NetworkTableServer.h>
+#include <WPILib/Commands/Command.h>
 %End
+
 public:
-	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
-	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	Command();
+	Command(const char *name);
+	Command(double timeout);
+	Command(const char *name, double timeout);
+	virtual ~Command();
+	double TimeSinceInitialized();
+	void Requires(Subsystem *s);
+	bool IsCanceled();
+	void Start();
+	bool Run();
+	void Cancel();
+	bool IsRunning();
+	bool IsInterruptible();
+	void SetInterruptible(bool interruptible);
+	bool DoesRequire(Subsystem *subsystem);
+	//typedef std::set<Subsystem *> SubsystemSet;
+	//SubsystemSet GetRequirements();
+	CommandGroup *GetGroup();
+	void SetRunWhenDisabled(bool run);
+	bool WillRunWhenDisabled();
 
-	void Close();
-
-	void OnNewConnection(ServerConnectionAdapter& connectionAdapter);
-
-	bool IsConnected();
-
-	bool IsServer();
-
-private:
-	NetworkTableServer(const NetworkTableServer&);
+protected:
+	void SetTimeout(double timeout);
+	bool IsTimedOut();
+	bool AssertUnlocked(const char *message);
+	void SetParent(CommandGroup *parent);
+	virtual void Initialize() = 0;
+	virtual void Execute() = 0;
+	virtual bool IsFinished() = 0;
+	virtual void End() = 0;
+	virtual void Interrupted() = 0;
+	virtual void _Initialize();
+	virtual void _Interrupted();
+	virtual void _Execute();
+	virtual void _End();
+	virtual void _Cancel();
 };
