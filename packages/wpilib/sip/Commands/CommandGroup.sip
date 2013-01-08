@@ -32,10 +32,10 @@ public:
 	CommandGroup(const char *name);
 	virtual ~CommandGroup();
 	
-	void AddSequential(Command *command);
-	void AddSequential(Command *command, double timeout);
-	void AddParallel(Command *command);
-	void AddParallel(Command *command, double timeout);
+	void AddSequential(Command *command /Transfer/);
+	void AddSequential(Command *command /Transfer/, double timeout);
+	void AddParallel(Command *command /Transfer/);
+	void AddParallel(Command *command /Transfer/, double timeout);
 	bool IsInterruptible();
 	int GetSize();
 
