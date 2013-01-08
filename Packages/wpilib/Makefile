@@ -117,6 +117,7 @@ PROJECT_OBJECTS += sip_wpilibPIDController.o
 PROJECT_OBJECTS += sip_wpilibPIDOutput.o
 PROJECT_OBJECTS += sip_wpilibPIDSource.o
 PROJECT_OBJECTS += sip_wpilibPIDSubsystem.o
+PROJECT_OBJECTS += sip_wpilibPreferences.o
 PROJECT_OBJECTS += sip_wpilibPressedButtonScheduler.o
 PROJECT_OBJECTS += sip_wpilibPrintCommand.o
 PROJECT_OBJECTS += sip_wpilibPWM.o

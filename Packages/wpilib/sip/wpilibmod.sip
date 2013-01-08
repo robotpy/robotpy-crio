@@ -252,6 +252,7 @@ Watchdog *GetWatchdog();
 %Include PIDController.sip
 %Include PIDOutput.sip
 %Include PIDSource.sip
+%Include Preferences.sip
 %Include PWM.sip
 %Include Relay.sip
 %Include RobotDrive.sip
