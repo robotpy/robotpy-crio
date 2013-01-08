@@ -31,9 +31,9 @@ public:
 	Subsystem(const char *name);
 	virtual ~Subsystem();
 
-	void SetDefaultCommand(Command *command);
+	void SetDefaultCommand(Command *command /KeepReference/);
 	Command *GetDefaultCommand();
-	void SetCurrentCommand(Command *command);
+	void SetCurrentCommand(Command *command /KeepReference/);
 	Command *GetCurrentCommand();
 	virtual void InitDefaultCommand();
 	
