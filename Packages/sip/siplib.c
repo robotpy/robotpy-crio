@@ -1,7 +1,7 @@
 /*
  * SIP library code.
  *
- * Copyright (c) 2011 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2012 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -179,8 +179,13 @@ static sipWrapperType *sip_api_map_int_to_class(int typeInt,
         const sipIntTypeClassMap *map, int maplen);
 static sipWrapperType *sip_api_map_string_to_class(const char *typeString,
         const sipStringTypeClassMap *map, int maplen);
+static int sip_api_parse_result_ex(sip_gilstate_t gil_state,
+        sipVirtErrorHandlerFunc error_handler, sipSimpleWrapper *py_self,
+        PyObject *method, PyObject *res, const char *fmt, ...);
 static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
         const char *fmt, ...);
+static void sip_api_call_error_handler(sipVirtErrorHandlerFunc error_handler,
+        sipSimpleWrapper *py_self);
 static void sip_api_trace(unsigned mask,const char *fmt,...);
 static void sip_api_transfer_back(PyObject *self);
 static void sip_api_transfer_to(PyObject *self, PyObject *owner);
@@ -307,6 +312,7 @@ static const sipAPIDef sip_api = {
     sip_api_register_attribute_getter,
     sip_api_is_api_enabled,
     sip_api_bad_callable_arg,
+    sip_api_get_address,
     /*
      * The following are deprecated parts of the public API.
      */
@@ -363,10 +369,8 @@ static const sipAPIDef sip_api = {
     sip_api_keep_reference,
     sip_api_parse_kwd_args,
     sip_api_add_exception,
-    /*
-     * The following are part of the public API.
-     */
-    sip_api_get_address
+    sip_api_parse_result_ex,
+    sip_api_call_error_handler
 };
 
 
@@ -523,6 +527,7 @@ static sipSymbol *sipSymbolList = NULL; /* The list of published symbols. */
 static sipAttrGetter *sipAttrGetters = NULL;  /* The list of attribute getters. */
 static sipPyObject *sipRegisteredPyTypes = NULL;    /* Registered Python types. */
 static PyInterpreterState *sipInterpreter = NULL;   /* The interpreter. */
+static int destroy_on_exit = TRUE;      /* Destroy owned objects on exit. */
 
 
 static void addClassSlots(sipWrapperType *wt, sipClassTypeDef *ctd);
@@ -543,6 +548,8 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
 static int parsePass2(sipSimpleWrapper *self, int selfarg, PyObject *sipArgs,
         PyObject *sipKwdArgs, const char **kwdlist, const char *fmt,
         va_list va);
+static int parseResult(PyObject *method, PyObject *res,
+        sipSimpleWrapper *py_self, const char *fmt, va_list va);
 static PyObject *signature_FromDocstring(const char *doc, SIP_SSIZE_T line);
 static PyObject *detail_FromFailure(PyObject *failure_obj);
 static int isQObject(PyObject *obj);
@@ -555,7 +562,7 @@ static int getSelfFromArgs(sipTypeDef *td, PyObject *args, int argnr,
         sipSimpleWrapper **selfp);
 static PyObject *createEnumMember(sipTypeDef *td, sipEnumMemberDef *enm);
 static int compareTypedefName(const void *key, const void *el);
-static int checkPointer(void *ptr);
+static int checkPointer(void *ptr, sipSimpleWrapper *sw);
 static void *cast_cpp_ptr(void *ptr, PyTypeObject *src_type,
         const sipTypeDef *dst_type);
 static void finalise(void);
@@ -583,6 +590,7 @@ static sipExportedModuleDef *getTypeModule(const sipEncodedTypeDef *enc,
 static sipTypeDef *getGeneratedType(const sipEncodedTypeDef *enc,
         sipExportedModuleDef *em);
 static const sipTypeDef *convertSubClass(const sipTypeDef *td, void **cppPtr);
+static int convertPass(const sipTypeDef **tdp, void **cppPtr);
 static void *getPtrTypeDef(sipSimpleWrapper *self,
         const sipClassTypeDef **ctd);
 static int addInstances(PyObject *dict, sipInstancesDef *id);
@@ -613,6 +621,7 @@ static PyObject *wrapInstance(PyObject *self, PyObject *args);
 static PyObject *unwrapInstance(PyObject *self, PyObject *args);
 static PyObject *transferBack(PyObject *self, PyObject *args);
 static PyObject *transferTo(PyObject *self, PyObject *args);
+static PyObject *setDestroyOnExit(PyObject *self, PyObject *args);
 static void print_object(const char *label, PyObject *obj);
 static void addToParent(sipWrapper *self, sipWrapper *owner);
 static void removeFromParent(sipWrapper *self);
@@ -661,6 +670,8 @@ static int isNonlazyMethod(PyMethodDef *pmd);
 static int addMethod(PyObject *dict, PyMethodDef *pmd);
 static PyObject *create_property(sipVariableDef *vd);
 static PyObject *create_function(PyMethodDef *ml);
+static PyObject *sip_exit(PyObject *obj, PyObject *ignore);
+static void register_exit_notifier(void);
 
 
 /*
@@ -696,6 +707,7 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
         {"ispyowned", isPyOwned, METH_VARARGS, NULL},
         {"setapi", sipSetAPI, METH_VARARGS, NULL},
         {"setdeleted", setDeleted, METH_VARARGS, NULL},
+        {"setdestroyonexit", setDestroyOnExit, METH_VARARGS, NULL},
         {"settracemask", setTraceMask, METH_VARARGS, NULL},
         {"transferback", transferBack, METH_VARARGS, NULL},
         {"transferto", transferTo, METH_VARARGS, NULL},
@@ -722,6 +734,14 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
 
     int rc;
     PyObject *mod, *mod_dict, *obj;
+
+    /*
+     * Remind ourselves to add support for capsule variables when we have
+     * another reason to move to the next major version number.
+     */
+#if SIP_API_MAJOR_NR > 9
+#error "Add support for capsule variables"
+#endif
 
 #ifdef WITH_THREAD
     PyEval_InitThreads();
@@ -857,6 +877,9 @@ PyMODINIT_FUNC SIP_MODULE_ENTRY(void)
         sipInterpreter = PyThreadState_Get()->interp;
     }
 
+    /* Make sure are notified when starting to exit. */
+    register_exit_notifier();
+
     SIP_MODULE_RETURN(mod);
 }
 
@@ -963,8 +986,14 @@ static PyObject *transferTo(PyObject *self, PyObject *args)
     if (PyArg_ParseTuple(args, "O!O:transferto", &sipWrapper_Type, &w, &owner))
     {
         if (owner == Py_None)
+        {
+            /*
+             * Note that the Python API is different to the C API when the
+             * owner is None.
+             */
             owner = NULL;
-        else if (PyObject_TypeCheck(owner, (PyTypeObject *)&sipWrapper_Type))
+        }
+        else if (!PyObject_TypeCheck(owner, (PyTypeObject *)&sipWrapper_Type))
         {
             PyErr_Format(PyExc_TypeError, "transferto() argument 2 must be sip.wrapper, not %s", Py_TYPE(owner)->tp_name);
             return NULL;
@@ -1052,7 +1081,7 @@ static PyObject *callDtor(PyObject *self, PyObject *args)
 
     addr = getPtrTypeDef(sw, &ctd);
 
-    if (checkPointer(addr) < 0)
+    if (checkPointer(addr, sw) < 0)
         return NULL;
 
     if (PyObject_TypeCheck((PyObject *)sw, (PyTypeObject *)&sipWrapper_Type))
@@ -1191,6 +1220,21 @@ static PyObject *wrapInstance(PyObject *self, PyObject *args)
 
     if (PyArg_ParseTuple(args, "kO!:wrapinstance", &addr, &sipWrapperType_Type, &wt))
         return sip_api_convert_from_type((void *)addr, wt->type, NULL);
+
+    return NULL;
+}
+
+
+/*
+ * Set the destroy on exit flag.
+ */
+static PyObject *setDestroyOnExit(PyObject *self, PyObject *args)
+{
+    if (PyArg_ParseTuple(args, "i:setdestroyonexit", &destroy_on_exit))
+    {
+        Py_INCREF(Py_None);
+        return Py_None;
+    }
 
     return NULL;
 }
@@ -1545,7 +1589,10 @@ static void finalise(void)
 {
     sipExportedModuleDef *em;
 
-    /* Mark the Python API as unavailable. */
+    /*
+     * Mark the Python API as unavailable.  This should already have been done,
+     * but just in case...
+     */
     sipInterpreter = NULL;
 
     /* Handle any delayed dtors. */
@@ -2109,6 +2156,28 @@ static PyObject *buildObject(PyObject *obj, const char *fmt, va_list va)
             el = sip_api_convert_from_void_ptr(va_arg(va, void *));
             break;
 
+        case 'z':
+            {
+                const char *name = va_arg(va, const char *);
+                void *p = va_arg(va, void *);
+
+                if (p == NULL)
+                {
+                    el = Py_None;
+                    Py_INCREF(el);
+                }
+                else
+                {
+#if defined(SIP_USE_PYCAPSULE)
+                    el = PyCapsule_New(p, name, NULL);
+#else
+                    el = sip_api_convert_from_void_ptr(p);
+#endif
+                }
+            }
+
+            break;
+
         default:
             PyErr_Format(PyExc_SystemError,"buildObject(): invalid format character '%c'",ch);
             el = NULL;
@@ -2132,21 +2201,92 @@ static PyObject *buildObject(PyObject *obj, const char *fmt, va_list va)
 
 
 /*
- * Parse a result object based on a format string.
+ * Parse a result object based on a format string.  As of v9.0 of the API this
+ * is only ever called by handwritten code.
  */
 static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
         const char *fmt, ...)
 {
-    int tupsz, rc = 0;
-    sipSimpleWrapper *self = NULL;
+    int rc;
     va_list va;
 
-    va_start(va,fmt);
+    va_start(va, fmt);
+    rc = parseResult(method, res, NULL, fmt, va);
+    va_end(va);
 
-    /* Get self if it is provided. */
+    if (isErr != NULL && rc < 0)
+        *isErr = TRUE;
+
+    return rc;
+}
+
+
+/*
+ * Parse a result object based on a format string.
+ */
+static int sip_api_parse_result_ex(sip_gilstate_t gil_state,
+        sipVirtErrorHandlerFunc error_handler, sipSimpleWrapper *py_self,
+        PyObject *method, PyObject *res, const char *fmt, ...)
+{
+    int rc;
+
+    if (res != NULL)
+    {
+        va_list va;
+
+        va_start(va, fmt);
+        rc = parseResult(method, res, py_self, fmt, va);
+        va_end(va);
+
+        Py_DECREF(res);
+    }
+    else
+    {
+        rc = -1;
+    }
+
+    Py_DECREF(method);
+
+    SIP_RELEASE_GIL(gil_state);
+
+    if (rc < 0)
+        sip_api_call_error_handler(error_handler, py_self);
+
+    return rc;
+}
+
+
+/*
+ * Call a virtual error handler.
+ */
+static void sip_api_call_error_handler(sipVirtErrorHandlerFunc error_handler,
+        sipSimpleWrapper *py_self)
+{
+    if (error_handler != NULL)
+    {
+        error_handler(py_self);
+    }
+    else
+    {
+        SIP_BLOCK_THREADS
+        PyErr_Print();
+        SIP_UNBLOCK_THREADS
+    }
+}
+
+
+/*
+ * Do the main work of parsing a result object based on a format string.
+ */
+static int parseResult(PyObject *method, PyObject *res,
+        sipSimpleWrapper *py_self, const char *fmt, va_list va)
+{
+    int tupsz, rc = 0;
+
+    /* Get self if it is provided as an argument. */
     if (*fmt == 'S')
     {
-        self = va_arg(va, sipSimpleWrapper *);
+        py_self = va_arg(va, sipSimpleWrapper *);
         ++fmt;
     }
 
@@ -2534,7 +2674,7 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
                     if (keep == NULL)
                         invalid = TRUE;
                     else
-                        sip_api_keep_reference((PyObject *)self, key, keep);
+                        sip_api_keep_reference((PyObject *)py_self, key, keep);
                 }
 
                 break;
@@ -2549,7 +2689,7 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
                     else
                     {
                         Py_INCREF(arg);
-                        sip_api_keep_reference((PyObject *)self, key, arg);
+                        sip_api_keep_reference((PyObject *)py_self, key, arg);
                     }
                 }
 
@@ -2717,11 +2857,38 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
             case 'V':
                 {
                     void *v = sip_api_convert_to_void_ptr(arg);
+                    void **p = va_arg(va, void **);
 
                     if (PyErr_Occurred())
                         invalid = TRUE;
                     else
-                        *va_arg(va,void **) = v;
+                        *p = v;
+                }
+
+                break;
+
+            case 'z':
+                {
+                    const char *name = va_arg(va, const char *);
+                    void **p = va_arg(va, void **);
+
+                    if (arg == Py_None)
+                    {
+                        *p = NULL;
+                    }
+                    else
+                    {
+#if defined(SIP_USE_CAPSULE)
+                        void *v = PyCapsule_GetPointer(arg, name);
+#else
+                        void *v = sip_api_convert_to_void_ptr(arg);
+#endif
+
+                        if (PyErr_Occurred())
+                            invalid = TRUE;
+                        else
+                            *p = v;
+                    }
                 }
 
                 break;
@@ -2729,6 +2896,48 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
             case 'Z':
                 if (arg != Py_None)
                     invalid = TRUE;
+
+                break;
+
+            case '!':
+                {
+                    PyObject **p = va_arg(va, PyObject **);
+
+#if PY_VERSION_HEX >= 0x03000000
+                    if (PyObject_CheckBuffer(arg))
+#elif PY_VERSION_HEX >= 0x02060300
+                    if (PyObject_CheckBuffer(arg) || PyObject_CheckReadBuffer(arg))
+#else
+                    if (PyObject_CheckReadBuffer(arg))
+#endif
+                    {
+                        Py_INCREF(arg);
+                        *p = arg;
+                    }
+                    else
+                        invalid = TRUE;
+                }
+
+                break;
+
+            case '$':
+                {
+                    PyObject **p = va_arg(va, PyObject **);
+
+#if PY_VERSION_HEX >= 0x03000000
+                    if (arg == Py_None || PyObject_CheckBuffer(arg))
+#elif PY_VERSION_HEX >= 0x02060300
+                    if (arg == Py_None || PyObject_CheckBuffer(arg) || PyObject_CheckReadBuffer(arg))
+#else
+                    if (arg == Py_None || PyObject_CheckReadBuffer(arg))
+#endif
+                    {
+                        Py_INCREF(arg);
+                        *p = arg;
+                    }
+                    else
+                        invalid = TRUE;
+                }
 
                 break;
 
@@ -2745,11 +2954,6 @@ static int sip_api_parse_result(int *isErr, PyObject *method, PyObject *res,
             }
         }
     }
-
-    va_end(va);
-
-    if (isErr != NULL && rc < 0)
-        *isErr = TRUE;
 
     return rc;
 }
@@ -3364,7 +3568,7 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
                                 break;
                             }
                         }
-                        else if (a < nr_pos_args)
+                        else if (a < nr_pos_args - *selfargp)
                         {
                             /*
                              * The argument has been given positionally and as
@@ -3394,7 +3598,7 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
         }
         else if (sipKwdArgs != NULL && kwdlist != NULL)
         {
-            const char *name = kwdlist[argnr];
+            const char *name = kwdlist[argnr - *selfargp];
 
             if (name != NULL)
             {
@@ -3864,6 +4068,66 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
                 if (arg != NULL)
                 {
                     if (arg == Py_None || PyCallable_Check(arg))
+                    {
+                        *p = arg;
+                    }
+                    else
+                    {
+                        failure.reason = WrongType;
+                        failure.detail_obj = arg;
+                        Py_INCREF(arg);
+                    }
+                }
+ 
+                break;
+            }
+
+        case '!':
+            {
+                /* Python object that implements the buffer protocol. */
+ 
+                PyObject **p = va_arg(va, PyObject **);
+
+                if (arg != NULL)
+                {
+#if PY_VERSION_HEX >= 0x03000000
+                    if (PyObject_CheckBuffer(arg))
+#elif PY_VERSION_HEX >= 0x02060300
+                    if (PyObject_CheckBuffer(arg) || PyObject_CheckReadBuffer(arg))
+#else
+                    if (PyObject_CheckReadBuffer(arg))
+#endif
+                    {
+                        *p = arg;
+                    }
+                    else
+                    {
+                        failure.reason = WrongType;
+                        failure.detail_obj = arg;
+                        Py_INCREF(arg);
+                    }
+                }
+ 
+                break;
+            }
+
+        case '$':
+            {
+                /*
+                 * Python object that implements the buffer protocol or None.
+                 */
+ 
+                PyObject **p = va_arg(va, PyObject **);
+
+                if (arg != NULL)
+                {
+#if PY_VERSION_HEX >= 0x03000000
+                    if (arg == Py_None || PyObject_CheckBuffer(arg))
+#elif PY_VERSION_HEX >= 0x02060300
+                    if (arg == Py_None || PyObject_CheckBuffer(arg) || PyObject_CheckReadBuffer(arg))
+#else
+                    if (arg == Py_None || PyObject_CheckReadBuffer(arg))
+#endif
                     {
                         *p = arg;
                     }
@@ -4527,6 +4791,40 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
 
                 break;
             }
+
+        case 'z':
+            {
+                /* Void pointer as a capsule. */
+
+                const char *name = va_arg(va, const char *);
+                void **p = va_arg(va, void **);
+
+                if (arg == Py_None)
+                {
+                    *p = NULL;
+                }
+                else if (arg != NULL)
+                {
+#if defined(SIP_USE_PYCAPSULE)
+                    void *v = PyCapsule_GetPointer(arg, name);
+#else
+                    void *v = sip_api_convert_to_void_ptr(arg);
+#endif
+
+                    if (PyErr_Occurred())
+                    {
+                        failure.reason = WrongType;
+                        failure.detail_obj = arg;
+                        Py_INCREF(arg);
+                    }
+                    else
+                    {
+                        *p = v;
+                    }
+                }
+
+                break;
+            }
         }
 
         if (failure.reason == Ok && ch == 'W')
@@ -4646,7 +4944,7 @@ static int parsePass2(sipSimpleWrapper *self, int selfarg, PyObject *sipArgs,
         }
         else if (sipKwdArgs != NULL)
         {
-            const char *name = kwdlist[a];
+            const char *name = kwdlist[a - selfarg];
 
             if (name != NULL)
                 arg = PyDict_GetItemString(sipKwdArgs, name);
@@ -5720,6 +6018,9 @@ static PyObject *pickle_type(PyObject *obj, PyObject *ignore)
                      */
                     init_args = ctd->ctd_pickle(sip_api_get_cpp_ptr((sipSimpleWrapper *)obj, NULL));
 
+                    if (init_args == NULL)
+                        return NULL;
+
                     if (!PyTuple_Check(init_args))
                     {
                         PyErr_Format(PyExc_TypeError,
@@ -6124,71 +6425,29 @@ static int add_lazy_container_attrs(sipTypeDef *td, sipContainerDef *cod,
     }
 
     /* Do the variables. */
-    if (td->td_module->em_api_minor >= 1)
+    vd = cod->cod_variables;
+
+    for (i = 0; i < cod->cod_nrvariables; ++i)
     {
-        vd = cod->cod_variables;
+        int rc;
+        PyObject *descr;
 
-        for (i = 0; i < cod->cod_nrvariables; ++i)
-        {
-            int rc;
-            PyObject *descr;
+        if (vd->vd_type == PropertyVariable)
+            descr = create_property(vd);
+        else
+            descr = sipVariableDescr_New(vd, td, cod);
 
-            if (vd->vd_type == PropertyVariable)
-                descr = create_property(vd);
-            else
-                descr = sipVariableDescr_New(vd, td, cod);
+        if (descr == NULL)
+            return -1;
 
-            if (descr == NULL)
-                return -1;
+        rc = PyDict_SetItemString(dict, vd->vd_name, descr);
 
-            rc = PyDict_SetItemString(dict, vd->vd_name, descr);
+        Py_DECREF(descr);
 
-            Py_DECREF(descr);
+        if (rc < 0)
+            return -1;
 
-            if (rc < 0)
-                return -1;
-
-            ++vd;
-        }
-    }
-    else
-    {
-        sipVariableDef_8 *vd_8 = (sipVariableDef_8 *)cod->cod_variables;
-
-        for (i = 0; i < cod->cod_nrvariables; ++i)
-        {
-            int rc;
-            PyObject *descr;
-
-            /* Create a new-style structure from the old. */
-            if ((vd = sip_api_malloc(sizeof (sipVariableDef))) == NULL)
-                return -1;
-
-            vd->vd_type = (vd_8->vd_is_static ? ClassVariable : InstanceVariable);
-            vd->vd_name = vd_8->vd_name;
-            vd->vd_getter = (PyMethodDef *)vd_8->vd_getter;
-            vd->vd_setter = (PyMethodDef *)vd_8->vd_setter;
-            vd->vd_deleter = NULL;
-            vd->vd_docstring = NULL;
-
-            if ((descr = sipVariableDescr_New(vd, td, cod)) == NULL)
-            {
-                sip_api_free(vd);
-                return -1;
-            }
-
-            rc = PyDict_SetItemString(dict, vd->vd_name, descr);
-
-            Py_DECREF(descr);
-
-            if (rc < 0)
-            {
-                sip_api_free(vd);
-                return -1;
-            }
-
-            ++vd_8;
-        }
+        ++vd;
     }
 
     return 0;
@@ -6967,7 +7226,8 @@ static void sip_api_transfer_back(PyObject *self)
 
 
 /*
- * Break the association of a C++ owned Python object with any parent.
+ * Break the association of a C++ owned Python object with any parent.  This is
+ * deprecated because it is the equivalent of sip_api_transfer_to(self, NULL).
  */
 static void sip_api_transfer_break(PyObject *self)
 {
@@ -6999,33 +7259,68 @@ static void sip_api_transfer_to(PyObject *self, PyObject *owner)
      * handwritten code that converts a regular Python type - so we can't
      * assume that we can simply cast to sipWrapper.
      */
-    if (self != NULL &&
-            PyObject_TypeCheck(self, (PyTypeObject *)&sipWrapper_Type) &&
-            (owner == NULL ||
-                    PyObject_TypeCheck(owner, (PyTypeObject *)&sipWrapper_Type)))
+    if (self != NULL && PyObject_TypeCheck(self, (PyTypeObject *)&sipWrapper_Type))
     {
         sipSimpleWrapper *sw = (sipSimpleWrapper *)self;
 
-        /*
-         * Keep the object alive while we do the transfer.  If C++ has a
-         * reference then there is no need to increment it, just reset the flag
-         * and the following decrement will bring everything back to the way it
-         * should be.
-         */
-        if (sipCppHasRef(sw))
-            sipResetCppHasRef(sw);
-        else
+        if (owner == NULL)
         {
-            Py_INCREF(sw);
-            removeFromParent((sipWrapper *)sw);
-        }
+            /* There is no owner. */
 
-        if (owner != NULL)
+            if (sipCppHasRef(sw))
+            {
+                sipResetCppHasRef(sw);
+            }
+            else
+            {
+                Py_INCREF(sw);
+                removeFromParent((sipWrapper *)sw);
+                sipResetPyOwned(sw);
+            }
+
+            Py_DECREF(sw);
+        }
+        else if (owner == Py_None)
+        {
+            /*
+             * The owner is a C++ instance and not a Python object (ie. there
+             * is no parent) so there is an explicit extra reference to keep
+             * this Python object alive.  Note that there is no way to
+             * specify this from a .sip file - it is useful when embedding in
+             * C/C++ applications.
+             */
+
+            if (!sipCppHasRef(sw))
+            {
+                Py_INCREF(sw);
+                removeFromParent((sipWrapper *)sw);
+                sipResetPyOwned(sw);
+
+                sipSetCppHasRef(sw);
+            }
+        }
+        else if (PyObject_TypeCheck(owner, (PyTypeObject *)&sipWrapper_Type))
+        {
+            /*
+             * The owner is a Python object (ie. the C++ instance that the
+             * Python object wraps).
+             */
+
+            if (sipCppHasRef(sw))
+            {
+                sipResetCppHasRef(sw);
+            }
+            else
+            {
+                Py_INCREF(sw);
+                removeFromParent((sipWrapper *)sw);
+                sipResetPyOwned(sw);
+            }
+
             addToParent((sipWrapper *)sw, (sipWrapper *)owner);
 
-        Py_DECREF(sw);
-
-        sipResetPyOwned(sw);
+            Py_DECREF(sw);
+        }
     }
 }
 
@@ -7537,6 +7832,10 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
     if (sipInterpreter == NULL)
         return NULL;
 
+#ifdef WITH_THREAD
+    *gil = PyGILState_Ensure();
+#endif
+
     /*
      * It's possible that the Python object has been deleted but the underlying
      * C++ instance is still working and trying to handle virtual functions.
@@ -7545,13 +7844,21 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
      * reimplementation.
      */
     if (sipSelf == NULL)
-        return NULL;
+        goto release_gil;
+
+    /*
+     * It's possible that the object's type's tp_mro is NULL.  A possible
+     * circumstance is when a type has been created dynamically and the only
+     * reference to it is the single instance of the type which is in the
+     * process of being garbage collected.
+     */
+    cls = (PyObject *)Py_TYPE(sipSelf);
+    mro = ((PyTypeObject *)cls)->tp_mro;
+
+    if (mro == NULL)
+        goto release_gil;
 
     /* Get any reimplementation. */
-
-#ifdef WITH_THREAD
-    *gil = PyGILState_Ensure();
-#endif
 
 #if PY_MAJOR_VERSION >= 3
     mname_obj = PyUnicode_FromString(mname);
@@ -7560,12 +7867,7 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
 #endif
 
     if (mname_obj == NULL)
-    {
-#ifdef WITH_THREAD
-        PyGILState_Release(*gil);
-#endif
-        return NULL;
-    }
+        goto release_gil;
 
     /*
      * We don't use PyObject_GetAttr() because that might find the generated
@@ -7575,10 +7877,8 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
      */
     if (add_all_lazy_attrs(((sipWrapperType *)Py_TYPE(sipSelf))->type) < 0)
     {
-#ifdef WITH_THREAD
-        PyGILState_Release(*gil);
-#endif
-        return NULL;
+        Py_DECREF(mname_obj);
+        goto release_gil;
     }
 
     if (sipSelf->dict != NULL)
@@ -7593,8 +7893,6 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
         }
     }
 
-    cls = (PyObject *)Py_TYPE(sipSelf);
-    mro = ((PyTypeObject *)cls)->tp_mro;
     assert(PyTuple_Check(mro));
 
     reimp = NULL;
@@ -7617,7 +7915,7 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
 
         /*
          * Check any possible reimplementation is not the wrapped C++ method or
-         * a default special method implementation..
+         * a default special method implementation.
          */
         if (cls_dict != NULL && (cls_attr = PyDict_GetItem(cls_dict, mname_obj)) != NULL && Py_TYPE(cls_attr) != &sipMethodDescr_Type && Py_TYPE(cls_attr) != &PyWrapperDescr_Type)
         {
@@ -7660,6 +7958,12 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
             reimp = PyMethod_New(reimp, (PyObject *)sipSelf, cls);
 #endif
         }
+        else if (Py_TYPE(reimp)->tp_descr_get)
+        {
+            /* It is a descriptor, so assume it will do the right thing. */
+            reimp = Py_TYPE(reimp)->tp_descr_get(reimp, (PyObject *)sipSelf,
+                    cls);
+        }
         else
         {
             /*
@@ -7689,6 +7993,12 @@ static PyObject *sip_api_is_py_method(sip_gilstate_t *gil, char *pymc,
     }
 
     return reimp;
+
+release_gil:
+#ifdef WITH_THREAD
+    PyGILState_Release(*gil);
+#endif
+    return NULL;
 }
 
 
@@ -7787,7 +8097,7 @@ void *sip_api_get_cpp_ptr(sipSimpleWrapper *sw, const sipTypeDef *td)
 {
     void *ptr = sip_api_get_address(sw);
 
-    if (checkPointer(ptr) < 0)
+    if (checkPointer(ptr, sw) < 0)
         return NULL;
 
     if (td != NULL)
@@ -7823,12 +8133,14 @@ static void *cast_cpp_ptr(void *ptr, PyTypeObject *src_type,
 /*
  * Check that a pointer is non-NULL.
  */
-static int checkPointer(void *ptr)
+static int checkPointer(void *ptr, sipSimpleWrapper *sw)
 {
     if (ptr == NULL)
     {
-        PyErr_SetString(PyExc_RuntimeError,
-                "underlying C/C++ object has been deleted");
+        PyErr_Format(PyExc_RuntimeError, (sipWasCreated(sw) ?
+                        "wrapped C/C++ object of type %s has been deleted" :
+                        "super-class __init__() of type %s was never called"),
+                Py_TYPE(sw)->tp_name);
         return -1;
     }
 
@@ -8362,11 +8674,25 @@ static void sip_api_call_hook(const char *hookname)
  */
 static const sipTypeDef *convertSubClass(const sipTypeDef *td, void **cppPtr)
 {
-    PyTypeObject *py_type = sipTypeAsPyTypeObject(td);
-    sipExportedModuleDef *em;
-
+    /* Handle the trivial case. */
     if (*cppPtr == NULL)
         return NULL;
+
+    /* Try the conversions until told to stop. */
+    while (convertPass(&td, cppPtr))
+        ;
+
+    return td;
+}
+
+
+/*
+ * Do a single pass through the available convertors.
+ */
+static int convertPass(const sipTypeDef **tdp, void **cppPtr)
+{
+    PyTypeObject *py_type = sipTypeAsPyTypeObject(*tdp);
+    sipExportedModuleDef *em;
 
     /*
      * Note that this code depends on the fact that a module appears in the
@@ -8382,6 +8708,8 @@ static const sipTypeDef *convertSubClass(const sipTypeDef *td, void **cppPtr)
 
         while (scc->scc_convertor != NULL)
         {
+            PyTypeObject *base_type = sipTypeAsPyTypeObject(scc->scc_basetype);
+
             /*
              * The base type is the "root" class that may have a number of
              * convertors each handling a "branch" of the derived tree of
@@ -8391,27 +8719,39 @@ static const sipTypeDef *convertSubClass(const sipTypeDef *td, void **cppPtr)
              * sub-class of the root, ie. see if the convertor might be able to
              * convert the target type to something more specific.
              */
-            if (PyType_IsSubtype(py_type, sipTypeAsPyTypeObject(scc->scc_basetype)))
+            if (PyType_IsSubtype(py_type, base_type))
             {
                 void *ptr;
-                const sipTypeDef *subtype;
+                const sipTypeDef *sub_td;
 
                 ptr = cast_cpp_ptr(*cppPtr, py_type, scc->scc_basetype);
-                subtype = (*scc->scc_convertor)(&ptr);
 
-                /*
-                 * We are only interested in types that are not super-classes
-                 * of the target.  This happens either because it is in an
-                 * earlier convertor than the one that handles the type or it
-                 * is in a later convertor that handles a different branch of
-                 * the hierarchy.  Either way, the ordering of the modules
-                 * ensures that there will be no more than one and that it will
-                 * be the right one.
-                 */
-                if (subtype != NULL && !PyType_IsSubtype(py_type, sipTypeAsPyTypeObject(subtype)))
+                if ((sub_td = (*scc->scc_convertor)(&ptr)) != NULL)
                 {
-                    *cppPtr = ptr;
-                    return subtype;
+                    PyTypeObject *sub_type = sipTypeAsPyTypeObject(sub_td);
+
+                    /*
+                     * We are only interested in types that are not
+                     * super-classes of the target.  This happens either
+                     * because it is in an earlier convertor than the one that
+                     * handles the type or it is in a later convertor that
+                     * handles a different branch of the hierarchy.  Either
+                     * way, the ordering of the modules ensures that there will
+                     * be no more than one and that it will be the right one.
+                     */
+                    if (!PyType_IsSubtype(py_type, sub_type))
+                    {
+                        *tdp = sub_td;
+                        *cppPtr = ptr;
+
+                        /*
+                         * Finally we allow the convertor to return a type that
+                         * is apparently unrelated to the current convertor.
+                         * This causes the whole process to be restarted with
+                         * the new values.  The use case is PyQt's QLayoutItem.
+                         */
+                        return !PyType_IsSubtype(sub_type, base_type);
+                    }
                 }
             }
 
@@ -8426,7 +8766,7 @@ static const sipTypeDef *convertSubClass(const sipTypeDef *td, void **cppPtr)
      * Also we want this function to be safe when a class doesn't have any
      * convertors.
      */
-    return td;
+    return FALSE;
 }
 
 
@@ -8557,6 +8897,16 @@ static sipTypeDef *getGeneratedType(const sipEncodedTypeDef *enc,
 
 
 /*
+ * Return the generated class type structure of a class's super-class.
+ */
+sipClassTypeDef *sipGetGeneratedClassType(sipEncodedTypeDef *enc,
+        const sipClassTypeDef *ctd)
+{
+    return (sipClassTypeDef *)getGeneratedType(enc, ctd->ctd_base.td_module);
+}
+
+
+/*
  * Find a particular slot function for a type.
  */
 static void *findSlot(PyObject *self, sipPySlotType st)
@@ -8582,19 +8932,15 @@ static void *findSlot(PyObject *self, sipPySlotType st)
 
             /* Search any super-types. */
             if ((sup = ctd->ctd_supers) != NULL)
-            {
-                sipClassTypeDef *sup_ctd;
-
                 do
                 {
-                    sup_ctd = (sipClassTypeDef *)getGeneratedType(sup,
-                            ctd->ctd_base.td_module);
+                    sipClassTypeDef *sup_ctd = sipGetGeneratedClassType(sup,
+                            ctd);
 
                     if (sup_ctd->ctd_pyslots != NULL)
                         slot = findSlotInType(sup_ctd->ctd_pyslots, st);
                 }
                 while (slot == NULL && !sup++->sc_flag);
-            }
         }
     }
     else
@@ -9012,8 +9358,6 @@ static int sipSimpleWrapper_init(sipSimpleWrapper *self, PyObject *args,
         {
             sipInitExtenderDef *ie = wt->iextend;
 
-            assert(parseErr != NULL);
-
             /*
              * If we have not found an appropriate overload then try any
              * extenders.
@@ -9077,7 +9421,7 @@ static int sipSimpleWrapper_init(sipSimpleWrapper *self, PyObject *args,
     }
 
     self->data = sipNew;
-    self->flags = sipFlags;
+    self->flags = sipFlags | SIP_CREATED;
 
     /* Set the access function. */
     if (sipIsAccessFunc(self))
@@ -9127,7 +9471,7 @@ static int sipSimpleWrapper_traverse(sipSimpleWrapper *self, visitproc visit,
 
             if ((sup = ctd->ctd_supers) != NULL)
                 do
-                    sup_ctd = (sipClassTypeDef *)getGeneratedType(sup, ctd->ctd_base.td_module);
+                    sup_ctd = sipGetGeneratedClassType(sup, ctd);
                 while (sup_ctd->ctd_traverse == NULL && !sup++->sc_flag);
         }
 
@@ -10038,8 +10382,6 @@ static void addTypeSlots(PyHeapTypeObject *heap_to, sipPySlotDef *slots)
  */
 static void forgetObject(sipSimpleWrapper *sw)
 {
-    const sipClassTypeDef *ctd;
-
     /*
      * This is needed because we release the GIL when calling a C++ dtor.
      * Without it the cyclic garbage collector can be invoked from another
@@ -10059,10 +10401,11 @@ static void forgetObject(sipSimpleWrapper *sw)
      */
     sipOMRemoveObject(&cppPyMap, sw);
 
-    if (getPtrTypeDef(sw, &ctd) != NULL)
+    if (sipInterpreter != NULL || destroy_on_exit)
     {
-        /* Call the C++ dtor if there is one. */
-        if (ctd->ctd_dealloc != NULL)
+        const sipClassTypeDef *ctd;
+
+        if (getPtrTypeDef(sw, &ctd) != NULL && ctd->ctd_dealloc != NULL)
             ctd->ctd_dealloc(sw);
     }
 
@@ -10266,19 +10609,7 @@ static char sip_api_string_as_ascii_char(PyObject *obj)
     char ch;
 
     if (parseString_AsASCIIChar(obj, &ch) < 0)
-    {
-        /* Use the exception set if it was an encoding error. */
-        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
-            PyErr_Format(PyExc_TypeError,
-#if PY_MAJOR_VERSION >= 3
-                    "bytes or ASCII string of length 1 expected not '%s'",
-#else
-                    "string or ASCII unicode of length 1 expected not '%s'",
-#endif
-                    Py_TYPE(obj)->tp_name);
-
-        return '\0';
-    }
+        ch = '\0';
 
     return ch;
 }
@@ -10289,7 +10620,25 @@ static char sip_api_string_as_ascii_char(PyObject *obj)
  */
 static int parseString_AsASCIIChar(PyObject *obj, char *ap)
 {
-    return parseString_AsEncodedChar(PyUnicode_AsASCIIString(obj), obj, ap);
+    if (parseString_AsEncodedChar(PyUnicode_AsASCIIString(obj), obj, ap) < 0)
+    {
+        /* Use the exception set if it was an encoding error. */
+#if PY_VERSION_HEX >= 0x03030000
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_LENGTH(obj) != 1)
+#else
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
+#endif
+            PyErr_SetString(PyExc_TypeError,
+#if PY_MAJOR_VERSION >= 3
+                    "bytes or ASCII string of length 1 expected");
+#else
+                    "string or ASCII unicode of length 1 expected");
+#endif
+
+        return -1;
+    }
+
+    return 0;
 }
 
 
@@ -10302,30 +10651,36 @@ static char sip_api_string_as_latin1_char(PyObject *obj)
     char ch;
 
     if (parseString_AsLatin1Char(obj, &ch) < 0)
-    {
-        /* Use the exception set if it was an encoding error. */
-        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
-            PyErr_Format(PyExc_TypeError,
-#if PY_MAJOR_VERSION >= 3
-                    "bytes or Latin-1 string of length 1 expected not '%s'",
-#else
-                    "string or Latin-1 unicode of length 1 expected not '%s'",
-#endif
-                    Py_TYPE(obj)->tp_name);
-
-        return '\0';
-    }
+        ch = '\0';
 
     return ch;
 }
 
 
 /*
- * Parse a Latin-1 character and return it.
+ * Parse a Latin-1 character and return it via a pointer.
  */
 static int parseString_AsLatin1Char(PyObject *obj, char *ap)
 {
-    return parseString_AsEncodedChar(PyUnicode_AsLatin1String(obj), obj, ap);
+    if (parseString_AsEncodedChar(PyUnicode_AsLatin1String(obj), obj, ap) < 0)
+    {
+        /* Use the exception set if it was an encoding error. */
+#if PY_VERSION_HEX >= 0x03030000
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_LENGTH(obj) != 1)
+#else
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
+#endif
+            PyErr_SetString(PyExc_TypeError,
+#if PY_MAJOR_VERSION >= 3
+                    "bytes or Latin-1 string of length 1 expected");
+#else
+                    "string or Latin-1 unicode of length 1 expected");
+#endif
+
+        return -1;
+    }
+
+    return 0;
 }
 
 
@@ -10338,19 +10693,7 @@ static char sip_api_string_as_utf8_char(PyObject *obj)
     char ch;
 
     if (parseString_AsUTF8Char(obj, &ch) < 0)
-    {
-        /* Use the exception set if it was an encoding error. */
-        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
-            PyErr_Format(PyExc_TypeError,
-#if PY_MAJOR_VERSION >= 3
-                    "bytes or UTF-8 string of length 1 expected not '%s'",
-#else
-                    "string or UTF-8 unicode of length 1 expected not '%s'",
-#endif
-                    Py_TYPE(obj)->tp_name);
-
-        return '\0';
-    }
+        ch = '\0';
 
     return ch;
 }
@@ -10361,7 +10704,25 @@ static char sip_api_string_as_utf8_char(PyObject *obj)
  */
 static int parseString_AsUTF8Char(PyObject *obj, char *ap)
 {
-    return parseString_AsEncodedChar(PyUnicode_AsUTF8String(obj), obj, ap);
+    if (parseString_AsEncodedChar(PyUnicode_AsUTF8String(obj), obj, ap) < 0)
+    {
+        /* Use the exception set if it was an encoding error. */
+#if PY_VERSION_HEX >= 0x03030000
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_LENGTH(obj) != 1)
+#else
+        if (!PyUnicode_Check(obj) || PyUnicode_GET_SIZE(obj) != 1)
+#endif
+            PyErr_SetString(PyExc_TypeError,
+#if PY_MAJOR_VERSION >= 3
+                    "bytes or UTF-8 string of length 1 expected");
+#else
+                    "string or UTF-8 unicode of length 1 expected");
+#endif
+
+        return -1;
+    }
+
+    return 0;
 }
 
 
@@ -10694,7 +11055,11 @@ static int convertToWCharArray(PyObject *obj, wchar_t **ap, SIP_SSIZE_T *aszp)
     SIP_SSIZE_T ulen;
     wchar_t *wc;
 
+#if PY_VERSION_HEX >= 0x03030000
+    ulen = PyUnicode_GET_LENGTH(obj);
+#else
     ulen = PyUnicode_GET_SIZE(obj);
+#endif
 
     if ((wc = sip_api_malloc(ulen * sizeof (wchar_t))) == NULL)
         return -1;
@@ -10751,7 +11116,11 @@ static int parseWChar(PyObject *obj, wchar_t *ap)
  */
 static int convertToWChar(PyObject *obj, wchar_t *ap)
 {
+#if PY_VERSION_HEX >= 0x03030000
+    if (PyUnicode_GET_LENGTH(obj) != 1)
+#else
     if (PyUnicode_GET_SIZE(obj) != 1)
+#endif
         return -1;
 
 #if PY_VERSION_HEX >= 0x03020000
@@ -10809,7 +11178,11 @@ static int convertToWCharString(PyObject *obj, wchar_t **ap)
     SIP_SSIZE_T ulen;
     wchar_t *wc;
 
+#if PY_VERSION_HEX >= 0x03030000
+    ulen = PyUnicode_GET_LENGTH(obj);
+#else
     ulen = PyUnicode_GET_SIZE(obj);
+#endif
 
     if ((wc = sip_api_malloc((ulen + 1) * sizeof (wchar_t))) == NULL)
         return -1;
@@ -10919,4 +11292,53 @@ static int check_encoded_string(PyObject *obj)
         return 0;
 
     return -1;
+}
+
+
+/*
+ * This is called by the atexit module.
+ */
+static PyObject *sip_exit(PyObject *obj, PyObject *ignore)
+{
+    /* Disable all Python reimplementations of virtuals. */
+    sipInterpreter = NULL;
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+
+/*
+ * Register the exit notifier with the atexit module.
+ */
+static void register_exit_notifier(void)
+{
+    static PyMethodDef md = {
+        "_sip_exit", sip_exit, METH_NOARGS, NULL
+    };
+
+    PyObject *notifier, *atexit_module, *register_func, *res;
+
+    if ((notifier = PyCFunction_New(&md, NULL)) == NULL)
+        return;
+
+    if ((atexit_module = PyImport_ImportModule("atexit")) == NULL)
+    {
+        Py_DECREF(notifier);
+        return;
+    }
+
+    if ((register_func = PyObject_GetAttrString(atexit_module, "register")) == NULL)
+    {
+        Py_DECREF(atexit_module);
+        Py_DECREF(notifier);
+        return;
+    }
+
+    res = PyObject_CallFunctionObjArgs(register_func, notifier, NULL);
+
+    Py_XDECREF(res);
+    Py_DECREF(register_func);
+    Py_DECREF(atexit_module);
+    Py_DECREF(notifier);
 }
