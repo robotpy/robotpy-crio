@@ -42,7 +42,9 @@ Step 2: Install SIP v4.x:
     http://www.riverbankcomputing.com/static/Docs/sip4/installation.html
 
     Note: Installation of SIP requires Visual Studio or MinGW installed,
-    see the build instructions for more details.
+    see the SIP build instructions for more details.
+    
+    Tested version of SIP: 4.14.2
     
 Step 3: Use SIP to generate the CPP wrappers needed for build
     
@@ -50,7 +52,11 @@ Step 3: Use SIP to generate the CPP wrappers needed for build
     
     Note: These scripts assume that SIP is in your %PATH% variable. SIP
     is installed by default into your python directory, so you should
-    check your system
+    check your system and set the PATH appropriately. For example:
+    
+        set PATH=c:\Python27;%PATH
+        cd Packages
+        sip_all.bat
     
 Step 4: Generate RobotPy build files
 
@@ -71,7 +77,11 @@ Step 5: Build RobotPy
 
     Run Start|Programs|Wind River|
     VxWorks 6.3 and General Purpose Technologies|VxWorks Development Shell.
-    CD to the directory where you cloned the git repository.  Run "make dist".
+    CD to the directory where you cloned the git repository.  Run the
+    following:
+    
+        make all
+        make dist
     
 Step 6: Robot Installation
     
