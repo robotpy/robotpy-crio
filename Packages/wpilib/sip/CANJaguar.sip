@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class CANJaguar : MotorSafety, PIDOutput, SpeedController, ErrorBase
+class CANJaguar : MotorSafety, SpeedController, ErrorBase, LiveWindowSendable, ITableListener
 {
 %TypeHeaderCode
 #include <WPILib/CANJaguar.h>

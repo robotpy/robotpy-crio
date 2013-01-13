@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Jaguar : SafePWM, SpeedController, PIDOutput
+class Jaguar : SafePWM, SpeedController
 {
 %TypeHeaderCode
 #include <WPILib/Jaguar.h>
