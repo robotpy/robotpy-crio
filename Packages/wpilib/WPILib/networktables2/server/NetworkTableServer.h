@@ -48,7 +48,7 @@ private:
 	 * 
 	 * @param streamProvider
 	 */
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	//NetworkTableServer(IOStreamProvider& streamProvider);
 	
 	void Close();
 

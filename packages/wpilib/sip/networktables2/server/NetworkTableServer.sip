@@ -29,7 +29,7 @@ class NetworkTableServer : NetworkTableNode, ServerIncomingConnectionListener
 public:
 	NetworkTableServer(IOStreamProvider& streamProvider, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
 	~NetworkTableServer();
-	NetworkTableServer(IOStreamProvider& streamProvider);
+	//NetworkTableServer(IOStreamProvider& streamProvider);
 
 	void Close();
 
