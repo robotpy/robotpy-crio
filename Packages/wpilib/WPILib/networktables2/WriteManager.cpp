@@ -7,6 +7,7 @@
 
 #include "networktables2/WriteManager.h"
 #include "networktables2/util/System.h"
+#include "networktables2/AbstractNetworkTableEntryStore.h"
 #include <iostream>
 
 
