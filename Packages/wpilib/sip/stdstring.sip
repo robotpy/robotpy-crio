@@ -17,8 +17,10 @@
 	if (sipIsErr == NULL)
 		return PyUnicode_Check(sipPy);
 	PyObject* utf8 = PyUnicode_AsUTF8String(sipPy);
-	*sipCppPtr = new std::string(PyByteArray_AS_STRING(utf8),
-		PyByteArray_GET_SIZE(utf8));
+	char* buf;
+	Py_ssize_t len;
+	PyBytes_AsStringAndSize(utf8, &buf, &len);
+	*sipCppPtr = new std::string(buf, len);
 	Py_DECREF(utf8);
 	return sipGetState(sipTransferObj);
 %End
