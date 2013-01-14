@@ -32,20 +32,20 @@ public:
 	
 	static void PutData(std::string key, Sendable *data);
 	static void PutData(NamedSendable *value);
-	//static Sendable* GetData(std::string keyName);
+	//static Sendable* GetData(std::string keyName) throw(TableKeyNotDefinedException);
 	
 	static void PutBoolean(std::string keyName, bool value);
-	static bool GetBoolean(std::string keyName);
+	static bool GetBoolean(std::string keyName) throw(TableKeyNotDefinedException);
 	
 	static void PutNumber(std::string keyName, double value);
-	static double GetNumber(std::string keyName);
+	static double GetNumber(std::string keyName) throw(TableKeyNotDefinedException);
 	
 	static void PutString(std::string keyName, std::string value);
 	//static int GetString(std::string keyName, char *value, unsigned int valueLen);
-	static std::string GetString(std::string keyName);
+	static std::string GetString(std::string keyName) throw(TableKeyNotDefinedException);
 	
 	static void PutValue(std::string keyName, ComplexData& value);
-	//static void RetrieveValue(std::string keyName, ComplexData& value /Out/);
+	//static void RetrieveValue(std::string keyName, ComplexData& value /Out/) throw(TableKeyNotDefinedException);
 
 private:
 	SmartDashboard();
