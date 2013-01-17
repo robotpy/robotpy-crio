@@ -14,8 +14,8 @@
 	#include <sys/types.h>
 	#include <unistd.h>
 	#ifdef WIN32
-	   #include <winsock.h>
-	   #include <winsock2.h>
+	   //#include <winsock.h>
+	   //#include <winsock2.h>
 	#else
 		#include <sys/socket.h>
 		#include <sys/un.h>

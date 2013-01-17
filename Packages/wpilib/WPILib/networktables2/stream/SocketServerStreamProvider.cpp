@@ -28,10 +28,10 @@
 #include <unistd.h>
 #ifdef WIN32
 #include <windows.h>
-#include <winsock.h>
-#include <winsock2.h>
-#include <wininet.h>
-#include <ws2tcpip.h>
+//#include <winsock.h>
+//#include <winsock2.h>
+//#include <wininet.h>
+//#include <ws2tcpip.h>
 #else
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -40,9 +40,9 @@
 #endif
 #endif
 
-#ifndef ERROR
+//#ifndef ERROR
 #define ERROR -1
-#endif
+//#endif
 
 #if defined(WIN32) || defined(_WRS_KERNEL)
 typedef int addrlen_t;
@@ -106,7 +106,7 @@ IOStream* SocketServerStreamProvider::accept(){
 			if (FD_ISSET(serverSocket, &fdSet))
 			{
 				struct sockaddr clientAddr = {0};
-				addrlen_t clientAddrSize = 0;
+				addrlen_t clientAddrSize = sizeof(clientAddr);
 				int connectedSocket = ::accept(serverSocket, &clientAddr, &clientAddrSize);
 				if (connectedSocket == ERROR)
 					return NULL;
