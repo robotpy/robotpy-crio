@@ -5,6 +5,23 @@
 #include "tables/ITable.h"
 #include "Commands/Scheduler.h"
 #include <vector>
+#include <map>
+
+struct LiveWindowComponent
+{
+	std::string subsystem;
+	std::string name;
+	bool isSensor;
+
+	LiveWindowComponent()
+	{}//WTF?
+	LiveWindowComponent(std::string subsystem, std::string name, bool isSensor)
+	{
+		this->subsystem = subsystem;
+		this->name = name;
+		this->isSensor = isSensor;
+	}
+};
 
 /**
  * The LiveWindow class is the public interface for putting sensors and actuators
@@ -18,7 +35,8 @@ public:
 	void Run();
 	void AddSensor(char *subsystem, char *name, LiveWindowSendable *component);
 	void AddActuator(char *subsystem, char *name, LiveWindowSendable *component);
-	void AddComponent(char *subsystem, char *name, LiveWindowSendable *component);
+	void AddSensor(std::string type, int module, int channel, LiveWindowSendable *component);
+	void AddActuator(std::string type, int module, int channel, LiveWindowSendable *component);
 	
 	bool IsEnabled() { return m_enabled; }
 	void SetEnabled(bool enabled);
@@ -30,10 +48,10 @@ protected:
 private:
 	void UpdateValues();
 	void Initialize();
+	void InitializeLiveWindowComponents();
 	
 	std::vector<LiveWindowSendable *> m_sensors;
-	std::vector<LiveWindowSendable *> m_actuators;
-	std::vector<LiveWindowSendable *> m_components;
+	std::map<LiveWindowSendable *, LiveWindowComponent> m_components;
 	
 	static LiveWindow *m_instance;
 	ITable *m_liveWindowTable;
@@ -42,6 +60,7 @@ private:
 	Scheduler *m_scheduler;
 	
 	bool m_enabled;
+	bool m_firstTime;
 };
 
 #endif

@@ -94,6 +94,19 @@ public:
 	 * @throws IOException
 	 */
 	static void Initialize();
+	
+	/**
+	 * set the table provider for static network tables methods
+	 * This must be called before getTable
+	 */
+	static void SetTableProvider(NetworkTableProvider* provider);
+	
+	/**
+	 * set that network tables should be a client
+	 * This must be called before initalize or GetTable
+	 */
+	static void SetClientMode();
+	
 	/**
 	 * set that network tables should be a server
 	 * This must be called before initalize or GetTable

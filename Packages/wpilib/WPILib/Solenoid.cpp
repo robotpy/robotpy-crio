@@ -7,6 +7,7 @@
 #include "Solenoid.h"
 #include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
+#include "LiveWindow/LiveWindow.h"
 
 /**
  * Common function to implement constructor behavior.
@@ -35,6 +36,7 @@ void Solenoid::InitSolenoid()
 		return;
 	}
 
+	LiveWindow::GetInstance()->AddActuator("Solenoid", m_moduleNumber, m_channel, this);
 	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_channel, m_moduleNumber - 1);
 }
 

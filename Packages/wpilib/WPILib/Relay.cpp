@@ -10,6 +10,7 @@
 #include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
+#include "LiveWindow/LiveWindow.h"
 
 // Allocate each direction separately.
 static Resource *relayChannels = NULL;
@@ -64,6 +65,7 @@ void Relay::InitRelay (UINT8 moduleNumber)
 	m_module = DigitalModule::GetInstance(moduleNumber);
 	m_module->SetRelayForward(m_channel, false);
 	m_module->SetRelayReverse(m_channel, false);
+	LiveWindow::GetInstance()->AddActuator("Relay", moduleNumber, m_channel, this);
 }
 
 /**

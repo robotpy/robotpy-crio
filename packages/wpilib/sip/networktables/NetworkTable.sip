@@ -56,7 +56,9 @@ class NetworkTable : ITable, IRemote
 public:
 	static void Initialize();
 	static void SetServerMode();
-	
+	static void SetTableProvider(NetworkTableProvider* provider);
+	static void SetClientMode();
+
 	static void SetTeam(int team);
 	static void SetIPAddress(const char* address);
 	static NetworkTable* GetTable(std::string key);

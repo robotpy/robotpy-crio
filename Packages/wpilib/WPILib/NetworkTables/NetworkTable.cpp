@@ -46,6 +46,16 @@ void NetworkTable::Initialize() {
 	staticProvider = new NetworkTableProvider(*(mode->CreateNode(ipAddress.c_str(), port, threadManager)));
 }
 
+void NetworkTable::SetTableProvider(NetworkTableProvider* provider){
+	CheckInit();
+	staticProvider = provider;
+}
+
+void NetworkTable::SetClientMode(){
+	CheckInit();
+	mode = &NetworkTableMode::Server;
+}
+
 void NetworkTable::SetServerMode(){
 	CheckInit();
 	mode = &NetworkTableMode::Server;

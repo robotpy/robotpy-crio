@@ -8,6 +8,7 @@
 
 #include "DigitalModule.h"
 #include "NetworkCommunication/UsageReporting.h"
+#include "LiveWindow/LiveWindow.h"
 
 /**
  * Common initialization code called by all constructors.
@@ -31,6 +32,7 @@ void Talon::InitTalon() {
 
 	// TODO: Add Talon to Usage Reporting
 	nUsageReporting::report(nUsageReporting::kResourceType_Talon, GetChannel(), GetModuleNumber() - 1);
+	LiveWindow::GetInstance()->AddActuator("Talon", GetModuleNumber(), GetChannel(), this);
 }
 
 /**

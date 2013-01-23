@@ -9,6 +9,7 @@
 #include "I2C.h"
 #include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
+#include "LiveWindow/LiveWindow.h"
 
 const UINT8 HiTechnicCompass::kAddress;
 const UINT8 HiTechnicCompass::kManufacturerBaseRegister;
@@ -44,6 +45,7 @@ HiTechnicCompass::HiTechnicCompass(UINT8 moduleNumber)
 		}
 
 		nUsageReporting::report(nUsageReporting::kResourceType_HiTechnicCompass, moduleNumber - 1);
+		LiveWindow::GetInstance()->AddSensor("HiTechnicCompass", moduleNumber, 0, this);
 	}
 }
 

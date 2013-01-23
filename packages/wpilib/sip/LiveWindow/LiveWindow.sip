@@ -32,7 +32,8 @@ public:
 	void Run();
 	void AddSensor(char *subsystem, char *name, LiveWindowSendable *component);
 	void AddActuator(char *subsystem, char *name, LiveWindowSendable *component);
-	void AddComponent(char *subsystem, char *name, LiveWindowSendable *component);
+	void AddSensor(std::string type, int module, int channel, LiveWindowSendable *component);
+	void AddActuator(std::string type, int module, int channel, LiveWindowSendable *component);
 	
 	bool IsEnabled();
 	void SetEnabled(bool enabled);

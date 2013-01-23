@@ -9,6 +9,7 @@
 #include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
+#include "LiveWindow/LiveWindow.h"
 
 static Resource *channels = NULL;
 
@@ -55,7 +56,7 @@ void AnalogChannel::InitChannel(UINT8 moduleNumber, UINT32 channel)
 	{
 		m_accumulator = NULL;
 	}
-
+	LiveWindow::GetInstance()->AddActuator("AnalogChannel",channel, GetModuleNumber(), this);
 	nUsageReporting::report(nUsageReporting::kResourceType_AnalogChannel, channel, GetModuleNumber() - 1);
 }
 

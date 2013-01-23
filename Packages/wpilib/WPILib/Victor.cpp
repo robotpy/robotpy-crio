@@ -8,6 +8,7 @@
 
 #include "DigitalModule.h"
 #include "NetworkCommunication/UsageReporting.h"
+#include "LiveWindow/LiveWindow.h"
 
 /**
  * Common initialization code called by all constructors.
@@ -30,6 +31,7 @@ void Victor::InitVictor() {
 	SetPeriodMultiplier(kPeriodMultiplier_2X);
 	SetRaw(m_centerPwm);
 
+	LiveWindow::GetInstance()->AddActuator("Victor", GetModuleNumber(), GetChannel(), this);
 	nUsageReporting::report(nUsageReporting::kResourceType_Victor, GetChannel(), GetModuleNumber() - 1);
 }
 

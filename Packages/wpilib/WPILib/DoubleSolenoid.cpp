@@ -8,6 +8,7 @@
 #include "NetworkCommunication/UsageReporting.h"
 #include "WPIErrors.h"
 #include <string.h>
+#include "LiveWindow/LiveWindow.h"
 
 /**
  * Common function to implement constructor behavior.
@@ -52,6 +53,7 @@ void DoubleSolenoid::InitSolenoid()
 
 	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_forwardChannel, m_moduleNumber - 1);
 	nUsageReporting::report(nUsageReporting::kResourceType_Solenoid, m_reverseChannel, m_moduleNumber - 1);
+	LiveWindow::GetInstance()->AddSensor("DoubleSolenoid", m_moduleNumber, m_forwardChannel, this);
 }
 
 /**

@@ -9,6 +9,7 @@
 #include "NetworkCommunication/UsageReporting.h"
 #include "Resource.h"
 #include "WPIErrors.h"
+#include "LiveWindow/LiveWindow.h"
 
 static Resource *quadEncoders = NULL;
 
@@ -70,6 +71,7 @@ void Encoder::InitEncoder(bool reverseDirection, EncodingType encodingType)
 	wpi_setError(localStatus);
 
 	nUsageReporting::report(nUsageReporting::kResourceType_Encoder, m_index, encodingType);
+	LiveWindow::GetInstance()->AddSensor("Encoder", m_aSource->GetModuleForRouting(), m_aSource->GetChannelForRouting(), this);
 }
 
 /**

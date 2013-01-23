@@ -5,6 +5,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "GearTooth.h"
+#include "LiveWindow/LiveWindow.h"
 
 const double GearTooth::kGearToothThreshold;
 
@@ -44,6 +45,7 @@ GearTooth::GearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive
 	: Counter(moduleNumber, channel)
 {
 	EnableDirectionSensing(directionSensitive);
+	LiveWindow::GetInstance()->AddSensor("GearTooth", moduleNumber, channel, this);
 }
 
 /**
