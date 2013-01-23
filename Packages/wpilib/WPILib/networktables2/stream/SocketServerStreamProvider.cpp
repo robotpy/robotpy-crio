@@ -40,9 +40,9 @@
 #endif
 #endif
 
-//#ifndef ERROR
+#ifndef _WRS_KERNEL
 #define ERROR -1
-//#endif
+#endif
 
 #if defined(WIN32) || defined(_WRS_KERNEL)
 typedef int addrlen_t;
