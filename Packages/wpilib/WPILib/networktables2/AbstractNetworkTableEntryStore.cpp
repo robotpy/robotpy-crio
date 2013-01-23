@@ -84,7 +84,8 @@
 			
 			for(itr = namedEntries.begin(); itr != namedEntries.end(); itr++)
 			{
-				((NetworkTableEntry*)(*itr).second)->ClearId();
+				if (itr->second)
+					itr->second->ClearId();
 			}
 		}
 	}
