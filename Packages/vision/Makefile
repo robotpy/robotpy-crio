@@ -15,20 +15,20 @@ PROJECT_OBJECTS += sip_visionstdvector1800.o
 PROJECT_OBJECTS += sip_visionstdvector2400.o
 PROJECT_OBJECTS += sip_visionThreshold.o
 
-PROJECT_OBJECTS += Vision/AxisCamera.o
-PROJECT_OBJECTS += Vision/AxisCameraParams.o
-PROJECT_OBJECTS += Vision/BinaryImage.o
-PROJECT_OBJECTS += Vision/ColorImage.o
-PROJECT_OBJECTS += Vision/EnumCameraParameter.o
-PROJECT_OBJECTS += Vision/HSLImage.o
-PROJECT_OBJECTS += Vision/ImageBase.o
-PROJECT_OBJECTS += Vision/IntCameraParameter.o
-PROJECT_OBJECTS += Vision/MonoImage.o
-PROJECT_OBJECTS += Vision/PCVideoServer.o
-PROJECT_OBJECTS += Vision/RGBImage.o
-PROJECT_OBJECTS += Vision/Threshold.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/AxisCamera.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/AxisCameraParams.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/BinaryImage.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/ColorImage.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/EnumCameraParameter.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/HSLImage.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/ImageBase.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/IntCameraParameter.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/MonoImage.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/PCVideoServer.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/RGBImage.o
+PROJECT_OBJECTS += ../wpilib/WPILib/Vision/Threshold.o
 
-ADDED_INCLUDES = -I../sip -I. -I../vision2009 -I../wpilib -I../wpilib/WPILib -I../wpilib/WPILib/CInterfaces
+ADDED_INCLUDES = -I../sip -I. -I../vision2009 -I../wpilib -I../wpilib/WPILib
 ADDED_CFLAGS = -D'SVN_REV="3589"'
 ADDED_C++FLAGS = -D'SVN_REV="3589"'
 
