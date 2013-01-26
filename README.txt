@@ -59,6 +59,7 @@ Step 3: Use SIP to generate the CPP wrappers needed for build
         sip_all.bat
 
 Step 4: Generate VERSION-FILE
+
     Run VERSION-GEN.bat (windows) or VERSION-GEN.sh (linux)
     to generate VERSION-FILE and VERSION-FILE.h
 
