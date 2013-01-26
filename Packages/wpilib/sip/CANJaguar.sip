@@ -94,6 +94,13 @@ public:
 	sipCpp->GetDescription(result);
 	sipRes = result;
 %End
+protected:
+	void UpdateTable();
+	void StartLiveWindowMode();
+	void StopLiveWindowMode();
+	std::string GetSmartDashboardType();
+	void InitTable(ITable *subTable);
+	ITable * GetTable();
 
 private:
 	CANJaguar(const CANJaguar&);
