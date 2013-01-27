@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class DoubleSolenoid : SolenoidBase 
+class DoubleSolenoid : SolenoidBase, LiveWindowSendable, ITableListener
 {
 %TypeHeaderCode
 #include <WPILib/DoubleSolenoid.h>
@@ -35,4 +35,15 @@ public:
 	virtual ~DoubleSolenoid();
 	virtual void Set(Value value);
 	virtual Value Get();
+	
+	//void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
+	void UpdateTable();
+	void StartLiveWindowMode();
+	void StopLiveWindowMode();
+	std::string GetSmartDashboardType();
+	void InitTable(ITable *subTable);
+	ITable * GetTable();
+
+private:
+	virtual void InitSolenoid();
 };

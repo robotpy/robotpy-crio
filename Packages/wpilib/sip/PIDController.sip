@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class PIDController : Controller
+class PIDController : LiveWindowSendable, Controller, ITableListener
 {
 %TypeHeaderCode
 #include <WPILib/PIDController.h>
@@ -62,6 +62,15 @@ public:
 
 	virtual void Reset();
 
+	virtual void InitTable(ITable* table);
+
 private:
 	PIDController(const PIDController&);
+	
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
+	//virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
+	virtual void UpdateTable();
+	virtual void StartLiveWindowMode();
+	virtual void StopLiveWindowMode();
 };

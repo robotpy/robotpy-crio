@@ -49,6 +49,12 @@ public:
 	void SetRunWhenDisabled(bool run);
 	bool WillRunWhenDisabled();
 
+	virtual std::string GetName();
+	virtual void InitTable(ITable* table);
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
+	//virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
+
 protected:
 	void SetTimeout(double timeout);
 	bool IsTimedOut();
