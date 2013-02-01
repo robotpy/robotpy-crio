@@ -43,6 +43,7 @@ public:
 	explicit Gyro(AnalogChannel *channel);
 	virtual ~Gyro();
 	virtual float GetAngle();
+	virtual float GetRate();
 	void SetSensitivity(float voltsPerDegreePerSecond);
 	virtual void Reset();
 	
