@@ -21,6 +21,16 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
+
+struct EntryValue /Abstract/
+{
+%TypeHeaderCode
+#include <WPILib/tables/ITable.h>
+%End
+
+public:
+};
+
 class ITable /Abstract/
 {
 %TypeHeaderCode

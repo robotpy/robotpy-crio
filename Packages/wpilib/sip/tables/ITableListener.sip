@@ -21,12 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class ITableListener /Abstract/
+class ITableListener
 {
 %TypeHeaderCode
 #include <WPILib/tables/ITableListener.h>
 %End
 
 public:
-	//virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew) = 0;
+	virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew) = 0;
 };
