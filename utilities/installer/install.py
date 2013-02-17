@@ -8,6 +8,7 @@ Usage: run install.py, and it will upload
 
 import os
 import ftplib
+import socket
 import sys
 from optparse import OptionParser
 
@@ -16,6 +17,23 @@ from optparse import OptionParser
 def get_robot_host(team_number):
     '''Given a team number, determine the address of the robot'''
     return '10.%d.%d.2' % (team_number / 100, team_number % 100 )
+    
+    
+def reboot_crio():
+    ''' 
+        Send the reboot command to any cRios connected on the network
+        -> Extracted from https://github.com/rbmj/netconsole, license unknown
+    '''
+
+    # ports
+    UDP_IN_PORT=6666
+    UDP_OUT_PORT=6668
+
+    out = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    out.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    out.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    out.bind( ('',UDP_OUT_PORT) ) # bind is necessary for escoteric reasons stated on interwebs
+    out.sendto(b'\nreboot\n', ('255.255.255.255', UDP_OUT_PORT))
 
 
 class RobotCodeInstaller(object):
@@ -294,7 +312,7 @@ if __name__ == '__main__':
         parser.error("Invalid arguments passed")
 
     # banner message
-    print( "Robot code uploader v1.0" )
+    print( "Robot code uploader v1.1" )
 
 
     if robot_host is None:
@@ -322,3 +340,12 @@ if __name__ == '__main__':
     installer.upload_directory( options.remote_root, options.local_root, verbose=options.verbose )
 
     installer.close()
+    
+    # New feature: ask the user to reboot after installation?
+    while True:
+        yn = input("Reboot robot? [y/n]").lower()
+        if yn == 'y':
+            reboot_crio()
+            break
+        elif yn == 'n':
+            break
