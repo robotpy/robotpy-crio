@@ -18,7 +18,7 @@ out.bind( ('',UDP_OUT_PORT) ) # bind is necessary for escoteric reasons stated o
 
 def reboot_cRio():
     '''Send the reboot command to any cRios connected on the network'''
-    out.sendto('\nreboot\n', ('255.255.255.255', UDP_OUT_PORT))
+    out.sendto(b'\nreboot\n', ('255.255.255.255', UDP_OUT_PORT))
     
 if __name__ == '__main__':
     reboot_cRio()
