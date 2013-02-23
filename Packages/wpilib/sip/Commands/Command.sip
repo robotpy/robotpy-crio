@@ -48,6 +48,7 @@ public:
 	CommandGroup *GetGroup();
 	void SetRunWhenDisabled(bool run);
 	bool WillRunWhenDisabled();
+	int GetID();
 
 	virtual std::string GetName();
 	virtual void InitTable(ITable* table);
