@@ -72,7 +72,7 @@ private:
 	
 	virtual ITable* GetTable();
 	virtual std::string GetSmartDashboardType();
-	//virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
+	virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
 	virtual void UpdateTable();
 	virtual void StartLiveWindowMode();
 	virtual void StopLiveWindowMode();

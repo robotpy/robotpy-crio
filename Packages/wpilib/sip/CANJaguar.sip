@@ -95,6 +95,7 @@ public:
 	sipRes = result;
 %End
 protected:
+	void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
 	void UpdateTable();
 	void StartLiveWindowMode();
 	void StopLiveWindowMode();

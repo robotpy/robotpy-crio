@@ -36,7 +36,7 @@ public:
 	virtual void Set(Value value);
 	virtual Value Get();
 	
-	//void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
+	void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew);
 	void UpdateTable();
 	void StartLiveWindowMode();
 	void StopLiveWindowMode();
