@@ -48,6 +48,7 @@ PROJECT_OBJECTS += sip_wpilibDriverStationEnhancedIO.o
 PROJECT_OBJECTS += sip_wpilibDriverStationLCD.o
 PROJECT_OBJECTS += sip_wpilibEncoder.o
 PROJECT_OBJECTS += sip_wpilibEntryCache.o
+PROJECT_OBJECTS += sip_wpilibEntryValue.o
 PROJECT_OBJECTS += sip_wpilibError.o
 PROJECT_OBJECTS += sip_wpilibErrorBase.o
 PROJECT_OBJECTS += sip_wpilibFDIOStream.o
