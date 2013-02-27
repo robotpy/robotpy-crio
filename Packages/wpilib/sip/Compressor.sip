@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class Compressor: SensorBase
+class Compressor: SensorBase, LiveWindowSendable
 {
 %TypeHeaderCode
 #include <WPILib/Compressor.h>
@@ -38,4 +38,11 @@ public:
 	bool Enabled();
 	UINT32 GetPressureSwitchValue();
 	void SetRelayValue(Relay::Value relayValue);
+
+	void UpdateTable();
+	void StartLiveWindowMode();
+	void StopLiveWindowMode();
+	std::string GetSmartDashboardType();
+	void InitTable(ITable *subTable);
+	ITable * GetTable();
 };
