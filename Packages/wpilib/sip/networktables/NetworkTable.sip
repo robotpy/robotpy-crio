@@ -32,6 +32,8 @@ public:
 	~NetworkTableKeyCache();
 
 	std::string Calc(const std::string& key);
+private:
+	NetworkTableKeyCache(const NetworkTableKeyCache&);
 };
 
 class EntryCache
@@ -45,6 +47,8 @@ public:
 	~EntryCache();
 	
 	NetworkTableEntry* Get(std::string& key);
+private:
+	EntryCache(const EntryCache&);
 };
 
 class NetworkTable : ITable, IRemote

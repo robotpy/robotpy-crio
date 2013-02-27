@@ -31,4 +31,6 @@ public:
 	virtual ~StringCache();
 	std::string& Get(const std::string& input);
 	virtual std::string Calc(const std::string& input) = 0;
+private:
+	StringCache(const StringCache&);
 };
