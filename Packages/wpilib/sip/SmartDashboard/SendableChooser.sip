@@ -21,17 +21,64 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class SendableChooser
+class SendableChooser : Sendable
 {
 %TypeHeaderCode
 #include <WPILib/SmartDashboard/SendableChooser.h>
 %End
 
+%TypeCode
+    typedef std::map<std::string, PyObject *> ChoiceMap;
+    ChoiceMap m_data;
+%End
+
 public:
 	SendableChooser();
 	virtual ~SendableChooser();
+    %MethodCode
+        const ChoiceMap::iterator end = m_data.end();
+        for (ChoiceMap::iterator i = m_data.begin(); i != end; ++i)
+            Py_DECREF(i->second);
+        m_data.clear();
+    %End
 
-	void AddObject(const char *name, void *object);
-	void AddDefault(const char *name, void *object);
-	void *GetSelected();
+	void AddObject(const char *name, PyObject *object);
+    %MethodCode
+        ChoiceMap::iterator i = m_data.find(a0);
+        if (i != m_data.end())
+        {
+            Py_DECREF(i->second);
+            m_data.erase(i);
+        }
+        
+        Py_INCREF(a1);
+        m_data[a0] = a1;
+        
+        sipCpp->AddObject(a0, a1);
+    %End
+    
+	void AddDefault(const char *name, PyObject *object);
+    %MethodCode
+        ChoiceMap::iterator i = m_data.find(a0);
+        if (i != m_data.end())
+        {
+            Py_DECREF(i->second);
+            m_data.erase(i);
+        }
+        
+        Py_INCREF(a1);
+        m_data[a0] = a1;
+        
+        sipCpp->AddDefault(a0, a1);
+    %End
+    
+	PyObject *GetSelected();
+    %MethodCode
+        sipRes = (PyObject*)sipCpp->GetSelected();
+        Py_XINCREF(sipRes);
+    %End
+
+	virtual void InitTable(ITable* subtable);
+	virtual ITable* GetTable();
+	virtual std::string GetSmartDashboardType();
 };
