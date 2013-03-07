@@ -2,8 +2,6 @@
 #
 # Reboots the cRio via NetConsole
 #
-# Extracted from https://github.com/rbmj/netconsole, license unknown
-#
 
 import socket
 
