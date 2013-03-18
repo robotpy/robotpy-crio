@@ -55,6 +55,7 @@ class NetworkTable : ITable, IRemote
 {
 %TypeHeaderCode
 #include <WPILib/networktables/NetworkTable.h>
+#include <WPILib/networktables2/type/DefaultEntryTypes.h>
 %End
 
 public:
@@ -105,7 +106,50 @@ public:
 	void PutValue(std::string key, ComplexData& value);
 	//EntryValue GetValue(std::string key) throw(TableKeyNotDefinedException);
 	//EntryValue GetValue(std::string key, EntryValue defaultValue);
-
+    
+    // python specific implementation
+    PyObject * GetValue(std::string key);
+    %MethodCode
+        // get the entry and type
+        EntryValue value;
+        TypeId id;
+        
+        if (!sipCpp->node.GetValueAndType(sipCpp->absoluteKeyCache.Get(*a0), value, id))
+        {
+            sipRes = Py_None;
+            Py_INCREF(sipRes);
+        }
+        else
+        {
+            // return the correct type of object based on that
+            
+            if (id == DOUBLE_RAW_ID)
+            {
+                sipRes = PyFloat_FromDouble(value.f);
+            }
+            else if (id == BOOLEAN_RAW_ID)
+            {
+                if (value.b)
+                    sipRes = Py_True;
+                else
+                    sipRes = Py_False;
+                
+                Py_INCREF(sipRes);
+            }
+            else if (id == STRING_RAW_ID)
+            {
+                // wtf
+                std::string * s = (std::string*)(value.ptr);
+                sipRes = PyUnicode_FromStringAndSize(s->data(), s->size());
+            }
+            else 
+            {
+                sipRes = Py_None;
+                Py_INCREF(sipRes);
+            }
+        }
+    %End
+    
 private:
 	NetworkTable(const NetworkTable&);
 };
