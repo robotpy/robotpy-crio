@@ -75,7 +75,9 @@ public:
 	PyObject *GetSelected();
     %MethodCode
         sipRes = (PyObject*)sipCpp->GetSelected();
-        Py_XINCREF(sipRes);
+        if (sipRes == NULL)
+            sipRes = Py_None;
+        Py_INCREF(sipRes);
     %End
 
 	virtual void InitTable(ITable* subtable);
