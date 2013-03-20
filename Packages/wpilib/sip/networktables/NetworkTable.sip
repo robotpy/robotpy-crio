@@ -102,14 +102,54 @@ public:
 	bool GetBoolean(std::string key, bool defaultValue);
 
 	//void PutValue(std::string key, NetworkTableEntryType* type, EntryValue value);
-	//void RetrieveValue(std::string key, ComplexData& externalValue /Out/);
 	void PutValue(std::string key, ComplexData& value);
 	//EntryValue GetValue(std::string key) throw(TableKeyNotDefinedException);
 	//EntryValue GetValue(std::string key, EntryValue defaultValue);
     
+    void RetrieveValue(std::string key, ComplexData& externalValue) throw(TableKeyNotDefinedException, TableKeyExistsWithDifferentTypeException);
+    %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+        
+        try
+        {
+            sipCpp->RetrieveValue(*a0, *a1);
+        }
+        catch (TableKeyNotDefinedException &e)
+        {
+            const char *detail = e.what();
+            
+            Py_BLOCK_THREADS
+            sipReleaseType(a0,sipType_std_string,a0State);
+
+            SIP_BLOCK_THREADS
+            PyErr_SetString(sipException_TableKeyNotDefinedException, detail);
+            SIP_UNBLOCK_THREADS
+            
+            return NULL;
+        }
+        catch (TableKeyExistsWithDifferentTypeException &e)
+        {
+            const char *detail = e.what();
+
+            Py_BLOCK_THREADS
+            sipReleaseType(a0,sipType_std_string,a0State);
+            
+            SIP_BLOCK_THREADS
+            PyErr_SetString(sipException_TableKeyExistsWithDifferentTypeException, detail);
+            SIP_UNBLOCK_THREADS
+            
+            return NULL;
+        }
+        
+        Py_END_ALLOW_THREADS
+        
+    %End
+    
     // python specific implementation
     PyObject * GetValue(std::string key);
     %MethodCode
+        Py_BEGIN_ALLOW_THREADS
+    
         // get the entry and type
         EntryValue value;
         TypeId id;
@@ -148,6 +188,8 @@ public:
                 Py_INCREF(sipRes);
             }
         }
+        
+        Py_END_ALLOW_THREADS
     %End
     
 private:
