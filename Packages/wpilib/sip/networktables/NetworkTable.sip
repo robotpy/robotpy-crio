@@ -148,13 +148,19 @@ public:
     // python specific implementation
     PyObject * GetValue(std::string key);
     %MethodCode
-        Py_BEGIN_ALLOW_THREADS
-    
+        
         // get the entry and type
         EntryValue value;
         TypeId id;
+        bool result;
         
-        if (!sipCpp->node.GetValueAndType(sipCpp->absoluteKeyCache.Get(*a0), value, id))
+        Py_BEGIN_ALLOW_THREADS
+        
+            result = sipCpp->node.GetValueAndType(sipCpp->absoluteKeyCache.Get(*a0), value, id);
+            
+        Py_END_ALLOW_THREADS
+        
+        if (!result)
         {
             sipRes = Py_None;
             Py_INCREF(sipRes);
@@ -189,7 +195,6 @@ public:
             }
         }
         
-        Py_END_ALLOW_THREADS
     %End
     
 private:
