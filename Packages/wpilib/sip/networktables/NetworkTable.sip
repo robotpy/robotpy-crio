@@ -184,9 +184,7 @@ public:
             }
             else if (id == STRING_RAW_ID)
             {
-                // wtf
-                std::string * s = (std::string*)(value.ptr);
-                sipRes = PyUnicode_FromStringAndSize(s->data(), s->size());
+                sipRes = sipConvertFromType(value.ptr, sipType_std_string, NULL);
             }
             else 
             {
