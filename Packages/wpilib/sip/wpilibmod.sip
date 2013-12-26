@@ -46,6 +46,7 @@ typedef struct semaphore * SEM_ID;
 %Include stdstring.sip
 
 %ModuleCode
+#include "RobotPy.h"
 #include <WPILib/RobotBase.h>
 
 class MyRobotBase : public RobotBase
@@ -71,7 +72,12 @@ void
 MyRobotBase::StartCompetition()
 {
 }
+
+const char * __version__ = SVN_REV;
+
 %End
+
+const char * __version__;
 
 bool IsEnabled();
 %MethodCode
