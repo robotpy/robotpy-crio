@@ -1,0 +1,3 @@
+
+ADD_SIP_PYTHON_MODULE(_vision2009 sip/vision2009mod.sip)
+install(FILES vision2009.py DESTINATION "${ROBOTPY_DEST_SITE_PACKAGES}")
