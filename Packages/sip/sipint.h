@@ -1,7 +1,7 @@
 /*
  * This file defines the SIP library internal interfaces.
  *
- * Copyright (c) 2012 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2013 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -61,10 +61,12 @@ typedef struct
  */
 extern PyTypeObject sipMethodDescr_Type;
 PyObject *sipMethodDescr_New(PyMethodDef *pmd);
+PyObject *sipMethodDescr_Copy(PyObject *orig, PyObject *mixin_name);
 
 extern PyTypeObject sipVariableDescr_Type;
 PyObject *sipVariableDescr_New(sipVariableDef *vd, const sipTypeDef *td,
     const sipContainerDef *cod);
+PyObject *sipVariableDescr_Copy(PyObject *orig, PyObject *mixin_name);
 
 
 /*
@@ -111,9 +113,11 @@ void *sip_api_get_cpp_ptr(sipSimpleWrapper *w, const sipTypeDef *td);
 PyObject *sip_api_convert_from_type(void *cppPtr, const sipTypeDef *td,
         PyObject *transferObj);
 void sip_api_common_dtor(sipSimpleWrapper *sipSelf);
-void sip_api_start_thread(void);
 void sip_api_end_thread(void);
+void *sip_api_force_convert_to_type(PyObject *pyObj, const sipTypeDef *td,
+        PyObject *transferObj, int flags, int *statep, int *iserrp);
 void sip_api_free_sipslot(sipSlot *slot);
+unsigned long sip_api_long_as_unsigned_long(PyObject *o);
 int sip_api_same_slot(const sipSlot *sp, PyObject *rxObj, const char *slot);
 PyObject *sip_api_invoke_slot(const sipSlot *slot, PyObject *sigargs);
 void *sip_api_convert_rx(sipWrapper *txSelf, const char *sigargs,
@@ -127,9 +131,10 @@ int sip_api_save_slot(sipSlot *sp, PyObject *rxObj, const char *slot);
 sipClassTypeDef *sipGetGeneratedClassType(sipEncodedTypeDef *enc,
         const sipClassTypeDef *ctd);
 void sipSaveMethod(sipPyMethod *pm,PyObject *meth);
-void *sipGetPending(sipWrapper **op, int *fp);
-PyObject *sipWrapSimpleInstance(void *cppPtr, const sipTypeDef *td,
-        sipWrapper *owner, int initflags);
+int sipGetPending(void **pp, sipWrapper **op, int *fp);
+int sipIsPending();
+PyObject *sipWrapInstance(void *cpp,  PyTypeObject *py_type, PyObject *args,
+        sipWrapper *owner, int flags);
 void *sipConvertRxEx(sipWrapper *txSelf, const char *sigargs,
         PyObject *rxObj, const char *slot, const char **memberp, int flags);
 

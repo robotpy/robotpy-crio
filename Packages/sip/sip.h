@@ -1,7 +1,7 @@
 /*
  * The SIP module interface.
  *
- * Copyright (c) 2012 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2013 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -54,8 +54,8 @@ extern "C" {
 /*
  * Define the SIP version number.
  */
-#define SIP_VERSION         0x040e02
-#define SIP_VERSION_STR     "4.14.2"
+#define SIP_VERSION         0x040f03
+#define SIP_VERSION_STR     "4.15.3"
 
 
 /*
@@ -67,6 +67,26 @@ extern "C" {
  * to 0.
  *
  * History:
+ *
+ * 10.1 Added ctd_final to sipClassTypeDef.
+ *      Added ctd_init_mixin to sipClassTypeDef.
+ *      Added sip_api_get_mixin_address() to the public API.
+ *      Added sip_api_convert_from_new_pytype() to the public API.
+ *      Added sip_api_convert_to_array() to the public API.
+ *      Added sip_api_convert_to_typed_array() to the public API.
+ *      Added sip_api_register_proxy_resolver() to the public API.
+ *      Added sip_api_init_mixin() to the private API.
+ *      Added qt_interface to pyqt4ClassTypeDef.
+ *
+ * 10.0 Added sip_api_set_destroy_on_exit().
+ *      Added sip_api_enable_autoconversion().
+ *      Removed sip_api_call_error_handler_old().
+ *      Removed sip_api_start_thread().
+ *
+ * 9.2  Added sip_gilstate_t and SIP_RELEASE_GIL to the public API.
+ *      Renamed sip_api_call_error_handler() to
+ *      sip_api_call_error_handler_old().
+ *      Added the new sip_api_call_error_handler() to the private API.
  *
  * 9.1  Added the capsule type.
  *      Added the 'z' format character to sip_api_build_result().
@@ -185,7 +205,7 @@ extern "C" {
  *
  * 0.0  Original version.
  */
-#define SIP_API_MAJOR_NR    9
+#define SIP_API_MAJOR_NR    10
 #define SIP_API_MINOR_NR    1
 
 
@@ -328,6 +348,7 @@ struct _sipTypeDef;
 
 typedef void *(*sipInitFunc)(struct _sipSimpleWrapper *, PyObject *,
         PyObject *, PyObject **, PyObject **, PyObject **);
+typedef int (*sipFinalFunc)(PyObject *, void *, PyObject *, PyObject **);
 typedef void *(*sipAccessFunc)(struct _sipSimpleWrapper *, AccessFuncOp);
 typedef int (*sipTraverseFunc)(void *, visitproc, void *);
 typedef int (*sipClearFunc)(void *);
@@ -343,7 +364,8 @@ typedef void *(*sipCastFunc)(void *, const struct _sipTypeDef *);
 typedef const struct _sipTypeDef *(*sipSubClassConvertFunc)(void **);
 typedef int (*sipConvertToFunc)(PyObject *, void **, int *, PyObject *);
 typedef PyObject *(*sipConvertFromFunc)(void *, PyObject *);
-typedef void (*sipVirtErrorHandlerFunc)(struct _sipSimpleWrapper *);
+typedef void (*sipVirtErrorHandlerFunc)(struct _sipSimpleWrapper *,
+        sip_gilstate_t);
 typedef int (*sipVirtHandlerFunc)(sip_gilstate_t, sipVirtErrorHandlerFunc,
         struct _sipSimpleWrapper *, PyObject *, ...);
 typedef void (*sipAssignFunc)(void *, SIP_SSIZE_T, const void *);
@@ -354,6 +376,7 @@ typedef PyObject *(*sipPickleFunc)(void *);
 typedef int (*sipAttrGetterFunc)(const struct _sipTypeDef *, PyObject *);
 typedef PyObject *(*sipVariableGetterFunc)(void *, PyObject *, PyObject *);
 typedef int (*sipVariableSetterFunc)(void *, PyObject *, PyObject *);
+typedef void *(*sipProxyResolverFunc)(void *);
 
 
 /*
@@ -403,6 +426,9 @@ typedef struct _sipSimpleWrapper {
 
     /* The instance dictionary. */
     PyObject *dict;
+
+    /* The main instance if this is a mixin. */
+    PyObject *mixin_main;
 
     /* Next object at this address. */
     struct _sipSimpleWrapper *next;
@@ -842,7 +868,7 @@ typedef struct _sipClassTypeDef {
     /* The optional copy function. */
     sipCopyFunc ctd_copy;
 
-    /* The release function, 0 if a C strict. */
+    /* The release function, 0 if a C struct. */
     sipReleaseFunc ctd_release;
 
     /* The cast function, 0 if a C struct. */
@@ -851,11 +877,20 @@ typedef struct _sipClassTypeDef {
     /* The optional convert to function. */
     sipConvertToFunc ctd_cto;
 
+    /* The optional convert from function. */
+    sipConvertFromFunc ctd_cfrom;
+
     /* The next namespace extender. */
     struct _sipClassTypeDef *ctd_nsextender;
 
     /* The pickle function. */
     sipPickleFunc ctd_pickle;
+
+    /* The finalisation function. */
+    sipFinalFunc ctd_final;
+
+    /* The mixin initialisation function. */
+    initproc ctd_init_mixin;
 } sipClassTypeDef;
 
 
@@ -1373,6 +1408,8 @@ typedef struct _sipAPIDef {
     int (*api_is_api_enabled)(const char *name, int from, int to);
     sipErrorState (*api_bad_callable_arg)(int arg_nr, PyObject *arg);
     void *(*api_get_address)(struct _sipSimpleWrapper *w);
+    void (*api_set_destroy_on_exit)(int);
+    int (*api_enable_autoconversion)(const sipTypeDef *td, int enable);
 
     /*
      * The following are deprecated parts of the public API.
@@ -1419,7 +1456,6 @@ typedef struct _sipAPIDef {
     PyObject *(*api_is_py_method)(sip_gilstate_t *gil, char *pymc,
             sipSimpleWrapper *sipSelf, const char *cname, const char *mname);
     void (*api_call_hook)(const char *hookname);
-    void (*api_start_thread)(void);
     void (*api_end_thread)(void);
     void (*api_raise_unknown_exception)(void);
     void (*api_raise_type_exception)(const sipTypeDef *td, void *ptr);
@@ -1455,7 +1491,22 @@ typedef struct _sipAPIDef {
             sipSimpleWrapper *, PyObject *method, PyObject *res,
             const char *fmt, ...);
     void (*api_call_error_handler)(sipVirtErrorHandlerFunc,
-            sipSimpleWrapper *);
+            sipSimpleWrapper *, sip_gilstate_t);
+    int (*api_init_mixin)(PyObject *self, PyObject *args, PyObject *kwds,
+            const sipClassTypeDef *ctd);
+    /*
+     * The following are part of the public API.
+     */
+    void *(*api_get_mixin_address)(struct _sipSimpleWrapper *w,
+            const sipTypeDef *td);
+    PyObject *(*api_convert_from_new_pytype)(void *cpp, PyTypeObject *py_type,
+            sipWrapper *owner, sipSimpleWrapper **selfp, const char *fmt, ...);
+    PyObject *(*api_convert_to_typed_array)(void *data, const sipTypeDef *td,
+            const char *format, size_t stride, SIP_SSIZE_T len, int flags);
+    PyObject *(*api_convert_to_array)(void *data, const char *format,
+            SIP_SSIZE_T len, int flags);
+    int (*api_register_proxy_resolver)(const sipTypeDef *td,
+            sipProxyResolverFunc resolver);
 } sipAPIDef;
 
 
@@ -1489,6 +1540,13 @@ typedef struct _sipQtAPI {
  */
 #define SIP_NOT_NONE        0x01    /* Disallow None. */
 #define SIP_NO_CONVERTORS   0x02    /* Disable any type convertors. */
+
+
+/*
+ * These are flags that can be passed to sipConvertToArray().
+ */
+#define SIP_READ_ONLY       0x01    /* The array is read-only. */
+#define SIP_OWNS_MEMORY     0x02    /* The array owns its memory. */
 
 
 /*
@@ -1545,6 +1603,7 @@ typedef struct _sipQtAPI {
 #define SIP_TYPE_ALLOW_NONE 0x0020  /* If the type can handle None. */
 #define SIP_TYPE_STUB       0x0040  /* If the type is a stub. */
 #define SIP_TYPE_NONLAZY    0x0080  /* If the type has a non-lazy method. */
+#define SIP_TYPE_SUPER_INIT 0x0100  /* If the instance's super init should be called. */
 
 
 /*
@@ -1583,6 +1642,7 @@ typedef struct _sipQtAPI {
 #define sipTypeIsStub(td)   ((td)->td_flags & SIP_TYPE_STUB)
 #define sipTypeSetStub(td)  ((td)->td_flags |= SIP_TYPE_STUB)
 #define sipTypeHasNonlazyMethod(td) ((td)->td_flags & SIP_TYPE_NONLAZY)
+#define sipTypeCallSuperInit(td)    ((td)->td_flags & SIP_TYPE_SUPER_INIT)
 
 /*
  * Get various names from the string pool for various data types.
@@ -1629,12 +1689,12 @@ typedef struct _pyqt3ClassTypeDef {
 
 
 /*
- * The following are PyQt4-specific extensions.  In SIP v5 they will be pushed
- * out to a plugin supplied by PyQt4.
+ * The following are PyQt-specific extensions.  In SIP v5 they will be pushed
+ * out to a plugin supplied by PyQt.
  */
 
 /*
- * The description of a Qt signal for PyQt4.
+ * The description of a Qt signal for PyQt.
  */
 typedef struct _pyqt4QtSignal {
     /* The C++ name and signature of the signal. */
@@ -1652,7 +1712,7 @@ typedef struct _pyqt4QtSignal {
 
 
 /*
- * This is the PyQt4-specific extension to the generated class type structure.
+ * This is the PyQt-specific extension to the generated class type structure.
  */
 typedef struct _pyqt4ClassTypeDef {
     /*
@@ -1675,6 +1735,9 @@ typedef struct _pyqt4ClassTypeDef {
      * name.
      */
     const pyqt4QtSignal *qt4_signals;
+
+    /* The name of the interface that the class defines. */
+    const char *qt_interface;
 } pyqt4ClassTypeDef;
 
 

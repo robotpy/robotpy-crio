@@ -15,7 +15,7 @@ include(RobotLayout)
 #
 
 find_package(PythonInterp REQUIRED)
-find_package(SIP 4.14.2 EXACT REQUIRED)
+find_package(SIP 4.15.3 EXACT REQUIRED)
 
 include(SIPMacros)
 set(SIP_INCLUDES .)
