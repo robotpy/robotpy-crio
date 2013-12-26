@@ -58,7 +58,7 @@ add_subdirectory("RobotPy")
 # 
 
 install(FILES README-Dist.txt RENAME README.txt DESTINATION .)
-install(FILES utilities/installer/install.py DESTINATION .)
+install(PROGRAMS utilities/installer/install.py DESTINATION .)
 
 install(DIRECTORY py DESTINATION "${ROBOTPY_DEST_ROOT}")
 install(DIRECTORY utilities DESTINATION .)
