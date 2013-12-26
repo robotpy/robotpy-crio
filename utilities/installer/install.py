@@ -342,8 +342,13 @@ if __name__ == '__main__':
     installer.close()
     
     # New feature: ask the user to reboot after installation?
+    if sys.version_info[0] < 3:
+        ask = raw_input
+    else:
+        ask = input
+    
     while True:
-        yn = input("Reboot robot? [y/n]").lower()
+        yn = ask("Reboot robot? [y/n]").lower()
         if yn == 'y':
             reboot_crio()
             break
