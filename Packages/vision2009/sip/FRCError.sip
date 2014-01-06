@@ -22,7 +22,7 @@
 //
 
 %ModuleCode
-#include <Vision2009/FRCError.h>
+#include <Vision2009/FrcError.h>
 %End
 
 enum {

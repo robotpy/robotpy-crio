@@ -34,6 +34,6 @@ DEALINGS IN THE SOFTWARE.
 
 %Include AxisCamera.sip
 %Include BaeUtilities.sip
-%Include FrcError.sip
+%Include FRCError.sip
 %Include TrackAPI.sip
 %Include VisionAPI.sip

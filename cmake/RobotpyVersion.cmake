@@ -4,7 +4,7 @@
 
 include(GetGitRevisionDescription)
 git_describe(ROBOTPY_VERSION ${CMAKE_CURRENT_SOURCE_DIR} --tags --dirty=-dirty)
-git_describe(WPILIB_VERSION ${CMAKE_CURRENT_SOURCE_DIR}/Packages/WPILib/WPILib --tags --dirty=-dirty)
+git_describe(WPILIB_VERSION ${CMAKE_CURRENT_SOURCE_DIR}/Packages/wpilib/WPILib --tags --dirty=-dirty)
 
 #parse the version information into pieces.
 string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" ROBOTPY_VERSION_MAJOR "${VERSION}")
