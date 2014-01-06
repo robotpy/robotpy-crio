@@ -3,7 +3,8 @@
 *************************************************
 
 :Author: Peter Johnson, FRC Team 294
-:Copyright: Copyright © 2010, Peter Johnson, Ross Light
+:Author: Dustin Spicuzza, FRC Team 2423/1418
+:Copyright: Copyright © 2010, Peter Johnson, Ross Light, Dustin Spicuzza
 
 About RobotPy
 ===============
@@ -30,11 +31,16 @@ Installation for most people
 Download the binary releases from our FIRSTForge site, unpack them, and run
 install.py. Download from: http://firstforge.wpi.edu/sf/projects/robotpy
 
+
+Installation from Source using our build VM 
+===========================================
+
+Using the provided build virtual machine is the easiest way to build RobotPy
+from source. See build-vm/README.txt for instructions.
+
+
 Installation from Source (Advanced Users Only)
 ==============================================
-
-To build the interpreter and loadable modules, you must perform steps 1-4
-at least once after cloning the RobotPy source from git
 
 Step 1: Install Python 
 
@@ -43,7 +49,7 @@ Step 1: Install Python
     
     Note: This step is required for SIP installation
 
-Step 2: Install SIP v4.14.2:
+Step 2: Install SIP v4.15.3:
 
 	The cmake build process currently checks for exact versions of SIP, as
 	the generated code changes from release to release.
