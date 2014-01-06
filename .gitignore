@@ -20,3 +20,6 @@ ctdt.*
 /Packages/vision2009/*.h
 /RobotPy-*
 
+build-vm/Berksfile.lock
+build-vm/.vagrant
+

@@ -1,0 +1,8 @@
+site :opscode
+
+cookbook "apt", "= 1.7.0"
+cookbook "build-essential"
+cookbook "git"
+cookbook "python-sip"
+
+cookbook "frc-gcc-vm", git: "https://github.com/virtuald/frc-gcc-vm"
