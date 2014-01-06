@@ -3,7 +3,9 @@
 *************************************************
 
 :Author: Peter Johnson, FRC Team 294
-:Copyright: Copyright © 2010, Peter Johnson, Ross Light
+:Author: Dustin Spicuzza, FRC Team 2423/1418
+:Copyright: Copyright © 2010, Peter Johnson, Ross Light, Dustin Spicuzza
+
 
 About RobotPy
 ===============
