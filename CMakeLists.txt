@@ -40,7 +40,6 @@ SET(CMAKE_INSTALL_PREFIX "${ROBOTPY_INSTALL_PREFIX}" CACHE INTERNAL "Prefix prep
 # Setup include directories for everything
 #
 
-include_directories("${PROJECT_BINARY_DIR}")
 include_directories(RobotPy/Python RobotPy/Python/Include)
 include_directories(Packages/wpilib Packages/wpilib/WPILib)
 

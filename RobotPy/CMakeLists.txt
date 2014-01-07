@@ -1,4 +1,6 @@
 
+include_directories("${PROJECT_BINARY_DIR}")
+
 file(GLOB_RECURSE SOURCE_CODE *.c *.cpp)
 add_executable(RobotPy.out ${SOURCE_CODE})
 
