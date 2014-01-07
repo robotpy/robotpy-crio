@@ -30,40 +30,41 @@ class AnalogChannel : SensorBase, PIDSource
 public:
 	enum { kAccumulatorModuleNumber = 1 };
 	enum { kAccumulatorNumChannels = 2 };
-	//static const UINT32 kAccumulatorChannels[kAccumulatorNumChannels];
+	//static const uint32_t kAccumulatorChannels[kAccumulatorNumChannels];
 
-	AnalogChannel(UINT8 moduleNumber, UINT32 channel);
-	explicit AnalogChannel(UINT32 channel);
+	AnalogChannel(uint8_t moduleNumber, uint32_t channel);
+	explicit AnalogChannel(uint32_t channel);
 	virtual ~AnalogChannel();
 
 	AnalogModule *GetModule();
 
-	INT16 GetValue();
-	INT32 GetAverageValue();
+	int16_t GetValue();
+	int32_t GetAverageValue();
 
 	float GetVoltage();
 	float GetAverageVoltage();
 
-	UINT8 GetModuleNumber();
-	UINT32 GetChannel();
+	uint8_t GetModuleNumber();
+	uint32_t GetChannel();
 
-	void SetAverageBits(UINT32 bits);
-	UINT32 GetAverageBits();
-	void SetOversampleBits(UINT32 bits);
-	UINT32 GetOversampleBits();
+	void SetAverageBits(uint32_t bits);
+	uint32_t GetAverageBits();
+	void SetOversampleBits(uint32_t bits);
+	uint32_t GetOversampleBits();
 
-	UINT32 GetLSBWeight();
-	INT32 GetOffset();
+	uint32_t GetLSBWeight();
+	int32_t GetOffset();
 
 	bool IsAccumulatorChannel();
 	void InitAccumulator();
-	void SetAccumulatorInitialValue(INT64 value);
+	void SetAccumulatorInitialValue(int64_t value);
 	void ResetAccumulator();
-	void SetAccumulatorCenter(INT32 center);
-	void SetAccumulatorDeadband(INT32 deadband);
-	INT64 GetAccumulatorValue();
-	UINT32 GetAccumulatorCount();
-	void GetAccumulatorOutput(INT64 *value, UINT32 *count);
+	void SetAccumulatorCenter(int32_t center);
+	void SetAccumulatorDeadband(int32_t deadband);
+	int64_t GetAccumulatorValue();
+	uint32_t GetAccumulatorCount();
+	void GetAccumulatorOutput(int64_t *value, uint32_t *count);
+	void SetVoltageForPID(bool shouldUseVoltageForPID);
 
 	double PIDGet();
 };

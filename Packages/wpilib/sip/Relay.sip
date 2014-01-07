@@ -31,8 +31,8 @@ public:
 	enum Value {kOff, kOn, kForward, kReverse};
 	enum Direction {kBothDirections, kForwardOnly, kReverseOnly};
 
-	Relay(UINT32 channel, Direction direction = kBothDirections);
-	Relay(UINT8 moduleNumber, UINT32 channel, Direction direction = kBothDirections);
+	Relay(uint32_t channel, Direction direction = kBothDirections);
+	Relay(uint8_t moduleNumber, uint32_t channel, Direction direction = kBothDirections);
 	virtual ~Relay();
 
 	void Set(Value value);

@@ -27,7 +27,7 @@ class ServerConnectionList : FlushableOutgoingEntryReceiver, ServerAdapterManage
 #include <WPILib/networktables2/server/ServerConnectionList.h>
 %End
 public:
-	ServerConnectionList();
+	ServerConnectionList(ServerIncomingStreamMonitor *Factory);
 	virtual ~ServerConnectionList();
 
 	void add(ServerConnectionAdapter& connection);

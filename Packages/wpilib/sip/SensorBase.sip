@@ -33,19 +33,19 @@ public:
 	SensorBase();
 	virtual ~SensorBase();
 	static void DeleteSingletons();
-	static UINT32 GetDefaultAnalogModule();
-	static UINT32 GetDefaultDigitalModule();
-	static UINT32 GetDefaultSolenoidModule();
-	static bool CheckAnalogModule(UINT8 moduleNumber);
-	static bool CheckDigitalModule(UINT8 moduleNumber);
-	static bool CheckPWMModule(UINT8 moduleNumber);
-	static bool CheckRelayModule(UINT8 moduleNumber);
-	static bool CheckSolenoidModule(UINT8 moduleNumber);
-	static bool CheckDigitalChannel(UINT32 channel);
-	static bool CheckRelayChannel(UINT32 channel);
-	static bool CheckPWMChannel(UINT32 channel);
-	static bool CheckAnalogChannel(UINT32 channel);
-	static bool CheckSolenoidChannel(UINT32 channel);
+	static uint32_t GetDefaultAnalogModule();
+	static uint32_t GetDefaultDigitalModule();
+	static uint32_t GetDefaultSolenoidModule();
+	static bool CheckAnalogModule(uint8_t moduleNumber);
+	static bool CheckDigitalModule(uint8_t moduleNumber);
+	static bool CheckPWMModule(uint8_t moduleNumber);
+	static bool CheckRelayModule(uint8_t moduleNumber);
+	static bool CheckSolenoidModule(uint8_t moduleNumber);
+	static bool CheckDigitalChannel(uint32_t channel);
+	static bool CheckRelayChannel(uint32_t channel);
+	static bool CheckPWMChannel(uint32_t channel);
+	static bool CheckAnalogChannel(uint32_t channel);
+	static bool CheckSolenoidChannel(uint32_t channel);
 
 	enum {
 		kDigitalChannels = 14,

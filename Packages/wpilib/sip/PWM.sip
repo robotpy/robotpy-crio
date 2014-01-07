@@ -30,14 +30,15 @@ class PWM : SensorBase
 public:
 	enum PeriodMultiplier {kPeriodMultiplier_1X = 1, kPeriodMultiplier_2X = 2, kPeriodMultiplier_4X = 4};
 
-	explicit PWM(UINT32 channel);
-	PWM(UINT8 moduleNumber, UINT32 channel);
+	explicit PWM(uint32_t channel);
+	PWM(uint8_t moduleNumber, uint32_t channel);
 	virtual ~PWM();
-	virtual void SetRaw(UINT8 value);
-	virtual UINT8 GetRaw();
+	virtual void SetRaw(uint8_t value);
+	virtual uint8_t GetRaw();
 	void SetPeriodMultiplier(PeriodMultiplier mult);
 	void EnableDeadbandElimination(bool eliminateDeadband);
-	void SetBounds(INT32 max, INT32 deadbandMax, INT32 center, INT32 deadbandMin, INT32 min);
+	void SetBounds(int32_t max, int32_t deadbandMax, int32_t center, int32_t deadbandMin, int32_t min);
+	void SetBounds(double max, double deadBandMax, double center, double deadbandMin, double min);
 
 protected:
 	//virtual void SetPosition(float pos);

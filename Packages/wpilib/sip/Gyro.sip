@@ -38,13 +38,14 @@ public:
 	sipRes = sipCpp->kDefaultVoltsPerDegreePerSecond;
 %End
 
-	Gyro(UINT8 moduleNumber, UINT32 channel);
-	explicit Gyro(UINT32 channel);
+	Gyro(uint8_t moduleNumber, uint32_t channel);
+	explicit Gyro(uint32_t channel);
 	explicit Gyro(AnalogChannel *channel);
 	virtual ~Gyro();
 	virtual float GetAngle();
-	virtual float GetRate();
+	virtual double GetRate();
 	void SetSensitivity(float voltsPerDegreePerSecond);
+	void SetPIDSourceParameter(PIDSourceParameter pidSource);
 	virtual void Reset();
 	
 	double PIDGet();

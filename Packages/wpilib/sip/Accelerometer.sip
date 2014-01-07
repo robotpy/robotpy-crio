@@ -28,8 +28,8 @@ class Accelerometer : SensorBase, PIDSource
 %End
 
 public:
-	explicit Accelerometer(UINT32 channel);
-	Accelerometer(UINT8 moduleNumber, UINT32 channel);
+	explicit Accelerometer(uint32_t channel);
+	Accelerometer(uint8_t moduleNumber, uint32_t channel);
 	explicit Accelerometer(AnalogChannel *channel);
 	virtual ~Accelerometer();
 

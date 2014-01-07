@@ -89,7 +89,7 @@ namespace nUsageReporting
         kFramework_Simple = 2,
     };
 
-    UINT32 report(nUsageReporting::tResourceType resource, UINT8 instanceNumber, UINT8 context = 0, const char *feature = NULL);
+    uint32_t report(nUsageReporting::tResourceType resource, uint8_t instanceNumber, uint8_t context = 0, const char *feature = NULL);
 };
 
-UINT32 FRC_NetworkCommunication_nUsageReporting_report(UINT8 resource, UINT8 instanceNumber, UINT8 context, const char *feature);
+uint32_t FRC_NetworkCommunication_nUsageReporting_report(uint8_t resource, uint8_t instanceNumber, uint8_t context, const char *feature);

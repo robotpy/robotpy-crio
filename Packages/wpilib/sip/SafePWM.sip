@@ -28,8 +28,8 @@ class SafePWM : PWM, MotorSafety
 %End
 
 public:
-	explicit SafePWM(UINT32 channel);
-	SafePWM(UINT8 moduleNumber, UINT32 channel);
+	explicit SafePWM(uint32_t channel);
+	SafePWM(uint8_t moduleNumber, uint32_t channel);
 	~SafePWM();
 	
 	void SetExpiration(float timeout);
@@ -42,7 +42,7 @@ public:
 %MethodCode
 	char result[100];
 	result[0] = '\0';
-	sipCpp->GetDescription(result);
+	sipSelfWasArg ? sipCpp->SafePWM::GetDescription(result) : sipCpp->GetDescription(result);
 	sipRes = result;
 %End
 

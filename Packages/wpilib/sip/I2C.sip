@@ -29,14 +29,14 @@ class I2C : SensorBase
 
 public:
 	virtual ~I2C();
-	bool Transaction(UINT8 *dataToSend, UINT8 sendSize, UINT8 *dataReceived /Out/, UINT8 receiveSize);
+	bool Transaction(uint8_t *dataToSend, uint8_t sendSize, uint8_t *dataReceived /Out/, uint8_t receiveSize);
 	bool AddressOnly();
-	bool Write(UINT8 registerAddress, UINT8 data);
-	bool Read(UINT8 registerAddress, UINT8 count, UINT8 *data /Out/);
-	void Broadcast(UINT8 registerAddress, UINT8 data);
+	bool Write(uint8_t registerAddress, uint8_t data);
+	bool Read(uint8_t registerAddress, uint8_t count, uint8_t *data /Out/);
+	void Broadcast(uint8_t registerAddress, uint8_t data);
 	void SetCompatibilityMode(bool enable);
 
-	bool VerifySensor(UINT8 registerAddress, UINT8 count, const UINT8 *expected);
+	bool VerifySensor(uint8_t registerAddress, uint8_t count, const uint8_t *expected);
 private:
-	I2C(DigitalModule *module, UINT8 deviceAddress);
+	I2C(DigitalModule *module, uint8_t deviceAddress);
 };

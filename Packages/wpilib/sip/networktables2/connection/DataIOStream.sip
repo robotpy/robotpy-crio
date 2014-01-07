@@ -29,14 +29,15 @@ class DataIOStream
 public:
 	DataIOStream(IOStream* stream);
 	virtual ~DataIOStream();
-	void writeByte(UINT8 b);
-	void write2BytesBE(UINT16 s);
+	void writeByte(uint8_t b);
+	void write2BytesBE(uint16_t s);
 	void writeString(std::string& str);
 	void flush();
 	
-	UINT8 readByte();
-	UINT16 read2BytesBE();
+	uint8_t readByte();
+	uint16_t read2BytesBE();
 	std::string* readString();
 	
 	void close();
+	void SetIOStream(IOStream* stream);
 };

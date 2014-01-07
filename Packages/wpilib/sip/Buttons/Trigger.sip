@@ -35,6 +35,8 @@ public:
 	void WhenActive(Command *command /KeepReference/);
 	void WhileActive(Command *command /KeepReference/);
 	void WhenInactive(Command *command /KeepReference/);
+	void CancelWhenActive(Command *command /KeepReference/);
+	void ToggleWhenActive(Command *command /KeepReference/);
 	
 	virtual void InitTable(ITable* table /KeepReference/);
 	virtual ITable* GetTable();

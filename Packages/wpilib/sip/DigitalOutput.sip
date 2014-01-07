@@ -28,11 +28,11 @@ class DigitalOutput : DigitalSource
 %End
 
 public:
-	explicit DigitalOutput(UINT32 channel);
-	DigitalOutput(UINT8 moduleNumber, UINT32 channel);
+	explicit DigitalOutput(uint32_t channel);
+	DigitalOutput(uint8_t moduleNumber, uint32_t channel);
 	virtual ~DigitalOutput();
-	void Set(UINT32 value);
-	UINT32 GetChannel();
+	void Set(uint32_t value);
+	uint32_t GetChannel();
 	void Pulse(float length);
 	bool IsPulsing();
 
@@ -41,8 +41,8 @@ public:
 	void DisablePWM();
 	void UpdateDutyCycle(float dutyCycle);
 
-	virtual UINT32 GetChannelForRouting();
-	virtual UINT32 GetModuleForRouting();
+	virtual uint32_t GetChannelForRouting();
+	virtual uint32_t GetModuleForRouting();
 	virtual bool GetAnalogTriggerForRouting();
 	//virtual void RequestInterrupts(tInterruptHandler handler, void *param);
 	virtual void RequestInterrupts();

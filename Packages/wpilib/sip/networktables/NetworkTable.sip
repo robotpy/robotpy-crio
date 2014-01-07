@@ -60,6 +60,7 @@ class NetworkTable : ITable, IRemote
 
 public:
 	static void Initialize();
+	static void Shutdown();
 	static void SetServerMode();
 	static void SetTableProvider(NetworkTableProvider* provider);
 	static void SetClientMode();

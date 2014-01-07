@@ -28,5 +28,6 @@ class ComplexData
 %End
 public:
 	ComplexData(ComplexEntryType& type);
+	virtual ~ComplexData();
 	ComplexEntryType& GetType();
 };

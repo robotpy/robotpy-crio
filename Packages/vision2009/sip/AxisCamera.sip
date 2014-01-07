@@ -40,7 +40,7 @@ enum FrcvCameraMetric {CAM_STARTS, CAM_STOPS,
 
 enum { CAM_NUM_METRICS=17 };
 
-int Priv_SetWriteFileAllowed(UINT32 enable);
+int Priv_SetWriteFileAllowed(uint32_t enable);
 
 enum ImageResolution { k640x480, k320x240, k160x120 };
 enum ImageRotation { ROT_0 = 0, ROT_180 = 180 };

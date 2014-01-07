@@ -28,5 +28,6 @@ class ITableListener
 %End
 
 public:
+    virtual ~ITableListener();
 	virtual void ValueChanged(ITable* source, const std::string& key, EntryValue value, bool isNew) = 0;
 };

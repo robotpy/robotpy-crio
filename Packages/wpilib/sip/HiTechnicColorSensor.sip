@@ -30,20 +30,20 @@ class HiTechnicColorSensor : SensorBase
 public:
 	enum tColorMode {kActive = 0, kPassive = 1, kRaw = 3};
 	struct RGB {
-		UINT16 red;
-		UINT16 blue;
-		UINT16 green;
+		uint16_t red;
+		uint16_t blue;
+		uint16_t green;
 	};
-	explicit HiTechnicColorSensor(UINT8 moduleNumber);
+	explicit HiTechnicColorSensor(uint8_t moduleNumber);
 	virtual ~HiTechnicColorSensor();
-	UINT8 GetColor();
-	UINT8 GetRed();
-	UINT8 GetGreen();
-	UINT8 GetBlue();
+	uint8_t GetColor();
+	uint8_t GetRed();
+	uint8_t GetGreen();
+	uint8_t GetBlue();
 	RGB GetRGB();
-	UINT16 GetRawRed();
-	UINT16 GetRawGreen();
-	UINT16 GetRawBlue();
+	uint16_t GetRawRed();
+	uint16_t GetRawGreen();
+	uint16_t GetRawBlue();
 	RGB GetRawRGB();
 	void SetMode(tColorMode mode);
 };

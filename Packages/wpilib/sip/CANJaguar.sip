@@ -37,11 +37,11 @@ public:
 	enum NeutralMode {kNeutralMode_Jumper = 0, kNeutralMode_Brake = 1, kNeutralMode_Coast = 2};
 	enum LimitMode {kLimitMode_SwitchInputsOnly = 0, kLimitMode_SoftPositionLimits = 1};
 
-	explicit CANJaguar(UINT8 deviceNumber, ControlMode controlMode = kPercentVbus);
+	explicit CANJaguar(uint8_t deviceNumber, ControlMode controlMode = kPercentVbus);
 	virtual ~CANJaguar();
 
 	virtual float Get();
-	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual void Set(float value, uint8_t syncGroup=0);
 	virtual void Disable();
 
 	virtual void PIDWrite(float output);
@@ -66,20 +66,20 @@ public:
 	double GetSpeed();
 	bool GetForwardLimitOK();
 	bool GetReverseLimitOK();
-	UINT16 GetFaults();
+	uint16_t GetFaults();
 	bool GetPowerCycled();
 	void SetVoltageRampRate(double rampRate);
-	virtual UINT32 GetFirmwareVersion();
-	UINT8 GetHardwareVersion();
+	virtual uint32_t GetFirmwareVersion();
+	uint8_t GetHardwareVersion();
 	void ConfigNeutralMode(NeutralMode mode);
-	void ConfigEncoderCodesPerRev(UINT16 codesPerRev);
-	void ConfigPotentiometerTurns(UINT16 turns);
+	void ConfigEncoderCodesPerRev(uint16_t codesPerRev);
+	void ConfigPotentiometerTurns(uint16_t turns);
 	void ConfigSoftPositionLimits(double forwardLimitPosition, double reverseLimitPosition);
 	void DisableSoftPositionLimits();
 	void ConfigMaxOutputVoltage(double voltage);
 	void ConfigFaultTime(float faultTime);
 
-	static void UpdateSyncGroup(UINT8 syncGroup);
+	static void UpdateSyncGroup(uint8_t syncGroup);
 
 	void SetExpiration(float timeout);
 	float GetExpiration();
@@ -91,7 +91,7 @@ public:
 %MethodCode
 	char result[100];
 	result[0] = '\0';
-	sipCpp->GetDescription(result);
+	sipSelfWasArg ? sipCpp->CANJaguar::GetDescription(result) : sipCpp->GetDescription(result);
 	sipRes = result;
 %End
 protected:

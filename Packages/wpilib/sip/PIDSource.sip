@@ -28,5 +28,8 @@ class PIDSource
 %End
 
 public:
+	
+	enum PIDSourceParameter {kDistance, kRate, kAngle};
+
 	virtual double PIDGet() = 0;
 };

@@ -1,6 +1,6 @@
 // This file is part of the RobotPy wpilib package.
 //
-// Copyright (c) 2010 Peter Johnson
+// Copyright (c) 2014 Dustin Spicuzza
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -21,22 +21,22 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
-class CounterBase
+class AnalogPotentiometer : public Potentiometer, public LiveWindowSendable
 {
 %TypeHeaderCode
-#include <WPILib/CounterBase.h>
+#include <WPILib/AnalogPotentiometer.h>
 %End
-
 public:
-	enum EncodingType {k1X, k2X, k4X};
-
-	virtual ~CounterBase();
-	virtual void Start() = 0;
-	virtual int32_t Get() = 0;
-	virtual void Reset() = 0;
-	virtual void Stop() = 0;
-	virtual double GetPeriod() = 0;
-	virtual void SetMaxPeriod(double maxPeriod) = 0;
-	virtual bool GetStopped() = 0;
-	virtual bool GetDirection() = 0;
+    AnalogPotentiometer(int slot, int channel, double scale, double offset);
+    AnalogPotentiometer(int channel, double scale, double offset);    
+    AnalogPotentiometer(int channel, double scale);
+    AnalogPotentiometer(int channel);
+    double Get();
+    double PIDGet();
+    std::string GetSmartDashboardType();
+    void InitTable(ITable *subtable);
+    void UpdateTable();
+    ITable * GetTable();
+    void StartLiveWindowMode();
+    void StopLiveWindowMode();
 };

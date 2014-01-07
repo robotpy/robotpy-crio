@@ -29,37 +29,32 @@ class ServerConnectionAdapter : ConnectionAdapter, IncomingEntryReceiver, Flusha
 public:
 	ServerConnectionAdapter(IOStream* stream, ServerNetworkTableEntryStore& entryStore, IncomingEntryReceiver& transactionReceiver, ServerAdapterManager& adapterListener, NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
 	virtual ~ServerConnectionAdapter();
-
-	//void badMessage(BadMessageException& e);
-	
-	//void ioException(IOException& e);
 	
 	void shutdown(bool closeStream);
-
-	void keepAlive();
-
-	void clientHello(ProtocolVersion protocolRevision);
-
-	void protocolVersionUnsupported(ProtocolVersion protocolRevision);
-
-	void serverHelloComplete();
-
-	void offerIncomingAssignment(NetworkTableEntry* entry);
-
-	//void offerIncomingUpdate(NetworkTableEntry* entry, SequenceNumber sequenceNumber, EntryValue value);
-
-	NetworkTableEntry* GetEntry(EntryId id);
-
 	void offerOutgoingAssignment(NetworkTableEntry* entry);
-	
 	void offerOutgoingUpdate(NetworkTableEntry* entry);
-
 
 	void flush();
 
 	ServerConnectionState* getConnectionState();
 
 	void ensureAlive();
+	
+	bool IsAdapterListenerClosed();
+	ConnectionAdapter& AsConnectionAdapter();
+	
+protected:
+	
+	bool keepAlive();
+	//void badMessage(BadMessageException& e);
+	//void ioException(IOException& e);
+	void clientHello(ProtocolVersion protocolRevision);
+	void protocolVersionUnsupported(ProtocolVersion protocolRevision);
+	void serverHelloComplete();
+	void offerIncomingAssignment(NetworkTableEntry* entry);
+	//void offerIncomingUpdate(NetworkTableEntry* entry, SequenceNumber sequenceNumber, EntryValue value);
+	NetworkTableEntry* GetEntry(EntryId id);
+	
 private:
 	ServerConnectionAdapter(const ServerConnectionAdapter&);
 };

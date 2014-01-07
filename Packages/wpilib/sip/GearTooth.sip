@@ -35,8 +35,8 @@ public:
 	sipRes = sipCpp->kGearToothThreshold;
 %End
 
-	GearTooth(UINT32 channel, bool directionSensitive = false);
-	GearTooth(UINT8 moduleNumber, UINT32 channel, bool directionSensitive = false);
+	GearTooth(uint32_t channel, bool directionSensitive = false);
+	GearTooth(uint8_t moduleNumber, uint32_t channel, bool directionSensitive = false);
 	GearTooth(DigitalSource *source, bool directionSensitive = false);
 	virtual ~GearTooth();
 	void EnableDirectionSensing(bool directionSensitive);

@@ -28,8 +28,8 @@ class Solenoid : SolenoidBase
 %End
 
 public:
-	explicit Solenoid(UINT32 channel);
-	Solenoid(UINT8 moduleNumber, UINT32 channel);
+	explicit Solenoid(uint32_t channel);
+	Solenoid(uint8_t moduleNumber, uint32_t channel);
 	virtual ~Solenoid();
 	virtual void Set(bool on);
 	virtual bool Get();

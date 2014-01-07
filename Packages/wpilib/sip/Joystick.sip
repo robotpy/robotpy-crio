@@ -44,12 +44,12 @@ public:
 		kTriggerButton, kTopButton, kNumButtonTypes
 	};
 
-	explicit Joystick(UINT32 port);
-	Joystick(UINT32 port, UINT32 numAxisTypes, UINT32 numButtonTypes);
+	explicit Joystick(uint32_t port);
+	Joystick(uint32_t port, uint32_t numAxisTypes, uint32_t numButtonTypes);
 	virtual ~Joystick();
 
-	UINT32 GetAxisChannel(AxisType axis);
-	void SetAxisChannel(AxisType axis, UINT32 channel); 
+	uint32_t GetAxisChannel(AxisType axis);
+	void SetAxisChannel(AxisType axis, uint32_t channel); 
 
 	virtual float GetX(JoystickHand hand = kRightHand);
 	virtual float GetY(JoystickHand hand = kRightHand);
@@ -57,14 +57,14 @@ public:
 	virtual float GetTwist();
 	virtual float GetThrottle();
 	virtual float GetAxis(AxisType axis);
-	float GetRawAxis(UINT32 axis);
+	float GetRawAxis(uint32_t axis);
 
 	virtual bool GetTrigger(JoystickHand hand = kRightHand);
 	virtual bool GetTop(JoystickHand hand = kRightHand);
 	virtual bool GetBumper(JoystickHand hand = kRightHand);
 	virtual bool GetButton(ButtonType button);
-	bool GetRawButton(UINT32 button);
-	static Joystick* GetStickForPort(UINT32 port);
+	bool GetRawButton(uint32_t button);
+	static Joystick* GetStickForPort(uint32_t port);
 	
 	virtual float GetMagnitude();
 	virtual float GetDirectionRadians();

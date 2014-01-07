@@ -38,13 +38,13 @@ public:
 	enum { kJoystickPorts = 4 };
 	enum { kJoystickAxes = 6 };
 
-	float GetStickAxis(UINT32 stick, UINT32 axis);
-	short GetStickButtons(UINT32 stick);
+	float GetStickAxis(uint32_t stick, uint32_t axis);
+	short GetStickButtons(uint32_t stick);
 
-	float GetAnalogIn(UINT32 channel);
-	bool GetDigitalIn(UINT32 channel);
-	void SetDigitalOut(UINT32 channel, bool value);
-	bool GetDigitalOut(UINT32 channel);
+	float GetAnalogIn(uint32_t channel);
+	bool GetDigitalIn(uint32_t channel);
+	void SetDigitalOut(uint32_t channel, bool value);
+	bool GetDigitalOut(uint32_t channel);
 
 	bool IsEnabled();
 	bool IsDisabled();
@@ -54,13 +54,13 @@ public:
 	bool IsNewControlData();
 	bool IsFMSAttached();
 
-	UINT32 GetPacketNumber();
+	uint32_t GetPacketNumber();
 	Alliance GetAlliance();
-	UINT32 GetLocation();
+	uint32_t GetLocation();
 	void WaitForData();
 	double GetMatchTime();
 	float GetBatteryVoltage();
-	UINT16 GetTeamNumber();
+	uint16_t GetTeamNumber();
 
 	Dashboard& GetHighPriorityDashboardPacker();
 	Dashboard& GetLowPriorityDashboardPacker();

@@ -31,6 +31,7 @@ public:
 
 	//EntryValue copyElement(EntryValue value);
 	//void deleteElement(EntryValue value);
+    //void areElementsEqual(EntryValue v1, EntryValue v2);
     
 	//void sendValue(EntryValue value, DataIOStream& os);
 
@@ -38,6 +39,7 @@ public:
     
 	//EntryValue copyValue(EntryValue value);
 	//void deleteValue(EntryValue value);
+	//bool areEqual(EntryValue v1, EntryValue v2);
 
 	//EntryValue internalizeValue(std::string& key, ComplexData& externalRepresentation, EntryValue currentInteralValue);
 

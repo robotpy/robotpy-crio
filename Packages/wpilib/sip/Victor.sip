@@ -28,10 +28,10 @@ class Victor : SafePWM, SpeedController
 %End
 
 public:
-	explicit Victor(UINT32 channel);
-	Victor(UINT8 moduleNumber, UINT32 channel);
+	explicit Victor(uint32_t channel);
+	Victor(uint8_t moduleNumber, uint32_t channel);
 	virtual ~Victor();
-	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual void Set(float value, uint8_t syncGroup=0);
 	virtual float Get();
 	virtual void Disable();
 

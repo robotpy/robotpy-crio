@@ -30,8 +30,8 @@ class DoubleSolenoid : SolenoidBase, LiveWindowSendable, ITableListener
 public:
 	enum Value {kOff, kForward, kReverse};
 
-	explicit DoubleSolenoid(UINT32 forwardChannel, UINT32 reverseChannel);
-	DoubleSolenoid(UINT8 moduleNumber, UINT32 forwardChannel, UINT32 reverseChannel);
+	explicit DoubleSolenoid(uint32_t forwardChannel, uint32_t reverseChannel);
+	DoubleSolenoid(uint8_t moduleNumber, uint32_t forwardChannel, uint32_t reverseChannel);
 	virtual ~DoubleSolenoid();
 	virtual void Set(Value value);
 	virtual Value Get();

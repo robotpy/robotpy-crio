@@ -76,4 +76,7 @@ private:
 	virtual void UpdateTable();
 	virtual void StartLiveWindowMode();
 	virtual void StopLiveWindowMode();
+	
+protected:
+	void Calculate();
 };

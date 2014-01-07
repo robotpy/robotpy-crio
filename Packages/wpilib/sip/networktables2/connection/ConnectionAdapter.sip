@@ -28,7 +28,7 @@ class ConnectionAdapter /Abstract/
 %End
 public:
 	virtual ~ConnectionAdapter();
-	virtual void keepAlive() = 0;
+	virtual bool keepAlive() = 0;
 	virtual void clientHello(ProtocolVersion protocolRevision) = 0;
 	virtual void serverHelloComplete() = 0;
 	virtual void protocolVersionUnsupported(ProtocolVersion protocolRevision) = 0;

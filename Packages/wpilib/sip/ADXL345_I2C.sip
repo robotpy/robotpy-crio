@@ -37,7 +37,7 @@ public:
 		double ZAxis;
 	};
 
-	explicit ADXL345_I2C(UINT8 moduleNumber, DataFormat_Range range=kRange_2G);
+	explicit ADXL345_I2C(uint8_t moduleNumber, DataFormat_Range range=kRange_2G);
 	virtual ~ADXL345_I2C();
 	double GetAcceleration(Axes axis);
 	AllAxes GetAccelerations();

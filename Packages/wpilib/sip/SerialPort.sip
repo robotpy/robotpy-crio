@@ -33,24 +33,24 @@ public:
 	enum FlowControl {kFlowControl_None=0, kFlowControl_XonXoff=1, kFlowControl_RtsCts=2, kFlowControl_DtrDsr=4};
 	enum WriteBufferMode {kFlushOnAccess=1, kFlushWhenFull=2};
 
-	SerialPort(UINT32 baudRate, UINT8 dataBits = 8, Parity parity = kParity_None, StopBits stopBits = kStopBits_One);
+	SerialPort(uint32_t baudRate, uint8_t dataBits = 8, Parity parity = kParity_None, StopBits stopBits = kStopBits_One);
 	~SerialPort();
 	void SetFlowControl(FlowControl flowControl);
 	void EnableTermination(char terminator);
 	void EnableTermination();
 	void DisableTermination();
-	INT32 GetBytesReceived();
+	int32_t GetBytesReceived();
 	void Print(const char *s);
 %MethodCode
 	Py_BEGIN_ALLOW_THREADS
 	sipCpp->Printf("%s", a0);
 	Py_END_ALLOW_THREADS
 %End
-	UINT32 Read(char *buffer, INT32 count);
-	UINT32 Write(const char *buffer, INT32 count);
+	uint32_t Read(char *buffer, int32_t count);
+	uint32_t Write(const char *buffer, int32_t count);
 	void SetTimeout(float timeout);
-	void SetReadBufferSize(UINT32 size);
-	void SetWriteBufferSize(UINT32 size);
+	void SetReadBufferSize(uint32_t size);
+	void SetWriteBufferSize(uint32_t size);
 	void SetWriteBufferMode(WriteBufferMode mode);
 	void Flush();
 	void Reset();

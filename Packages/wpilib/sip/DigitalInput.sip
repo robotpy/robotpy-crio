@@ -28,15 +28,15 @@ class DigitalInput : DigitalSource
 %End
 
 public:
-	explicit DigitalInput(UINT32 channel);
-	DigitalInput(UINT8 moduleNumber, UINT32 channel);
+	explicit DigitalInput(uint32_t channel);
+	DigitalInput(uint8_t moduleNumber, uint32_t channel);
 	virtual ~DigitalInput();
-	UINT32 Get();
-	UINT32 GetChannel();
+	uint32_t Get();
+	uint32_t GetChannel();
 
 	// Digital Source Interface
-	virtual UINT32 GetChannelForRouting();
-	virtual UINT32 GetModuleForRouting();
+	virtual uint32_t GetChannelForRouting();
+	virtual uint32_t GetModuleForRouting();
 	virtual bool GetAnalogTriggerForRouting();
 	
 	// Interruptable Interface

@@ -29,10 +29,10 @@ class Module: SensorBase
 
 public:
 	nLoadOut::tModuleType GetType();
-	UINT8 GetNumber();
-	static Module *GetModule(nLoadOut::tModuleType type, UINT8 number);
+	uint8_t GetNumber();
+	static Module *GetModule(nLoadOut::tModuleType type, uint8_t number);
 
 protected:
-	explicit Module(nLoadOut::tModuleType type, UINT8 number);
+	explicit Module(nLoadOut::tModuleType type, uint8_t number);
 	virtual ~Module();
 };

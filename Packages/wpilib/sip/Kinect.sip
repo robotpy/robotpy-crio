@@ -42,7 +42,7 @@ public:
 	Point4 GetGravityNormal();
 	Skeleton GetSkeleton(int skeletonIndex = 1);
 	Point4 GetPosition(int skeletonIndex = 1);
-	UINT32 GetQuality(int skeletonIndex = 1);
+	uint32_t GetQuality(int skeletonIndex = 1);
 	SkeletonTrackingState GetTrackingState(int skeletonIndex = 1);
 
 	static Kinect *GetInstance();

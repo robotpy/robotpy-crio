@@ -28,10 +28,10 @@ class Jaguar : SafePWM, SpeedController
 %End
 
 public:
-	explicit Jaguar(UINT32 channel);
-	Jaguar(UINT8 moduleNumber, UINT32 channel);
+	explicit Jaguar(uint32_t channel);
+	Jaguar(uint8_t moduleNumber, uint32_t channel);
 	virtual ~Jaguar();
-	virtual void Set(float value, UINT8 syncGroup=0);
+	virtual void Set(float value, uint8_t syncGroup=0);
 	virtual float Get();
 	virtual void Disable();
 

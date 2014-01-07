@@ -28,6 +28,7 @@ class ArrayData : ComplexData
 %End
 public:
     ArrayData(ArrayEntryType& type);
+    virtual ~ArrayData();
     
 protected:
     //EntryValue _get(unsigned int index);

@@ -31,8 +31,11 @@ public:
 			ServerIncomingConnectionListener& incomingListener,
 			ServerAdapterManager& adapterListener,
 			NetworkTableEntryTypeManager& typeManager, NTThreadManager& threadManager);
+	~ServerIncomingStreamMonitor();
 	
 	void start();
 	void stop();
 	void run();
+	
+	void close(ServerConnectionAdapter *Adapter);
 };

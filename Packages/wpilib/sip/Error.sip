@@ -37,12 +37,12 @@ public:
 	const char *GetMessage() const;
 	const char *GetFilename() const;
 	const char *GetFunction() const;
-	UINT32 GetLineNumber() const;
+	uint32_t GetLineNumber() const;
 	const ErrorBase* GetOriginatingObject() const;
 	double GetTime() const;
 	void Clear();
 	void Set(Code code, const char* contextMessage, const char* filename,
-		const char *function, UINT32 lineNumber, const ErrorBase* originatingObject);
+		const char *function, uint32_t lineNumber, const ErrorBase* originatingObject);
 	static void EnableStackTrace(bool enable);
 	static void EnableSuspendOnError(bool enable);
 

@@ -34,12 +34,12 @@ public:
 	virtual float GetZ();
 	virtual float GetTwist();
 	virtual float GetThrottle();
-	virtual float GetRawAxis(UINT32 axis);
+	virtual float GetRawAxis(uint32_t axis);
 
 	virtual bool GetTrigger(JoystickHand hand = kRightHand);
 	virtual bool GetTop(JoystickHand hand = kRightHand);
 	virtual bool GetBumper(JoystickHand hand = kRightHand);
-	virtual bool GetRawButton(UINT32 button);
+	virtual bool GetRawButton(uint32_t button);
 
 private:
 	KinectStick(const KinectStick&);

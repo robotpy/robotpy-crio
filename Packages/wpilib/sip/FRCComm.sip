@@ -25,12 +25,12 @@
 #include <WPILib/NetworkCommunication/FRCComm.h>
 %End
 
-void getFPGAHardwareVersion(UINT16 *fpgaVersion /Out/, UINT32 *fpgaRevision /Out/);
+void getFPGAHardwareVersion(uint16_t *fpgaVersion /Out/, uint32_t *fpgaRevision /Out/);
 //int getCommonControlData(FRCCommonControlData *data /Out/, int wait_ms);
 //int getRecentCommonControlData(FRCCommonControlData *commonData /Out/, int wait_ms);
-int getRecentStatusData(UINT8 *batteryInt /Out/, UINT8 *batteryDec /Out/, UINT8 *dsDigitalOut /Out/, int wait_ms);
-//int getDynamicControlData(UINT8 type, char *dynamicData, INT32 maxLength, int wait_ms);
-int setStatusData(float battery, UINT8 dsDigitalOut, UINT8 updateNumber,
+int getRecentStatusData(uint8_t *batteryInt /Out/, uint8_t *batteryDec /Out/, uint8_t *dsDigitalOut /Out/, int wait_ms);
+//int getDynamicControlData(uint8_t type, char *dynamicData, int32_t maxLength, int wait_ms);
+int setStatusData(float battery, uint8_t dsDigitalOut, uint8_t updateNumber,
 		const char *userDataHigh, int userDataHighLength,
 		const char *userDataLow, int userDataLowLength, int wait_ms);
 int setErrorData(const char *errors, int errorsLength, int wait_ms);
@@ -41,9 +41,9 @@ void setNewDataSem(SEM_ID);
 void setResyncSem(SEM_ID);
 void signalResyncActionDone();
 
-// this UINT32 is really a LVRefNum
-void setNewDataOccurRef(UINT32 refnum);
-void setResyncOccurRef(UINT32 refnum);
+// this uint32_t is really a LVRefNum
+void setNewDataOccurRef(uint32_t refnum);
+void setResyncOccurRef(uint32_t refnum);
 
 //void FRC_NetworkCommunication_getVersionString(char *version /Out/);
 void FRC_NetworkCommunication_observeUserProgramStarting();

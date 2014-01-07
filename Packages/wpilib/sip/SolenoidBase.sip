@@ -29,13 +29,13 @@ class SolenoidBase : SensorBase
 
 public:
 	virtual ~SolenoidBase();
-	UINT8 GetAll();
+	uint8_t GetAll();
 
 protected:
-	explicit SolenoidBase(UINT8 moduleNumber);
-	void Set(UINT8 value, UINT8 mask);
+	explicit SolenoidBase(uint8_t moduleNumber);
+	void Set(uint8_t value, uint8_t mask);
 	virtual void InitSolenoid() = 0;
 
-	//UINT32 m_moduleNumber; ///< Slot number where the module is plugged into the chassis.
+	//uint32_t m_moduleNumber; ///< Slot number where the module is plugged into the chassis.
 	//static Resource *m_allocated;
 };

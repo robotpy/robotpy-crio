@@ -28,16 +28,16 @@ class AnalogTrigger: SensorBase
 %End
 
 public:
-	AnalogTrigger(UINT8 moduleNumber, UINT32 channel);
-	explicit AnalogTrigger(UINT32 channel);
+	AnalogTrigger(uint8_t moduleNumber, uint32_t channel);
+	explicit AnalogTrigger(uint32_t channel);
 	explicit AnalogTrigger(AnalogChannel *channel);
 	virtual ~AnalogTrigger();
 
 	void SetLimitsVoltage(float lower, float upper);
-	void SetLimitsRaw(INT32 lower, INT32 upper);
+	void SetLimitsRaw(int32_t lower, int32_t upper);
 	void SetAveraged(bool useAveragedValue);
 	void SetFiltered(bool useFilteredValue);
-	UINT32 GetIndex();
+	uint32_t GetIndex();
 	bool GetInWindow();
 	bool GetTriggerState();
 	AnalogTriggerOutput *CreateOutput(AnalogTriggerOutput::Type type) /Factory/;

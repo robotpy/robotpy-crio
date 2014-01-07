@@ -34,8 +34,8 @@ public:
 	bool Get();
 
 	// DigitalSource interface
-	virtual UINT32 GetChannelForRouting();
-	virtual UINT32 GetModuleForRouting();
+	virtual uint32_t GetChannelForRouting();
+	virtual uint32_t GetModuleForRouting();
 	virtual bool GetAnalogTriggerForRouting();
 	//virtual void RequestInterrupts(tInterruptHandler handler, void *param=NULL);
 	virtual void RequestInterrupts();

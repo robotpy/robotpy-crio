@@ -29,7 +29,7 @@ class SpeedController : PIDOutput
 
 public:
 	virtual ~SpeedController();
-	virtual void Set(float speed, UINT8 syncGroup=0) = 0;
+	virtual void Set(float speed, uint8_t syncGroup=0) = 0;
 	virtual float Get() = 0;
 	virtual void Disable() = 0;
 };

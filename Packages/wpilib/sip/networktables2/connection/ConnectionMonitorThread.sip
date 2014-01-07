@@ -28,6 +28,7 @@ class ConnectionMonitorThread : PeriodicRunnable
 %End
 public:
 	ConnectionMonitorThread(ConnectionAdapter& adapter, NetworkTableConnection& connection);
+	const NetworkTableConnection *GetNetworkTableConnection() const;
 
 	void run();
 };

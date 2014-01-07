@@ -34,17 +34,17 @@ public:
 	enum Type {kI8, kI16, kI32, kU8, kU16, kU32, kFloat, kDouble, kBoolean, kString, kOther};
 	enum ComplexType {kArray, kCluster};
 
-	void AddI8(INT8 value);
-	void AddI16(INT16 value);
-	void AddI32(INT32 value);
-	void AddU8(UINT8 value);
-	void AddU16(UINT16 value);
-	void AddU32(UINT32 value);
+	void AddI8(int8_t value);
+	void AddI16(int16_t value);
+	void AddI32(int32_t value);
+	void AddU8(uint8_t value);
+	void AddU16(uint16_t value);
+	void AddU32(uint32_t value);
 	void AddFloat(float value);
 	void AddDouble(double value);
 	void AddBoolean(bool value);
 	void AddString(char* value);
-	void AddString(char* value, INT32 length);
+	void AddString(char* value, int32_t length);
 
 	void AddArray();
 	void FinalizeArray();
@@ -56,12 +56,12 @@ public:
 	sipCpp->Printf("%s", a0);
 %End
 
-	INT32 Finalize();
-	void GetStatusBuffer(char** userStatusData /Out,Array/, INT32* userStatusDataSize /Out,ArraySize/);
+	int32_t Finalize();
+	void GetStatusBuffer(char** userStatusData /Out,Array/, int32_t* userStatusDataSize /Out,ArraySize/);
 %MethodCode
             Py_BEGIN_ALLOW_THREADS
-            int a1_int;
-            (sipSelfWasArg ? sipCpp->Dashboard::GetStatusBuffer(&a0,&a1_int) : sipCpp->GetStatusBuffer(&a0,&a1_int));
+            int32_t a1_int;
+            sipSelfWasArg ? sipCpp->Dashboard::GetStatusBuffer(&a0,&a1_int) : sipCpp->GetStatusBuffer(&a0,&a1_int);
             a1 = a1_int;
             Py_END_ALLOW_THREADS
 %End

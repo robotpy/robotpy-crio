@@ -29,15 +29,15 @@ DEALINGS IN THE SOFTWARE.
 
 %DefaultEncoding "UTF-8"
 
-typedef signed char INT8 /PyInt/;
-typedef short INT16;
-typedef int INT32;
-typedef long long INT64;
+typedef signed char int8_t /PyInt/;
+typedef short int16_t;
+typedef long int32_t;
+typedef long long int64_t;
 
-typedef unsigned char UINT8 /PyInt/;
-typedef unsigned short UINT16;
-typedef unsigned int UINT32;
-typedef unsigned long long UINT64;
+typedef unsigned char uint8_t /PyInt/;
+typedef unsigned short uint16_t;
+typedef unsigned long uint32_t;
+typedef unsigned long long uint64_t;
 
 typedef struct semaphore * SEM_ID;
 
@@ -129,6 +129,7 @@ Watchdog *GetWatchdog();
 %Include Buttons/AnalogIOButton.sip
 %Include Buttons/Button.sip
 %Include Buttons/ButtonScheduler.sip
+%Include Buttons/CancelButtonScheduler.sip
 %Include Buttons/DigitalIOButton.sip
 %Include Buttons/HeldButtonScheduler.sip
 %Include Buttons/InternalButton.sip
@@ -136,6 +137,7 @@ Watchdog *GetWatchdog();
 %Include Buttons/NetworkButton.sip
 %Include Buttons/PressedButtonScheduler.sip
 %Include Buttons/ReleasedButtonScheduler.sip
+%Include Buttons/ToggleButtonScheduler.sip
 %Include Buttons/Trigger.sip
 %Include Commands/Command.sip
 %Include Commands/CommandGroup.sip
@@ -149,6 +151,7 @@ Watchdog *GetWatchdog();
 %Include Commands/WaitCommand.sip
 %Include Commands/WaitForChildren.sip
 %Include Commands/WaitUntilCommand.sip
+%Include Interfaces/Potentiometer.sip
 %Include LiveWindow/LiveWindow.sip
 %Include LiveWindow/LiveWindowSendable.sip
 %Include LiveWindow/LiveWindowStatusListener.sip
@@ -220,6 +223,7 @@ Watchdog *GetWatchdog();
 %Include ADXL345_SPI.sip
 %Include AnalogChannel.sip
 %Include AnalogModule.sip
+%Include AnalogPotentiometer.sip
 %Include AnalogTrigger.sip
 %Include AnalogTriggerOutput.sip
 %Include CANJaguar.sip

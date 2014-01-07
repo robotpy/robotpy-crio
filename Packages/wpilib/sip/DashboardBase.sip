@@ -28,10 +28,10 @@ class DashboardBase : ErrorBase
 %End
 
 public:
-	virtual void GetStatusBuffer(char** userStatusData /Out,Array/, INT32* userStatusDataSize /Out,ArraySize/) = 0;
+	virtual void GetStatusBuffer(char** userStatusData /Out,Array/, int32_t* userStatusDataSize /Out,ArraySize/) = 0;
 %MethodCode
             Py_BEGIN_ALLOW_THREADS
-            int a1_int;
+            int32_t a1_int;
             sipCpp->GetStatusBuffer(&a0,&a1_int);
             a1 = a1_int;
             Py_END_ALLOW_THREADS

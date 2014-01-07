@@ -28,7 +28,7 @@ class HiTechnicCompass : SensorBase
 %End
 
 public:
-	explicit HiTechnicCompass(UINT8 moduleNumber);
+	explicit HiTechnicCompass(uint8_t moduleNumber);
 	virtual ~HiTechnicCompass();
 	float GetAngle();
 };

@@ -41,7 +41,7 @@ public:
  
 	void Clear();
     
-        void Print(Line line, INT32 startingColumn, const char *s);
+        void Print(Line line, int32_t startingColumn, const char *s);
 %MethodCode
 	Py_BEGIN_ALLOW_THREADS
 	sipCpp->Printf(a0, a1, "%s", a2);

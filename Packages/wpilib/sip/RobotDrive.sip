@@ -36,9 +36,9 @@ public:
 		kRearRightMotor = 3
 	};
 
-	RobotDrive(UINT32 leftMotorChannel, UINT32 rightMotorChannel);
-	RobotDrive(UINT32 frontLeftMotorChannel, UINT32 rearLeftMotorChannel,
-				UINT32 frontRightMotorChannel, UINT32 rearRightMotorChannel);
+	RobotDrive(uint32_t leftMotorChannel, uint32_t rightMotorChannel);
+	RobotDrive(uint32_t frontLeftMotorChannel, uint32_t rearLeftMotorChannel,
+				uint32_t frontRightMotorChannel, uint32_t rearRightMotorChannel);
 	RobotDrive(SpeedController *leftMotor, SpeedController *rightMotor);
 	RobotDrive(SpeedController *frontLeftMotor, SpeedController *rearLeftMotor,
 				SpeedController *frontRightMotor, SpeedController *rearRightMotor);
@@ -46,10 +46,10 @@ public:
 
 	void Drive(float outputMagnitude, float curve);
 	void TankDrive(GenericHID *leftStick, GenericHID *rightStick, bool squaredInputs = true);
-	void TankDrive(GenericHID *leftStick, UINT32 leftAxis, GenericHID *rightStick, UINT32 rightAxis, bool squaredInputs = true);
+	void TankDrive(GenericHID *leftStick, uint32_t leftAxis, GenericHID *rightStick, uint32_t rightAxis, bool squaredInputs = true);
 	void TankDrive(float leftValue, float rightValue, bool squaredInputs = true);
 	void ArcadeDrive(GenericHID *stick, bool squaredInputs = true);
-	void ArcadeDrive(GenericHID *moveStick, UINT32 moveChannel, GenericHID *rotateStick, UINT32 rotateChannel, bool squaredInputs = true);
+	void ArcadeDrive(GenericHID *moveStick, uint32_t moveChannel, GenericHID *rotateStick, uint32_t rotateChannel, bool squaredInputs = true);
 	void ArcadeDrive(float moveValue, float rotateValue, bool squaredInputs = true);
 	void MecanumDrive_Cartesian(float x, float y, float rotation, float gyroAngle = 0.0);
 	void MecanumDrive_Polar(float magnitude, float direction, float rotation);
@@ -69,7 +69,7 @@ public:
 %MethodCode
 	char result[100];
 	result[0] = '\0';
-	sipCpp->GetDescription(result);
+	sipSelfWasArg ? sipCpp->RobotDrive::GetDescription(result) : sipCpp->GetDescription(result);
 	sipRes = result;
 %End
 

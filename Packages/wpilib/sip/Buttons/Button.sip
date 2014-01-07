@@ -31,4 +31,6 @@ public:
 	virtual void WhenPressed(Command *command /KeepReference/);
 	virtual void WhileHeld(Command *command /KeepReference/);
 	virtual void WhenReleased(Command *command /KeepReference/);
+	virtual void CancelWhenPressed(Command *command /KeepReference/);
+	virtual void ToggleWhenPressed(Command *command /KeepReference/);
 };

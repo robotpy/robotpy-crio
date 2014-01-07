@@ -31,22 +31,22 @@ public:
 	enum Mode {kTwoPulse=0, kSemiperiod=1, kPulseLength=2, kExternalDirection=3};
 
 	Counter();
-	explicit Counter(UINT32 channel);
-	Counter(UINT8 moduleNumber, UINT32 channel);
+	explicit Counter(uint32_t channel);
+	Counter(uint8_t moduleNumber, uint32_t channel);
 	explicit Counter(DigitalSource *source);
 	explicit Counter(AnalogTrigger *trigger);
 	Counter(EncodingType encodingType, DigitalSource *upSource, DigitalSource *downSource, bool inverted);
 	virtual ~Counter();
 
-	void SetUpSource(UINT32 channel);
-	void SetUpSource(UINT8 moduleNumber, UINT32 channel);
+	void SetUpSource(uint32_t channel);
+	void SetUpSource(uint8_t moduleNumber, uint32_t channel);
 	void SetUpSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetUpSource(DigitalSource *source);
 	void SetUpSourceEdge(bool risingEdge, bool fallingEdge);
 	void ClearUpSource();
 
-	void SetDownSource(UINT32 channel);
-	void SetDownSource(UINT8 moduleNumber, UINT32 channel);
+	void SetDownSource(uint32_t channel);
+	void SetDownSource(uint8_t moduleNumber, uint32_t channel);
 	void SetDownSource(AnalogTrigger *analogTrigger, AnalogTriggerOutput::Type triggerType);
 	void SetDownSource(DigitalSource *source);
 	void SetDownSourceEdge(bool risingEdge, bool fallingEdge);
@@ -61,7 +61,7 @@ public:
 
 	// CounterBase interface
 	void Start();
-	INT32 Get();
+	int32_t Get();
 	void Reset();
 	void Stop();
 	double GetPeriod();
@@ -69,5 +69,7 @@ public:
 	void SetUpdateWhenEmpty(bool enabled);
 	bool GetStopped();
 	bool GetDirection();
-    UINT32 GetIndex();
+	void SetSamplesToAverage(int samplesToAverage);
+	int GetSamplesToAverage();
+    uint32_t GetIndex();
 };

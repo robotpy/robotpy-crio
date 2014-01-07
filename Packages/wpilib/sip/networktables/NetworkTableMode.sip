@@ -28,7 +28,9 @@ class NetworkTableMode
 %End
 
 public: 
-	virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) = 0 /Factory/;
+	//virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) = 0 /Factory/;
+private:
+	NetworkTableMode();
 };
 
 class NetworkTableServerMode : NetworkTableMode
@@ -39,7 +41,7 @@ class NetworkTableServerMode : NetworkTableMode
 
 public:
 	NetworkTableServerMode();
-	virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) /Factory/;
+	//virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) /Factory/;
 };
 
 class NetworkTableClientMode : public NetworkTableMode
@@ -50,5 +52,5 @@ class NetworkTableClientMode : public NetworkTableMode
 
 public:
 	NetworkTableClientMode();
-	virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) /Factory/;
+	//virtual NetworkTableNode* CreateNode(const char* ipAddress, int port, NTThreadManager& threadManager) /Factory/;
 };
