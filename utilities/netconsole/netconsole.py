@@ -57,9 +57,19 @@ sock_reader.daemon = True
 stdin_reader.start()
 sock_reader.start()
 
-#send a message out the socket
-def send_msg(msg):
-    out.sendto(line, ('255.255.255.255', UDP_OUT_PORT))
+
+if sys.version_info[0] == 2:
+    def print_str(s):
+        sys.stdout.write(s)
+        
+    def send_msg(msg):
+        out.sendto(line, ('255.255.255.255', UDP_OUT_PORT))
+else:
+    def print_str(s):
+        sys.stdout.write(str(s, 'utf-8'))
+
+    def send_msg(msg):
+        out.sendto(line.encode('utf-8'), ('255.255.255.255', UDP_OUT_PORT))
 
 #main loop
 while True:
@@ -67,7 +77,7 @@ while True:
     except Empty:
         pass # no output
     else:
-        sys.stdout.write(msg)
+        print_str(msg)
     try: line = stdin_queue.get_nowait()
     except Empty:
         pass # no input
