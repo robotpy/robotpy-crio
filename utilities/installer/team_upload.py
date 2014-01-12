@@ -8,6 +8,7 @@ Usage: run install.py, and it will upload to the bot
 
 import os
 import ftplib
+import socket
 import sys
 
 
