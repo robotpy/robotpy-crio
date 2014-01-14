@@ -65,6 +65,7 @@ SET( PY_SOURCE_CODE
 ./Python/Modules/zipimport.c
 #./Python/Modules/zlibmodule.c
 ./Python/Objects/abstract.c
+./Python/Objects/accu.c
 ./Python/Objects/boolobject.c
 ./Python/Objects/bytearrayobject.c
 ./Python/Objects/bytes_methods.c
@@ -153,6 +154,7 @@ SET( PY_SOURCE_CODE
 ./Python/Python/pystrtod.c
 ./Python/Python/pythonrun.c
 ./Python/Python/pytime.c
+./Python/Python/random.c
 ./Python/Python/structmember.c
 ./Python/Python/symtable.c
 ./Python/Python/sysmodule.c

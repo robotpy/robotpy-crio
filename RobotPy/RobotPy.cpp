@@ -35,6 +35,9 @@
 
 #define ROBOTPY_BOOT "/c/py/boot.py"
 
+// needed by posixmodule.c
+char ** environ = NULL;
+
 extern "C" INT32
 RobotPy_Run()
 {
