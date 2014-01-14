@@ -19,14 +19,18 @@
 #define THREAD_STACK_SIZE       0       /* use default stack size */
 #endif
 
-#if (defined(__APPLE__) || defined(__FreeBSD__)) && defined(THREAD_STACK_SIZE) && THREAD_STACK_SIZE == 0
-   /* The default stack size for new threads on OSX is small enough that
-    * we'll get hard crashes instead of 'maximum recursion depth exceeded'
-    * exceptions.
-    *
-    * The default stack size below is the minimal stack size where a
-    * simple recursive function doesn't cause a hard crash.
-    */
+/* The default stack size for new threads on OSX and BSD is small enough that
+ * we'll get hard crashes instead of 'maximum recursion depth exceeded'
+ * exceptions.
+ *
+ * The default stack sizes below are the empirically determined minimal stack
+ * sizes where a simple recursive function doesn't cause a hard crash.
+ */
+#if defined(__APPLE__) && defined(THREAD_STACK_SIZE) && THREAD_STACK_SIZE == 0
+#undef  THREAD_STACK_SIZE
+#define THREAD_STACK_SIZE       0x500000
+#endif
+#if defined(__FreeBSD__) && defined(THREAD_STACK_SIZE) && THREAD_STACK_SIZE == 0
 #undef  THREAD_STACK_SIZE
 #define THREAD_STACK_SIZE       0x400000
 #endif
@@ -258,7 +262,7 @@ PyThread_get_thread_ident(void)
 #endif
 }
 
-void 
+void
 PyThread_exit_thread(void)
 {
     dprintf(("PyThread_exit_thread called\n"));
@@ -305,6 +309,7 @@ PyThread_free_lock(PyThread_type_lock lock)
     sem_t *thelock = (sem_t *)lock;
     int status, error = 0;
 
+    (void) error; /* silence unused-but-set-variable warning */
     dprintf(("PyThread_free_lock(%p) called\n", lock));
 
     if (!thelock)
@@ -337,6 +342,7 @@ PyThread_acquire_lock_timed(PyThread_type_lock lock, PY_TIMEOUT_T microseconds,
     int status, error = 0;
     struct timespec ts;
 
+    (void) error; /* silence unused-but-set-variable warning */
     dprintf(("PyThread_acquire_lock_timed(%p, %lld, %d) called\n",
              lock, microseconds, intr_flag));
 
@@ -387,6 +393,7 @@ PyThread_release_lock(PyThread_type_lock lock)
     sem_t *thelock = (sem_t *)lock;
     int status, error = 0;
 
+    (void) error; /* silence unused-but-set-variable warning */
     dprintf(("PyThread_release_lock(%p) called\n", lock));
 
     status = sem_post(thelock);
@@ -613,7 +620,7 @@ PyThread_delete_key(int key)
 void
 PyThread_delete_key_value(int key)
 {
-    pthread_setspecific(key, (void*)(-1));
+    pthread_setspecific(key, NULL);
 }
 
 int
@@ -623,17 +630,14 @@ PyThread_set_key_value(int key, void *value)
     void *oldValue = pthread_getspecific(key);
     if (oldValue != NULL)
         return 0;
-    fail = pthread_setspecific(key, value == NULL ? (void*)(-1) : value);
+    fail = pthread_setspecific(key, value);
     return fail ? -1 : 0;
 }
 
 void *
 PyThread_get_key_value(int key)
 {
-    void *rv = pthread_getspecific(key);
-    if (rv == (void*)(-1))
-        rv = NULL;
-    return rv;
+    return pthread_getspecific(key);
 }
 
 void

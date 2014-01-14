@@ -55,7 +55,10 @@ raised for division by zero and mod by zero.
 #include "Python.h"
 #include "_math.h"
 
+#ifdef _OSF_SOURCE
+/* OSF1 5.1 doesn't make this available with XOPEN_SOURCE_EXTENDED defined */
 extern double copysign(double, double);
+#endif
 
 /*
    sin(pi*x), giving accurate results for all finite x (especially x
@@ -691,13 +694,13 @@ math_1_to_whatever(PyObject *arg, double (*func) (double),
         return NULL;
     }
     if (Py_IS_INFINITY(r) && Py_IS_FINITE(x)) {
-                    if (can_overflow)
-                            PyErr_SetString(PyExc_OverflowError,
-                                    "math range error"); /* overflow */
-            else
-                PyErr_SetString(PyExc_ValueError,
-                    "math domain error"); /* singularity */
-            return NULL;
+        if (can_overflow)
+            PyErr_SetString(PyExc_OverflowError,
+                            "math range error"); /* overflow */
+        else
+            PyErr_SetString(PyExc_ValueError,
+                            "math domain error"); /* singularity */
+        return NULL;
     }
     if (Py_IS_FINITE(r) && errno && is_error(r))
         /* this branch unnecessary on most platforms */
@@ -1327,14 +1330,13 @@ factorial_odd_part(unsigned long n)
         Py_DECREF(outer);
         outer = tmp;
     }
-
-    goto done;
+    Py_DECREF(inner);
+    return outer;
 
   error:
     Py_DECREF(outer);
-  done:
     Py_DECREF(inner);
-    return outer;
+    return NULL;
 }
 
 /* Lookup table for small factorial values */

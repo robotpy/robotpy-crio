@@ -102,7 +102,7 @@
 
 
 #ifndef VERSION
-#define VERSION "3.2"
+#define VERSION "2.1"
 #endif
 
 #ifndef VPATH
@@ -110,7 +110,11 @@
 #endif
 
 #ifndef PREFIX
-# define PREFIX ""
+#  ifdef __VMS
+#    define PREFIX ""
+#  else
+#    define PREFIX "/usr/local"
+#  endif
 #endif
 
 #ifndef EXEC_PREFIX

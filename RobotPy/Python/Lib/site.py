@@ -214,7 +214,6 @@ def check_enableusersite():
 
     return True
 
-
 def getuserbase():
     """Returns the `user base` directory path.
 
@@ -311,7 +310,6 @@ def addsitepackages(known_paths):
             addsitedir(sitedir, known_paths)
 
     return known_paths
-
 
 def setBEGINLIBPATH():
     """The OS/2 EMX port has optional extension modules that do double duty

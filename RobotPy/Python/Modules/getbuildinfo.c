@@ -52,7 +52,7 @@ Py_GetBuildInfo(void)
         hgid = "default";
     PyOS_snprintf(buildinfo, sizeof(buildinfo),
                   "%s%s%s, %.20s, %.9s", hgid, sep, revision,
-                  __DATE__, __TIME__);
+                  DATE, TIME);
     return buildinfo;
 }
 

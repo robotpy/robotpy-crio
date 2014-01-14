@@ -10,7 +10,6 @@
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#include <ioLib.h>
 
 #define OFF(x) offsetof(PyTracebackObject, x)
 
@@ -104,8 +103,8 @@ newtracebackobject(PyTracebackObject *next, PyFrameObject *frame)
     PyTracebackObject *tb;
     if ((next != NULL && !PyTraceBack_Check(next)) ||
                     frame == NULL || !PyFrame_Check(frame)) {
-            PyErr_BadInternalCall();
-            return NULL;
+        PyErr_BadInternalCall();
+        return NULL;
     }
     tb = PyObject_GC_New(PyTracebackObject, &PyTraceBack_Type);
     if (tb != NULL) {
