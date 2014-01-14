@@ -58,4 +58,4 @@ ADD_ROBOTPY_MODULE(time _time.c timemodule.c)
 ADD_ROBOTPY_MODULE(unicodedata unicodedata.c)
 ADD_ROBOTPY_MODULE(zlib zlibmodule.c)
 
-target_link_libraries(readline.pyd RobotPy_extern) 
+#target_link_libraries(readline.pyd RobotPy_extern) 
