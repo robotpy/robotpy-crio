@@ -18,7 +18,7 @@
 
 #include "Python.h"
 #include "structmember.h"
-#include "hashLib.h"
+#include "hashlib.h"
 
 #ifdef PY_LONG_LONG /* If no PY_LONG_LONG, don't compile anything! */
 

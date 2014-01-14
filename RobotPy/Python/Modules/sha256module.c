@@ -18,7 +18,7 @@
 
 #include "Python.h"
 #include "structmember.h"
-#include "hashLib.h"
+#include "hashlib.h"
 
 
 /* Endianness testing and definitions */

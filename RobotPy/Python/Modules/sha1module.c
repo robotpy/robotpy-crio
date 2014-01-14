@@ -17,7 +17,7 @@
 /* SHA1 objects */
 
 #include "Python.h"
-#include "hashLib.h"
+#include "hashlib.h"
 
 
 /* Some useful types */
