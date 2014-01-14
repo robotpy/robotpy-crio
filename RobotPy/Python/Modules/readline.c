@@ -9,7 +9,10 @@
 #include <setjmp.h>
 #include <signal.h>
 #include <errno.h>
-#include <sys/time.h>
+/*#include <sys/time.h>*/
+
+short ospeed;
+char PC;
 
 #if defined(HAVE_SETLOCALE)
 /* GNU readline() mistakenly sets the LC_CTYPE locale.

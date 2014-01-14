@@ -1200,11 +1200,7 @@ write_compiled_module(PyCodeObject *co, char *cpathname, struct stat *srcstat)
     saved = *dirpath;
     *dirpath = '\0';
 
-#ifdef MS_WINDOWS
-    if (_mkdir(cpathname) < 0 && errno != EEXIST) {
-#else
-    if (mkdir(cpathname, dirmode) < 0 && errno != EEXIST) {
-#endif
+    if (mkdir(cpathname) < 0 && errno != EEXIST) {
         *dirpath = saved;
         if (Py_VerboseFlag)
             PySys_WriteStderr(

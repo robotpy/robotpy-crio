@@ -128,7 +128,7 @@ dev_urandom_noraise(char *buffer, Py_ssize_t size)
 
     assert (0 < size);
 
-    fd = open("/dev/urandom", O_RDONLY);
+    fd = open("/dev/urandom", O_RDONLY, 0777);
     if (fd < 0)
         Py_FatalError("Failed to open /dev/urandom");
 
@@ -161,7 +161,7 @@ dev_urandom_python(char *buffer, Py_ssize_t size)
         return 0;
 
     Py_BEGIN_ALLOW_THREADS
-    fd = open("/dev/urandom", O_RDONLY);
+    fd = open("/dev/urandom", O_RDONLY, 0777);
     Py_END_ALLOW_THREADS
     if (fd < 0)
     {

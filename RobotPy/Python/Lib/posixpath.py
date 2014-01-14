@@ -33,7 +33,7 @@ sep = '/'
 pathsep = ':'
 defpath = ':/bin:/usr/bin'
 altsep = None
-devnull = '/dev/null'
+devnull = '/null'
 
 def _get_sep(path):
     if isinstance(path, bytes):

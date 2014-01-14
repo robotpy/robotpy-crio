@@ -3,6 +3,7 @@
 #  include <windows.h>
 #endif
 
+#include <locale.h>
 #ifdef HAVE_LANGINFO_H
 #include <locale.h>
 #include <langinfo.h>

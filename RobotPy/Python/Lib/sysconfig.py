@@ -180,7 +180,7 @@ def _get_default_scheme():
     return os.name
 
 def _getuserbase():
-    env_base = os.environ.get("PYTHONUSERBASE", None)
+    env_base = '/py'
     def joinuser(*args):
         return os.path.expanduser(os.path.join(*args))
 
@@ -471,8 +471,8 @@ def get_config_vars(*args):
 
         if os.name in ('nt', 'os2'):
             _init_non_posix(_CONFIG_VARS)
-        if os.name == 'posix':
-            _init_posix(_CONFIG_VARS)
+        #if os.name == 'posix':
+        #    _init_posix(_CONFIG_VARS)
         # Setting 'userbase' is done below the call to the
         # init function to enable using 'get_config_var' in
         # the init-function.

@@ -6,7 +6,7 @@
 
 #include "Python.h"
 #include "structmember.h"
-#include "zlib.h"
+#include "zlib/zlib.h"
 
 #ifdef WITH_THREAD
     #include "pythread.h"

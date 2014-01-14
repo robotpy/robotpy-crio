@@ -675,7 +675,7 @@ PyGILState_Ensure(void)
             Py_FatalError("Couldn't create thread-state for new thread");
         /* This is our thread state!  We'll need to delete it in the
            matching call to PyGILState_Release(). */
-        tcur->gilstate_counter = 0;
+        /*tcur->gilstate_counter = 0;*/
         current = 0; /* new thread state is never current */
     }
     else

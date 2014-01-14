@@ -24,7 +24,7 @@ enum opcode {
     BININT1         = 'K',
     LONG            = 'L',
     BININT2         = 'M',
-    NONE            = 'N',
+    OPCNONE         = 'N',
     PERSID          = 'P',
     BINPERSID       = 'Q',
     REDUCE          = 'R',
@@ -43,7 +43,7 @@ enum opcode {
     BINGET          = 'h',
     INST            = 'i',
     LONG_BINGET     = 'j',
-    LIST            = 'l',
+    OPCLIST         = 'l',
     EMPTY_LIST      = ']',
     OBJ             = 'o',
     PUT             = 'p',
@@ -2260,7 +2260,7 @@ save_list(PicklerObject *self, PyObject *obj)
     }
     else {
         header[0] = MARK;
-        header[1] = LIST;
+        header[1] = OPCLIST;
         len = 2;
     }
 
@@ -5272,7 +5272,7 @@ load(UnpicklerObject *self)
             break;
 
         switch ((enum opcode)s[0]) {
-        OP(NONE, load_none)
+        OP(OPCNONE, load_none)
         OP(BININT, load_binint)
         OP(BININT1, load_binint1)
         OP(BININT2, load_binint2)
@@ -5295,7 +5295,7 @@ load(UnpicklerObject *self)
         OP_ARG(TUPLE3, load_counted_tuple, 3)
         OP(TUPLE, load_tuple)
         OP(EMPTY_LIST, load_empty_list)
-        OP(LIST, load_list)
+        OP(OPCLIST, load_list)
         OP(EMPTY_DICT, load_empty_dict)
         OP(DICT, load_dict)
         OP(OBJ, load_obj)

@@ -362,7 +362,7 @@ typedef size_t Py_uhash_t;
 /* NB caller must include <sys/types.h> */
 
 #ifdef HAVE_SYS_SELECT_H
-#include <sys/select.h>
+#include <selectLib.h>
 #endif /* !HAVE_SYS_SELECT_H */
 
 /*******************************
