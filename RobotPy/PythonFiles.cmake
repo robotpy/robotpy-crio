@@ -37,6 +37,8 @@ SET( PY_SOURCE_CODE
 #./Python/Modules/expat/xmlparse.c
 #./Python/Modules/expat/xmlrole.c
 #./Python/Modules/expat/xmltok.c
+#./Python/Modules/expat/xmltok_impl.c
+#./Python/Modules/expat/xmltok_ns.c
 #./Python/Modules/fcntlmodule.c
 #./Python/Modules/fpectlmodule.c
 ./Python/Modules/gcmodule.c
