@@ -1,9 +1,8 @@
 
 add_definitions(-DHAVE_CONFIG_H)
-include_directories(readline)
+include_directories("." "readline")
 
-get_filename_component(MODULE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
-add_executable(${MODULE_NAME}.pyd readline/bind.c
+add_library(RobotPy_extern STATIC readline/bind.c
                                   readline/callback.c
                                   readline/compat.c
                                   readline/complete.c
@@ -37,7 +36,4 @@ add_executable(${MODULE_NAME}.pyd readline/bind.c
                                   readline/xmalloc.c
                                   termcap/termcap.c
                                   termcap/tgoto.c
-                                  termcap/tputs.c
-                                  readline.c)
-
-install(TARGETS ${MODULE_NAME}.pyd DESTINATION robot/lib/python3.2/lib-dynload)
+                                  termcap/tputs.c)

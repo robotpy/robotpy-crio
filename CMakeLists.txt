@@ -48,7 +48,6 @@ include_directories(Packages/wpilib Packages/wpilib/WPILib)
 #
 
 add_subdirectory("FRC_UserProgram")
-add_subdirectory("Modules")
 add_subdirectory("Packages")
 add_subdirectory("RobotPy")
 
