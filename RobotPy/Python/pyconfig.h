@@ -999,7 +999,11 @@
 #define PY_UNICODE_TYPE unsigned short
 
 /* Define if you want to build an interpreter with many run-time checks. */
+#ifndef NDEBUG
+#define Py_DEBUG
+#else 
 #undef Py_DEBUG
+#endif
 
 /* Defined if Python is built as a shared library. */
 #undef Py_ENABLE_SHARED
