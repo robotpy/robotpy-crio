@@ -2,9 +2,14 @@
 # haven't tested with other versions, but 2.8.7 works
 cmake_minimum_required(VERSION 2.8.7)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-set(CMAKE_BUILD_TYPE "Release")
+
 
 project("RobotPy")
+
+# If the user doesn't manually specify a build type, use 'Release'
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+  SET(CMAKE_BUILD_TYPE "Release")
+endif()
 
 include(RobotpyVersion)
 include(RobotLayout)
