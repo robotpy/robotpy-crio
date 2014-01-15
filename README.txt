@@ -68,10 +68,11 @@ Step 3: Build the source tree
 	frcmake is a wrapper around cmake that sets the build environment up to
 	build for the cRio.
 	
-	A Vagrant-based VM is available that you can use to install the needed gcc
-	build environment and frcmake scripts. See the following URL:
+	RobotPy currently uses the GCC 4.8 compiler distributed at the following
+	URL to build the binary distribution. Wind River may be used, but we haven't
+	built it with Wind River, so you may run into trouble using it with frcmake.
 	
-		https://github.com/virtuald/frc-gcc-vm.git 
+		http://firstforge.wpi.edu/sf/projects/c--11_toochain
 		
 	Create a directory (the 'binary directory') outside of the RobotPy source 
 	tree, and run this:
@@ -98,6 +99,17 @@ Step 4: Robot Installation
     
     Alternatively, you can FTP the contents of the 'robot' directory to your
     cRio directly. However, install.py is easier.
+    
+Development tools
+=================
+
+See the utilities directory for useful development tools that may make
+your RobotPy development experience easier. 
+
+The pyfrc python package is a recommended development package that provides
+unit testing and other capabilities for your robot code. 
+
+	https://github.com/robotpy/pyfrc
 
 Technical Overview
 ====================

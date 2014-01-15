@@ -31,6 +31,25 @@ to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``, where XXYY
 is your team number).  Copy all files and directories in the distribution's
 ``robot`` directory to the root (top level) directory on the robot.
 
+Getting started
+===============
+
+The wiki has some documentation on how to get started with RobotPy. 
+
+http://firstforge.wpi.edu/sf/wiki/do/viewPage/projects.robotpy/wiki/HomePage
+
+Development tools
+=================
+
+See the utilities directory for useful development tools that may make
+your RobotPy development experience easier. 
+
+The pyfrc python package is a recommended development package that provides
+unit testing and other capabilities for your robot code. 
+
+	https://github.com/robotpy/pyfrc
+
+
 WPILib License
 ================
 Copyright (c) 2009 FIRST
