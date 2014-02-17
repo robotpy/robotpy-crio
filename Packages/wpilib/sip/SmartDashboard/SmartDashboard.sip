@@ -28,7 +28,7 @@ class SmartDashboard : SensorBase
 %End
 
 public:
-	static void init();
+	static void init() throw(IllegalStateException, IOException);
 	
 	static void PutData(std::string key, Sendable *data);
 	static void PutData(NamedSendable *value);
