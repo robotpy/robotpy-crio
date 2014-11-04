@@ -23,9 +23,6 @@ reported in that configuration. Search the internet for more details.
      issues with older versions of virtualbox, so stay newer
 2. Install Vagrant [http://www.vagrantup.com]
    * Version 1.2 or greater should work, but definitely get at least 1.3.5
-3. You need to install the correct vagrant plugins:
-       
-       $ vagrant plugin install vagrant-berkshelf 
 
 
 Start the VM
