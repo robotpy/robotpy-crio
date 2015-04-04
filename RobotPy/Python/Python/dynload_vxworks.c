@@ -9,10 +9,13 @@
 #include <symLib.h>
 #include <sysSymTbl.h>
 
-const struct filedescr _PyImport_DynLoadFiletab[] = {
-        {".pyd", "rb", C_EXTENSION},
-        {"module.pyd", "rb", C_EXTENSION},
-	{0, 0}
+const char *_PyImport_DynLoadFiletab[] = {
+#ifdef _DEBUG
+    "_d.pyd",
+#else
+    ".pyd",
+#endif
+    NULL
 };
 
 dl_funcptr _PyImport_GetDynLoadFunc(const char *fqname, const char *shortname,

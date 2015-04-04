@@ -95,6 +95,10 @@ Local naming conventions:
 #include "Python.h"
 #include "structmember.h"
 
+#include "sockLib.h"
+#include "hostLib.h"
+#include "inetLib.h"
+
 /* Socket object documentation */
 PyDoc_STRVAR(sock_doc,
 "socket(family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None) -> socket object\n\
@@ -4234,7 +4238,7 @@ gethost_common(struct hostent *h, struct sockaddr *addr, int alen, int af)
 
     if (h == NULL) {
         /* Let's get real error message to return */
-        set_herror(h_errno);
+        /*set_herror(h_errno);*/
         return NULL;
     }
 
@@ -4575,33 +4579,6 @@ PyDoc_STRVAR(getservbyport_doc,
 Return the service name from a port number and protocol name.\n\
 The optional protocol name, if given, should be 'tcp' or 'udp',\n\
 otherwise any protocol will match.");
-
-/* Python interface to getprotobyname(name).
-   This only returns the protocol number, since the other info is
-   already known or not useful (like the list of aliases). */
-
-/*ARGSUSED*/
-static PyObject *
-socket_getprotobyname(PyObject *self, PyObject *args)
-{
-    char *name;
-    struct protoent *sp;
-    if (!PyArg_ParseTuple(args, "s:getprotobyname", &name))
-        return NULL;
-    Py_BEGIN_ALLOW_THREADS
-    sp = getprotobyname(name);
-    Py_END_ALLOW_THREADS
-    if (sp == NULL) {
-        PyErr_SetString(PyExc_OSError, "protocol not found");
-        return NULL;
-    }
-    return PyLong_FromLong((long) sp->p_proto);
-}
-
-PyDoc_STRVAR(getprotobyname_doc,
-"getprotobyname(name) -> integer\n\
-\n\
-Return the protocol number for the named protocol.  (Rarely used.)");
 
 
 #ifndef NO_DUP
@@ -5623,8 +5600,6 @@ static PyMethodDef socket_methods[] = {
      METH_VARARGS, getservbyname_doc},
     {"getservbyport",           socket_getservbyport,
      METH_VARARGS, getservbyport_doc},
-    {"getprotobyname",          socket_getprotobyname,
-     METH_VARARGS, getprotobyname_doc},
 #ifndef NO_DUP
     {"dup",                     socket_dup,
      METH_O, dup_doc},

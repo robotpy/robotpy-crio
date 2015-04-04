@@ -4773,7 +4773,7 @@ local_timezone(PyDateTime_DateTime *utc_time)
 #ifdef HAVE_STRUCT_TM_TM_ZONE
     zone = timep->tm_zone;
     delta = new_delta(0, timep->tm_gmtoff, 0, 1);
-#else /* HAVE_STRUCT_TM_TM_ZONE */
+#elif defined(HAVE_TZNAME) /* HAVE_STRUCT_TM_TM_ZONE */
     {
         PyObject *local_time;
         local_time = new_datetime(timep->tm_year + 1900, timep->tm_mon + 1,
@@ -4790,6 +4790,10 @@ local_timezone(PyDateTime_DateTime *utc_time)
         else
             zone = tzname[0];
         Py_DECREF(local_time);
+    }
+#else
+    {
+      
     }
 #endif /* HAVE_STRUCT_TM_TM_ZONE */
     if (zone != NULL) {

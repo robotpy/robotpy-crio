@@ -786,7 +786,7 @@ _Py_open(const char *pathname, int flags)
 #else
     atomic_flag_works = NULL;
 #endif
-    fd = open(pathname, flags);
+    fd = open(pathname, flags, 0777);
     if (fd < 0)
         return fd;
 

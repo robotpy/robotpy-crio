@@ -71,12 +71,6 @@ RobotPy_Run()
 	}
         PyObject *v = PyRun_File(f, ROBOTPY_BOOT, Py_file_input, d, d);
 	fclose(f);
-	if (v == NULL && PyErr_Occurred() && PyErr_ExceptionMatches(PyExc_SystemRestart))
-	{
-	    puts(ROBOTPY_BOOT " signaled restart");
-	    Py_Finalize();
-	    return 0; // will force restart at outer layer
-	}
 	Py_DECREF(v);
     }
     else

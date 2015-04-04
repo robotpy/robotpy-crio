@@ -55,6 +55,8 @@ raised for division by zero and mod by zero.
 #include "Python.h"
 #include "_math.h"
 
+extern double copysign(double, double);
+
 /*
    sin(pi*x), giving accurate results for all finite x (especially x
    integral or close to an integer).  This is here for use in the
