@@ -21,7 +21,7 @@ PyAPI_FUNC(int) PyNode_AddChild(node *n, int type,
                                       char *str, int lineno, int col_offset);
 PyAPI_FUNC(void) PyNode_Free(node *n);
 #ifndef Py_LIMITED_API
-Py_ssize_t _PyNode_SizeOf(node *n);
+PyAPI_FUNC(Py_ssize_t) _PyNode_SizeOf(node *n);
 #endif
 
 /* Node access functions */
@@ -31,6 +31,7 @@ Py_ssize_t _PyNode_SizeOf(node *n);
 #define RCHILD(n, i)	(CHILD(n, NCH(n) + i))
 #define TYPE(n)		((n)->n_type)
 #define STR(n)		((n)->n_str)
+#define LINENO(n)       ((n)->n_lineno)
 
 /* Assert that the type of a node is what we expect */
 #define REQ(n, type) assert(TYPE(n) == (type))

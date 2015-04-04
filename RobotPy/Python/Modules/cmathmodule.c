@@ -192,7 +192,7 @@ c_acosh(Py_complex z)
 PyDoc_STRVAR(c_acosh_doc,
 "acosh(x)\n"
 "\n"
-"Return the hyperbolic arccosine of x.");
+"Return the inverse hyperbolic cosine of x.");
 
 
 static Py_complex
@@ -249,7 +249,7 @@ c_asinh(Py_complex z)
 PyDoc_STRVAR(c_asinh_doc,
 "asinh(x)\n"
 "\n"
-"Return the hyperbolic arc sine of x.");
+"Return the inverse hyperbolic sine of x.");
 
 
 static Py_complex
@@ -353,7 +353,7 @@ c_atanh(Py_complex z)
 PyDoc_STRVAR(c_atanh_doc,
 "atanh(x)\n"
 "\n"
-"Return the hyperbolic arc tangent of x.");
+"Return the inverse hyperbolic tangent of x.");
 
 
 static Py_complex
@@ -1006,6 +1006,13 @@ cmath_rect(PyObject *self, PyObject *args)
         else
             errno = 0;
     }
+    else if (phi == 0.0) {
+        /* Workaround for buggy results with phi=-0.0 on OS X 10.8.  See
+           bugs.python.org/issue18513. */
+        z.real = r;
+        z.imag = r * phi;
+        errno = 0;
+    }
     else {
         z.real = r * cos(phi);
         z.imag = r * sin(phi);
@@ -1053,7 +1060,7 @@ static PyObject *
 cmath_isinf(PyObject *self, PyObject *args)
 {
     Py_complex z;
-    if (!PyArg_ParseTuple(args, "D:isnan", &z))
+    if (!PyArg_ParseTuple(args, "D:isinf", &z))
         return NULL;
     return PyBool_FromLong(Py_IS_INFINITY(z.real) ||
                            Py_IS_INFINITY(z.imag));

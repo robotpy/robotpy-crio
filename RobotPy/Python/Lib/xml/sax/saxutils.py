@@ -209,11 +209,15 @@ class XMLGenerator(handler.ContentHandler):
     def characters(self, content):
         if content:
             self._finish_pending_start_element()
+            if not isinstance(content, str):
+                content = str(content, self._encoding)
             self._write(escape(content))
 
     def ignorableWhitespace(self, content):
         if content:
             self._finish_pending_start_element()
+            if not isinstance(content, str):
+                content = str(content, self._encoding)
             self._write(content)
 
     def processingInstruction(self, target, data):
@@ -342,7 +346,7 @@ def prepare_input_source(source, base=""):
         f = source
         source = xmlreader.InputSource()
         source.setByteStream(f)
-        if hasattr(f, "name"):
+        if hasattr(f, "name") and isinstance(f.name, str):
             source.setSystemId(f.name)
 
     if source.getByteStream() is None:

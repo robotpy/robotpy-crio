@@ -64,16 +64,6 @@ class Base(object):
 
     __hash__ = None # For Py3 compatibility.
 
-    def __ne__(self, other):
-        """
-        Compare two nodes for inequality.
-
-        This calls the method _eq().
-        """
-        if self.__class__ is not other.__class__:
-            return NotImplemented
-        return not self._eq(other)
-
     def _eq(self, other):
         """
         Compare two nodes for equality.
@@ -108,26 +98,6 @@ class Base(object):
         This must be implemented by the concrete subclass.
         """
         raise NotImplementedError
-
-    def set_prefix(self, prefix):
-        """
-        Set the prefix for the node (see Leaf class).
-
-        DEPRECATED; use the prefix property directly.
-        """
-        warnings.warn("set_prefix() is deprecated; use the prefix property",
-                      DeprecationWarning, stacklevel=2)
-        self.prefix = prefix
-
-    def get_prefix(self):
-        """
-        Return the prefix for the node (see Leaf class).
-
-        DEPRECATED; use the prefix property directly.
-        """
-        warnings.warn("get_prefix() is deprecated; use the prefix property",
-                      DeprecationWarning, stacklevel=2)
-        return self.prefix
 
     def replace(self, new):
         """Replace this node with a new one in the parent."""
@@ -214,8 +184,7 @@ class Base(object):
 
     def leaves(self):
         for child in self.children:
-            for x in child.leaves():
-                yield x
+            yield from child.leaves()
 
     def depth(self):
         if self.parent is None:
@@ -294,16 +263,14 @@ class Node(Base):
     def post_order(self):
         """Return a post-order iterator for the tree."""
         for child in self.children:
-            for node in child.post_order():
-                yield node
+            yield from child.post_order()
         yield self
 
     def pre_order(self):
         """Return a pre-order iterator for the tree."""
         yield self
         for child in self.children:
-            for node in child.pre_order():
-                yield node
+            yield from child.pre_order()
 
     def _prefix_getter(self):
         """

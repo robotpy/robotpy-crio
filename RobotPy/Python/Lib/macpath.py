@@ -53,7 +53,7 @@ def join(s, *p):
     colon = _get_colon(s)
     path = s
     for t in p:
-        if (not s) or isabs(t):
+        if (not path) or isabs(t):
             path = t
             continue
         if t[:1] == colon:
@@ -127,7 +127,7 @@ def lexists(path):
 
     try:
         st = os.lstat(path)
-    except os.error:
+    except OSError:
         return False
     return True
 
