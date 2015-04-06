@@ -136,49 +136,10 @@ corresponding Unix manual entries for more information on calls.");
 
 /* Various compilers have only certain posix functions */
 /* XXX Gosh I wish these were all moved into pyconfig.h */
-#if defined(__WATCOMC__) && !defined(__QNX__)           /* Watcom compiler */
-#define HAVE_OPENDIR    1
-#define HAVE_SYSTEM     1
-#include <process.h>
-#else
-#ifdef __BORLANDC__             /* Borland compiler */
-#define HAVE_EXECV      1
-#define HAVE_OPENDIR    1
-#define HAVE_PIPE       1
-#define HAVE_SYSTEM     1
-#define HAVE_WAIT       1
-#else
-#ifdef _MSC_VER         /* Microsoft compiler */
-#define HAVE_GETPPID    1
-#define HAVE_GETLOGIN   1
-#define HAVE_SPAWNV     1
-#define HAVE_EXECV      1
-#define HAVE_PIPE       1
-#define HAVE_SYSTEM     1
-#define HAVE_CWAIT      1
-#define HAVE_FSYNC      1
-#define fsync _commit
-#else
-/* Unix functions that the configure script doesn't check for */
-#define HAVE_EXECV      1
-#define HAVE_FORK       1
-#if defined(__USLC__) && defined(__SCO_VERSION__)       /* SCO UDK Compiler */
-#define HAVE_FORK1      1
-#endif
-#define HAVE_GETEGID    1
-#define HAVE_GETEUID    1
-#define HAVE_GETGID     1
-#define HAVE_GETPPID    1
-#define HAVE_GETUID     1
-#define HAVE_KILL       1
-#define HAVE_OPENDIR    1
-#define HAVE_PIPE       1
-#define HAVE_SYSTEM     1
-#define HAVE_WAIT       1
-#define HAVE_TTYNAME    1
-#endif  /* _MSC_VER */
-#endif  /* __BORLANDC__ */
-#endif  /* ! __WATCOMC__ || __QNX__ */
+#define HAVE_GETCWD 1
+#define HAVE_KILL 1
+#define HAVE_OPENDIR 1
+#define HAVE_SYSTEM 1
 
 
 /*[clinic input]
@@ -4480,13 +4441,8 @@ Set the current numeric umask and return the previous umask.");
 static PyObject *
 posix_umask(PyObject *self, PyObject *args)
 {
-    int i;
-    if (!PyArg_ParseTuple(args, "i:umask", &i))
-        return NULL;
-    i = (int)umask(i);
-    if (i < 0)
-        return posix_error();
-    return PyLong_FromLong((long)i);
+    PyErr_SetString(PyExc_NotImplementedError, "not available");
+    return NULL;
 }
 
 #ifdef MS_WINDOWS
@@ -5058,7 +5014,7 @@ posix__exit(PyObject *self, PyObject *args)
     int sts;
     if (!PyArg_ParseTuple(args, "i:_exit", &sts))
         return NULL;
-    _exit(sts);
+    exit(sts);
     return NULL; /* Make gcc -Wall happy */
 }
 

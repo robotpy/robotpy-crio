@@ -13,7 +13,7 @@ About RobotPy
 Robotics Competition`_.  Teams can use this to write their robot code in
 Python, a powerful dynamic programming language.
 
-.. _RobotPy: http://firstforge.wpi.edu/sf/projects/robotpy
+.. _RobotPy: http://robotpy.github.io
 .. _Python: http://www.python.org/
 .. _FIRST Robotics Competition: http://www.usfirst.org/
 
@@ -28,8 +28,11 @@ Features
 Installation for most people
 ============================
 
-Download the binary releases from our FIRSTForge site, unpack them, and run
-install.py. Download from: http://firstforge.wpi.edu/sf/projects/robotpy
+Download the binary releases from our github site, unpack them, and run
+install.py. Download from: http://github.com/robotpy/robotpy-crio
+
+This release is for the older cRio/cRio-II controller with the latest FRCimage
+on it.
 
 
 Installation from Source using our build VM 
@@ -154,6 +157,7 @@ RobotPy
 ~~~~~~~~~
 
 Copyright © 2010 Peter Johnson
+Copyright © 2015 Dustin Spicuzza
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

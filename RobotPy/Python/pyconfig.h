@@ -197,7 +197,7 @@
 #define HAVE_DUP2 1
 
 /* Define to 1 if you have the `dup3' function. */
-#define HAVE_DUP3 1
+#undef HAVE_DUP3
 
 /* Defined when any dynamic module loading is enabled. */
 #define HAVE_DYNAMIC_LOADING 1
@@ -330,7 +330,7 @@
 #undef HAVE_GETC_UNLOCKED
 
 /* Define to 1 if you have the `getentropy' function. */
-#undef HAVE_GETENTROPY
+#define HAVE_GETENTROPY 1
 
 /* Define to 1 if you have the `getgrouplist' function. */
 #undef HAVE_GETGROUPLIST
@@ -463,7 +463,7 @@
 #undef HAVE_KQUEUE
 
 /* Define to 1 if you have the <langinfo.h> header file. */
-#undef HAVE_LANGINFO_H
+#define HAVE_LANGINFO_H 1
 
 /* Defined to enable large file support when an off_t is bigger than a long
    and long long is available and at least as big as an off_t. You may need to
@@ -544,10 +544,11 @@
 #define HAVE_LONG_LONG 1
 
 /* Define to 1 if you have the `lstat' function. */
-#undef HAVE_LSTAT
+#define HAVE_LSTAT 1
+#define lstat(p, b) stat(p, b)
 
 /* Define to 1 if you have the `lutimes' function. */
-#define HAVE_LUTIMES 1
+#undef HAVE_LUTIMES
 
 /* Define this if you have the makedev macro. */
 #undef HAVE_MAKEDEV
@@ -661,7 +662,7 @@
 #undef HAVE_PTHREAD_INIT
 
 /* Define to 1 if you have the `pthread_kill' function. */
-#undef HAVE_PTHREAD_KILL
+#define HAVE_PTHREAD_KILL 1
 
 /* Define to 1 if you have the `pthread_sigmask' function. */
 #define HAVE_PTHREAD_SIGMASK 1
@@ -1517,6 +1518,7 @@
 #endif
 
 #define PREFIX ""
+#define VERSION "3.4"
 
 #endif /*Py_PYCONFIG_H*/
 

@@ -460,7 +460,7 @@ faulthandler_thread(void *unused)
         ok = (errmsg == NULL);
 
         if (thread.exit)
-            _exit(1);
+            exit(1);
     } while (ok && thread.repeat);
 
     /* The only way out */

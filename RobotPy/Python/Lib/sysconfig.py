@@ -185,7 +185,7 @@ def _get_default_scheme():
 
 
 def _getuserbase():
-    env_base = os.environ.get("PYTHONUSERBASE", None)
+    env_base = '/py'
 
     def joinuser(*args):
         return os.path.expanduser(os.path.join(*args))
@@ -534,8 +534,8 @@ def get_config_vars(*args):
 
         if os.name == 'nt':
             _init_non_posix(_CONFIG_VARS)
-        if os.name == 'posix':
-            _init_posix(_CONFIG_VARS)
+        #if os.name == 'posix':
+        #    _init_posix(_CONFIG_VARS)
         # For backward compatibility, see issue19555
         SO = _CONFIG_VARS.get('EXT_SUFFIX')
         if SO is not None:

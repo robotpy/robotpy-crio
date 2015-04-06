@@ -4,6 +4,8 @@
 #include "pythread.h"
 #include "osdefs.h"
 
+#include <pthread.h>
+
 /* Trace memory blocks allocated by PyMem_RawMalloc() */
 #define TRACE_RAW_MALLOC
 

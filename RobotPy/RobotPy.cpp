@@ -42,7 +42,7 @@ extern "C" INT32
 RobotPy_Run()
 {
     puts("RobotPy " ROBOTPY_VERSION);
-
+    
     /* Initialize the Python interpreter.  Required. */
     //Py_VerboseFlag = 2;
     Py_SetProgramName(L"./RobotPy");

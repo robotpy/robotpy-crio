@@ -14,7 +14,11 @@ About RobotPy
 Robotics Competition`_.  Teams can use this to write their robot code in
 Python, a powerful dynamic programming language.
 
-.. _RobotPy: http://firstforge.wpi.edu/sf/projects/robotpy
+Warning: This release does not support the roboRIO! Go to 
+https://github.com/robotpy/robotpy-wpilib to get the latest roboRIO release of
+RobotPy.
+
+.. _RobotPy: http://robotpy.github.io
 .. _Python: http://www.python.org/
 .. _FIRST Robotics Competition: http://www.usfirst.org/
 
@@ -31,17 +35,23 @@ to your robot's IP with an FTP client (e.g. ``ftp://10.XX.YY.2/``, where XXYY
 is your team number).  Copy all files and directories in the distribution's
 ``robot`` directory to the root (top level) directory on the robot.
 
+You must have your cRio/cRio-II imaged with the latest FRC image (v52). For
+more information, see the following page:
+
+https://usfirst.collab.net/sf/wiki/do/viewPage/projects.thunder_crio_c_tools/wiki/HomePage#section-HomePage-OtherCRIOInformation
+
 Getting started
 ===============
 
-The wiki has some documentation on how to get started with RobotPy. 
+The RobotPy documentation site has some content on how to get started with
+RobotPy.
 
-http://firstforge.wpi.edu/sf/wiki/do/viewPage/projects.robotpy/wiki/HomePage
+http://robotpy.readthedocs.org
 
 Development tools
 =================
 
-See the utilities directory for useful development tools that may make
+See the utilities directory for useful development tools that will make
 your RobotPy development experience easier. 
 
 The pyfrc python package is a recommended development package that provides
