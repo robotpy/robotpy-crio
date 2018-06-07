@@ -17,7 +17,7 @@ function atexit_func {
 trap "atexit_func" EXIT
 
 cd $TMPDIR
-wget -O - http://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.tar.gz | tar -xz
+wget --no-check-certificate -O - http://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.tar.gz | tar -xz
 
 cd sip-$SIP_VERSION
 python configure.py
